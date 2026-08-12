@@ -1,23 +1,25 @@
 <!-- doc/src/sgml/release-4.4.sgml -->
-<!-- 关于典型标记，请参见 release.sgml 中的头部注释 --><sect1 id="release-4-4-17">
+<!-- See header comment in release.sgml about typical markup -->
+
+<sect1 id="release-4-4-17">
  <title>Release 4.4.17</title>
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2026-06-04</simpara>
  </note>
 
  <sect2>
-  <title>错误修复</title>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2026-05-26 [4eb1fe84a]
     -->
     <para>
-     允许 <literal>pgproto</literal> 接受新行数据。 (Tatsuo Ishii)
+     Allow <literal>pgproto</literal> to accept new line data. (Tatsuo Ishii)
     </para>
     <para>
-     现在 <literal>"\n"</literal> 被识别为新行。这对于 <command>COPY</command> 命令是必需的。
+     Now <literal>"\n"</literal> is recognized as a new line. This is necessary for <command>COPY</command> command.
     </para>
    </listitem>
 
@@ -26,19 +28,19 @@
     2026-05-19 [0cfb6ebdc]
     -->
     <para>
-     当主节点 Watchdog 报告初始 -2 哨兵值时，保留本地的 primary_node_id。 (Tatsuo Ishii)
+     Keep local primary_node_id when leader watchdog reports the initial -2 sentinel. (Tatsuo Ishii)
     </para>
     <para>
-     修复在所有 pgpool 节点同时重启后的 Watchdog 同步问题，
-     其中备用节点可能会用初始 -2 哨兵值覆盖有效的 primary_node_id，
-     并无限期停留在未初始化状态。修复方法是在主节点报告初始 -2 哨兵值时，保留本地的
-     primary_node_id。
+     Fix a watchdog synchronization issue after simultaneous restart of all pgpool nodes,
+     where standby nodes could overwrite a valid primary_node_id with the initial -2 sentinel
+     value and remain stuck in an uninitialized state indefinitely. Fix is, keep the local
+     primary_node_id when the leader reports the initial -2 sentinel.
     </para>
     <para>
-     问题报告者：Emond Papegaaij 和 Claude Code。
+     Problem reported by Emond Papegaaij and Claude Code.
     </para>
     <para>
-     讨论：<ulink url="https://www.postgresql.org/message-id/CAGXsc%2BZmBoLs3Mz%3DG-Bdm4JJG%2BfH1NpHfR3qVJVwW4eBKWwStQ%40mail.gmail.com">清理启动时的主节点检测竞态条件</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/CAGXsc%2BZmBoLs3Mz%3DG-Bdm4JJG%2BfH1NpHfR3qVJVwW4eBKWwStQ%40mail.gmail.com">Primary node detection race at clean startup</ulink>
     </para>
    </listitem>
 
@@ -47,19 +49,19 @@
     2026-05-19 [6ec39ceb1]
     -->
     <para>
-     修复中止事务中空查询的情况。 (Tatsuo Ishii)
+     Fix empty query case in aborted transaction. (Tatsuo Ishii)
     </para>
     <para>
-     修复中止事务中的空查询错误地引发错误的问题。
-     中止事务中应允许空查询，
-     但之前的提交导致 <function>check_transaction_state_and_abort()</function> 拒绝了它们。
-     修复方法是在 <function>SimpleQuery()</function> 中检测空查询并绕过检查。
+     Fix empty queries in aborted transactions incorrectly raising errors.
+     Empty queries should be allowed in aborted transactions,
+     but a previous commit caused <function>check_transaction_state_and_abort()</function> to reject them.
+     Fix is, detect empty queries in <function>SimpleQuery()</function> and bypass the check.
     </para>
     <para>
-     问题报告者：Ronaldo Raivil。
+     Problem reported by Ronaldo Raivil.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/161">pgpool >= 4.3.2 在中止的保存点内的驱动程序健康检查探测中合成 25P02，破坏需要调用 ROLLBACK TO SAVEPOINT 的 ORM</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/161">pgpool >= 4.3.2 synthesizes 25P02 on driver health-check probes inside aborted savepoints, breaking ORMs that need to call ROLLBACK TO SAVEPOINT</ulink>
     </para>
    </listitem>
 
@@ -68,11 +70,12 @@
     2026-05-06 [479c71033]
     -->
     <para>
-     修复关于 <varname>ssl_dh_params_file</varname> 的描述。 (Tatsuo Ishii)
+     Fix description about <varname>ssl_dh_params_file</varname>. (Tatsuo Ishii)
     </para>
     <para>
-     实际上，不仅当参数为空（默认值）时，而且当指定的参数不正确时，
-     它也会回退到编译时默认值。
+     It actually falls back to compiled-in default not only when the
+     parameter is empty (the default), but when specified parameter is
+     incorrect one.
     </para>
    </listitem>
 
@@ -81,21 +84,22 @@
     2026-04-27 [571e1f917]
     -->
     <para>
-     修复 PCP 主进程在重启时记住子进程 PID。 (Tatsuo Ishii)
+     Fix PCP main process to remember child pids upon restarting. (Tatsuo Ishii)
     </para>
     <para>
-     在故障切换/故障恢复时，pgpool 主进程向 PCP 主
-     进程发送信号以请求重启，PCP 主进程进行重启。问题是，当
-     PCP 主进程重启时，它会忘记其子 PCP 工作进程 PID 列表。
+     Upon failover/failback, pgpool main process sends a signal to PCP main
+     process to request restarting, and PCP main restarts. Problem is, when
+     PCP main restarts, it forgets the list of pids of its child PCP worker
+     process.
 
-     结果，像 <command>pcp_promote_node</command> 这样的命令可能会无限期挂起。
-     修复方法是将 PCP 工作进程 PID 存储在共享内存中，使其能够生存过 PCP 主进程重启。
+     As a result, commands such as <command>pcp_promote_node</command> could hang indefinitely.
+     Fix is, store PCP worker PIDs in shared memory so they survive PCP main restart.
     </para>
     <para>
-     问题报告者：Taiki Koshino。
+     Problem reported by Taiki Koshino.
     </para>
     <para>
-     讨论：<ulink url="https://www.postgresql.org/message-id/20260425.223051.1207744844622514060.ishii%40postgresql.org">pcp 进程问题</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20260425.223051.1207744844622514060.ishii%40postgresql.org">Problem with pcp process</ulink>
     </para>
    </listitem>
 
@@ -104,7 +108,7 @@
     2026-04-09 [4cdd766e1]
     -->
     <para>
-     修复版本不匹配：为 4.4.16 重新生成 configure。 (Bo Peng)
+     Fix version mismatch: regenerate configure for 4.4.16. (Bo Peng)
     </para>
    </listitem>
 
@@ -113,19 +117,19 @@
     2026-04-07 [fbcbfe5b0]
     -->
     <para>
-     修复查询缓存在使用 <command>MERGE</command> 语句时不过期缓存的问题。 (Tatsuo Ishii)
+     Fix query cache to invalidate cache when <command>MERGE</command> statement is used. (Tatsuo Ishii)
     </para>
     <para>
-     <command>MERGE</command> 是在 <productname>PostgreSQL</productname> 15 中引入的，
-     <productname>Pgpool-II</productname> 4.4 引入了 <productname>PostgreSQL</productname> 15 的解析器。
-     然而，查询缓存子模块存在疏漏：
-     <command>MERGE</command> 语句未触发查询缓存的无效化。
+     <command>MERGE</command> was introduced in <productname>PostgreSQL</productname> 15
+     and <productname>Pgpool-II</productname> 4.4 imported <productname>PostgreSQL</productname> 15's parser.
+     However, there was an oversight in query cache sub module:
+     <command>MERGE</command> statement did not trigger invalidation of query cache.
     </para>
     <para>
-     问题报告者：Nadav Shatz。
+     Problem reported by Nadav Shatz.
     </para>
     <para>
-     讨论：<ulink url="https://www.postgresql.org/message-id/20260407.090802.1335576118037412011.ishii%40postgresql.org">Re: Proposal: Recent mutated table tracking in memory</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20260407.090802.1335576118037412011.ishii%40postgresql.org">Re: Proposal: Recent mutated table tracking in memory</ulink>
     </para>
    </listitem>
 
@@ -134,15 +138,15 @@
     2026-04-06 [205d1c439]
     -->
     <para>
-     修复 SSL 模块中的内存泄漏。 (Tatsuo Ishii)
+     Fix memory leak in a SSL module. (Tatsuo Ishii)
     </para>
     <para>
-     修复 <function>load_dh_file()</function> 中当提供无效的 DH 参数时的内存泄漏。
-     该函数未能释放由 <function>PEM_read_DHparams()</function> 返回的内存。
-     此外，更新同一文件中的版权声明，以保留原始的 <productname>PostgreSQL</productname> 版权声明。
+     Fix a memory leak in <function>load_dh_file()</function> when invalid DH parameters are supplied.
+     The function failed to free memory returned by <function>PEM_read_DHparams()</function>.
+     Also update the copyright notice in the same file to retain the original <productname>PostgreSQL</productname> copyright.
     </para>
     <para>
-     讨论：<ulink url="https://www.postgresql.org/message-id/20260403.091842.102589579921239540.ishii%40postgresql.org">SSL 模块中的内存泄漏</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20260403.091842.102589579921239540.ishii%40postgresql.org">Memory leak in SSL module</ulink>
     </para>
    </listitem>
 
@@ -151,17 +155,17 @@
     2026-03-31 [4812ec5b6]
     -->
     <para>
-     修复 <command>SET transaction_read_only = 0</command> 的路由错误。 (Bo Peng)
+     Fix incorrect routing of <command>SET transaction_read_only = 0</command>. (Bo Peng)
     </para>
     <para>
-     修复将 <command>SET transaction_read_only = 0</command> 错误地路由到备用节点的问题，这会导致查询错误。
-     此外，将不正确的 bool ret = POOL_BOTH 替换为适当的枚举类型。
+     Fix incorrect routing of <command>SET transaction_read_only = 0</command> to standby node, which caused query errors.
+     Also replace incorrect bool ret = POOL_BOTH with the proper enum type.
     </para>
     <para>
-     问题报告者：liujinyang-highgo。
+     Problem reported by liujinyang-highgo.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/155">set command 'set transaction_read_only = 0;' routed to standby node and execute failed.</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/155">set command 'set transaction_read_only = 0;' routed to standby node and execute failed.</ulink>
     </para>
    </listitem>
 
@@ -170,16 +174,16 @@
     2026-03-20 [7e96543c7]
     -->
     <para>
-     修复会话级关系缓存的情况错误。 (Tatsuo Ishii)
+     Fix session local relation cache case bug. (Tatsuo Ishii)
     </para>
     <para>
-     修复 <function>pool_search_relcache()</function> 中会话级关系缓存的处理不正确问题。
-     临时表信息可能会错误地注册到共享关系缓存中，导致后续查询
-     使用过时的缓存条目，并可能错误地路由查询。
-     修复方法是为会话级缓存条目避免在共享关系缓存中注册临时表信息。
+     Fix incorrect handling of session local relation cache in <function>pool_search_relcache()</function>.
+     Temporary table information could be incorrectly registered in shared relation cache, causing subsequent queries
+     to use stale cache entries and potentially route queries incorrectly.
+     Fix is, avoid registering temp table information in shared relation cache for session local cache entries.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/154">query temp table is routed to standby node.</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/154">query temp table is routed to standby node.</ulink>
     </para>
    </listitem>
 
@@ -188,16 +192,16 @@
     2026-03-19 [4095caec0]
     -->
     <para>
-     修复 <function>pool_search_relcache()</function> 中的锁释放泄漏。 (Tatsuo Ishii)
+     Fix lock release leak in <function>pool_search_relcache()</function>. (Tatsuo Ishii)
     </para>
     <para>
-     修复 <function>pool_search_relcache()</function> 中的锁释放泄漏。
-     在更新共享关系缓存期间，在重新获取排他锁后，锁状态未正确重置，
-     可能导致共享内存锁一直处于持有状态。此外，将令人困惑的变量 <varname>locked</varname> 重命名为 <varname>locked_by_others</varname>
-     并修复不必要的 <varname>per_node_statement_log</varname> 输出。
+     Fix a lock release leak in <function>pool_search_relcache()</function>.
+     During shared relation cache updates, the lock state was not reset correctly after reacquiring an exclusive lock,
+     which could leave the shared memory lock held. Also rename confusing variable <varname>locked</varname> to <varname>locked_by_others</varname>
+     and fix unnecessary <varname>per_node_statement_log</varname> output.
     </para>
     <para>
-     讨论：<ulink url="https://www.postgresql.org/message-id/20260317.182615.1046517700474336117.ishii%40postgresql.org">pool_search_relcache 中的锁释放泄漏</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20260317.182615.1046517700474336117.ishii%40postgresql.org">Lock release leak in pool_search_relcache</ulink>
     </para>
    </listitem>
 
@@ -206,37 +210,40 @@
     2026-03-09 [293e9cae9]
     -->
     <para>
-     在分叉前关闭监听套接字。 (Tatsuo Ishii)
+     Close listening sockets before forking. (Tatsuo Ishii)
     </para>
     <para>
-     修复分叉子进程中继承的不必要的监听套接字。
-     以前，pcp_main、健康检查和 lifecheck 等子进程继承了它们不使用的 pgpool 和/或 PCP 监听套接字，
-     这可能阻止后续的 pgpool 启动正确绑定端口。
-     修复方法是在分叉后使用 <function>close_listening_sockets()</function> 关闭不必要的监听套接字。
+     Fix inherited unnecessary listening sockets in forked child processes.
+     Previously, subprocesses such as pcp_main, health check,
+     and lifecheck processes inherited pgpool and/or PCP listening sockets they did not use,
+     which could prevent subsequent pgpool startup from binding ports correctly.
+     Fix is, close unnecessary listening sockets after forking using <function>close_listening_sockets()</function>.
     </para>
     <para>
-     讨论：<ulink url="https://www.postgresql.org/message-id/20260302.100028.1346768433787074248.ishii%40postgresql.org">在分叉前关闭监听套接字</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20260302.100028.1346768433787074248.ishii%40postgresql.org">Close listening socokets before forking</ulink>
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2026-03-04 [c9a12b93c]
     -->
     <para>
-     文档：修复 <varname>ignore_leading_white_space</varname> 和 <varname>allow_sql_comments</varname> 的文档。 (Tatsuo Ishii)
+     Doc: fix <varname>ignore_leading_white_space</varname> and <varname>allow_sql_comments</varname> docs. (Tatsuo Ishii)
     </para>
     <para>
-     它们缺乏对默认值的描述。
+     They lacked a description on the default values.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-16">
  <title>Release 4.4.16</title>
  <note>
@@ -252,10 +259,10 @@
     2026-01-29 [118f61932]
     -->
     <para>
-     允许并行执行<command>make</command>。 (Tatsuo Ishii)
+     Allow parallel <command>make</command>. (Tatsuo Ishii)
     </para>
     <para>
-     此前，并行执行<command>make</command>时会失败，报错如下：
+     Previously a parallel <command>make</command> failed with:
      <programlisting>
 In file included from parser.c:27:
 ../../src/include/parser/gramparse.h:33:10: fatal error: gram.h: No such file or directory
@@ -263,10 +270,10 @@ In file included from parser.c:27:
      </programlisting>
     </para>
     <para>
-     该补丁由 anthonyroussel 创建，Tatsuo Ishii 审核。
+     Patch is created by anthonyroussel and reviewed by Tatsuo Ishii.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/pull/146">Fix parallel build</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/pull/146">Fix parallel build</ulink>
     </para>
    </listitem>
 
@@ -275,11 +282,12 @@ In file included from parser.c:27:
     2026-01-26 [d638018ce]
     -->
     <para>
-     添加关于<xref linkend="guc-backend-hostname">与<varname>primary_conninfo</varname>主机之间不匹配的详细信息日志。 (Taiki Koshino)
+     Add detail log about mismatch between <xref linkend="guc-backend-hostname"> and <varname>primary_conninfo</varname> host. (Taiki Koshino)
     </para>
     <para>
-     如果在<filename>pgpool.conf</filename>中设置的<xref linkend="guc-backend-hostname">与<productname>PostgreSQL</productname>的<varname>primary_conninfo</varname>中的主机设置不匹配，
-     将输出以下日志消息。
+     If the <xref linkend="guc-backend-hostname"> set in <filename>pgpool.conf</filename> does not match
+     the host setting in <productname>PostgreSQL</productname>'s <varname>primary_conninfo</varname>,
+     the following log message will be output.
      <programlisting>
 sr_check_worker pid 25099: DETAIL: pgpool.conf backend_hostname: "pgpool0" does not match PostgreSQL primary_conninfo host: "pgpool_logtest"
      </programlisting>
@@ -290,22 +298,27 @@ sr_check_worker pid 25099: DETAIL: pgpool.conf backend_hostname: "pgpool0" does 
     2025-12-24 [ef33aca38]
     -->
     <para>
-     明确指定支持的最低 OpenSSL 版本。 (Tatsuo Ishii)
+     Explicitly stat supported minimum OpenSSL version. (Tatsuo Ishii)
     </para>
     <para>
-     可以通过在 configure.ac 中使用以下方式实现：
+     That can be done in configure.ac by using
      <programlisting>
 AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
           [Define to the OpenSSL API version in use. This avoids deprecation warnings from newer OpenSSL versions.])
      </programlisting>
 
-     支持的最低版本为 1.0.2，与当前<productname>PostgreSQL</productname>相同。（实际上，AC_DEFINE 是从<productname>PostgreSQL</productname>引入的。）此外，如果您安装的 OpenSSL 较新（如 3.0），这还可以避免 OpenSSL 的弃用警告。
-     另外，在安装文档中补充说明 OpenSSL 所需的最低版本为 1.0.2。
+     The supported minimum version is 1.0.2, which is identical to
+     <productname>PostgreSQL</productname> at this point.  (Actually the AC_DEFINE is brought in from
+     <productname>PostgreSQL</productname>).  Also this could avoid OpenSSL deprecation warnings if
+     your installed OpenSSL is new, like 3.0.
+     Moreover, add mention to installation document that required minimum
+     version of OpenSSL is 1.0.2.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
+
+ <sect2>
   <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
@@ -313,13 +326,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2026-01-31 [55ee45801]
     -->
     <para>
-     修复<function>check_transaction_state_and_abort()</function>中的疏漏。 (Tatsuo Ishii)
+     Fix oversight in <function>check_transaction_state_and_abort()</function>. (Tatsuo Ishii)
     </para>
     <para>
-     该函数未考虑前端为 NULL 的情况。
+     The function does not take the case when frontend is NULL into account.
     </para>
     <para>
-     问题由 Coverity 指出。
+     Problem pointed out by Coverity.
     </para>
    </listitem>
 
@@ -328,18 +341,21 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2026-01-22 [c0f2cb883]
     -->
     <para>
-     修复<function>walker()</function>函数使其提前返回。 (Tatsuo Ishii)
+     Fix <function>walker()</function> functions to return earlier. (Tatsuo Ishii)
     </para>
     <para>
-     此前，<function>walker()</function>函数在找到目标对象后返回 false。但可以短路遍历过程，本应如此处理。
+     Previously <function>walker()</function> functions returned false once it found target
+     objects.  But it is possible to short-circuit the traverse and it
+     should have been.
 
-     此外，从<productname>PostgreSQL</productname>导入注释，以澄清 walker 函数的设计。
+     Also import comments from <productname>PostgreSQL</productname> to clarify walker function
+     design.
     </para>
     <para>
-     问题由 liujinyang-highgo 报告，Tatsuo Ishii 审核。
+     Problem reported by liujinyang-highgo and reviewed by Tatsuo Ishii.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/143">Improper handling in the function view_walker().</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/143">Improper handling in the function view_walker().</ulink>
     </para>
    </listitem>
 
@@ -348,10 +364,10 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2026-01-09 [7b00d24de]
     -->
     <para>
-     修复<literal>scram-sha-256</literal>认证中的内存泄漏。 (Tatsuo Ishii)
+     Fix memory leak in <literal>scram-sha-256</literal> authentication. (Tatsuo Ishii)
     </para>
     <para>
-     问题由 Coverity 指出。
+     Problem pointed out by Coverity.
     </para>
    </listitem>
 
@@ -360,10 +376,11 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2026-01-07 [81e8d3ec6]
     -->
     <para>
-     修复对<function>malloc()</function>返回值的检查。 (Tatsuo Ishii)
+     Fix to check the return value of <function>malloc()</function>. (Tatsuo Ishii)
     </para>
     <para>
-     <function>create_inet_domain_sockets()</function>在为 socket fd 分配内存时忘记检查<function>malloc()</function>的返回值。
+     <function>create_inet_domain_sockets()</function> forgot to check the return value of
+     <function>malloc()</function> while allocating memory for socket fds.
     </para>
    </listitem>
 
@@ -372,19 +389,24 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2026-01-06 [2218b5e56]
     -->
     <para>
-     修复健康检查进程无法正常启动的问题。 (Tatsuo Ishii)
+     Fix health check process to not start. (Tatsuo Ishii)
     </para>
     <para>
-     此前，如果后端节点处于宕机状态，<function>pgpool_main()</function>不会启动健康检查进程。这会导致 auto_failback 无法正常工作。
-     Pgpool 在缺少<option>-D</option>选项时从<varname>pool_status</varname>文件读取状态。如果文件中记录的状态为“down”，则 pgpool 不会为该节点启动健康检查进程。由于 auto_failback 是从健康检查进程调用的，这意味着 auto_failback 对该后端节点不生效。
+     Previously <function>pgpool_main()</function> did not start a health check process if the
+     backend node is down.  This prevented auto_failback from working.
+     Pgpool reads status from <varname>pool_status</varname> file when <option>-D</option> option is not
+     present.  If the status recorded in the file is "down", pgpool will
+     not start health check process for the node.  Since auto_failback is
+     invoked from health check process, this means that auto_failback does
+     not work for the backend node.
 
-     修复方法：无条件启动健康检查进程。
+     Fix is, unconditionally start health check process.
     </para>
     <para>
-     问题由 Meng Feilong 报告，Tatsuo Ishii 审核。
+     Problem reported by Meng Feilong and reviewed by Tatsuo Ishii.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/140">Nodes in the down state cannot failback </ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/140">Nodes in the down state cannot failback </ulink>
     </para>
    </listitem>
 
@@ -393,56 +415,65 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-12-23 [515d5fe85]
     -->
     <para>
-     修复可能的整数溢出。 (Tatsuo Ishii)
+     Fix possible integer overflow. (Tatsuo Ishii)
     </para>
     <para>
-     在<function>pool_write_flush()</function>和<function>pool_flus_it()</function>中使用了<function>write(2)</function>。<function>write(2)</function>返回 ssize_t 类型，而代码中有部分地方将返回值赋值给了 int 类型变量。结果可能导致返回值被求值为负数，从而引发错误。
+     In <function>pool_write_flush()</function> and <function>pool_flus_it()</function> <function>write(2)</function> is used. <function>write(2)</function>
+     returns ssize_t and in the code there are some places where the return
+     value was assigned to an int variable. As a result it was possible
+     that the return value was evaluated to negative value, which led to an
+     error.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-15">
- <title>版本 4.4.15</title>
+ <title>Release 4.4.15</title>
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2025-12-15</simpara>
  </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-12-08 [5bd10177c]
     -->
     <para>
-     在 pgpool_setup 中使用 "grep -E" 替代已弃用的 "egrep"。 (Bo Peng)
+     Use "grep -E" instead of deprecated "egrep" in pgpool_setup. (Bo Peng)
     </para>
     <para>
-     将 "egrep" 替换为 "grep -E"，以避免在较新的 GNU grep 版本中出现弃用警告。
+     Replace "egrep" with "grep -E" to avoid obsolescence warnings on newer GNU grep versions.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-12-08 [8deccc15e]
     -->
     <para>
-     修复 show pool_status 中的缓冲区溢出错误。 (Tatsuo Ishii)
+     Fix buffer overflow error in show pool_status. (Tatsuo Ishii)
     </para>
     <para>
-     "show pool_status"、"pgpool show" 和 pcp_pool_status 可能导致缓冲区溢出错误。如果 backend_flag 设置为 "ALWAYS_PRIMARY"，负责生成 backend_flag 可打印格式的 pool_flag_to_str() 会将数据写入静态缓冲区的末尾之外。
+     "show pool_status", "pgpool show" and pcp_pool_status could cause a
+     buffer overflow error. If backend_flag is set to "ALWAYS_PRIMARY",
+     pool_flag_to_str(), which is responsible to produce printable format
+     of backend_flag, wrote data past to the end of static buffer.
     </para>
     <para>
-     问题由 zam bak 报告，并由 Bo Peng 审核。
+     Problem reported by zam bak and reviewed by Bo Peng.
     </para>
     <para>
-     讨论： <ulink url="https://www.postgresql.org/message-id/20251202.140205.427777414210613577.ishii%40postgresql.org">Re: "buffer overflow detected" when running SHOW POOL_STATUS</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20251202.140205.427777414210613577.ishii%40postgresql.org">Re: "buffer overflow detected" when running SHOW POOL_STATUS</ulink>
     </para>
    </listitem>
 
@@ -451,65 +482,72 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-12-02 [c8865c703]
     -->
     <para>
-     修复 "show pool_status" 中显示的 memqcache_stats_start_time。 (Tatsuo Ishii)
+     Fix memqcache_stats_start_time shown in "show pool_status". (Tatsuo Ishii)
     </para>
     <para>
-     get_config() 使用 ctime() 生成 memqcache_stats_start_time 的可打印形式。但它没有考虑到 ctime() 会在结果末尾添加换行符。因此，不仅 memqcache_stats_start_time 的输出带有不必要的换行符，而且下一行打印了空项。
+     get_config() uses ctime() to generate printable form of
+     memqcache_stats_start_time. But it did not take into account that
+     ctime() adds newline at the end of result. As a result, not only the
+     output of memqcache_stats_start_time was with unnecessary newline but
+     next row printed empty items.
     </para>
     <para>
-     讨论： <ulink url="https://www.postgresql.org/message-id/20251130.102712.131456481338876013.ishii%40postgresql.org">Re: "buffer overflow detected" when running SHOW POOL_STATUS</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20251130.102712.131456481338876013.ishii%40postgresql.org">Re: "buffer overflow detected" when running SHOW POOL_STATUS</ulink>
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-14">
- <title>发布 4.4.14</title>
+ <title>Release 4.4.14</title>
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2025-11-25</simpara>
  </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-11-07 [4fabca331]
     -->
     <para>
-     移除不必要的 <varname>application_name</varname> 处理。(Tatsuo Ishii)
+     Remove unnecessary <varname>application_name</varname> treatment. (Tatsuo Ishii)
     </para>
     <para>
-     之前的提交添加了一个在重用现有连接时设置 <varname>application_name</varname> 的步骤。
-     然而，这是不必要的，因为 DISCARD ALL 会自动重置 <varname>application_name</varname>，
-     并且 <function>send_params()</function> 已经将所有必要的参数状态消息（包括 <varname>application_name</varname>）发送到前端。
-     移除这个冗余步骤还可以提高性能，特别是对于地理距离较远的后端节点。
+     A previous commit added a step to set <varname>application_name</varname> when reusing existing connections.
+     However, this is unnecessary because DISCARD ALL automatically resets <varname>application_name</varname>,
+     and <function>send_params()</function> already sends all necessary parameter status messages, including <varname>application_name</varname>, to the frontend.
+     Removing this redundant step also improves performance, particularly for backend nodes that are geographically distant.
     </para>
     <para>
-     讨论： <ulink url="https://github.com/pgpool/pgpool2/issues/130">地理分布式配置中 pgPool 性能严重下降</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/130">Severely degraded performance of pgPool in geo-distributed configurations</ulink>
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-11-16 [b113027dd]
     -->
     <para>
-     修复 <command>CopyOut</command> 时的段错误。(Tatsuo Ishii)
+     Fix segfault with <command>CopyOut</command>. (Tatsuo Ishii)
     </para>
     <para>
-     在扩展查询协议模式下执行 <command>COPY relname TO STDOUT</command> 时，pgpool 发生段错误。
+     When <command>COPY relname TO STDOUT</command> is executed in the extended query
+     protocol mode, pgpool segfaulted.
     </para>
     <para>
-     此问题由 <ulink url="https://github.com/tetesh">https://github.com/tetesh</ulink> 报告。
+     This problem is reported by <ulink url="https://github.com/tetesh">https://github.com/tetesh</ulink>.
     </para>
     <para>
-     讨论： <ulink url="https://github.com/pgpool/pgpool2/issues/133">datanymizer 和 pg-pool 分段错误</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/133">datanymizer and pg-pool segmentation fault</ulink>
     </para>
    </listitem>
    <listitem>
@@ -517,15 +555,16 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-10-03 [b84553bf0]
     -->
     <para>
-     在某些边缘情况下防止 watchdog 脑裂场景。(Tatsuo Ishii)
+     Prevent watchdog split-brain scenario in some corner cases. (Tatsuo Ishii)
     </para>
     <para>
-     Watchdog 同时使用信标消息和心跳进行通信。
-     如果心跳尚未激活，信标消息丢失超过 30 秒可能导致脑裂场景，
-     即旧领导者保持活动状态，同时选举出新领导者。
-     此更改通过撤销旧领导者来防止两个领导者同时存在。
-     当节点检测到它从领导者处丢失信标消息超过两次时，
-     领导者被设置为 LOST，并通过 set_state(WD_JOINING) 触发新的领导者选举。
+     Watchdog uses both beacon messages and heartbeat for communication.
+     If the heartbeat is not yet active, missing beacon messages
+     for over 30 seconds can cause a split-brain scenario,
+     where the old leader remains active while a new leader is elected.
+     This change prevents two leaders from existing simultaneously by revoking the old leader.
+     When a node detects that it has missed beacon messages from the leader more than twice,
+     the leader is set to LOST and a new leader election is triggered via set_state(WD_JOINING).
     </para>
    </listitem>
 
@@ -534,12 +573,12 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-10-03 [ef8ccb9e7]
     -->
     <para>
-     防止在给定不存在的预处理语句时出现 FATAL 错误。(Tatsuo Ishii)
+     Prevent FATAL error when non-existing prepared statement is given. (Tatsuo Ishii)
     </para>
     <para>
-     以前，当使用不存在的预处理语句时，<function>Bind()</function> 会引发 FATAL 错误，这与 PostgreSQL 不同。
-     此更改使 <function>Bind()</function> 检查语句是否存在，如果不存在则向前端发送 ERROR 消息。
-     请注意，不会写入日志，因为目前无法记录此情况。
+     Previously, <function>Bind()</function> raised a FATAL error when a non-existing prepared statement was used, unlike PostgreSQL.
+     This change changes <function>Bind()</function> to check for the statement's existence and send an ERROR message to the frontend if it does not exist.
+     Note that no log is written, as logging this is not currently possible.
     </para>
    </listitem>
 
@@ -548,14 +587,14 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-09-24 [59a359eef]
     -->
     <para>
-     修复同时提供 -p 和 -P 时 <xref linkend="pg-enc"> 不起作用的问题。(Tatsuo Ishii)
+     Fix <xref linkend="pg-enc"> not working if both -p and -P are provided. (Tatsuo Ishii)
     </para>
     <para>
-     原始报告显示，运行 pg_enc -p -P 会提示输入密码和加密密钥，
-     但如果未提供密钥则会失败。
+     The original report showed that running pg_enc -p -P prompted for a password and encryption key,
+     but failed if the key was not provided.
     </para>
     <para>
-     讨论： <ulink url="https://www.postgresql.org/message-id/7f18c30b.237.1997555ca11.Coremail.liujy%40highgo.com">pg_enc</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/7f18c30b.237.1997555ca11.Coremail.liujy%40highgo.com">pg_enc</ulink>
     </para>
    </listitem>
 
@@ -564,16 +603,16 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-09-18 [f20f7041c]
     -->
     <para>
-     修复 32 位环境下的编译问题。(Tatsuo Ishii)
+     Fix compiling issue on 32-bit environments. (Tatsuo Ishii)
     </para>
     <para>
-     在 32 位系统上，编译 src/parser/snprintf.c 会因未定义的函数 <function>isnan()</function> 和 <function>isinf()</function> 而失败，这些函数来自 math.h。
-     此更改包含了 math.h，并重新排序了包含文件以提高清晰度。
-     该文件最初从 PostgreSQL 导入，其中已包含 math.h。
-     此修复通过拉取请求提供： https://github.com/pgpool/pgpool2/pull/128
+     On 32-bit systems, compiling src/parser/snprintf.c fails due to undefined functions <function>isnan()</function> and <function>isinf()</function>, which come from math.h.
+     This change includes math.h and also reorders the include files for clarity.
+     The file was originally imported from PostgreSQL, where math.h was already included.
+     This fix was provided via pull request: https://github.com/pgpool/pgpool2/pull/128
     </para>
     <para>
-     讨论： <ulink url="https://www.postgresql.org/message-id/20250917.194736.353755422175293639.ishii%40postgresql.org">32 位目标的编译问题</ulink>
+     Discussion: <ulink url="https://www.postgresql.org/message-id/20250917.194736.353755422175293639.ishii%40postgresql.org">Compiling issues for 32-bit targets</ulink>
     </para>
    </listitem>
 
@@ -582,13 +621,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-09-10 [0a6868d40]
     -->
     <para>
-     修复 recovery_1st_stage.sample 中 Bash 更安全的目录删除。(Taiki Koshino)
+     Fix safer directory deletion in Bash in recovery_1st_stage.sample. (Taiki Koshino)
     </para>
     <para>
-     在 rm 命令中引用变量以避免意外删除：
+     Quote variables in rm commands to avoid accidental deletion:
      <command>rm -rf "${DEST_NODE_PGDATA}"</command>
 
-     如果变量为空，rm 可能会删除意外的文件或目录。
+     If the variable is empty, rm could delete unexpected files or directories.
     </para>
    </listitem>
 
@@ -597,15 +636,15 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-09-05 [441f338ab]
     -->
     <para>
-     修复未使用 <option>--with-memcached</option> 选项构建时的编译错误。(Tatsuo Ishii)
+     Fix the compilation error when building without the <option>--with-memcached</option> option. (Tatsuo Ishii)
     </para>
     <para>
-     在未配置 <option>--with-memcached</option> 时发生编译器错误。
-     问题在于编译器无法确定 ptr 只会在启用 memcached 时被释放。
-     为了解决这个问题，相关代码块被包裹在 #ifdef USE_MEMCACHED 中。
+     A compiler error occurred when configuring without <option>--with-memcached</option>.
+     The issue arose because the compiler could not determine that ptr would only be freed when memcached is enabled.
+     To fix this, the relevant code block was wrapped with #ifdef USE_MEMCACHED.
     </para>
     <para>
-     问题由 Bo Peng 报告。
+     Problem reported by Bo Peng.
     </para>
    </listitem>
    <listitem>
@@ -613,34 +652,35 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-09-04 [9e0324575]
     -->
     <para>
-     修复查询缓存锁文件处理。(Tatsuo Ishii)
+     Fix query cache lock file handling. (Tatsuo Ishii)
     </para>
     <para>
-     查询缓存模块在 <varname>logdir</varname> 中创建一个锁文件用于并发控制，
-     但存在两个错误：主 pgpool 进程可能创建一个多余的 "QUERY_CACHE_LOCK_FILE"，
-     并且锁文件在关闭时未被移除。此更改修复了这两个问题。
+     The query cache module creates a lock file in <varname>logdir</varname> for concurrency control,
+     but two bugs existed: the main pgpool process could create a stray "QUERY_CACHE_LOCK_FILE",
+     and the lock file was not removed on shutdown. This change fixes both issues.
     </para>
     <para>
-     问题由 Bo Peng 报告和分析。
+     Problem reported and analyzed by Bo Peng.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-09-17 [1a975b539]
     -->
     <para>
-     更新 <ulink url="https://www.pgpool.net/docs/latest/ja/html/example-cluster.html">8.2. Pgpool-II + Watchdog 设置示例</ulink> 中关于 "设置 PostgreSQL 备用服务器" 的文档。(Taiki Koshino)
+     Update doc about "Setting up PostgreSQL standby" in <ulink url="https://www.pgpool.net/docs/latest/ja/html/example-cluster.html">8.2. Pgpool-II + Watchdog Setup Example</ulink>. (Taiki Koshino)
     </para>
     <para>
-     添加一条说明：在不使用在线恢复设置备用服务器时，不要将 <varname>primary_conninfo</varname> 写入 postgresql.auto.conf。
+     Add a note that when setting up a standby without online recovery, do not write <varname>primary_conninfo</varname> to postgresql.auto.conf.
     </para>
     <para>
-     讨论： <ulink url="https://github.com/pgpool/pgpool2/issues/67">Follow primary 命令未修复 postgresql.auto.conf</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/67">Follow primary command not fixing postgresql.auto.conf</ulink>
     </para>
    </listitem>
 
@@ -649,28 +689,29 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-08-22 [5bd535792]
     -->
     <para>
-     修复 watchdog_setup 手册。(Tatsuo Ishii)
+     Fix watchdog_setup manual. (Tatsuo Ishii)
     </para>
     <para>
-     它错误地指出 watchdog_setup 中未设置心跳。
+     It mistakenly stated that heartbeart is not setup in watchdog_setup.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-09-30 [3ddbc64f1]
     -->
     <para>
-     使 023.ssl_connection 适应 PostgreSQL 18。(Tatsuo Ishii)
+     Adapt 023.ssl_connection to PostgreSQL 18. (Tatsuo Ishii)
     </para>
     <para>
-     PostgreSQL 18 大幅更改了 psql 的 \conninfo 输出格式，这
-     导致测试失败，因为测试依赖于 \conninfo。此更改
-     使测试脚本能够识别 PostgreSQL 版本以解决该问题。
+     PostgreSQL 18 heavily changed psql's \conninfo output format, which
+     made the test fail because the test relies on \conninfo. This change
+     makes the test script aware the PostgreSQL version to fix the issue.
     </para>
    </listitem>
 
@@ -679,11 +720,11 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-08-29 [b4043e6c3]
     -->
     <para>
-     修复 010.rewrite_timestamp 中的 ruby 脚本。(Tatsuo Ishii)
+     Fix ruby script in 010.rewrite_timestamp. (Tatsuo Ishii)
     </para>
     <para>
-     ruby 脚本使用了 "File.exists"，据说在较新版本的 Ruby 中已弃用。
-     将其替换为 "File.exist"。
+     The ruby script used "File.exists", which is said to be obsoleted in
+     newer version of Ruby.  Replace it with "File.exist".
     </para>
    </listitem>
 
@@ -692,11 +733,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-08-29 [9c901e60a]
     -->
     <para>
-     调整 034 和 075 测试中的超时时间。(Tatsuo Ishii)
+     Tweak timeout in 034 and 075 tests. (Tatsuo Ishii)
     </para>
     <para>
-     034.promote_node 和 075.detach_primary_left_down_node 将完成 follow primary 脚本的超时时间设置为 60 秒。
-     事实证明这些超时值不够长，有时会导致误报错误。因此将它们从 60 秒改为 120 秒。
+     034.promote_node and 075.detach_primary_left_down_node set the timeout
+     60 seconds for finishing follow primary script.  It turns out that
+     these timeout values are not long enough, and sometimes caused false
+     errors. So make them from 60 seconds to 120 seconds.
     </para>
    </listitem>
 
@@ -705,40 +748,45 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-08-27 [42b177614]
     -->
     <para>
-     在 023.ssl_connection 中添加 ssl_ecdh_curve 测试。(Tatsuo Ishii)
+     Add ssl_ecdh_curve test to 023.ssl_connection. (Tatsuo Ishii)
     </para>
     <para>
-     023.ssl_connection 未涵盖 ssl_ecdh_curve 的测试。此
-     提交使用错误的 ssl_ecdh_curve 参数进行测试，以查看前端和 pgpool 之间的连接是否失败。
+     023.ssl_connection did not cover the test for ssl_ecdh_curve.  This
+     commit tests it using bad ssl_ecdh_curve parameter to see if connection
+     between frontend and pgpool fails.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-13">
- <title>发布 4.4.13</title>
+ <title>Release 4.4.13</title>
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2025-08-21</simpara>
  </note>
 
  <sect2>
-  <title>Bug 修复</title>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-07-25 [75d905ff9]
     -->
     <para>
-     修复看门狗打印不适当的 NOTICE 消息的问题。(Tatsuo Ishii)
+     Fix watchdog to print inappropriate NOTICE message. (Tatsuo Ishii)
     </para>
     <para>
-     <function>read_ipc_socket_and_process()</function> 每次向 IPC 套接字写入命令时都会打印一条通知消息，即使写入成功也是如此。修复此问题，使其仅在写入失败时打印通知消息。
+     <function>read_ipc_socket_and_process()</function> printed a notice message every time when
+     it wrote commands to IPC socket even if it was successful. Fix this to
+     print the notice message only when the write failed.
 
-     此 bug 未被发现的原因是，该消息仅在 <varname>log_min_messages</varname> 设置为 notice 或更高级别时才会出现。
+     The reason why this bug was not recognized is, the message appears
+     only when <varname>log_min_messages</varname> is set to notice or higher.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/121">pgpool IPC 套接字连接问题</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/121">pgpool IPC socket connection issue</ulink>
     </para>
    </listitem>
 
@@ -750,10 +798,10 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-07-19 [ed57af34e]
     -->
     <para>
-     修复读取启动数据包时的资源泄漏问题。(Tatsuo Ishii)
+     Fix resource leak while reading startup packet. (Tatsuo Ishii)
     </para>
     <para>
-     修复 pool_push_pending_data 中的资源泄漏问题。
+     Fix resource leak in pool_push_pending_data.
     </para>
    </listitem>
 
@@ -762,16 +810,23 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-30 [bac455b2f]
     -->
     <para>
-     修复大端机器上 scram-sha-256 认证失效的问题。(Tatsuo Ishii)
+     Fix broken scram-sha-256 authentication on big-endian machines. (Tatsuo Ishii)
     </para>
     <para>
-     当执行 <literal>scram-sha-256</literal> 认证时，会使用哈希函数 <function>pg_sha_256_final</function>。该函数从 <productname>PostgreSQL</productname> 导入，并使用预处理器定义 WORDS_BIGENDIAN 来判断主机字节序。虽然 WORDS_BIGENDIAN 应在 configure 时定义，但在从 <productname>PostgreSQL</productname> 导入 <function>pg_sha_256_final</function>（及其他函数）时遗漏了此部分。结果，<literal>scram-sha-256</literal> 仅在小端机器上正常工作。通过向 configure.ac 添加 AC_C_BIGENDIAN 宏修复了此问题。
+     When <literal>scram-sha-256</literal> authentication is performed, a hash function
+     <function>pg_sha_256_final</function> is used. It was imported from <productname>PostgreSQL</productname> and it uses
+     preprocessor define WORDS_BIGENDIAN to judge host machine's
+     endianness. Although WORDS_BIGENDIAN should be defined while
+     configure, this part was missed when <function>pg_sha_256_final</function> (and others) was
+     imported from <productname>PostgreSQL</productname>. As a result, <literal>scram-sha-256</literal> worked only in
+     little endian machines. Fixed the issue by adding
+     AC_C_BIGENDIAN macro to configure.ac.
     </para>
     <para>
-     问题由 Christoph Berg 报告，并由 pranavkaruvally 分析。
+     Problem reported by Christoph Berg and analyzed by pranavkaruvally.
     </para>
     <para>
-     讨论：<ulink url="https://github.com/pgpool/pgpool2/issues/106">4.6.1 在大端 s390x 上失败：后端响应类型为 'E'，期望 'R'</ulink>
+     Discussion: <ulink url="https://github.com/pgpool/pgpool2/issues/106">4.6.1 fails on big-endian s390x: backend response with kind 'E' when expecting 'R'</ulink>
     </para>
    </listitem>
 
@@ -780,7 +835,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-23 [2721c7b76]
     -->
     <para>
-     修复源代码中的拼写错误。(Bo Peng)
+     Fix source code typos. (Bo Peng)
     </para>
    </listitem>
 
@@ -789,13 +844,14 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-09 [4305c42d6]
     -->
     <para>
-     修复心跳设备处理问题。(Tatsuo Ishii)
+     Fix heartbeat device treatment. (Tatsuo Ishii)
     </para>
     <para>
-     在处理 <filename>pgpool.conf</filename> 时，<varname>heartbeat_device</varname> 被错误处理，导致第一个设备被忽略。
+     While processing <filename>pgpool.conf</filename>, <varname>heartbeat_device</varname> was mistakenly treated
+     and the first device was ignored.
     </para>
     <para>
-     问题由 Bo Peng 分析。
+     Problem analyzed by Bo Peng.
     </para>
    </listitem>
 
@@ -804,23 +860,24 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-02 [06ba7dde4]
     -->
     <para>
-     修复 <filename>pgpool.conf</filename> 注释中的拼写错误。(Tatsuo Ishii)
+     Fix typo in the comments of <filename>pgpool.conf</filename>. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-08-15 [a54f5d1ad]
     -->
     <para>
-     增强“8.3. 复制模式与快照隔离模式配置示例”文档。(Taiki Koshino)
+     Enhance "8.3. Replication Mode and Snapshot Isolation Mode Configuration Example" Document. (Taiki Koshino)
     </para>
     <para>
-     更新了示例脚本的链接以及“8.3.3. 开始之前”部分的说明。
+     Updated the link to the example script and the explanation in the "8.3.3. Before you begin" section.
     </para>
    </listitem>
 
@@ -829,10 +886,11 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-08-04 [e2f24fec8]
     -->
     <para>
-     修复关于 reload 不生效参数的文档。(Taiki Koshino)
+     Fix documentation for parameters that are not reflected by reload. (Taiki Koshino)
     </para>
     <para>
-     “authentication_timeout”和“memqcache_oiddir”不会因 reload 而生效。文档已更改为“此参数只能在服务器启动时设置。”。
+     "authentication_timeout" and "memqcache_oiddir" is not reflected by reload.
+     The documentation is changed to "This parameter can only be set at server start.".
     </para>
    </listitem>
 
@@ -844,7 +902,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-07-23 [1e8963554]
     -->
     <para>
-     统一看门狗领导者术语（后续）。 (Tatsuo Ishii)
+     Unify watchdog leader terms (followup). (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -856,10 +914,10 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-07-16 [34b07c2d5]
     -->
     <para>
-     修复示例脚本链接。(Taiki Koshino)
+     Fix example script link. (Taiki Koshino)
     </para>
     <para>
-     修改了“<ulink url="https://www.pgpool.net/docs/46/en/html/example-cluster.html">8.2. Pgpool-II + Watchdog 设置示例</ulink>”部分中的示例脚本。
+     Modified the sample script in the section "<ulink url="https://www.pgpool.net/docs/46/en/html/example-cluster.html">8.2. Pgpool-II + Watchdog Setup Example</ulink>"
     </para>
    </listitem>
 
@@ -869,7 +927,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-18 [7a20dc419]
     -->
     <para>
-     修复负载均衡说明中遗漏逻辑复制模式和 Slony 模式的问题。(Tatsuo Ishii)
+     Fix load balance explanation missed logical replication mode and Slony mode. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -878,10 +936,12 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-18 [9d2e4e692]
     -->
     <para>
-     增强 <xref linkend="pcp-node-info"> 文档。(Bo Peng)
+     Enhance <xref linkend="pcp-node-info"> document. (Bo Peng)
     </para>
     <para>
-     澄清每个 <varname>backend_application_nameX</varname> 必须与 <varname>primary_conninfo</varname> 的 <varname>application_name</varname> 中指定的值匹配，才能正确显示“<varname>replication_state</varname>”和“<varname>replication_sync_state</varname>”。
+     Clarify that each <varname>backend_application_nameX</varname> must match the value specified
+     in the <varname>application_name</varname> of <varname>primary_conninfo</varname> to correctly display
+     "<varname>replication_state</varname>" and "<varname>replication_sync_state</varname>".
     </para>
    </listitem>
 
@@ -890,10 +950,11 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-08 [59f9df005]
     -->
     <para>
-     添加内核资源章节。(Tatsuo Ishii)
+     Add section of kernel resources. (Tatsuo Ishii)
     </para>
     <para>
-     <productname>Pgpool-II</productname> 使用 System V 共享内存和信号量。最好在文档中描述这些要求。
+     <productname>Pgpool-II</productname> uses System V shared memory and semaphores. It's better to
+     describe the requirements in the docs.
     </para>
    </listitem>
 
@@ -902,10 +963,10 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-07 [40617fd90]
     -->
     <para>
-     为 configure 的 <option>--with-ldap</option> 选项添加说明。(Tatsuo Ishii)
+     Add description for <option>--with-ldap</option> option of configure. (Tatsuo Ishii)
     </para>
     <para>
-     在 v4.2 中引入 LDAP 支持时遗漏了此说明。
+     It was missed when LDAP support was introduced in v4.2
     </para>
    </listitem>
 
@@ -914,7 +975,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-04 [ff60bf930]
     -->
     <para>
-     澄清 <productname>Pgpool-II</productname> 支持的平台。(Tatsuo Ishii)
+     Clarify supported platforms for <productname>Pgpool-II</productname>. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -923,57 +984,65 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-06-03 [cc4da5979]
     -->
     <para>
-     增强 <xref linkend="guc-child-life-time"> 文档。(Tatsuo Ishii)
+     Enhance <xref linkend="guc-child-life-time"> document. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-06-08 [78e45decf]
     -->
     <para>
-     稳定 029.cert_passphrase 回归测试。(Tatsuo Ishii)
+     Stabilize 029.cert_passphrase regression test. (Tatsuo Ishii)
     </para>
     <para>
-     当 <varname>ssl_passphrase_command</varname> 无效时，错误消息通常是“bad decrypt”，但有时似乎是“wrong tag”。
+     When <varname>ssl_passphrase_command</varname> is not valid, the error message is
+     typically "bad decrypt" but it seems sometimes "wrong tag".
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-12">
- <title>发布版本 4.4.12</title>
+ <title>Release 4.4.12</title>
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2025-05-15</simpara>
  </note>
 
  <sect2>
-  <title>概述</title>
+  <title>Overview</title>
   <para>
-   此版本包含一个安全修复。
+   This release contains a security fix.
   </para>
   <para>
-   <productname>Pgpool-II</productname> 的客户端认证机制中存在一个认证绕过漏洞。
-   在 <productname>Pgpool-II</productname> 中，即使本应强制执行认证，也可能被绕过。
-   因此，攻击者可以以任何用户身份登录，可能导致信息泄露、数据篡改，甚至数据库完全关闭。(CVE-2025-46801)
+   An authentication bypass vulnerability exists in the client authentication
+   mechanism of <productname>Pgpool-II</productname>.
+   In <productname>Pgpool-II</productname>, authentication may be bypassed even
+   when it is supposed to be enforced. As a result, an attacker could log in as
+   any user, potentially leading to information disclosure, data tampering, or
+   even a complete shutdown of the database. (CVE-2025-46801)
   </para>
   <para>
-   此漏洞影响认证配置符合以下任一模式的系统：
+   This vulnerability affects systems where the authentication configuration
+   matches one of the following patterns:
   </para>
   <itemizedlist>
    <listitem>
     <para>
-     模式 1：当满足以下所有条件时，此漏洞会发生：
+     Pattern 1: This vulnerability occurs when all of the following conditions are met:
     </para>
     <itemizedlist>
      <listitem>
       <para>
-       在 <filename>pool_hba.conf</filename> 中使用了 <literal>password</literal> 认证方法
+       The <literal>password</literal> authentication method is used in
+       <filename>pool_hba.conf</filename>
       </para>
      </listitem>
      <listitem>
@@ -983,12 +1052,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
      </listitem>
      <listitem>
       <para>
-       用户的密码未在 <filename>pool_passwd</filename> 中设置
+       The user's password is not set in <filename>pool_passwd</filename>
       </para>
      </listitem>
      <listitem>
       <para>
-       在 <filename>pg_hba.conf</filename> 中使用了 <literal>scram-sha-256</literal> 或 <literal>md5</literal> 认证方法
+       The <literal>scram-sha-256</literal> or <literal>md5</literal> authentication
+       method is used in <filename>pg_hba.conf</filename>
       </para>
      </listitem>
     </itemizedlist>
@@ -996,7 +1066,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
 
    <listitem>
     <para>
-     模式 2：当满足以下所有条件时，此漏洞会发生：
+     Pattern 2: This vulnerability occurs when all of the following conditions are met:
     </para>
     <itemizedlist>
      <listitem>
@@ -1006,8 +1076,8 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
      </listitem>
      <listitem>
       <para>
-       在 pg_hba.conf 中使用了以下认证方法之一：
-       <literal>password</literal>、<literal>pam</literal> 或 <literal>ldap</literal>
+       One of the following authentication methods is used in pg_hba.conf:
+       <literal>password</literal>, <literal>pam</literal>, or <literal>ldap</literal>
       </para>
      </listitem>
     </itemizedlist>
@@ -1015,17 +1085,18 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
 
    <listitem>
     <para>
-     模式 3：当满足以下所有条件时，此漏洞会发生：
+     Pattern 3: This vulnerability occurs when all of the following conditions are met:
     </para>
     <itemizedlist>
      <listitem>
       <para>
-       使用了原始模式 (backend_clustering_mode = 'raw')
+       Raw mode is used (backend_clustering_mode = 'raw')
       </para>
      </listitem>
      <listitem>
       <para>
-       在 <filename>pool_hba.conf</filename> 中使用了 <literal>md5</literal> 认证方法
+       The <literal>md5</literal> authentication method is used in
+       <filename>pool_hba.conf</filename>
       </para>
      </listitem>
      <listitem>
@@ -1035,72 +1106,89 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
      </listitem>
      <listitem>
       <para>
-       用户的密码以明文或 AES 格式注册在 <filename>pool_passwd</filename> 中
+       The user's password is registered in <filename>pool_passwd</filename> in plain
+       text or AES format
       </para>
      </listitem>
      <listitem>
       <para>
-       在 <filename>pg_hba.conf</filename> 中使用了以下认证方法之一：
-       <literal>password</literal>、<literal>pam</literal> 或 <literal>ldap</literal>
+       One of the following authentication methods is used in
+       <filename>pg_hba.conf</filename>:
+       <literal>password</literal>, <literal>pam</literal>, or <literal>ldap</literal>
       </para>
      </listitem>
     </itemizedlist>
    </listitem>
   </itemizedlist>
   <para>
-   Pgpool-II 4.0 和 4.1 系列的所有版本，以及 4.2.0 至 4.2.21、4.3.0 至 4.3.14、
-   4.4.0 至 4.4.11、4.5.0 至 4.5.6 和 4.6.0 均受此漏洞影响。
-   强烈建议升级到 <productname>Pgpool-II</productname>
-   4.6.1、4.5.7、4.4.12、4.3.15 和 4.2.22 或更高版本。
-   或者，您可以修改设置，使其不匹配任何易受攻击的配置模式。
+   All versions of Pgpool-II 4.0 and 4.1 series, 4.2.0 to 4.2.21, 4.3.0 to 4.3.14,
+   4.4.0 to 4.4.11, 4.5.0 to 4.5.6 and 4.6.0 are affected by this vulnerability.
+   It is strongly recommended to upgrade to <productname>Pgpool-II</productname>
+   4.6.1, 4.5.7, 4.4.12, 4.3.15 and 4.2.22 or later.
+   Alternatively, you can modify your settings so that they do not match any of
+   the vulnerable configuration patterns.
   </para>
  </sect2>
-<sect2>
-  <title>变更</title>
+
+ <sect2>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-05-02 [32dee13dd]
     -->
     <para>
-     向配置文件添加主版本信息。(Bo Peng)
+     Add major version information to the configuration file. (Bo Peng)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-05-13 [bcc6727]
     -->
     <para>
-     修复某些情况下不正确的客户端认证。(Tatsuo Ishii)
+     Fix incorrect client authentication in some cases. (Tatsuo Ishii)
     </para>
     <para>
-     如果 enable_pool_hba = on，其认证方法是 "password"，密码未在 pool_passwd 中注册，并且 pg_hba.conf 中的认证方法是 "scram-sha-256" 或 "md5"，那么当客户端首次连接到 pgpool 时，认证会按预期执行。但是，如果客户端连接到缓存的连接，则会接受来自客户端的任何密码。
+     If enable_pool_hba = on, it's auth method is "password", no
+     password is registered in pool_passwd, and auth method in
+     pg_hba.conf is "scram-sha-256" or "md5", for the first time when
+     a client connects to pgpool, authentication is performed as
+     expected. But if a client connects to the cached connection, any
+     password from the client is accepted.
     </para>
     <para>
-     此外，如果 enable_pool_hba = off，在某些情况下，客户端首次连接时不会被要求输入密码，或者当客户端连接到缓存的连接时，即使应该要求输入密码，也不会被要求。
+     Also if enable_pool_hba = off, in some cases a client is not
+     asked password for the first time, or when a client connects to
+     cached connection, even if it should be.
     </para>
     <para>
-     除了修复上述问题外，还进行了以下更改：
+     In addition to fixing above, following changes are made:
     </para>
     <itemizedlist>
      <listitem>
       <para>
-       移除单一的 PostgreSQL 代码路径以简化认证代码。
+       Remove single PostgreSQL code path to simplify the authentication code.
       </para>
      </listitem>
      <listitem>
       <para>
-       移除前端和后端的 crypt 认证支持。该功能从未被记录且从未经过测试。此外，crypt 认证在很久以前（PostgreSQL 8.4，2009 年）已被移除。
+       Remove crypt authentication support for frontend and
+       backend. The feature had not been documented and never
+       tested. Moreover crypt authentication was removed long time
+       ago in PostgreSQL (8.4, 2009).
       </para>
      </listitem>
      <listitem>
       <para>
-       添加新的回归测试 "040.client_auth"。该测试使用 CSV 格式的测试规范文件执行详尽的客户端认证测试。
+       Add new regression test "040.client_auth". The test performs
+       exhaustive client authentication tests using a test
+       specification file formatted in CSV.
       </para>
      </listitem>
     </itemizedlist>
@@ -1110,16 +1198,21 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-05-08 [e3451b560]
     -->
     <para>
-     修复查询缓存中长期存在的 bind 错误。(Tatsuo Ishii)
+     Fix long standing bind bug with query cache. (Tatsuo Ishii)
     </para>
     <para>
-     当准备了一个命名语句时，可以在没有解析消息的情况下进行绑定然后执行。问题是，用于在执行或 COMMIT 时使查询缓存失效所需的表 OID 仅在解析消息处理过程 (Parse()) 中收集。因此，如果在之前的执行之后没有解析就执行了绑定，则不会收集表 OID，导致 pgpool 无法使查询缓存失效。修复方法是在绑定时也收集表 OID。向 006.memqcache 添加回归测试。
+     When a named statement is prepared, it is possible to bind then execute without a parse message.
+     Problem is, table oids which are necessary to invalidate query cache at execute or COMMIT was
+     collected only in parse messages process (Parse()). Thus if bind is executed
+     without parse after previous execute, no table oids were collected, and pgpool failed to invalidate query cache.
+     Fix is collecting table oids at bind time too.
+     Add regression test to 006.memqcache.
     </para>
     <para>
-     问题由 Achilleas Mantzios 报告，测试程序由他提供。
+     Problem reported by and test program provided by Achilleas Mantzios.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2025-April/009430.html">[pgpool-general: 9427] 关于查询结果缓存可见性的说明</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2025-April/009430.html">[pgpool-general: 9427] Clarification on query results cache visibility</ulink>
     </para>
    </listitem>
 
@@ -1128,16 +1221,22 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-05-02 [1dfacffed]
     -->
     <para>
-     修复查询缓存失效错误。(Tatsuo Ishii)
+     Fix query cache invalidation bug. (Tatsuo Ishii)
     </para>
     <para>
-     当收到执行消息时，pgpool 会检查其最大行数参数。如果该参数不为零，pgpool 会设置 "partial_fetch" 标志，以指示 pool_handle_query_cache() 不创建查询缓存。问题是，提交 2a99aa5d1 忽略了即使 INSERT/UPDATE/DELETE 也会将执行消息参数设置为非零值（通常为 1），并且 pgpool 甚至为非 SELECT 语句设置了该标志。这导致无法使查询缓存失效，因为如果该标志为真，pool_handle_query_cache() 中的后续代码会跳过缓存失效。为了解决这个问题，修改 Execute() 以在设置该标志之前检查查询是否为只读 SELECT。同时向 006.memqcache 添加测试。
+     When an execute message is received, pgpool checks its max number of rows paramter. If it's not zero,
+     pgpool sets "partial_fetch" flag to instruct pool_handle_query_cache() to not create query cache.
+     Problem is, commit 2a99aa5d1 missed that even INSERT/UPDATE/DELETE sets the execute message parameter to non 0 (mostly 1)
+     and pgpool set the flag for even none SELECTs. This resulted in failing to invalidate query cache because if the flag is true,
+     subsequent code in pool_handle_query_cache() skips cache invalidation.
+     To fix this change Execute() to check if the query is read only SELECT before setting the flag.
+     Also add test to 006.memqcache.
     </para>
     <para>
-     问题由 Achilleas Mantzios 报告，测试程序由他提供。
+     Problem reported by and a test program provided by Achilleas Mantzios.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2025-April/009430.html">[pgpool-general: 9427] 关于查询结果缓存可见性的说明</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2025-April/009430.html">[pgpool-general: 9427] Clarification on query results cache visibility</ulink>
     </para>
    </listitem>
 
@@ -1146,13 +1245,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-05-05 [5947ba418]
     -->
     <para>
-     修复在 OpenBSD 上的可移植性。(Tatsuo Ishii)
+     Fix portability to OpenBSD. (Tatsuo Ishii)
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004583.html">[pgpool-hackers: 4582] 使 pgpool 在 OpenBSD 上构建</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004583.html">[pgpool-hackers: 4582] Make pgpool build on OpenBSD</ulink>
     </para>
     <para>
-     补丁由 Martijn van Duren 创建。
+     The patch was created by Martijn van Duren.
     </para>
    </listitem>
    <listitem>
@@ -1160,13 +1259,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-05-01 [14c94473b]
     -->
     <para>
-     修复 json_writer 未正确编码特殊字符的问题。(Bo Peng)
+     Fix json_writer did not properly encode special characters. (Bo Peng)
     </para>
     <para>
-     如果 <xref linkend="guc-wd-authkey"> 包含特殊字符（例如反斜杠），启用 watchdog 时 <productname>Pgpool-II</productname> 会崩溃。
+     <productname>Pgpool-II</productname> would crash when the watchdog was enabled if <xref linkend="guc-wd-authkey"> contained special characters (e.g., a backslash).
     </para>
     <para>
-     补丁由 Martijn van Duren 创建，并由 Bo Peng 稍作修改。
+     The patch was created by Martijn van Duren and slightly modified by Bo Peng.
     </para>
    </listitem>
    <listitem>
@@ -1174,29 +1273,38 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-03-04 [e1e32536f]
     -->
     <para>
-     修复 sr 检查和健康检查在重新加载时未重新打开 <xref linkend="guc-pool-passwd"> 的问题。(Tatsuo Ishii)
+      Fix sr check and health check to reopen <xref linkend="guc-pool-passwd"> upon reload. (Tatsuo Ishii)
     </para>
     <para>
-     流复制检查和健康检查进程在重新加载时忘记重新打开 <xref linkend="guc-pool-passwd">。如果 <xref linkend="guc-sr-check-password"> 或 <xref linkend="guc-health-check-password"> 是空字符串，则密码从 <xref linkend="guc-pool-passwd"> 获取。因此，这些进程在重新加载时读取了 <xref linkend="guc-pool-passwd"> 的过期内容。
+      The streaming replication check and health check process forgot to
+      reopen <xref linkend="guc-pool-passwd"> upon reload.  If <xref linkend="guc-sr-check-password"> or
+      <xref linkend="guc-health-check-password"> is empty string, the password is obtained from
+      <xref linkend="guc-pool-passwd">. Thus those process read outdated content of <xref linkend="guc-pool-passwd">
+      upon reload.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-04-24 [e50114280]
     -->
     <para>
-     增强关于 <xref linkend="guc-connection-life-time"> 的描述 (Tatsuo Ishii)
+     Enhance the description on <xref linkend="guc-connection-life-time"> (Tatsuo Ishii)
     </para>
     <para>
-     <xref linkend="guc-connection-life-time"> 是一个配置值，用于确定到 <productname>PostgreSQL</productname> 后端的缓存连接的生命周期。当前文档缺少一个描述，即过期计算实际上是在客户端断开与持有缓存连接的进程的连接时进行的。
+     <xref linkend="guc-connection-life-time"> is a config value to determine the life time of
+     cached connections to <productname>PostgreSQL</productname> backend. Current document lacks a
+     description that the expiration calculation is actually done at the
+     time when the client disconnects to the process which holds the cached
+     connections.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2025-April/004578.html">[pgpool-hackers: 4577] 文档：增强关于 connection_life_time 的描述</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2025-April/004578.html">[pgpool-hackers: 4577] Doc: enhance the description on connection_life_time</ulink>
     </para>
    </listitem>
    <listitem>
@@ -1204,50 +1312,52 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-03-05 [a3086943f]
     -->
     <para>
-     增强关于 <xref linkend="guc-sr-check-user"> 的解释。(Tatsuo Ishii)
+     Enhance the explanation on <xref linkend="guc-sr-check-user">. (Tatsuo Ishii)
     </para>
     <para>
-     它必须是超级用户或属于 <literal>pg_monitor</literal> 组。
+     It must be a superuser or in the <literal>pg_monitor</literal> group.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-11">
- <title>版本 4.4.11</title>
+ <title>Release 4.4.11</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2025-02-28</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-02-26 [b6d160f]
     -->
     <para>
-     从示例跟随主节点脚本中移除 <command>pg_basebackup</command>。（Bo Peng）
+     Remove <command>pg_basebackup</command> from the sample follow primary script. (Bo Peng)
     </para>
     <para>
-     如果 <command>pg_rewind</command> 失败，对用户来说最安全的方式是手动恢复。
+     If <command>pg_rewind</command> fails, the safest way for users is to recover manually.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-01-31 [3536f80]
     -->
     <para>
-     修复 <function>per_node_error_log()</function> 错误消息中打印了两个冒号的问题。（Bo Peng）
+     Fix <function>per_node_error_log()</function> error message that is printed with two colons. (Bo Peng)
     </para>
     <para>
-     补丁由 Umar Hayat 创建。
+     Patch is created by Umar Hayat.
     </para>
    </listitem>
 
@@ -1256,10 +1366,14 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2025-01-12 [15c0a5b]
     -->
     <para>
-     修复 <function>pool_signal</function>。（Tatsuo Ishii）
+     Fix <function>pool_signal</function>. (Tatsuo Ishii)
     </para>
     <para>
-     之前 pool_signal 没有设置 SA_RESTART 标志。因此任何被信号中断的系统调用都不会重启。我们的一些代码已经做好了准备，以便在系统调用被信号中断时重启。但不确定所有地方都已做好准备。因此添加该标志。注意，<productname>PostgreSQL</productname> 始终使用该标志。
+     Previously pool_signal did not set SA_RESTART flag.  Thus any system
+     calls interrupted by a signal does not restart. Some of our code are
+     prepared so that they restart if a system call is interrupted by a
+     signal. But not sure all places are prepared too. So add the
+     flag. Note, <productname>PostgreSQL</productname> always uses the flag.
     </para>
    </listitem>
 
@@ -1268,10 +1382,13 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-12-09 [8d4fb84]
     -->
     <para>
-     修复了当在 <xref linkend="guc-pool-passwd"> 参数中指定了非默认值的文件时，<command>pg_md5</command> 和 <command>pg_enc</command> 不会更新密码文件的问题。（Bo Peng）
+     Fixed an issue where <command>pg_md5</command> and
+     <command>pg_enc</command> would not update the password
+     file if a file other than the default value was specified
+     in the <xref linkend="guc-pool-passwd"> parameter. (Bo Peng)
     </para>
     <para>
-     此问题由 Sadhuprasad Patro 报告。
+     This issue is reported by Sadhuprasad Patro.
     </para>
    </listitem>
 
@@ -1281,70 +1398,86 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-12-11 [2a99aa5]
     -->
     <para>
-     修复流复制模式下的几个查询缓存 bug。（Tatsuo Ishii）
+     Fix several query cache bugs in streaming replication mode. (Tatsuo Ishii)
     </para>
     <itemizedlist>
      <listitem>
       <para>
-       当查询缓存启用且从前端发送执行消息时，如果查询缓存数据可用，<productname>Pgpool-II</productname> 会将查询缓存数据注入后端消息缓冲区。但缓存消息可能被插入到不适当的位置，导致 <productname>Pgpool-II</productname> 错误地引发“kind mismatch”错误。
+       When query cache is enabled and an execute message is sent from
+       frontend, <productname>Pgpool-II</productname> injects query cache
+       data into backend message buffer if query cache data is available.
+       But it was possible that the cached message is inserted at
+       inappropriate position and <productname>Pgpool-II</productname>
+       mistakenly raised "kind mismatch" error.
       </para>
      </listitem>
      <listitem>
       <para>
-       如果查询缓存启用，查询以扩展查询模式运行，且 pgpool 以流复制模式运行，执行消息可能返回不正确的结果。
+       If query cache is enabled and query is operated in extended query mode
+       and pgpool is running in streaming replication mode, an execute
+       message could return incorrect results.
       </para>
      </listitem>
      <listitem>
       <para>
-       另一个问题是当连续发送多个执行消息时。在这种情况下，Pgpool-II 为每个执行消息返回完全相同的查询缓存结果。这是错误的，因为第二次或后续的执行应返回 0 行。
+       Another trouble is when multiple execute messages are sent
+       consecutively.  In this case Pgpool-II returned exactly the same
+       results from query cache for each execute message. This is wrong since
+       the second or subsequent executes should return 0 rows.
       </para>
       <para>
-       讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-December/004548.html">[pgpool-hackers: 4547] 查询缓存中的 Bug</ulink>
+       Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-December/004548.html">[pgpool-hackers: 4547] Bug in query cache</ulink>
       </para>
      </listitem>
     </itemizedlist>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-01-17 [3db1305]
     -->
     <para>
-     增强客户端认证章节。（Tatsuo Ishii）
+     Enhance client authentication chapter. (Tatsuo Ishii)
     </para>
     <para>
-     添加关于 pool_passwd 的介绍。之前概览页面中只有关于 pool_hba.conf 的描述。关于 <xref linkend="guc-pool-passwd"> 的通用指南将帮助用户理解本章节。
+     Add intro about pool_passwd. Previously there was only description on
+     pool_hba.conf in the overview page. A general guide to
+     <xref linkend="guc-pool-passwd">
+     will help users to understand this chapter.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
     2025-01-14 [0a38c5d]
     -->
     <para>
-     稳定 032.dml_adaptive_loadbalance 测试。（Tatsuo Ishii）
+     Stabilize 032.dml_adaptive_loadbalance (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-10">
- <title>发布版本 4.4.10</title>
+ <title>Release 4.4.10</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2024-11-28</simpara>
   </note>
 
  <sect2>
-  <title>Bug 修复</title>
+  <title>Bug fixes</title>
   <itemizedlist>
 
    <listitem>
@@ -1352,13 +1485,18 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-11-26 [48502ce]
     -->
     <para>
-     如果后端发送错误消息，则中止 SSL 协商。(Tatsuo Ishii)
+     Abort SSL negotiation if backend sends an error message. (Tatsuo Ishii)
     </para>
     <para>
-     在 SSL 协商的客户端实现 (pool_ssl_negotiate_clientserver()) 中，中间人攻击者有可能在 SSL 协商阶段发送一条长错误消息来混淆 Pgpool-II 或客户端。此提交立即拒绝协商（发出 FATAL 错误）并退出会话以防止此类攻击。
+     In the client side implementation of SSL negotiation
+     (pool_ssl_negotiate_clientserver()), it was possible for a
+     man-in-the-middle attacker to send a long error message to confuse
+     Pgpool-II or client while in the SSL negotiation phase. This commit
+     rejects the negotiation immediately (issue a FATAL error) and exits
+     the session to prevent such an attack.
     </para>
     <para>
-     这类似于 PostgreSQL 的 CVE-2024-10977。
+     This resembles PostgreSQL's CVE-2024-10977.
     </para>
    </listitem>
 
@@ -1367,10 +1505,12 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-11-25 [81ff539]
     -->
     <para>
-     修复 watchdog 进程不重新加载配置的问题。(Bo Peng)
+     Fix the watchdog process not reloading configurations. (Bo Peng)
     </para>
     <para>
-     <productname>Pgpool-II</productname> 中的 <function>reload_config()</function> 函数应向 watchdog 进程发送 SIGHUP 信号。
+     The <function>reload_config()</function> function
+     in <productname>Pgpool-II</productname> should send
+     a SIGHUP signal to the watchdog process.
     </para>
    </listitem>
 
@@ -1379,10 +1519,10 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-11-15 [ffabbed]
     -->
     <para>
-     修复 <function>do_query</function> 中的错误。(Tatsuo Ishii)
+     Fix bug in <function>do_query</function>. (Tatsuo Ishii)
     </para>
     <para>
-     修复 <function>do_query</function> 以使用 ntohs/ntohl 代替 htons/htonl。
+     Fix <function>do_query</function> to use ntohs/ntohl instead of htons/htonl.
     </para>
    </listitem>
 
@@ -1391,13 +1531,19 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-11-13 [c81e354]
     -->
     <para>
-     修复更新 <filename>pool_passwd</filename> 并重新加载后的身份验证失败问题。(Tatsuo Ishii)
+     Fix authentication failure after updating <filename>pool_passwd</filename> and reload. (Tatsuo Ishii)
     </para>
     <para>
-     如果 <filename>pool_hba.conf</filename> 被禁用，即使执行了 <productname>Pgpool-II</productname> 重新加载，<productname>Pgpool-II</productname> 子进程也无法识别对 pool_passwd 的更新。重新加载处理函数 check_config_reload() 错误地认为仅当 <xref linkend="guc-enable-pool-hba"> 开启时才需要重新打开 pool_passwd。
+     If <filename>pool_hba.conf</filename> is disabled,
+     updating pool_passwd was not recognized
+     by <productname>Pgpool-II</productname> child process even
+     if <productname>Pgpool-II</productname> reload was performed.
+     The reload processing function check_config_reload() mistakenly assumed
+     that reopening pool_passwd was only necessary when
+     <xref linkend="guc-enable-pool-hba"> is on.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-November/001944.html">https://www.pgpool.net/pipermail/pgpool-general/2024-November/001944.html"</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-November/001944.html">https://www.pgpool.net/pipermail/pgpool-general/2024-November/001944.html"</ulink>
     </para>
    </listitem>
 
@@ -1407,13 +1553,16 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-11-12 [897147b]
     -->
     <para>
-     修复 <command>COPY</command> 挂起问题。(<ulink url="https://github.com/pgpool/pgpool2/issues/79">#79</ulink>) (Tatsuo Ishii)
+     Fix <command>COPY</command> hangs. (<ulink url="https://github.com/pgpool/pgpool2/issues/79">#79</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     在 COPY IN 状态（即 COPY FROM STDIN）期间，前端可以发送 Flush 或 Sync 消息。根据 F/B 协议规范，这些消息应被忽略，但 Pgpool-II 将其视为无效消息，导致 COPY 挂起。
+     During COPY IN state (i.e. COPY FROM STDIN), frontend can send Flush
+     or Sync messages.  According to the F/B protocol specification, they
+     should be ignored but Pgpool-II treated as an invalid message and this
+     causes COPY hung.
     </para>
     <para>
-     此外，为此问题添加了一个回归测试。
+     Also a regression test is added for this issue.
     </para>
    </listitem>
 
@@ -1422,16 +1571,22 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-11-09 [a690ce0]
     -->
     <para>
-     修复 <productname>Pgpool-II</productname> 子进程在关闭期间崩溃的问题。(Tatsuo Ishii)
+     Fix <productname>Pgpool-II</productname> child process crash during shutdown. (Tatsuo Ishii)
     </para>
     <para>
-     实际崩溃发生在 <function>close_all_backend_connections()</function> 中。由于 on_system_exit 注册了 <function>child_will_go_down()</function>，因此调用了 <function>close_all_backend_connections()</function>。当时 pgpool 子进程似乎刚刚启动并正在执行 <function>pool_init_cp()</function>。连接池对象尚未完全初始化，这是崩溃的原因。
+     The actual crash was in <function>close_all_backend_connections()</function>.
+     <function>close_all_backend_connections()</function> was
+     called because on_system_exit registers
+     <function>child_will_go_down()</function>.
+     At the moment it seems pgpool child had just started up and doing
+     <function>pool_init_cp()</function>. The connection pool
+     object had not been completely initialized, that's cause of the crash.
     </para>
     <para>
-     问题由 Emond Papegaaij 报告并分析。
+     Problem reported and analyzed by Emond Papegaaij.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-November/001938.html">https://www.pgpool.net/pipermail/pgpool-general/2024-November/001938.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-November/001938.html">https://www.pgpool.net/pipermail/pgpool-general/2024-November/001938.html</ulink>
     </para>
    </listitem>
 
@@ -1440,19 +1595,29 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-10-26 [33a2f2c]
     -->
     <para>
-     修复由于身份验证失败导致的偶发性健康检查失败。(Tatsuo Ishii)
+     Fix sporadic health check failures due to authentication failure. (Tatsuo Ishii)
     </para>
     <para>
-     当 <xref linkend="guc-health-check-password"> 为空字符串时，健康检查进程会从 pool_passwd 文件中查找密码。问题在于，该文件的文件描述符是从父 pgpool 进程继承的。这意味着 pgpool 主进程和健康检查进程（可能多个进程）共享同一个描述符，这会导致各种问题，包括此处报告的问题。为解决此问题，在健康检查进程启动时重新打开文件，以便每个健康检查进程拥有自己的文件描述符。
+     When <xref linkend="guc-health-check-password"> is empty string,
+     health check process looks for the password from pool_passwd file.
+     Problem is, the file descriptor for the file is inherited from
+     parent pgpool process.
+     This means that pgpool main and health check process (possibly multiple
+     process) share the same descriptor, which causes various problem
+     including the issue reported here. To fix the problem, re-open the
+     file when health check process starts so that each health check
+     process owns its own file descriptor.
     </para>
     <para>
-     请注意，pgpool 子进程（负责前端会话）已经重新打开了文件描述符，它们与此问题无关。
+     Note that pgpool child process (responsible for frontend sessions)
+     already re-opens the file descriptor and they are not related to the
+     issue.
     </para>
     <para>
-     问题由 Emond Papegaaij 报告并分析。
+     Problem reported and analyzed by Emond Papegaaij.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-October/001913.html">https://www.pgpool.net/pipermail/pgpool-general/2024-October/001913.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-October/001913.html">https://www.pgpool.net/pipermail/pgpool-general/2024-October/001913.html</ulink>
     </para>
    </listitem>
 
@@ -1461,20 +1626,23 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
     2024-10-23 [1a66900]
     -->
     <para>
-     优化 <literal>ALTER ROLE</literal> 的查询缓存失效。(Tatsuo Ishii)
+     Optimize query cache invalidation for <literal>ALTER ROLE</literal>. (Tatsuo Ishii)
     </para>
     <para>
-     提交 <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=6b7d585eb1c693e4ffb5b8e6ed9aa0f067fa1b89">6b7d585eb1c693e4ffb5b8e6ed9aa0f067fa1b89</ulink> 在使用任何 <literal>ALTER ROLE/USER</literal> 语句时会使查询缓存失效。实际上这有些过度。因为以下查询不会影响角色的权限。
+     Commit <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=6b7d585eb1c693e4ffb5b8e6ed9aa0f067fa1b89">6b7d585eb1c693e4ffb5b8e6ed9aa0f067fa1b89</ulink> invalidates query
+     cache if any <literal>ALTER ROLE/USER</literal> statement is used.
+     Actually this is an overkill.
+     Because following queries do not affect the privilege of the role.
     </para>
     <programlisting>
 ALTER ROLE user WITH [ENCRYPTED] PASSWORD
 ALTER ROLE user WITH CONNECTION LIMIT
     </programlisting>
     <para>
-     因此，如果使用这些命令，请不要使查询缓存失效。
+     So do not invalidate query cache if those commands are used.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-October/004532.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-October/004532.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-October/004532.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-October/004532.html</ulink>
     </para>
    </listitem>
 
@@ -1483,13 +1651,20 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-09-18 [04142b4]
     -->
     <para>
-     修复 pgpool 子进程退出时 <productname>Pgpool-II</productname> 崩溃的问题。(Tatsuo Ishii)
+     Fix <productname>Pgpool-II</productname> crash when pgpool child process exits. (Tatsuo Ishii)
     </para>
     <para>
-     当 pgpool 子进程退出时，会调用 <function>close_all_backend_connections()</function>，该函数负责关闭连接池中所有到后端的连接。它错误地使用了 MAIN_CONNECTION 宏，这对于当前活动连接是可行的，但对于池化连接则不好，因为主节点在创建连接池时可能不同。修复方法是改用 <function>in_use_backend()</function>。
+     When a pgpool child process exits,
+     <function>close_all_backend_connections()</function> is
+     called, which is responsible for closing all connections to backend in
+     the connection pool. It used mistakenly MAIN_CONNECTION macro, which
+     is fine for current active connections but is not good for pooled
+     connections because a main node could be different at the time when
+     the connection pool was created.
+     Fix is using <function>in_use_backend()</function> instead.
     </para>
     <para>
-     报告者：Emond Papegaaij
+     Reported-by: Emond Papegaaij
     </para>
    </listitem>
 
@@ -1498,10 +1673,13 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-09-14 [794adad]
     -->
     <para>
-     修复复制/快照隔离模式中的错误。(<ulink url="https://github.com/pgpool/pgpool2/issues/69">#69</ulink>) (Tatsuo Ishii)
+     Fix bug in replication/snapshot isolation mode. (<ulink url="https://github.com/pgpool/pgpool2/issues/69">#69</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     当接收到 <command>INSERT</command> 命令时，pgpool 会自动向目标表发出表 LOCK 命令，但忘记将该命令发送给主节点以外的其他节点。这仅发生在扩展查询模式下。
+     When <command>INSERT</command> command is received,
+     pgpool automatically issues table LOCK command to the
+     target table but it forgot to send the command to
+     other than main nodes. This only happened in extended query mode.
     </para>
    </listitem>
 
@@ -1510,10 +1688,11 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-09-14 [10333d5]
     -->
     <para>
-     修复原生复制/快照隔离模式中的另一个错误。(Tatsuo Ishii)
+     Fix another bug in native replication/snapshot isolation mode. (Tatsuo Ishii)
     </para>
     <para>
-     insert_lock() 忘记将行锁命令（lock_kind == 3 情况）发送给主节点以外的其他节点。
+     insert_lock() forgot to send row lock command (lock_kind == 3 case) to
+     other than main node.
     </para>
    </listitem>
 
@@ -1523,30 +1702,32 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-09-10 [f60aaf4]
     -->
     <para>
-     修复 <filename>pool_memqcache.c</filename> 中的资源泄漏。(Tatsuo Ishii)
+     Fix resource leaks in <filename>pool_memqcache.c</filename>. (Tatsuo Ishii)
     </para>
     <para>
-     这些泄漏是由提交 <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=6fdba5c33">6fdba5c33</ulink> 引入的。
+     These leaks were brought in by commit <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=6fdba5c33">6fdba5c33</ulink>.
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2024-10-03 [bf46b3d]
     -->
     <para>
-     修复文档和示例配置文件中的拼写错误。(Bo Peng)
+     Fix typos in the documentation and sample configuration files. (Bo Peng)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
@@ -1554,87 +1735,107 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-11-25 [36100bd]
     -->
     <para>
-     使 024.cert_auth 测试适配 OpenSSL 3.2。(Tatsuo Ishii)
+     Adapt 024.cert_auth test to OpenSSL 3.2. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-9">
- <title>发布版本 4.4.9</title>
+ <title>Release 4.4.9</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2024-09-09</simpara>
   </note>
 
  <sect2>
-  <title>概述</title>
+  <title>Overview</title>
   <para>
-   此版本包含一个安全修复。
+   This release contains a security fix.
   </para>
   <para>
-   当启用查询缓存（<xref linkend="runtime-in-memory-query-cache">）功能时，
-   数据库用户可能通过查询缓存读取到本不应对其可见的表中的行（CVE-2024-45624）。
+   When the query cache (<xref linkend="runtime-in-memory-query-cache">) feature is enabled,
+   it was possible that a database user can read rows from tables that should
+   not be visible for the user through query cache (CVE-2024-45624).
   </para>
   <para>
-   所有早于 4.5.4、4.4.9、4.3.12、4.2.19、4.1.22 的 <productname>Pgpool-II</productname> 版本，
-   以及所有具有查询缓存功能的更早版本（查询缓存功能自 3.2 版本起实现）均受此漏洞影响。
+   All versions of <productname>Pgpool-II</productname> older than
+   4.5.4, 4.4.9, 4.3.12, 4.2.19, 4.1.22, and all older
+   versions that has the query cache feature (the query cache feature was
+   implemented in 3.2) are affected by the vulnerability.
   </para>
 
   <itemizedlist>
    <listitem>
     <para>
-     如果为某个用户针对某张表创建了查询缓存，然后通过 <command>REVOKE</command> 命令撤销了该用户对该表的访问权限，
-     该用户仍然可能通过查询缓存访问其没有访问权限的表。
+     If query cache is created for a table for a user, and then the
+     access right of the table is revoked from the user by
+     <command>REVOKE</command> command, still it was possible for the
+     user to access the table which the user does not have the access
+     right through the query
+     cache.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     如果为用户 A 针对某张表创建了查询缓存，然后其他用户 B 在同一会话中通过 <command>SET ROLE</command> 或
-     <command>SET SESSION_AUTHORIZATION</command> 访问该表，用户 B 仍然可能通过查询缓存访问其没有访问权限的表。
+     If query cache is created for a table for user A, and then other
+     user B accesses the table via <command>SET ROLE</command> or
+     <command>SET SESSION_AUTHORIZATION</command> in the same session,
+     still it was possible for the user B to access the table which B
+     does not have the access right through the query
+     cache.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     如果为启用了行级安全的表为用户 A 创建了查询缓存，然后其他用户 B 在同一会话中通过 <command>SET ROLE</command>
-     或 <command>SET SESSION_AUTHORIZATION</command> 访问该表，用户 B 可能通过查询缓存检索到本不应对其可见的行。
+     If query cache is created for a row security enabled table for user
+     A, and then other user B accesses the table via <command>SET ROLE</command>
+     or SET <command>SESSION_AUTHORIZATION</command> in the same session,
+     it was possible for the user B to retrieve rows which should not be
+     visible from the user B through the query cache.
     </para>
    </listitem>
 
   </itemizedlist>
   <para>
-   强烈建议升级到 <productname>Pgpool-II</productname> 4.5.4、4.4.9、4.3.12、4.2.19 和 4.1.22 或更高版本。
-   或者您最好关闭查询缓存功能。
+   It is strongly recommend to upgrade to <productname>Pgpool-II</productname>
+   4.5.4, 4.4.9, 4.3.12, 4.2.19 and 4.1.22 or later. Or you should better turn
+   off the query cache feature.
   </para>
 
   <para>
-   请注意，为修复此漏洞，某些命令（ALTER DATABASE、ALTER ROLE、ALTER TABLE、REVOKE）现在会使整个查询缓存数据失效。
-   这可能会影响使用查询缓存功能时的性能。
+   Note that to fix the vulnerability, some commands (ALTER DATABASE,
+   ALTER ROLE, ALTER TABLE, REVOKE) now invalidate whole query cache
+   data. This may affect the performance when using the query cache
+   feature.
   </para>
  </sect2>
-<sect2>
-  <title>变更</title>
+
+ <sect2>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2024-08-15 [730acde]
     -->
     <para>
-     反向移植 <xref linkend="guc-notice-per-node-statement">。（Tatsuo Ishii）
+     Back port <xref linkend="guc-notice-per-node-statement">. (Tatsuo Ishii)
     </para>
     <para>
-     这主要用于测试。反向移植版本：v4.1
+     This is mainly for testing. Backpatch-through: v4.1
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-August/004505.html">[pgpool-hackers: 4504]</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-August/004505.html">[pgpool-hackers: 4504]</ulink>
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
 
    <listitem>
@@ -1643,29 +1844,38 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-08-11 [ce7ed50]
     -->
     <para>
-     修复复制模式和快照隔离模式中的错误。（Tatsuo Ishii）
+     Fix bugs in replication mode and snapshot isolation mode. (Tatsuo Ishii)
     </para>
     <para>
-     修复了以下错误：
+     The following bugs was fixed:
     </para>
     <itemizedlist>
      <listitem>
       <para>
-       在复制模式和快照隔离模式下，当命令完成时，<productname>Pgpool-II</productname> 会等待查询就绪消息，
-       但忘记某些命令（例如 <command>SET ROLE</command>）会产生参数状态消息。
-       结果导致 <productname>Pgpool-II</productname> 报错，提示其他消息在查询就绪消息之前到达。
+       In replication mode and snapshot isolation mode when a command finishes,
+       <productname>Pgpool-II</productname> waits for a ready for query message
+       but forgot that some commands (for example <command>SET ROLE</command>)
+       produces a parameter status message. As a result
+       <productname>Pgpool-II</productname> errors
+       out that other message arrives before the ready for query message.
       </para>
      </listitem>
 
      <listitem>
       <para>
-       如果前一个查询产生了参数状态消息，后续的 <function>parse()</function> 需要读取并处理它，
-       因为它想要读取应跟随在参数状态消息之后的查询就绪消息。
-       然而，当调用 <function>ParameterStatus()</function> 时，查询进行中的标志被设置，
-       如果在此 <function>parse()</function> 调用中处理的查询是负载均衡的，则可能只处理了来自一个后端的参数状态消息。
-       参数状态消息很可能来自所有活跃的后端，因为它们是由 <command>SET</command> 命令生成的，
-       而在复制模式和快照隔离模式下，<command>SET</command> 命令会发送到所有活跃的后端。
-       因此，在调用 <function>ParameterStatus()</function> 之前取消设置查询进行中的标志。
+       If previous query produces parameter status message, subsequent
+       <function>parse()</function> needs to read and process it because
+       it wants to read Ready for query message which is supposed to follow
+       the parameter status message.
+       However when <function>ParameterStatus()</function> gets called,
+       the query in progress flag was set and it was possible that only
+       one of parameter status message from backend was processed if the
+       query processed in this <function>parse()</function> call is load
+       balanced. It is likely that the parameter status message comes from
+       all live backend because they are generated by <command>SET</command>
+       command, and <command>SET</command> command are sent to all live backend
+       in replication mode and snapshot isolation mode. So unset the query in
+       progress flag before calling <function>ParameterStatus()</function>.
       </para>
      </listitem>
     </itemizedlist>
@@ -1674,15 +1884,16 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-8">
  <title>Release 4.4.8</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2024-08-15</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
 
    <listitem>
@@ -1690,17 +1901,21 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-08-02 [97485f6]
     -->
     <para>
-     在示例脚本中，使用 <command>psql -V</command> 替代 <command>initdb -V</command>。(Bo Peng)
+     Use <command>psql -V</command> instead of <command>initdb -V</command>
+     in sample scripts. (Bo Peng)
     </para>
     <para>
-     在示例脚本中，使用 <command>psql -V</command> 替代 <command>initdb -V</command>，因为在某些情况下可能未安装 postgresqlxx-server。
+     Use <command>psql -V</command> instead of <command>initdb -V</command>
+     in the sample scripts because in some cases postgresqlxx-server may not
+     be installed.
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
 
    <listitem>
@@ -1708,7 +1923,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-07-30 [251e422]
     -->
     <para>
-     修复接收 flush 消息后的挂起问题。(<ulink url="https://github.com/pgpool/pgpool2/issues/59">#59</ulink>) (Tatsuo Ishii)
+     Fix hang after a flush message received. (<ulink url="https://github.com/pgpool/pgpool2/issues/59">#59</ulink>) (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -1717,16 +1932,17 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-07-22 [c1dd550]
     -->
     <para>
-     修复段错误。 (Tatsuo Ishii)
+     Fix segmentation fault. (Tatsuo Ishii)
     </para>
     <para>
-     有报告指出 pgpool 子进程在 pool_do_auth 中发生段错误。原因是
-     MAIN_CONNECTION() 返回了 NULL。看起来 my_main_node_id 被设置为了
-     错误的节点 ID 0，而该节点实际处于宕机状态，因此 cp->slots[0] 中没有连接。
+     It is reported that pgpool child segfaulted in pool_do_auth. The cause
+     was MAIN_CONNECTION() returns NULL. It seems my_main_node_id was set
+     to incorrect node id 0, which was actually in down status. thus there
+     was no connection in cp->slots[0].
     </para>
     <para>
-     问题由 Emond Papegaaij 报告。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-July/001852.html">[pgpool-general: 9175]</ulink>
+     Problem is reported by Emond Papegaaij.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-July/001852.html">[pgpool-general: 9175]</ulink>
     </para>
    </listitem>
 
@@ -1735,14 +1951,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-07-19 [49340b9]
     -->
     <para>
-     修复动态进程管理。 (Tatsuo Ishii)
+     Fix dynamic process management. (Tatsuo Ishii)
     </para>
     <para>
-     用于进程驱逐算法的 pooled_connection 计算不正确。结果始终为
-     max_pool。此外还增加了一些注释。
+     Calculation of pooled_connection, which is used by the process
+     eviction algorithm, was not correct. The number always resulted in
+     max_pool. Also more comments are added.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-July/004491.html">[pgpool-hackers: 4490]</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-July/004491.html">[pgpool-hackers: 4490]</ulink>
     </para>
    </listitem>
 
@@ -1751,13 +1968,14 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-28 [8ea6f7a]
     -->
     <para>
-     修复解析配置文件时的段错误。 (Tatsuo Ishii)
+     Fixed segmentation fault at parsing config file. (Tatsuo Ishii)
     </para>
     <para>
-     此提交修复了在解析 pgpool.conf 时，如果设置值未用单引号括起来则发生的段错误。
+     This commit fixed a segmentation fault that occurs when parsing pgpool.conf
+     if the setting value was not enclosed in single quotes.
     </para>
     <para>
-     补丁由 Carlos Chapi 创建，Tatsuo Ishii 审查并修改。
+     The patch is created by Carlos Chapi, reviewed and modified by Tatsuo Ishii.
     </para>
    </listitem>
 
@@ -1766,18 +1984,20 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-21 [7ca9b23]
     -->
     <para>
-     修复不使用 MAIN_NODE 宏的段错误。 (Tatsuo Ishii)
+     Fix segfault to not use MAIN_NODE macro. (Tatsuo Ishii)
     </para>
     <para>
-     某些函数（close_idle_connection()、new_connection() 和
-     pool_create_cp()）在不适当的地方使用了 MAIN* 和 VALID_BACKEND。
-     MAIN* 和 VALID_BACKEND 仅适用于当前到后端的连接，而不适用于池化连接，
-     因为在池化连接中，哪个后端是主节点或正在运行必然与当前到后端的连接相同。
-     这些宏的错误使用有时会导致段错误。
+     Some functions (close_idle_connection(), new_connection() and
+     pool_create_cp()) used MAIN* and VALID_BACKEND where they are not
+     appropriate. MAIN* and VALID_BACKEND are only useful against current
+     connections to backend, not for pooled connections since in pooled
+     connections which backend is the main node or up and running is
+     necessarily same as the current connections to backend.
+     The misuses of those macros sometimes leads to segfault.
     </para>
     <para>
-     问题由 Emond Papegaaij 报告。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-June/009176.html">[pgpool-general: 9114]</ulink>
+     Problem is reported by Emond Papegaaij.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-June/009176.html">[pgpool-general: 9114]</ulink>
     </para>
    </listitem>
 
@@ -1786,17 +2006,19 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-21 [152c65d]
     -->
     <para>
-     修复 MAIN_NODE 宏（实际上是 pool_virtual_main_db_node_id()）。 (Tatsuo Ishii)
+     Fix MAIN_NODE macro (actually pool_virtual_main_db_node_id()). (Tatsuo Ishii)
     </para>
     <para>
-     该宏在没有会话上下文时会返回 REAL_MAIN_NODE_ID。
-     这是错误的，因为当发生故障转移/回退时，REAL_MAIN_NODE_ID 随时可能更改。
+     The macro used to return REAL_MAIN_NODE_ID if there's no session context.
+     This is wrong since REAL_MAIN_NODE_ID can be changed any time when
+     failover/failback happens. 
     </para>
     <para>
-     假设 REAL_MAIN_NODE_ID == my_main_node_id == 1。
-     然后由于故障回退，REAL_MAIN_NODE_ID 变为 0。
-     接着 MAIN_CONNECTION(cp) 将返回 NULL，对其任何引用都会导致段错误。为防止此问题，
-     我们应返回 my_main_node_id。
+     Suppose REAL_MAIN_NODE_ID == my_main_node_id == 1. 
+     Then due to failback, REAL_MAIN_NODE_ID is changed to 0.
+     Then MAIN_CONNECTION(cp) will return NULL and any
+     reference to it will cause segmentation fault. To prevent the issue we
+     should return my_main_node_id instead.
     </para>
    </listitem>
 
@@ -1805,14 +2027,14 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-14 [9488d9f]
     -->
     <para>
-     修复 <command>show pool_processes</command> 避免重复显示行描述。 (Tatsuo Ishii)
+     Fix <command>show pool_processes</command> to not show row description twice. (Tatsuo Ishii)
     </para>
     <para>
-     processes_reporting() 意外同时调用了 send_row_description()
-     和 send_row_description_and_data_rows()。
+     processes_reporting() accidentaly called both send_row_description()
+     and send_row_description_and_data_rows().
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-June/004472.html">[pgpool-hackers: 4471]</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-June/004472.html">[pgpool-hackers: 4471]</ulink>
     </para>
    </listitem>
 
@@ -1821,10 +2043,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-11 [8c18899]
     -->
     <para>
-     修复子进程中的段错误。 (Tatsuo Ishii)
+     Fix segfault in a child process. (Tatsuo Ishii)
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-May/001780.html">[pgpool-general: 9104]</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-May/001780.html">[pgpool-general: 9104]</ulink>
     </para>
    </listitem>
 
@@ -1833,17 +2055,18 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-11 [93ba28b]
     -->
     <para>
-     网络短暂中断时 Watchdog 死亡并导致 pgpool2 崩溃。(<ulink url="https://www.pgpool.net/mantisbt/view.php?id=823">#823</ulink>) (Muhammad Usama)
+     Watchdog dies and kills pgpool2 when network gets shortly interrupted. (<ulink url="https://www.pgpool.net/mantisbt/view.php?id=823">#823</ulink>) (Muhammad Usama)
     </para>
     <para>
-     启用网络监控后，如果 <productname>Pgpool-II</productname>
-     节点丢失了所有网络接口或分配的 IP 地址，它会立即关闭，
-     通过快速将非通信节点从集群中移除来提供额外保护。
+     With network monitoring enabled, a <productname>Pgpool-II</productname>
+     node would shut down immediately if it lost all network interfaces or
+     assigned IP addresses, providing extra protection by quickly removing
+     a non-communicative node from the cluster.
     </para>
     <para>
-     问题是 <productname>Pgpool-II</productname> 在网络监控
-     禁用时也对网络中断事件做出了响应。此修复确保在网络监控未启用时不打开
-     网络监控套接字，从而防止不必要的关闭。
+     The issue was that <productname>Pgpool-II</productname> responded to network blackout events even when network
+     monitoring was disabled. This fix ensures that the network monitoring socket is
+     not opened when network monitoring is not enabled, preventing unnecessary shutdowns.
     </para>
    </listitem>
 
@@ -1852,11 +2075,11 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-10 [c90ec3b]
     -->
     <para>
-     修复启用 watchdog 时 <command>pgpool reset</command> 命令不工作的问题。 (Tatsuo Ishii)
+     Fix <command>pgpool reset</command> command not working if watchdog is enabled. (Tatsuo Ishii)
     </para>
     <para>
-     由 keiseo 报告问题并提供问题分析。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-June/004466.html">[pgpool-hackers: 4465]</ulink>
+     Bug reported and problem analysis by keiseo.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-June/004466.html">[pgpool-hackers: 4465]</ulink>
     </para>
    </listitem>
 
@@ -1865,18 +2088,19 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-04 [0574a5d]
     -->
     <para>
-     修复 <literal>psql_scan</literal> 崩溃。(<ulink url="https://github.com/pgpool/pgpool2/issues/54">#54</ulink>) (Tatsuo Ishii)
+     Fix <literal>psql_scan</literal> crash. (<ulink url="https://github.com/pgpool/pgpool2/issues/54">#54</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     有报告指出，在判断长查询中的字符串是否为 psql 变量（即以 ":" 开头）时，
-     <literal>psql_scan</literal> 发生崩溃。
+     It was reported that <literal>psql_scan</literal> crashes while determining whether a
+     string in a long query is psql variable (i.e. starting with ":") or not.
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
 
    <listitem>
@@ -1884,10 +2108,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-07 [cb4ecf0]
     -->
     <para>
-     修复文档和程序源代码中的大量拼写错误。 (Tatsuo Ishii)
+     Mega typo fix for docs and program source codes. (Tatsuo Ishii)
     </para>
     <para>
-     补丁由 Umar Hayat 创建。
+     Patch is created by Umar Hayat.
     </para>
    </listitem>
 
@@ -1896,7 +2120,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-08-01 [d9fd431]
     -->
     <para>
-     将选择要终止进程的标准添加到 <xref linkend="guc-max-spare-children">。 (Bo Peng)
+     Add the criteria for selecting processes to be killed to <xref linkend="guc-max-spare-children">. (Bo Peng)
     </para>
    </listitem>
 
@@ -1905,10 +2129,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-07-30 [d8f8cca]
     -->
     <para>
-     增强故障转移文档。 (Tatsuo Ishii)
+     Enhance failover document. (Tatsuo Ishii)
     </para>
     <para>
-     阐明启用 <xref linkend="guc-failover-on-backend-shutdown"> 时的故障转移条件。
+     Clarify the condition on failover when <xref linkend="guc-failover-on-backend-shutdown"> is enabled.
     </para>
    </listitem>
 
@@ -1917,36 +2141,37 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-06-19 [36112da]
     -->
     <para>
-     补充虚拟 IP 相关参数的缺失默认值。 (Bo Peng)
+     Add the missing default values for virtual IP related parameters. (Bo Peng)
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-7">
- <title>发布版本 4.4.7</title>
+ <title>Release 4.4.7</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2024-05-16</simpara>
   </note>
 
  <sect2>
-  <title>Bug 修复</title>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2024-05-01 [afa710e]
     -->
     <para>
-     修复使用 <literal>-Werror=implicit-function-declaration</literal> 时的编译器错误。(Bo Peng)
+     Fix compiler error with <literal>-Werror=implicit-function-declaration</literal>. (Bo Peng)
     </para>
     <para>
-     添加 <literal>LDAP_DEPRECATED</literal> 以包含已弃用 ldap 函数的原型。
-     同时在 autoconf 检查中添加缺失的头文件。
+     Add <literal>LDAP_DEPRECATED</literal> to include prototypes for deprecated ldap functions.
+     Also Add missing header files in autoconf check.
     </para>
     <para>
-     补丁由 Vladimir Petko 创建。
+     Patch is created by Vladimir Petko.
     </para>
    </listitem>
 
@@ -1956,14 +2181,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-04-04 [9dee833]
     -->
     <para>
-     修复多种导致段错误的原因。(Tatsuo Ishii)
+     Fix assorted causes of segmentation fault. (Tatsuo Ishii)
     </para>
     <para>
-     据报告，在某些涉及故障转移的情况下，pgpool 及其子进程会发生段错误。
+     It is reported that pgpool and its child process segfault in certain
+     cases when failover involved.
     </para>
     <para>
-     问题由 Emond Papegaaij 报告并分析。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-April/009131.html">https://www.pgpool.net/pipermail/pgpool-general/2024-April/009131.html</ulink>
+     Problem is reported and analyzed by Emond Papegaaij.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-April/009131.html">https://www.pgpool.net/pipermail/pgpool-general/2024-April/009131.html</ulink>
     </para>
    </listitem>
 
@@ -1972,14 +2198,18 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-04-03 [cd4482d]
     -->
     <para>
-     修复未初始化内存错误。(Tatsuo Ishii)
+     Fix uninitialized memory error. (Tatsuo Ishii)
     </para>
     <para>
-     据报告，valgrind 发现了多个错误，包括 read_startup_packet 中的未初始化内存错误。该函数在取消或 SSL 请求的情况下使用 palloc 为启动包中的用户名分配内存，随后该内存被 pstrdup 使用。由于 palloc 分配的内存是未定义的，此处本应使用 palloc0。
+     It was reported that valgrind found several errors including an
+     uninitialized memory error in read_startup_packet. It allocates memory
+     for user name in a startup packet in case cancel or SSL request using
+     palloc, and later on the memory is used by pstrdup. Since memory
+     allocated by palloc is undefined, this should have been palloc0.
     </para>
     <para>
-     问题由 Emond Papegaaij 报告并分析。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-April/009126.html">https://www.pgpool.net/pipermail/pgpool-general/2024-April/009126.html</ulink>
+     Problem is reported and analyzed by Emond Papegaaij.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-April/009126.html">https://www.pgpool.net/pipermail/pgpool-general/2024-April/009126.html</ulink>
     </para>
    </listitem>
 
@@ -1988,15 +2218,16 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-04-02 [ba6142f]
     -->
     <para>
-     修复当 load_balance_mode 关闭时的错误/挂起问题。(Tatsuo Ishii)
+     Fix errors/hung up when load_balance_mode is off. (Tatsuo Ishii)
     </para>
     <para>
-     提交 <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=3f3c1656">3f3c1656</ulink>
-     导致当 load_balance_mode 关闭、主节点 ID 不为 0 且查询为 BEGIN 等时出现错误/挂起。
+     Commit <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=3f3c1656">3f3c1656</ulink>
+     brought errors/hung up when load_balance_mode is off, primary node id
+     is not 0 and queries are BEGIN etc.
     </para>
     <para>
-     错误由 Emond Papegaaij 发现并分析。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-March/009113.html">https://www.pgpool.net/pipermail/pgpool-general/2024-March/009113.html</ulink>
+     Bug found and analyzed by Emond Papegaaij.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-March/009113.html">https://www.pgpool.net/pipermail/pgpool-general/2024-March/009113.html</ulink>
     </para>
    </listitem>
 
@@ -2005,16 +2236,16 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-25 [93ee49f]
     -->
     <para>
-     修复使用特定 CFLAGS 时的编译错误。(Tatsuo Ishii)
+     Fix compile errors with certain CFLAGS. (Tatsuo Ishii)
     </para>
     <para>
      <ulink url="https://github.com/pgpool/pgpool2/issues/42">https://github.com/pgpool/pgpool2/issues/42</ulink>
-     报告称，使用 CFLAGS
+     reported that with CFLAGS
      -flto=4 -Werror=odr -Werror=lto-type-mismatch -Werror=strict-aliasing
-     时 gcc 会报错。
+     gcc emits errors.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-March/004443.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-March/004443.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-March/004443.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-March/004443.html</ulink>
     </para>
    </listitem>
 
@@ -2023,14 +2254,14 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-25 [1a15495]
     -->
     <para>
-     修复示例 pgpool.conf 中的注释。(Bo Peng)
+     Fix comments in sample pgpool.conf. (Bo Peng)
     </para>
     <para>
-     <varname>sr_check_period</varname> 的默认值应为 10 秒。
-     同时修复了注释中的一些拼写错误。
+     The default value for <varname>sr_check_period</varname> should be 10 seconds.
+     Also fixed some typos in comments.
     </para>
     <para>
-     补丁由 hiroin 创建，并由 Bo Peng 修改。
+     Patch is created by hiroin and modified by Bo Peng.
     </para>
    </listitem>
 
@@ -2039,11 +2270,13 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-21 [9054387]
     -->
     <para>
-     允许即使扩展查询未结束时也能运行重置查询。(Tatsuo Ishii)
+     Allow reset queries to run even if extended queries do not end. (Tatsuo Ishii)
     </para>
     <para>
-     提交 <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=240c668d">240c668d</ulink>
-     导致如果扩展查询消息未结束时，重置查询会失败。此提交通过在 SimpleQuery() 中检查是否正在运行重置查询来修复该问题。同时为此添加了测试用例。
+     Commit <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=240c668d">240c668d</ulink>
+     caused reset queries fail if extended query messages do not end. This commit
+     fix that by checking whether we are running reset queries in
+     SimpleQuery(). Also add the test case for this.
     </para>
    </listitem>
 
@@ -2053,7 +2286,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-20 [2a7a38b]
     -->
     <para>
-     修复 Coverity 指出的内存泄漏。(Takuma Hoshiai)
+     Fix memory leak pointed out by Coverity. (Takuma Hoshiai)
     </para>
    </listitem>
 
@@ -2062,23 +2295,33 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-18 [02452a6]
     -->
     <para>
-     防范不适当的协议数据。(Tatsuo Ishii)
+     Guard against inappropriate protocol data. (Tatsuo Ishii)
     </para>
     <para>
-     如果在扩展查询消息序列结束之前到达一条简单查询消息，pgpool 可能会挂起。这是因为会话上下文中用于简单查询的查询上下文被扩展查询消息的查询上下文覆盖了。
+     If a simple query message arrives before a sequence of extended query
+     messages ends pgpool could hang.  This is because the query context in
+     the session context for the simple query is overwritten by the query
+     contexts of the extended query messages.
     </para>
     <para>
-     此提交通过在 SimpleQuery() 中检查扩展查询协议消息是否已结束来实现防护。如果它们未结束，则引发 FATAL 错误。此检查检测到的一个已知示例是 JDBC 驱动程序的 "autosave=always" 选项。这意味着在此提交之后，pgpool 将不接受该选项，直到 JDBC 驱动程序端修复该问题（在结束扩展查询消息协议之前发送简单协议消息）。
+     This commit implements a guard in SimpleQuery() by checking whether
+     extended query protocol messages ended. If they do not end, raise a
+     FATAL error. A known example detected by this checking is JDBC
+     driver's "autosave=always" option. This means pgpool will not accept
+     the option after this commit until the issue (sending a simple
+     protocol message before ending extended query message protocol) is
+     fixed by the JDBC driver side.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004428.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004428.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004428.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004428.html</ulink>
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
 
    <listitem>
@@ -2086,7 +2329,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-04-03 [8986a8b]
     -->
     <para>
-     增强“上游服务器连接”文档。(Bo Peng)
+     Enhance "Upstream server connection" documentation. (Bo Peng)
     </para>
    </listitem>
 
@@ -2095,7 +2338,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-28 [062d4c9]
     -->
     <para>
-     日语文档的语言清理。(Masaya Kawamoto)
+     Language cleanup in Japanese document. (Masaya Kawamoto)
     </para>
    </listitem>
 
@@ -2104,17 +2347,19 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-27 [0b8f377]
     -->
     <para>
-     添加关于在两个 postgres 节点时使用 <command>pcp_promote_node</command> 的说明。(Masaya Kawamoto)
+     Add the note about using <command>pcp_promote_node</command> when two postgres nodes. (Masaya Kawamoto)
     </para>
     <para>
-     即使只有两个 postgres 节点，也存在需要设置 <varname>follow_primary_command</varname> 的情况。
+     Even if there are two postgres nodes, there are cases that
+     <varname>follow_primary_command</varname> is required to be set.
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
 
    <listitem>
@@ -2123,60 +2368,65 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-03-15 [8e17321]
     -->
     <para>
-     修复回归测试 005.jdbc 以避免 Java 21 弃用警告。(Bo Peng)
+     Fixed regression test 005.jdbc to avoid Java 21 deprecation warnings. (Bo Peng)
     </para>
     <para>
-     将 Runtime.exec(String) 替换为 Runtime.exec(String[]) 以避免 Java 21 弃用警告。
-     补丁由 Vladimir Petko 创建，并由 Bo Peng 修改。
+     Replace Runtime.exec(String) with Runtime.exec(String[]) to avoid Java 21 deprecation warnings.
+     Patch is created by Vladimir Petko and modified by Bo Peng.
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-6">
- <title>版本 4.4.6</title>
+ <title>Release 4.4.6</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2024-02-29</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2024-02-27 [aea5a51]
     -->
     <para>
-     从示例脚本中移除了 restore_command。（Bo Peng）
+     Remove restore_command from sample scripts. (Bo Peng)
     </para>
     <para>
-     由于启用了复制槽，不需要 restore_command。它偶尔会导致故障转移失败。
+     Restore_command is not required because replication slot is enabled.
+     It causes occasional failover failure.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2024-02-26 [5a25a29]
     -->
     <para>
-     修复了 <xref linkend="guc-recovery-user">、
-     <xref linkend="guc-failover-on-backend-shutdown"> 和
-     <xref linkend="guc-insert-lock"> 的默认值。（Bo Peng）
+     Fixed the default values of <xref linkend="guc-recovery-user">,
+     <xref linkend="guc-failover-on-backend-shutdown"> and
+     <xref linkend="guc-insert-lock">. (Bo Peng)
     </para>
     <para>
-     因为 <varname>recovery_user</varname> 的默认值应该与
-     <xref linkend="guc-health-check-user"> 和
-     <xref linkend="guc-sr-check-user"> 相同，我将默认值从 '' 改为 'nobody'。
+     Because the default value of <varname>recovery_user</varname>
+     should be same as <xref linkend="guc-health-check-user"> and
+     <xref linkend="guc-sr-check-user">, I changed the default value
+     from '' to 'nobody'.
     </para>
     <para>
-     <varname>failover_on_backend_shutdown</varname> 的正确默认值应为 "false"，
-     而 <varname>insert_lock</varname> 的正确默认值应为 "on"。
+     The correct default value of <varname>failover_on_backend_shutdown</varname>
+     should be "false" and the correct default value of <varname>insert_lock</varname>
+     should be "on".
     </para>
    </listitem>
 
@@ -2185,40 +2435,43 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-02-10 [85570e1]
     -->
     <para>
-     修复了 <xref linkend="guc-statement-level-load-balance"> 与 BEGIN 等语句的问题。（Tatsuo Ishii）
+     Fixed <xref linkend="guc-statement-level-load-balance"> with BEGIN etc. (Tatsuo Ishii)
     </para>
     <para>
-     当启用了 <varname>statement_level_load_balance</varname> 时，
+     When <varname>statement_level_load_balance</varname> is enabled,
      BEGIN/END/COMMIT/ABORT/SET/SAVEPOINT/RELEASE SAVEPOINT/DEALLOCATE
-     ALL/DISCARD 会被发送到主节点和所有备用节点，即使
-     <xref linkend="guc-load-balance-mode"> 处于关闭状态。
-     这不仅完全错误，而且如果某个备用节点位于远程网络中，还会导致性能下降。
+     ALL/DISCARD were sent to primary node and all standby nodes even if
+     <xref linkend="guc-load-balance-mode"> is off.
+     This is not only plain wrong but caused slow
+     down if one of the standby nodes are in remote network.
     </para>
     <para>
-     修复方法：当 <varname>load_balance_mode</varname> 关闭时，pgpool 仅将此类查询发送到主节点。
+     Fix this in that pgpool sends such queries to primary node only when
+     <varname>load_balance_mode</varname> is off.
     </para>
     <para>
-     报告：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-January/009059.html">https://www.pgpool.net/pipermail/pgpool-general/2024-January/009059.html</ulink>
+     Reported: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2024-January/009059.html">https://www.pgpool.net/pipermail/pgpool-general/2024-January/009059.html</ulink>
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004423.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004423.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004423.html">https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004423.html</ulink>
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2024-02-26 [ed49149]
     -->
     <para>
-     修复了日文 watchdog 文档。（Tatsuo Ishii）
+     Fix Japanese watchdog document. (Tatsuo Ishii)
     </para>
     <para>
-     它错误地使用了 "master" watchdog 节点，而不是 "leader"。
+     It mistakenly used "master" watchdog node instead of "leader".
     </para>
    </listitem>
 
@@ -2227,38 +2480,43 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2024-02-26 [99c657f]
     -->
     <para>
-     修复了英文 watchdog 文档。（Tatsuo Ishii）
+     Fix English watchdog document. (Tatsuo Ishii)
     </para>
     <para>
-     它错误地使用了 "main" PostgreSQL 节点，而不是 "primary"。
+     It mistakenly used "main" PostgreSQL node instead of "primary".
+
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-5">
- <title>发布 4.4.5</title>
+ <title>Release 4.4.5</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2023-11-30</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-11-17 [823cfd9]
     -->
     <para>
-     修改示例脚本中的复制槽名称转换，以支持主机名大写。(Bo Peng)
+     Modify the replication slot name conversion in sample scripts
+     to support for the hostname in uppercase. (Bo Peng)
     </para>
     <para>
-     在故障转移或在线恢复期间执行的脚本中，复制槽会自动创建或删除。
-     由于复制槽名称不能使用大写字母，因此修改这些脚本以将主机名转换为小写。
+     Replication slots are automatically created or deleted in the scripts
+     which are executed during failover or online recovery.
+     Since uppercase can't be used for a replication slot name, modify these scripts
+     to convert the hostname to lowercase.
     </para>
     <para>
-     补丁由 Sheikh Wasiu Al Hasib 创建，并由 Bo Peng 修改。
+     Patch is created by Sheikh Wasiu Al Hasib and modified by Bo Peng.
     </para>
    </listitem>
 
@@ -2267,24 +2525,25 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-10-06 [5c9b377]
     -->
     <para>
-     在示例脚本 <filename>escalation.sh.sample</filename> 中添加 SSH 超时设置，
-     该脚本在 <xref linkend="guc-wd-escalation-command"> 参数中设置。(Bo Peng)
+     Add SSH timeout in sample script <filename>escalation.sh.sample</filename>
+     which is set in <xref linkend="guc-wd-escalation-command"> parameter. (Bo Peng)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-10-04 [6075d59]
     -->
     <para>
-     移除不必要的日志行。(Tatsuo Ishii)
+     Remove unnecessary logging line. (Tatsuo Ishii)
     </para>
     <para>
-     调试消息 "unset_tx_started_by_multi_statement_query is called in CommandComplete" 被意外遗留。
+     Debug message "unset_tx_started_by_multi_statement_query is called in CommandComplete" was accidentally left.
     </para>
    </listitem>
 
@@ -2294,27 +2553,28 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-09-29 [2036eac]
     -->
     <para>
-     修复 <function>Describe()</function> 使其不会因 <command>DECLARE</command> 创建的 portal 而中止。(Tatsuo Ishii)
+     Fix <function>Describe()</function> so that it does not abort with portal created by <command>DECLARE</command>. (Tatsuo Ishii)
     </para>
     <para>
-     当执行 <command>DECLARE foo CURSOR FOR</command> 时，
-     PostgreSQL 会自动创建一个名为 "foo" 的 portal。
-     由于该 portal 不受 Pgpool-II 管理，
-     "Describe foo" 消息会失败并报错 "unable to execute Describe.
-     unable to get the bind message"。
+     When <command>DECLARE foo CURSOR FOR</command> is executed,
+     a portal named "foo" is automatically created by PostgreSQL.
+     As the portal is not managed by Pgpool-II, 
+     "Describe foo" message failed with "unable to execute Describe.
+     unable to get the bind message" error.
     </para>
     <para>
-     为解决此问题，使 <function>Describe()</function> 创建一个虚拟的写查询上下文，
-     以便将 describe 消息发送到主节点（流复制模式）或所有节点（复制/快照隔离模式）。
+     To fix this, make <function>Describe()</function> create a dummy write query
+     context so that the describe message is sent to primary (streaming replication
+     mode) or all nodes (replication/snapshot isolation mode).
     </para>
     <para>
-     同时为此提交添加测试用例 080。
+     Also add test case 080 for this commit.
     </para>
     <para>
-     此问题由 Heather Lapointe 报告并分析。
+     This problem was reported and analyzed by Heather Lapointe.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2023-September/008995.html">https://www.pgpool.net/pipermail/pgpool-general/2023-September/008995.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2023-September/008995.html">https://www.pgpool.net/pipermail/pgpool-general/2023-September/008995.html</ulink>
     </para>
    </listitem>
 
@@ -2325,32 +2585,33 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-09-20 [3763441]
     -->
     <para>
-     移除 <varname>NAMEDATALEN</varname> 的重复定义。(Tatsuo Ishii)
+     Remove duplication definitions of <varname>NAMEDATALEN</varname>. (Tatsuo Ishii)
     </para>
     <para>
-     <varname>NAMEDATALEN</varname> 的定义现在仅在
-     <filename>src/include/pg_config_manual.h</filename> 中。
-     同时将 <filename>src/utils/pool_select_walker.c</filename> 中的
-     <varname>POOL_NAMEDATALEN</varname> 替换为
-     <varname>NAMEDATALEN</varname>。
+     The definition for <varname>NAMEDATALEN</varname> is now in
+     <filename>src/include/pg_config_manual.h</filename> only.
+     Also replace <varname>POOL_NAMEDATALEN</varname> with
+     <varname>NAMEDATALEN</varname> in
+     <filename>src/utils/pool_select_walker.c</filename>.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-August/004366.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-August/004366.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-August/004366.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-August/004366.html</ulink>
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-11-29 [42dc580]
     -->
     <para>
-     修改 "Pgpool-II + Watchdog 设置示例" 以提及
-     <varname>pcp_listen_addresses = '*'</varname> 是必需的，
-     以允许 PCP 监听所有地址。
+     Modify "Pgpool-II + Watchdog Setup Example" to mention that
+     <varname>pcp_listen_addresses = '*'</varname> is required to
+     allow PCP to listen on all addresses.
     </para>
    </listitem>
 
@@ -2359,10 +2620,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-09-19 [fff663e]
     -->
     <para>
-     修复 <xref linkend="pcp-node-info"> 文档。(Tatsuo Ishii)
+     Fix <xref linkend="pcp-node-info"> docs. (Tatsuo Ishii)
     </para>
     <para>
-     实际后端状态是通过 PQpingParams 获取的，而不是 pg_isready。
+     The actual backend status is obtained using PQpingParams, not pg_isready.
     </para>
    </listitem>
 
@@ -2371,52 +2632,61 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-08-21 [d7256e1]
     -->
     <para>
-     增强 <xref linkend="guc-follow-primary-command"> 手册。(Tatsuo Ishii)
+     Enhance <xref linkend="guc-follow-primary-command"> manual. (Tatsuo Ishii)
     </para>
     <para>
-     提及如果未使用 <xref linkend="pcp-recovery-node">，
-     则有必要运行 <xref linkend="pcp-attach-node">。
+     Mention that it is necessary to run <xref linkend="pcp-attach-node"> if
+     <xref linkend="pcp-recovery-node"> is not used.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-08-21 [957f983]
     -->
     <para>
-     增强 <command>pgpool_setup</command>。(Tatsuo Ishii)
+     Enhance <command>pgpool_setup</command>. (Tatsuo Ishii)
     </para>
     <para>
-     增强故障转移脚本生成和主节点跟随脚本生成，以便它们创建更好的日志记录。
+     Enhance failover script generation and follow primary script
+     generation so that they create better logging.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-4">
- <title>发布版本 4.4.4</title>
+ <title>Release 4.4.4</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2023-08-17</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-07-23 [2cbc61e]
     -->
     <para>
-     仅在共享内存初始化后安装系统退出回调函数。(Muhammad Usama)
+     Install system exit callback only after initialization of shared memory. (Muhammad Usama)
     </para>
     <para>
-     当由于获取共享内存失败而调用退出回调函数时，清理函数在访问位于共享内存中的 process_info 时可能会产生段错误。
-     虽然我们也可以通过当 process_info 为 NULL 时从退出回调中退出来修复此问题，但在共享内存成功初始化后安装该函数是更好的方法，因为系统的其余部分始终假定 process_info 永远不会为 NULL，并且在子进程生成之前也没有需要清理的内容。
+     When the on-exit callback gets called because of a failure to acquire
+	 shared memory. The cleanup function can produce a segfault while accessing
+	 process_info, that lives in shared memory.
+	 Although we can also fix this by bailing out from the exit callback when
+	 process_info is NULL but installing the function after successful initialization
+	 of shared memory is a better approach as the rest of the system always assumes
+	 the process_info can never be NULL, and also, there is nothing to
+	 clean up before child processes are spawned.
     </para>
    </listitem>
 
@@ -2426,12 +2696,16 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-22 [e59d034]
     -->
     <para>
-     当 <xref linkend="guc-process-management-mode"> 设置为 "dynamic" 时，禁止将 <xref linkend="guc-max-spare-children"> 设置为大于 <xref linkend="guc-num-init-children">。(Muhammad Usama)
+     Disallowing setting the <xref linkend="guc-max-spare-children"> greater than <xref linkend="guc-num-init-children"> when <xref linkend="guc-process-management-mode"> is set to "dynamic". (Muhammad Usama)
     </para>
     <para>
-     配置后处理阶段现在会在 <varname>num_init_children</varname> 小于 <varname>max_spare_children</varname> 时抛出错误。
-     该提交还根据配置的进程管理策略调整了启动时生成的子进程数量。
-     对于 Aggressive 策略，会生成 <varname>max_spare_children</varname> 数量的进程；对于其他两种策略，启动时会创建 <varname>min_spare_children</varname> 数量的子进程。
+     Config post-processing stage now throws an error if <varname>num_init_children</varname> is
+	 smaller than <varname>max_spare_children</varname>.
+	 Commit also adjusts the number of child processes spawned at startup based on
+	 the configured process management strategy.
+	 For the Aggressive strategy, <varname>max_spare_children</varname> number of processes is spawned;
+	 for the other two strategies, <varname>min_spare_children</varname> number of children gets
+	 created at startup.
     </para>
    </listitem>
 
@@ -2440,16 +2714,18 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-29 [13e73bc]
     -->
     <para>
-     降低日志消息级别。(Tatsuo Ishii)
+     Downgrade log message. (Tatsuo Ishii)
     </para>
     <para>
-     在 <ulink url="https://www.pgpool.net/mantisbt/view.php?id=806">https://www.pgpool.net/mantisbt/view.php?id=806</ulink> 中指出日志文件中存在以下日志条目：
+     It is pointed out in <ulink url="https://www.pgpool.net/mantisbt/view.php?id=806">https://www.pgpool.net/mantisbt/view.php?id=806</ulink>
+	 that there are log entries in the log file:
 	</para>
 	<para>
 	 LOG: pool_pending_message_set_flush_request: msg: Parse
 	</para>
 	<para>
-	 这些消息用于调试，日志级别本应为 DEBUG*。因此我将日志级别从 LOG 更改为 DEBUG5。
+	 The messages were for debugging and the log level should have been a
+	 DEBUG*. So I changed the log level from LOG to DEBUG5.
     </para>
    </listitem>
 
@@ -2458,23 +2734,26 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-12 [7ff642f]
     -->
     <para>
-     为某些系统目录查询函数添加模式限定。(Tatsuo Ishii)
+     Add schema qualification to some system catalog inquiry functions. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-08-09 [30db44e]
     -->
     <para>
-     修复 Coverity 警告。(Tatsuo Ishii)
+     Fix coverity warning. (Tatsuo Ishii)
     </para>
     <para>
-     修复查询缓存模块将 time_t 值赋值给 int32 变量的问题。将变量类型更改为 int64。根据 Coverity 报告。同时使用 difftime() 计算 time_t 差值。这是推荐的做法。
+     Fix query cache module assigned time_t value to int32 variable. Change
+     the variable type to int64. Per Coverity.  Also use difftime() to
+     calculate time_t difference. This is a recommended practice.
      <ulink url="https://www.jpcert.or.jp/sc-rules/c-msc05-c.html">https://www.jpcert.or.jp/sc-rules/c-msc05-c.html</ulink>
     </para>
    </listitem>
@@ -2484,7 +2763,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-08-04 [1633f61]
     -->
     <para>
-     修复 find_primary_node_repeatedly 在 <xref linkend="guc-search-primary-node-timeout"> 超时内未终止的问题。(Bo Peng)
+     Fix find_primary_node_repeatedly doesn't terminate within <xref linkend="guc-search-primary-node-timeout">. (Bo Peng)
     </para>
    </listitem>
 
@@ -2493,13 +2772,13 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-17 [cd03751]
     -->
     <para>
-     修复使用 v2 协议时的崩溃问题。(<ulink url="https://www.pgpool.net/mantisbt/view.php?id=807">bug 807</ulink>) (Tatsuo Ishii)
+     Fix crash when v2 protocol is used.(<ulink url="https://www.pgpool.net/mantisbt/view.php?id=807">bug 807</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     当 read_kind_from_backend() 累积统计数据时，未针对 v2 协议情况进行准备。
+     When read_kind_from_backend() accumulates statistics data, it was not prepared for v2 protocol case.
     </para>
     <para>
-	 来自 MCanivez 的错误报告和补丁。由我稍作修改。
+	 Bug report and patch from MCanivez. Slightly modified by me.
     </para>
    </listitem>
 
@@ -2508,19 +2787,23 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-12 [1f5b7c8]
     -->
     <para>
-     修复多语句情况下的 <literal>PREPARE</literal>。(Tatsuo Ishii)
+     Fix <literal>PREPARE</literal> in multi-statement case. (Tatsuo Ishii)
     </para>
     <para>
-     如果多语句查询在第二个或后续位置包含 <literal>PREPARE</literal>，并且后续的绑定消息使用了该预备语句，则会因 "unable to bind" 错误而失败，因为该预备语句未保存在已发送消息中。
+     If multi-statement query includes <literal>PREPARE</literal> in the second or latter
+	 position, and subsequent bind message uses the prepared statement, it
+	 fails with "unable to bind" error because the prepared statement is not
+	 saved in sent messages.
     </para>
     <para>
-	 为解决此问题，如果在解析语句后发现此类情况，将为该命名语句创建一个查询上下文，并将其添加到已发送消息列表中。
+	 To fix this if such a case found after parsing the statement, create a
+	 query context for the named statement and add it to the sent message list.
     </para>
     <para>
-	 讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2023-July/008931.html">https://www.pgpool.net/pipermail/pgpool-general/2023-July/008931.html</ulink>
+	 Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2023-July/008931.html">https://www.pgpool.net/pipermail/pgpool-general/2023-July/008931.html</ulink>
     </para>
     <para>
-	 为此新增了回归测试 079..multi_prepare。
+	 For this new regression test 079..multi_prepare is added.
     </para>
    </listitem>
 
@@ -2529,10 +2812,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-09 [e62c5a7]
     -->
     <para>
-     修复 pgproto 以支持带参数的绑定消息。(Tatsuo Ishii)
+     Fix pgproto to work with bind message using params. (Tatsuo Ishii)
     </para>
     <para>
-     之前 pgproto 只能处理不带参数的绑定消息。
+     Previously pgproto can only process bind messages without params.
     </para>
    </listitem>
 
@@ -2541,7 +2824,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-05 [5049e59]
     -->
     <para>
-     修复日志消息中的拼写错误。(Bo Peng)
+     Fix typo in log message. (Bo Peng)
     </para>
    </listitem>
 
@@ -2550,10 +2833,11 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-23 [571fbd9]
     -->
     <para>
-     修复缺失的 CTE SEARCH 和 CYCLE 重写。(Bo Peng)
+     Fix missing CTE SEARCH and CYCLE rewrites. (Bo Peng)
     </para>
     <para>
-     在原生复制模式下，<productname>Pgpool-II</productname> 需要在写查询中将日期/时间函数重写为时间戳。CTE SEARCH 和 CYCLE 的重写缺失了。
+     In native replication mode, <productname>Pgpool-II</productname> need to rewrite Date/Time functions to timestamp in WRITE queries.
+	 CTE SEARCH and CYCLE rewrites were missing.
     </para>
    </listitem>
 
@@ -2562,7 +2846,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-19 [8e4bf20]
     -->
     <para>
-     移除 src/sample/pgpool.conf.sample-stream 中重复的 pcp_listen_address 设置。(Bo Peng)
+     Removed duplicate pcp_listen_address setting in src/sample/pgpool.conf.sample-stream. (Bo Peng)
     </para>
    </listitem>
 
@@ -2571,13 +2855,19 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-14 [a091bcb]
     -->
     <para>
-     防止在共享锁下更新查询缓存。(Tatsuo Ishii)
+     Prevent query cache update under shared lock. (Tatsuo Ishii)
     </para>
     <para>
-     在 <ulink url="https://www.pgpool.net/mantisbt/view.php?id=795">bug 795</ulink> 中指出，过期的查询缓存条目可能在共享锁下被修改。这可能导致查询缓存使用的共享内存损坏。为解决此问题，我们暂时释放共享锁，然后在修改缓存条目之前获取排他锁。这可能会创建一个时间窗口，我们需要重新获取缓存条目元数据，以确保元数据未被其他人修改。
+     In <ulink url="https://www.pgpool.net/mantisbt/view.php?id=795">bug 795</ulink> it was pointed out
+	 that expired query cache entry can be modified under shared lock. This
+	 could cause shared memory corruption used by query cache. In order to
+	 fix this, we temporarily release the shared lock and then acquire an
+	 exclusive lock before modifying the cache entry. This could create a
+	 window and we need to get the cache entry meta data again to make sure
+	 that the meta data has not been modified by someone else.
     </para>
     <para>
-	 回溯到引入查询缓存共享锁的 V4.4 稳定版。
+	 Back-patch to V4.4 stable where shared locking for query cache was introduced.
     </para>
    </listitem>
 
@@ -2586,30 +2876,34 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-05 [6aebf24]
     -->
     <para>
-     修复 <xref linkend="guc-delay-threshold-by-time"> 和 <xref linkend="guc-prefer-lower-delay-standby">。(Tatsuo Ishii)
+     Fix <xref linkend="guc-delay-threshold-by-time"> and <xref linkend="guc-prefer-lower-delay-standby">. (Tatsuo Ishii)
     </para>
 	<para>
-     自 4.4 版本引入 <varname>delay_threshold_by_time</varname> 以来，它们一直存在问题。
+     They were broken since <varname>delay_threshold_by_time</varname> was introduced in 4.4.
 	</para>
     <itemizedlist>
 	 <listitem>
 	  <para>
-	   <varname>delay_threshold_by_time</varname> 未在 where_to_send 中被检查。这导致复制延迟时负载均衡失效。
+	   <varname>delay_threshold_by_time</varname> was not checked in where_to_send. This broke
+	   load balancing when replication is delayed.
 	  </para>
 	 </listitem>
     </itemizedlist>
     <itemizedlist>
 	 <listitem>
 	  <para>
-	   如果同时启用了 <varname>delay_threshold_by_time</varname> 和 <varname>prefer_lower_standby_delay</varname>，select_load_balancing_node 会失效。
+	   select_load_balancing_node was broken if both <varname>delay_threshold_by_time</varname>
+       and <varname>prefer_lower_standby_delay</varname> were enabled.
 	  </para>
 	 </listitem>
     </itemizedlist>
 	<para>
-	 为解决此问题，修复了 where_to_send 和 select_load_balancing_node。同时为 <varname>delay_threshold_by_time</varname> 添加了测试用例，已添加到 033.prefer_lower_standby_delay。
+	 In order to fix the issue, where_to_send and
+	 select_load_balancing_node are fixed. Also add test case for
+	 <varname>delay_threshold_by_time</varname> are added to 033.prefer_lower_standby_delay.
     </para>
     <para>
-	 讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2023-June/008864.html">https://www.pgpool.net/pipermail/pgpool-general/2023-June/008864.html</ulink>
+	 Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2023-June/008864.html">https://www.pgpool.net/pipermail/pgpool-general/2023-June/008864.html</ulink>
     </para>
    </listitem>
 
@@ -2618,20 +2912,21 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-05-30 [f388140]
     -->
     <para>
-     修复 replication_mode_recovery_2nd_stage.sample 示例脚本中错误的变量名。(Bo Peng)
+     Fix the wrong variable names in replication_mode_recovery_2nd_stage.sample sample script. (Bo Peng)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-08-03 [5bf4ede]
     -->
     <para>
-     修复缺失的 "logger" 应用程序名称。(Bo Peng)
+     Fix the missing "logger" application name. (Bo Peng)
     </para>
    </listitem>
 
@@ -2640,7 +2935,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-08-01 [65e2760]
     -->
     <para>
-     阐明停止模式的含义。(Tatsuo Ishii)
+     Clarify the meaning of stop mode. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -2649,10 +2944,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-26 [dda631f]
     -->
     <para>
-     从 4.2.10 版本发布说明中移除错误信息。(Bo Peng)
+     Remove the incorrect information from release note 4.2.10. (Bo Peng)
     </para>
     <para>
-     从 4.2.10 版本发布说明中移除 "修复 pgpool_recovery 扩展脚本。(Tatsuo Ishii)"。
+     Remove "Fix pgpool_recovery extension script. (Tatsuo Ishii)" from release note 4.2.10.
     </para>
    </listitem>
 
@@ -2661,7 +2956,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-07-11 [ddbcead]
     -->
     <para>
-     增强 "8.2. Pgpool-II + Watchdog 设置示例" 中的 SSH 公钥认证设置部分。(Bo Peng)
+     Enhance SSH public key authentication setting section in "8.2. Pgpool-II + Watchdog Setup Example". (Bo Peng)
     </para>
    </listitem>
 
@@ -2671,10 +2966,13 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-28 [9adee42]
     -->
     <para>
-     修复负载均衡模式章节。(Tatsuo Ishii)
+     Fix load balance mode chapter. (Tatsuo Ishii)
     </para>
     <para>
-     在某些地方，"流复制模式" 被写成了 "原生复制模式"。同时增强了关于流复制模式下负载均衡额外要求的描述。添加了一些索引。
+     In some places "streaming replication mode" was written as "native
+	 replication mode".  Also enhance description regarding additional
+	 requirements for load balancing in the streaming replication mode.
+	 Add some indexes.
     </para>
    </listitem>
 
@@ -2683,59 +2981,67 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-06-27 [fc0747a]
     -->
     <para>
-     增强在线恢复文档。(Bo Peng)
+     Enhance online recovery documentation. (Bo Peng)
     </para>
     <para>
-     提到在线恢复的第二阶段仅在未启用 watchdog 的多个 pgpool 节点上无法正常工作。
+     Mention that 2nd stage of online recovery does not work properly only for multiple pgpool nodes without watchdog enabled.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-05-22 [29f7861]
     -->
     <para>
-     修复偶发的 069.memory_leak_extended 测试失败。(Tatsuo Ishii)
+     Fix occasional 069.memory_leak_extended test failure. (Tatsuo Ishii)
     </para>
     <para>
-     经查明，偶发测试失败的原因是，在 pgbench 完成后，运行 ps 命令之前 pgpool 子进程已经消失。原因是某种类型不匹配的 FATAL 错误："DISCARD ALL cannot be executed within a pipeline"。为解决此问题，在后台运行 pgbench，并在 pgbench 完成之前获取进程大小。
+     It turned out that reason of the occasional test failure is, pgpool
+	 child process is gone before running ps command after pgbench
+	 finishes. The cause is a kind mismatch FATAL error, "DISCARD ALL
+	 cannot be executed within a pipeline". To fix this, run pgbench in
+	 background and get the process size before pgbench finishes.
     </para>
     <para>
-	 讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-May/004338.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-May/004338.html</ulink>
+	 Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-May/004338.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-May/004338.html</ulink>
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-3">
- <title>版本 4.4.3</title>
+ <title>Release 4.4.3</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2023-05-18</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-03-25 [77f1e64]
     -->
     <para>
-     将 <literal>psqlscan</literal> 源代码导入 <productname>Pgpool-II</productname>，用于判断多语句查询。(Tatsuo Ishii)
+     Import <literal>psqlscan</literal> source code into <productname>Pgpool-II</productname> to judge multi statement query. (Tatsuo Ishii)
     </para>
     <para>
-     <literal>Psqlscan</literal> 是 PostgreSQL 源代码树中的一个模块。
-     它本质上是 <productname>PostgreSQL</productname> SQL 扫描器的一个子集，
-     但专门用于检测每条 SQL 语句的结束位置。因此，我们可以通过它来统计查询字符串中的 SQL 语句数量。
+     <literal>Psqlscan</literal> is a module in the PostgreSQL source tree.
+     It is essentially subset of <productname>PostgreSQL</productname> SQL scanner
+     but it is specialized for detecting
+     the end of each SQL statement. Therefore we can count the number of
+     SQL statements in a query string by using it.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004291.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/04291.html</ulink>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-April/004320.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-April/004320.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004291.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/04291.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-April/004320.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-April/004320.html</ulink>
     </para>
    </listitem>
 
@@ -2745,13 +3051,14 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-09 [7aca88c]
     -->
     <para>
-     允许广泛使用多语句。(Tatsuo Ishii)
+     Allow to use multiple statements extensively. (Tatsuo Ishii)
     </para>
     <para>
-     此提交尝试消除 pgpool 长期以来关于多语句（multi-statements）的限制。
+     This commit tries to eliminate pgpool's long standing limitations
+     regarding multiple statements (multi-statements).
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html</ulink>
     </para>
    </listitem>
 
@@ -2762,36 +3069,42 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-03-28 [722d4bd]
     -->
     <para>
-     对内部查询使用模式限定。(Tatsuo Ishii)
+     Use schema qualification for internal queries. (Tatsuo Ishii)
     </para>
     <para>
-     某些对象（如函数和类型转换）未使用 "pg_catalog." 模式限定。
-     这虽然不会立即导致安全问题，但使用模式限定始终是一个好习惯。
+     Some of objects such as function and cast did not use "pg_catalog."
+     schema qualification. This does not lead to immediate security
+     concern but using the schema qualification is always good practice.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-04-30 [eeea973]
     -->
     <para>
-     修复 <xref linkend="guc-prefer-lower-delay-standby"> 的 bug。
+     Fix <xref linkend="guc-prefer-lower-delay-standby"> bug.
      (<ulink url="https://www.pgpool.net/mantisbt/view.php?id=798">bug 798</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     当客户端连接到 pgpool 时，会选择一个备用节点作为负载均衡节点。
-     如果在会话持续期间备用节点延迟超过 delay_threshold，
-     <varname>prefer_lower_delay_standby</varname> 会选择延迟最低的备用节点作为新的负载均衡节点，
-     并将目标后端设置为此节点。不幸的是，此决定是在检查 SELECT 查询是否包含写入函数等之前做出的，
-     导致 <productname>Pgpool-II</productname> 会愉快地发送无法在备用节点上执行的 SELECT 语句。
-     为了解决此问题，<varname>prefer_lower_delay_standby</varname> 的处理被移至写入函数等检查之后。
+     When client connects to pgpool, one of standbys are chosen as the load
+     balancing node. If standby delay exceeds delay_threshold while the
+     session continues, <varname>prefer_lower_delay_standby</varname> will choose
+     the least delay standby node as the new load balancing node and set the target
+     backend to the node. Unfortunately the decision was made before the
+     checking that SELECT query includes writing function etc.,
+     <productname>Pgpool-II</productname>
+     happily sends SELECT  which cannot be executed on standby. To fix
+     this, <varname>prefer_lower_delay_standby</varname> treatment is moved
+     after the writing function etc. check.
     </para>
     <para>
-     同时修改 033.prefer_lower_standby_delay 回归测试以包含上述情况。
+     Also modify 033.prefer_lower_standby_delay regression test to include the case above.
     </para>
    </listitem>
 
@@ -2800,11 +3113,11 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-03-22 [1618f0f]
     -->
     <para>
-     修复在使用 musl libc 的系统上的编译错误。
+     Fix compile error on systems using musl libc.
      (<ulink url="https://www.pgpool.net/mantisbt/view.php?id=790">bug 790</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     补丁由 leimaohui 提供。
+     Patch provided by leimaohui.
     </para>
    </listitem>
 
@@ -2813,10 +3126,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-05 [33655c3]
     -->
     <para>
-     修复多个查询缓存的 bug。(Tatsuo Ishii)
+     Fix multiple query cache bug. (Tatsuo Ishii)
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-January/004259.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-January/004259.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-January/004259.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-January/004259.html</ulink>
     </para>
    </listitem>
 
@@ -2825,17 +3138,19 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-05 [95ab912]
     -->
     <para>
-     修复 sr worker 在极端情况下不向备用服务器发送错误查询的问题。(Tatsuo Ishii)
+     Fix sr worker to not send wrong query to standby server in corner case. (Tatsuo Ishii)
     </para>
     <para>
-     当设置了 ALWAYS_PRIMARY 标志时，即使主节点宕机，PRIMARY_NODE_ID 宏也会返回节点 ID 而非 -1。
-     在这种情况下，流复制延迟检查工作进程会向备用节点发送
-     <literal>SELECT pg_current_wal_lsn()</literal> 或
+     When ALWAYS_PRIMARY flag is set, PRIMARY_NODE_ID macro returns node
+     id, rather than -1 even if the primary is down.
+     In this case streaming replication delay check worker
+     sends <literal>SELECT pg_current_wal_lsn()</literal> or
      <literal>SELECT pg_current_xlog_location()</literal>
-     （取决于 <productname>PostgreSQL</productname> 的版本），这当然会引发错误。
+     depending on <productname>PostgreSQL</productname>'s version to
+     standby which of course raises an error.
     </para>
     <para>
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004279.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004279.html</ulink>
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004279.html">https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004279.html</ulink>
     </para>
    </listitem>
 
@@ -2844,29 +3159,29 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-31 [38225a7]
     -->
     <para>
-     修复 <literal>DEALLOCATE</literal> 的类型不匹配错误。
+     Fix kind mismatch error with <literal>DEALLOCATE</literal>.
      (<ulink url="https://www.pgpool.net/mantisbt/view.php?id=780">bug 780</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     当以下条件全部满足时，会发生类型不匹配错误：
+     Kind mismatch error occurs when conditions below are all met:
      <itemizedlist>
       <listitem>
        <para>
-        流复制模式
+        streaming replication mode
        </para>
       </listitem>
      </itemizedlist>
      <itemizedlist>
       <listitem>
        <para>
-        负载均衡节点不是主节点
+        load balance node is other than primary
        </para>
       </listitem>
      </itemizedlist>
      <itemizedlist>
       <listitem>
        <para>
-        在多语句查询中使用了 <literal>PREPARE</literal>
+        <literal>PREPARE</literal> is used in a multi-statement query
        </para>
       </listitem>
      </itemizedlist>
@@ -2878,10 +3193,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-25 [1c623f7]
     -->
     <para>
-     修复回归测试的编译错误 (Takuma Hoshiai)
+     Fix compile error of regression test (Takuma Hoshiai)
     </para>
     <para>
-     该错误由使用 gcc10 的时间戳测试引起。
+     The error occurred by timestamp test using gcc10.
     </para>
    </listitem>
 
@@ -2890,7 +3205,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-30 [93f5585]
     -->
     <para>
-     在提交共享 relcache 时获取更强的锁。(Tatsuo Ishii)
+     Obtain stronger lock while committing shared relcache. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -2899,20 +3214,21 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-18 [1f503e1]
     -->
     <para>
-     修复 <literal>show pool_version</literal> 显示两次行描述的问题。(Tatsuo Ishii)
+     Fix that <literal>show pool_version</literal> shows row description twice. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-04-25 [171a57c]
     -->
     <para>
-     为 <xref linkend="guc-wd-priority"> 添加说明。(Chen Ningwei)
+     Add explanation for <xref linkend="guc-wd-priority">. (Chen Ningwei)
     </para>
    </listitem>
 
@@ -2921,7 +3237,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-19 [a57cc11]
     -->
     <para>
-     添加关于 <literal>PREPARE/EXECUTE/DEALLOCATE</literal> 的限制说明。(Tatsuo Ishii)
+     Add restriction regarding <literal>PREPARE/EXECUTE/DEALLOCATE</literal>. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -2930,7 +3246,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-19 [a9b4f30]
     -->
     <para>
-     添加使用 pgpool 时使用 <literal>-D</literal> 选项的注意事项。(Tatsuo Ishii)
+     Add caution to use <literal>-D</literal> option with pgpool. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -2939,7 +3255,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-14 [7a540cc]
     -->
     <para>
-     增强“从 RPM 安装”部分。(Bo Peng)
+     Enhancing "Installation from RPM" section. (Bo Peng)
     </para>
    </listitem>
 
@@ -2948,7 +3264,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-13 [bbe5236]
     -->
     <para>
-     在“服务器设置与操作”章节中添加“备份 PostgreSQL 数据库”部分。(Tatsuo Ishii)
+     Add "Backing up PostgreSQL database" section to "Server Setup and Operation" chapter. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -2957,7 +3273,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-13 [eb338ff]
     -->
     <para>
-     从“8.2. Pgpool-II + Watchdog 设置示例”中移除 "-D" 启动 OPTS 的配置。(Bo Peng)
+     Remove the configuration of "-D" start OPTS from "8.2. Pgpool-II + Watchdog Setup Example". (Bo Peng)
     </para>
    </listitem>
 
@@ -2966,20 +3282,20 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-09 [336f50f]
     -->
     <para>
-     修复限制部分。(Tatsuo Ishii)
+     Fix restrictions section. (Tatsuo Ishii)
     </para>
     <para>
      <itemizedlist>
       <listitem>
        <para>
-        添加关于 <literal>SCRAM-SHA-256</literal> 认证的说明
+        Add mention about <literal>SCRAM-SHA-256</literal> authentication
        </para>
       </listitem>
      </itemizedlist>
      <itemizedlist>
       <listitem>
        <para>
-        添加关于快照隔离模式的说明
+        Add mention about snapshot isolation mode
        </para>
       </listitem>
      </itemizedlist>
@@ -2992,7 +3308,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-03 [75e8870]
     -->
     <para>
-     添加当 pg 节点状态显示为“unknown”时的说明。(Tatsuo Ishii)
+     Add explanation when pg node status is shown as "unknown". (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3001,7 +3317,8 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-03-22 [366e8e6]
     -->
     <para>
-     提到执行 <xref linkend="pcp-promote-node"> 时，要提升的目标节点必须处于运行状态。(Tatsuo Ishii)
+     Mention that the target node to promote must be up and running when executing
+     <xref linkend="pcp-promote-node">. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3010,7 +3327,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-22 [85994ce]
     -->
     <para>
-     提到 AES256 支持需要 <option>--with-openssl</option> 选项。(Tatsuo Ishii)
+     Mention that AES256 support requires <option>--with-openssl</option> option. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3019,7 +3336,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-21 [e813ed6]
     -->
     <para>
-     明确说明使用 .pcppass 需要 pcp 命令的 -w 选项。(Tatsuo Ishii)
+     Explicitly stat that it is -w option of pcp command is needed to use .pcppass. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3028,10 +3345,11 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-15 [6bf97fd]
     -->
     <para>
-     修复“2.8 创建插入锁表”部分。(Tatsuo Ishii)
+     Fix "2.8 Creating insert lock table" section. (Tatsuo Ishii)
     </para>
     <para>
-     它仅引用了原生复制，而本应引用快照隔离模式。
+     It only referred to the native replication where it should have referred
+     to the snapshot isolation mode.
     </para>
    </listitem>
 
@@ -3040,33 +3358,35 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-02-01 [6d39a7e]
     -->
     <para>
-     增强 <xref linkend="sql-show-pool-cache">。(Tatsuo Ishii)
+     Enhance <xref linkend="sql-show-pool-cache">. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>测试工具</title>
+
+ <sect2>
+  <title>Test Tools</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-03-28 [89b5129]
     -->
     <para>
-     修改 <command>pgpool_setup</command>，将一些参数追加到配置文件末尾。(Bo Peng)
+     Change <command>pgpool_setup</command> to append some parameters to the end of the configuration file. (Bo Peng)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
    <listitem>
     <!--
     2023-01-28 [baedc51]
     -->
     <para>
-     重构 071.execute_and_deallocate/test.sh。(Tatsuo Ishii)
+     Refactor 071.execute_and_deallocate/test.sh. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3078,7 +3398,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-15 [1e25fd2]
     -->
     <para>
-     增强回归测试。(Tatsuo Ishii)
+     Enhance regression tests. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3087,137 +3407,142 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-04-06 [89c0159]
     -->
     <para>
-     修复偶发的 005.jdbc 测试失败。(Tatsuo Ishii)
+     Fix occasional 005.jdbc test failure. (Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-2">
- <title>版本 4.4.2</title>
+ <title>Release 4.4.2</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2023-01-23</simpara>
   </note>
 
  <sect2>
-  <title>概述</title>
+  <title>Overview</title>
   <para>
-   此版本包含一个安全修复。
+   This release contains a security fix.
   </para>
   <para>
-   如果同时满足以下条件，<xref linkend="guc-wd-lifecheck-user"> 的密码会
-   被 <xref linkend="SQL-SHOW-POOL-STATUS"> 命令暴露。
-   任何能够连接到 <productname>Pgpool-II</productname> 的用户都可以执行该命令。(CVE-2023-22332)
-  </para>
-
-  <itemizedlist>
-   <listitem>
-    <para>
-     版本 3.3 或更高版本。
-    </para>
-   </listitem>
-
-   <listitem>
-    <para>
-     <xref linkend="guc-use-watchdog"> 设置为 <literal>on</literal>。
-    </para>
-   </listitem>
-
-   <listitem>
-    <para>
-     <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>query</literal>。
-    </para>
-   </listitem>
-
-   <listitem>
-    <para>
-     一个明文密码被设置
-     到 <xref linkend="guc-wd-lifecheck-password">。
-    </para>
-   </listitem>
-  </itemizedlist>
-
-  <para>
-   在这种情况下，强烈建议升级到此版本
-   （我们不再在 show pool_status 命令中暴露 <xref linkend="guc-wd-lifecheck-password">），
-   或者使用以下一种变通方法。
-  </para>
-
-  <para>
-   针对 4.0.x 到 4.4.x 用户的变通方法：
+   If following conditions are all met, the password of <xref linkend="guc-wd-lifecheck-user"> is
+   exposed by <xref linkend="SQL-SHOW-POOL-STATUS"> command.
+   The command can be executed by any user who can
+   connect to <productname>Pgpool-II</productname>. (CVE-2023-22332)
   </para>
 
   <itemizedlist>
    <listitem>
     <para>
-    禁用 watchdog。将 <xref linkend="guc-use-watchdog">
-    设置为 <literal>off</literal>。
+     Version 3.3 or later.
     </para>
    </listitem>
 
    <listitem>
     <para>
-    将 <xref linkend="guc-wd-lifecheck-method">
-    更改为 <literal>heartbeat</literal>。
+     <xref linkend="guc-use-watchdog"> is <literal>on</literal>.
     </para>
    </listitem>
 
    <listitem>
     <para>
-    将空字符串设置
-    到 <xref linkend="guc-wd-lifecheck-password">。这将使用
-    <filename>pool_passwd</filename> 文件中的密码。
+     <xref linkend="guc-wd-lifecheck-method"> is <literal>query</literal>.
     </para>
    </listitem>
 
    <listitem>
     <para>
-    将 AES 加密密码设置
-    到 <xref linkend="guc-wd-lifecheck-password">。
+     A plain text password is set
+     to <xref linkend="guc-wd-lifecheck-password">.
     </para>
    </listitem>
   </itemizedlist>
 
   <para>
-   在任何情况下，我们都建议
-   在 <productname>PostgreSQL</productname> 中
-   更改 <xref linkend="guc-wd-lifecheck-password">。
+   In this case it is strongly recommended to upgrade to this version
+   (we do not expose <xref linkend="guc-wd-lifecheck-password"> in
+   show pool_status command any more), or use one of following
+   workarounds.
   </para>
 
   <para>
-   针对 3.0.x 到 3.7.x 用户的变通方法：
+   Workarounds for 4.0.x to 4.4.x users:
   </para>
 
   <itemizedlist>
    <listitem>
     <para>
-    禁用 watchdog。将 <xref linkend="guc-use-watchdog">
-    设置为 <literal>off</literal>。
+    Disable watchdog. Set <xref linkend="guc-use-watchdog">
+    to <literal>off</literal>.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     将 <xref linkend="guc-wd-lifecheck-method">
-     更改为 <literal>heartbeat</literal>。
+    Change <xref linkend="guc-wd-lifecheck-method">
+    to <literal>heartbeat</literal>.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+    Set an empty string
+    to <xref linkend="guc-wd-lifecheck-password">. This will use
+    password in the <filename>pool_passwd</filename> file.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+    Set an AES encrypted password
+    to <xref linkend="guc-wd-lifecheck-password">.
     </para>
    </listitem>
   </itemizedlist>
 
   <para>
-   在任何情况下，我们都建议
-   在 <productname>PostgreSQL</productname> 中
-   更改 <xref linkend="guc-wd-lifecheck-password">。
+   In any case we recommend to
+   change <xref linkend="guc-wd-lifecheck-password">
+   in <productname>PostgreSQL</productname>.
   </para>
 
   <para>
-   请注意，<productname>Pgpool-II</productname> 3.7.x 或
-   更早版本已停止支持，并且不再为这些版本提供次要更新。
+   Workarounds for 3.0.x to 3.7.x users:
+  </para>
+
+  <itemizedlist>
+   <listitem>
+    <para>
+    Disable watchdog. Set <xref linkend="guc-use-watchdog">
+    to <literal>off</literal>.
+    </para>
+   </listitem>
+
+   <listitem>
+    <para>
+     Change <xref linkend="guc-wd-lifecheck-method">
+     to <literal>heartbeat</literal>.
+    </para>
+   </listitem>
+  </itemizedlist>
+
+  <para>
+   In any case we recommend to
+   change <xref linkend="guc-wd-lifecheck-password">
+   in <productname>PostgreSQL</productname>.
+  </para>
+
+  <para>
+   Please note that <productname>Pgpool-II</productname> 3.7.x or
+   before are end of life and no minor updates are provided for those
+   versions.
   </para>
  </sect2>
-<sect2>
-  <title>变更</title>
+
+ <sect2>
+  <title>Changes</title>
   <itemizedlist>
 
    <listitem>
@@ -3225,10 +3550,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-21 [123ceb46]
       -->
     <para>
-     不在 <xref linkend="SQL-SHOW-POOL-STATUS">、
-     <xref linkend="PCP-POOL-STATUS"> 和
-     <xref linkend="PGPOOL-ADM-PCP-POOL-STATUS"> 命令中暴露
-     <xref linkend="guc-wd-lifecheck-password">。(CVE-2023-22332) (Bo Peng)
+     Do not expose <xref linkend="guc-wd-lifecheck-password"> in
+     <xref linkend="SQL-SHOW-POOL-STATUS">,
+     <xref linkend="PCP-POOL-STATUS"> and
+     <xref linkend="PGPOOL-ADM-PCP-POOL-STATUS"> commands. (CVE-2023-22332) (Bo Peng)
     </para>
    </listitem>
 
@@ -3237,15 +3562,17 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-21 [4e0cb44b]
       -->
     <para>
-     将 <xref linkend="guc-wd-lifecheck-password"> 的默认值
-     更改为文档中所述的空字符串。(Bo Peng)
+     Change the default value
+     for <xref linkend="guc-wd-lifecheck-password"> to empty string as
+     documented. (Bo Peng)
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
 
    <listitem>
@@ -3253,17 +3580,17 @@ ALTER ROLE user WITH CONNECTION LIMIT
 	2023-01-16 [65865834]
       -->
     <para>
-     修复了 pgpool_adm: pcp_pool_status 在与 <productname>PostgreSQL</productname> 15 一起使用时出现的错误。(Tatsuo Ishii)
+     Fixed pgpool_adm: pcp_pool_status error when this function is used with <productname>PostgreSQL</productname> 15. (Tatsuo Ishii)
     </para>
     <para>
-     pcp_pool_status 实际上返回 SETOF record，但之前被声明为
-     "returns record"。这种不严谨在
-     <productname>PostgreSQL</productname> 14 之前一直被容忍，但 <productname>PostgreSQL</productname> 15
-     变得更加严格。为了解决这个问题，我们需要将
-     pcp_pool_status 的返回类型从 "RETURNS record" 更改为 "RETURNS SETOF record"。
+     pcp_pool_status actually returns SETOF record, but it was declared as
+     "returns record". This sloppiness had been tolerated until
+     <productname>PostgreSQL</productname> 14 but <productname>PostgreSQL</productname> 15
+     becomes more strict. To fix this we need to change the return type of
+     pcp_pool_status from "RETURNS record" to "RETURNS SETOF record".
     </para>
     <para>
-     并且 pgpool_adm 扩展版本已升级到 1.5。
+     And the pgpool_adm extension version is bumped to 1.5.
     </para>
    </listitem>
 
@@ -3272,11 +3599,12 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-13 [ac752fd6]
       -->
     <para>
-     修复了流复制检查中的整数溢出问题。(Tatsuo Ishii)
+     Fix integer overflow in streaming replication check. (Tatsuo Ishii)
     </para>
     <para>
-     当 <xref linkend="guc-delay-threshold-by-time"> 启用且
-     复制延迟超过约 36 分钟时，会记录整数溢出错误，并且复制检查失败。
+     When <xref linkend="guc-delay-threshold-by-time"> is enabled and
+     the replication delay is about more than 36 minutes, an integer
+     overflow error was logged and replication check failed.
     </para>
    </listitem>
 
@@ -3285,7 +3613,8 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-24 [b31e6c94]
       -->
     <para>
-     修复了 <filename>pgpool-regclass.c</filename> 中的编译器警告。(Florian Weimer,
+     Fix compiler warning
+     in <filename>pgpool-regclass.c</filename>. (Florian Weimer,
      Tatsuo Ishii)
     </para>
    </listitem>
@@ -3295,14 +3624,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-10 [b8698f5f]
       -->
     <para>
-     修复了 Coverity 指出的未初始化变量。(Takuma Hoshiai)
+     Fix Uninitialized variables pointed out by Coverity. (Takuma Hoshiai)
     </para>
     </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
 
    <listitem>
@@ -3310,7 +3640,9 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-06 [2d002b7d]
       -->
     <para>
-     文档：增强并修复 <link linkend="runtime-in-memory-query-cache-shmem-config">使用共享内存的配置</link> 章节中的一些错误。(Tatsuo Ishii)
+     Doc: Enhance and fix some mistakes
+     in <link linkend="runtime-in-memory-query-cache-shmem-config">Configurations
+     to use shared memory</link> chapter. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3319,7 +3651,8 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2023-01-03 [1a259a28]
       -->
     <para>
-     文档：增强对 <xref linkend="guc-delay-threshold-by-time"> 的解释。(zam bak, Tatsuo
+     Doc: Enhance explanation
+     of <xref linkend="guc-delay-threshold-by-time">. (zam bak, Tatsuo
      Ishii)
     </para>
    </listitem>
@@ -3327,22 +3660,23 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-1">
- <title>发布版本 4.4.1</title>
+ <title>Release 4.4.1</title>
   <note>
-   <title>发布日期</title>
+   <title>Release Date</title>
    <simpara>2022-12-22</simpara>
   </note>
 
  <sect2>
-  <title>变更</title>
+  <title>Changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2022-12-16 [6311565]
     -->
     <para>
-     将流复制 LOG 消息 "standby_delay: 54" 降级为 DEBUG1 级别。(Tatsuo Ishii)
+     Downgrade streaming replication LOG message "standby_delay: 54" to DEBUG1. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3351,14 +3685,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-12 [dfcc21e]
     -->
     <para>
-     将 LOG 消息 "we have hit the ceiling" 降级为 DEBUG5 级别。(Tatsuo Ishii)
+     Downgrade LOG messages "we have hit the ceiling" to DEBUG5. (Tatsuo Ishii)
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
 
    <listitem>
@@ -3366,14 +3701,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-20 [f6cbfe2]
     -->
     <para>
-     修复时间戳重写错误。(Tatsuo Ishii)
+     Fix time stamp rewrite bug. (Tatsuo Ishii)
     </para>
     <para>
-     在 <productname>Pgpool-II</productname> 4.4 的 outfuncs 模块中，布尔常量被忽略并在重写的查询字符串中变为空字符串，从而导致语法错误。
+     In <productname>Pgpool-II</productname> 4.4 outfuncs module, boolean constant was ignored and turned into
+     an empty string in the rewritten query string, which caused syntax errors.
     </para>
     <para>
-     此问题由 Michiel van Leening 报告。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-general/2022-December/008581.html">[pgpool-general: 8521]</ulink>
+     This issue is reported by Michiel van Leening.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-general/2022-December/008581.html">[pgpool-general: 8521]</ulink>
     </para>
    </listitem>
 
@@ -3382,21 +3718,23 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-20 [7bc3176]
     -->
     <para>
-     修复与 <xref linkend="guc-failover-require-consensus"> 相关的问题。(Muhammad Usama)
+     Fix issue with <xref linkend="guc-failover-require-consensus">. (Muhammad Usama)
     </para>
     <para>
-     修复方法是根据整个 watchdog 集群中健康检查参数的最大值，动态设置故障转移命令的超时时间。
+     The fix is to dynamically set the failover command timeout based on the maximum
+     value of health check parameters across the watchdog cluster.
     </para>
     <para>
-     由 Tatsuo Ishii 审核和测试。
-     讨论：<ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2022-November/004228.html">[pgpool-hackers: 4227]</ulink>
+     Reviewed and tested by Tatsuo Ishii.
+     Discussion: <ulink url="https://www.pgpool.net/pipermail/pgpool-hackers/2022-November/004228.html">[pgpool-hackers: 4227]</ulink>
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档</title>
+
+ <sect2>
+  <title>Documents</title>
   <itemizedlist>
 
    <listitem>
@@ -3404,10 +3742,10 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-19 [8e5f5eb]
     -->
     <para>
-     文档：增强性能部分。(Tatsuo Ishii)
+     Doc: enhance the performance section. (Tatsuo Ishii)
     </para>
     <para>
-     提及动态进程管理。
+     Mention about dynamic process management.
     </para>
    </listitem>
 
@@ -3416,7 +3754,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-14 [5d5d4a2]
     -->
     <para>
-     文档：修复 Aurora 示例中的拼写错误。(Tatsuo Ishii)
+     Doc: fix typo in Aurora example. (Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -3425,14 +3763,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-12 [83dcd83]
     -->
     <para>
-     文档：增强动态进程管理文档。(Tatsuo Ishii)
+     Doc: enhance dynamic process management document. (Tatsuo Ishii)
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>回归测试</title>
+
+ <sect2>
+  <title>Regression Tests</title>
   <itemizedlist>
 
    <listitem>
@@ -3440,7 +3779,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-12-17 [2985853]
     -->
     <para>
-     允许使用环境变量定义 PGPOOLDIR。
+     Allow to define PGPOOLDIR using environment variable.
      (<ulink url="https://www.pgpool.net/mantisbt/view.php?id=766">bug 766</ulink>) (Bo Peng)
     </para>
    </listitem>
@@ -3448,116 +3787,136 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
+
 <sect1 id="release-4-4-0">
- <title>版本 4.4.0</title>
+ <title>Release 4.4.0</title>
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2022-12-06</simpara>
  </note>
 
  <sect2>
-  <title>概述</title>
+  <title>Overview</title>
   <para>
-   此版本增加了许多增强功能，以便更轻松地进行配置和管理。新增了动态备用进程管理模式。
-   流复制延迟可以通过时间（而非 WAL 字节数）来控制。
-   <productname>Pgpool-II</productname> 和 PCP 的监听地址支持多个地址。
-   现在可以完整配置 Unix 套接字目录。
-   允许自定义 <varname>trusted_servers</varname> 用于检查上游连接的命令。
-   引入了新的 <productname>PostgreSQL</productname> 15 <literal>SQL</literal>
-   解析器。查询缓存的性能也得到了改进。
+   Many enhancements are added to this version for easier
+   configuration and administration. New dynamic spare process management mode is added.
+   Streaming replication delay can be controlled by time, rather than WAL
+   bytes. <productname>Pgpool-II</productname> and PCP's listen
+   addresses accept multiple addresses. Full configuration of Unix
+   socket directory is now possible.
+   Allow to customize the command used by <varname>trusted_servers</varname> for checking upstream connection.
+   New <productname>PostgreSQL</productname> 15 <literal>SQL</literal>
+   parser is imported. Performance is also improved in query cache.
   </para>
 
   <para>
-   主要增强功能如下：
+   Major enhancements are as follows:
   </para>
 
   <itemizedlist>
    <listitem>
     <para>
-     新增动态备用进程管理功能。
-     此功能允许在静态和动态进程管理模式之间进行选择。
+     Add new dynamic spare process management feature.
+     This feature allows selecting between static and dynamic process management modes.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     允许在流复制模式下按时间指定复制延迟。为此，引入了新的
-     参数 <xref linkend="guc-delay-threshold-by-time">。
+     Allow to specify replication delay by time in streaming
+     replication mode. For this purpose new
+     parameter <xref linkend="guc-delay-threshold-by-time"> is
+     introduced.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     正如 <productname>PostgreSQL</productname> 已经做的那样，
-     <productname>Pgpool-II</productname> 现在支持
-     <xref linkend="guc-unix-socket-directories">、<xref linkend="guc-unix-socket-group">
-     和 <xref linkend="guc-unix-socket-permissions">，以便更灵活、更精确地控制 UNIX 域套接字。
+     As <productname>PostgreSQL</productname> already
+     does, <productname>Pgpool-II</productname> now supports
+     <xref linkend="guc-unix-socket-directories">, <xref linkend="guc-unix-socket-group">
+     and <xref linkend="guc-unix-socket-permissions"> for more
+     flexible and precise control of UNIX domain sockets.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     允许在 <xref linkend="guc-listen-addresses">
-     和 <xref linkend="guc-pcp-listen-addresses"> 中使用逗号分隔的多个监听地址。它们控制
-     哪些接口接受连接尝试，这有助于防止在不安全的网络接口上重复的恶意连接请求。
+     Allow to use comma separated multiple listen addresses in
+     <xref linkend="guc-listen-addresses">
+     and <xref linkend="guc-pcp-listen-addresses">. They control
+     which interfaces accept connection attempts, which can help
+     prevent repeated malicious connection requests on insecure
+     network interfaces.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     允许自定义 <xref linkend="guc-trusted-servers"> 用于检查上游连接的命令。
-     为此，引入了新的参数 <xref linkend="guc-trusted-server-command">。
+     Allow to customize the command used by <xref linkend="guc-trusted-servers"> for checking upstream connection.
+     For this purpose new parameter <xref linkend="guc-trusted-server-command"> is introduced.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     导入 PostgreSQL 15 的 SQL 解析器。
+     Import PostgreSQL 15's SQL parser.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     通过减少锁竞争来加速 <link linkend="runtime-in-memory-query-cache">查询
-     缓存</link>。这使得并发运行的客户端能够更快地获取缓存内容。
+     Speed up <link linkend="runtime-in-memory-query-cache">query
+     cache</link> by reducing lock contention. This allows concurrent
+     running clients to fetch cache contents much more quicker.
     </para>
    </listitem>
   </itemizedlist>
 
  </sect2>
-<sect2 id="migration-4-4-0">
-  <title>迁移到版本 4.4</title>
+
+ <sect2 id="migration-4-4-0">
+  <title>Migration to Version 4.4</title>
   <itemizedlist>
 
    <listitem>
     <para>
-     将配置参数 <varname>socket_dir</varname> 重命名为 <xref linkend="guc-unix-socket-directories">。
+     Rename configuration parameter <varname>socket_dir</varname> to <xref linkend="guc-unix-socket-directories">.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     配置参数 <literal>delegate_IP</literal> 被重命名
-     为 <xref linkend="guc-delegate-ip">。为了与旧版本兼容，旧的参数 delegate_IP 仍然可以工作。如果
-     使用了旧的参数 delegate_IP，<productname>Pgpool-II</productname> 将把值设置到
-     delegate_ip 并发出警告消息。
+     Configuration parameter <literal>delegate_IP</literal> is renamed
+     to <xref linkend="guc-delegate-ip">.  For compatibility with the
+     old versions, the old parameter delegate_IP can still work.  If
+     the old parameter delegate_IP is
+     used, <productname>Pgpool-II</productname> will set the value to
+     delegate_ip and throw a warning message.
     </para>
    </listitem>
 
    <listitem>
     <para>
-     来自后端的参数状态消息现在会转发到前端。当参数状态消息从后端到达时，
-     <productname>Pgpool-II</productname> 会记住它，但不会转发到前端。现在它们会被转发到前端。
-     使用 <productname>Pgpool-II</productname> 的应用程序应该准备好接受该消息。但是
-     由于 <productname>PostgreSQL</productname> 已经在生成参数状态消息时将其发送到前端，
-     那些与 <productname>PostgreSQL</productname> 一起工作的应用程序应该不会对此更改有任何问题。
+     Parameter status messages from backend are now forwarded to
+     frontend.  When a parameter status message arrives from
+     backend, <productname>Pgpool-II</productname> memorized it but
+     did not forward to frontend.  Now they are forwarded to frontend.
+     Applications using <productname>Pgpool-II</productname> should be
+     prepared to accept the message.  But
+     since <productname>PostgreSQL</productname> already sends
+     parameter status messages to frontend whenever they are
+     generated, those application that are working
+     with <productname>PostgreSQL</productname> should have no problem
+     with this change.
     </para>
    </listitem>
 
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>更改</title>
+
+ <sect2>
+  <title>Changes</title>
   <itemizedlist>
 
    <listitem>
@@ -3565,20 +3924,21 @@ ALTER ROLE user WITH CONNECTION LIMIT
 	2022-11-09 [ce5e529c]
       -->
     <para>
-     新增动态备用进程管理功能。(Jianshen Zhou, Muhammad Usama)
+     Add new dynamic spare process management feature. (Jianshen Zhou, Muhammad Usama)
     </para>
     <para>
-     此功能允许在静态和动态进程管理模式之间进行选择。
-     静态进程管理与 <productname>Pgpool-II</productname> 的现有行为相同，
-     即在启动时生成所有子进程。新的动态模式会跟踪空闲进程，
-     并派生或终止进程以将该数量保持在指定范围内。
+     This feature allows selecting between static and dynamic process management modes.
+     Static process management is the same as the existing behavior of <productname>Pgpool-II</productname>,
+     where it spawns all child processes at startup. The new Dynamic mode keeps track of idle
+     processes and forks or kills processes to keep this number within
+     the specified boundaries.
     </para>
     <para>
-     新增了四个设置，<xref linkend="guc-process-management-mode">、
-     <xref linkend="guc-process-management-strategy">、
-     <xref linkend="guc-min-spare-children"> 和 <xref linkend="guc-max-spare-children">
-     用于配置进程管理行为，而 <varname>process_management_strategy</varname>
-     允许在三种可能的缩减策略之间进行选择。
+     Four new settings, <xref linkend="guc-process-management-mode">,
+     <xref linkend="guc-process-management-strategy">,
+     <xref linkend="guc-min-spare-children">, and <xref linkend="guc-max-spare-children">
+     are added to configure the process management behavior, while <varname>process_management_strategy</varname>
+     allows selecting between three possible scaling-down strategies.
     </para>
    </listitem>
 
@@ -3588,19 +3948,26 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-01-29 [515860f3]
     -->
     <para>
-     允许按时间指定复制延迟。(Tatsuo Ishii)
+     Allow to specify replication delay by time. (Tatsuo Ishii)
     </para>
     <para>
-     <xref linkend="guc-delay-threshold"> 以字节为单位指定复制延迟
-     上限。添加了一个类似的参数，称为
-     <xref linkend="guc-delay-threshold-by-time">，以便可以通过时间（秒）来指定限制。新参数在大于 0 时生效。
-     在这种情况下，<xref linkend="SQL-SHOW-POOL-NODES"> 和
-     <xref linkend="pcp-node-info"> 以秒为单位显示复制延迟。
-     如果该参数设置为 0，则 <xref linkend="guc-delay-threshold-by-time">
-     被忽略，并回退到 delay_threshold 模式。
+     <xref linkend="guc-delay-threshold"> specifies replication delay
+     upper limit in bytes. Add similar parameter called
+     <xref linkend="guc-delay-threshold-by-time"> so that the limit
+     can be specified by time (seconds). The new parameter is
+     effective if it is greater than 0.
+     In this case <xref linkend="SQL-SHOW-POOL-NODES"> and
+     <xref linkend="pcp-node-info"> display the replication delay in seconds.
+     If the parameter is set to 0, <xref linkend="guc-delay-threshold-by-time">
+     is ignored and falls back to delay_threshold mode.
     </para>
     <para>
-     为此，在共享内存数据 Backendinfo 中添加了新成员 standby_delay_by_time，以区分复制延迟是以字节（standby_delay_by_time = false）还是秒（standby_delay_by_time = true）为单位测量的。如果 standby_delay_by_time 为 true，则 standby_delay 以秒 * 1000000 为单位测量，因此精度为小数点后 6 位。
+     For this purpose new member standby_delay_by_time is added to shared
+     memory data Backendinfo to distinguish whether replication delay is
+     measured in bytes (standby_delay_by_time = false) or seconds
+     (standby_delay_by_time = true). If standby_delay_by_time is true,
+     standby_delay is measured in second * 1000000, so that the precision
+     is 6 digits after decimal point.
     </para>
    </listitem>
 
@@ -3609,11 +3976,11 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-07-20 [bc03514b]
     -->
     <para>
-     支持 unix_socket_directories 及相关参数。(Masaya Kawamoto)
+     Support for unix_socket_directories and related parameters. (Masaya Kawamoto)
     </para>
     <para>
-     将配置参数 <varname>socket_dir</varname> 重命名为 <xref linkend="guc-unix-socket-directories">，
-     并添加新的配置参数 <xref linkend="guc-unix-socket-group"> 和 <xref linkend="guc-unix-socket-permissions">。
+     Rename configuration parameter <varname>socket_dir</varname> to <xref linkend="guc-unix-socket-directories">,
+     and add new configuration parameters <xref linkend="guc-unix-socket-group"> and <xref linkend="guc-unix-socket-permissions">.
     </para>
    </listitem>
 
@@ -3622,14 +3989,15 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-11-04 [b7bcf0d7]
     -->
     <para>
-     添加 <xref linkend="guc-trusted-server-command"> 配置参数。(Takuma Hoshiai)
+     Add <xref linkend="guc-trusted-server-command"> configuration parameter. (Takuma Hoshiai)
     </para>
     <para>
-     此功能能够指定由 <xref linkend="guc-trusted-servers"> 用于检查上游连接的命令。
-     以前，只使用 ping 命令，并且是硬编码的。
+     This feature is able to specify a command that is used by
+     <xref linkend="guc-trusted-servers"> for checking up stream connection.
+     Previously, ping command was only used, and it was hard coded.
     </para>
     <para>
-     默认值为 'ping -q -c3 %h'，与之前相同。
+     Default is 'ping -q -c3 %h' which means same as before.
     </para>
    </listitem>
 
@@ -3639,15 +4007,18 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-03-05 [9f727c1e]
     -->
     <para>
-     实现逗号分隔的多个监听地址。(Tatsuo Ishii)
+     Implement comma separated multiple listen addresses. (Tatsuo Ishii)
     </para>
     <para>
-     以前，<productname>Pgpool-II</productname> 只允许将单个主机名、IP 或 '*' 设置到
-     <xref linkend="guc-listen-addresses"> 参数。现在我们可以像
-     <productname>PostgreSQL</productname> 已经做的那样，将多个监听地址设置到该参数。
+     Previously <productname>Pgpool-II</productname> only allowed to
+     set single hostname, IP or '*' to
+     the <xref linkend="guc-listen-addresses"> parameter. Now we can
+     set multiple listen addresses to the parameter
+     as <productname>PostgreSQL</productname> already does.
     </para>
     <para>
-     此外，<xref linkend="guc-pcp-listen-addresses"> 现在也接受逗号分隔的多个监听地址。
+     Also <xref linkend="guc-pcp-listen-addresses"> now accepts comma
+     separated multiple listen addresses.
     </para>
    </listitem>
 
@@ -3656,16 +4027,16 @@ ALTER ROLE user WITH CONNECTION LIMIT
     2022-09-22 [424e68c1]
     -->
     <para>
-     导入 PostgreSQL 15 的 SQL 解析器。(Bo Peng, Tatsuo Ishii)
+     Import PostgreSQL 15's SQL parser.(Bo Peng, Tatsuo Ishii)
     </para>
     <para>
-     PostgreSQL 15 解析器的主要更改包括：
+     Major changes of PostgreSQL 15 parser include:
     </para>
     <itemizedlist>
 
      <listitem>
       <para>
-       添加新的 SQL MERGE 命令
+       Add new SQL MERGE command
       </para>
       <programlisting>
 MERGE INTO ... USING ...
@@ -3674,7 +4045,7 @@ MERGE INTO ... USING ...
 
      <listitem>
       <para>
-       为 COPY FROM 添加新的 HEADER MATCH 选项
+       Add new option HEADER MATCH to COPY FROM
       </para>
       <programlisting>
 COPY ... FROM stdin WITH (HEADER MATCH);
@@ -3683,7 +4054,7 @@ COPY ... FROM stdin WITH (HEADER MATCH);
 
      <listitem>
       <para>
-       允许外键 ON DELETE SET 操作
+       Allow foreign key ON DELETE SET actions
       </para>
       <programlisting>
 CREATE TABLE t1 (
@@ -3695,7 +4066,7 @@ FOREIGN KEY (c1, c2) REFERENCES t2 ON DELETE SET NULL (c2)
 
      <listitem>
       <para>
-       允许在 ALTER TABLE 中设置 ACCESS METHOD
+       Allow SET ACCESS METHOD in ALTER TABLE
       </para>
       <programlisting>
 ALTER TABLE ... SET ACCESS METHOD ...;
@@ -3710,16 +4081,26 @@ ALTER TABLE ... SET ACCESS METHOD ...;
     2022-09-19 [dc559c07]
     -->
     <para>
-     将查询缓存中的排他锁替换为共享锁。(Tatsuo Ishii)
+     Replace exclusive locking with shared locking in query cache. (Tatsuo Ishii)
     </para>
     <para>
-     以前，查询缓存模块使用信号量来保护查询缓存模块中的关键区域。然而，这有一个严重的缺点，因为使用信号量的锁定是排他锁。这会导致缓存读取客户端不必要的等待，并且在存在许多并发客户端时导致性能下降。
+     Previously the query cache module used semaphore to protect critical
+     region in the query cache module. However this had serious down side
+     because the locking using semaphore is exclusive lock. This
+     introduces unnecessary wait for cache reading clients and performance
+     degradation when there are many concurrent clients.
     </para>
     <para>
-     为了解决这个问题，将锁定实现替换为 <function>flock(2)</function>，它允许共享锁定。现在，缓存读取客户端不需要互相争抢锁，从而提高了并发性。
+     To overcome the issue replace locking implementation
+     with <function>flock(2)</function> which allows shared
+     locking. Now the cache reading clients do not need to fight each
+     other to obtain a lock thus this increases concurrency.
     </para>
     <para>
-     为此，pgpool 主进程创建一个虚拟文件作为 <filename>logdir/memq_lock_file</filename> 并打开它。该文件描述符由所有子进程继承，以便它们可以对该文件发出 <function>flock(2)</function>。
+     For this purpose pgpool main process creates a dummy file as
+     <filename>logdir/memq_lock_file</filename> and opens it. The file
+     descriptor is inherited by all child process so that they can
+     issue <function>flock(2)</function> on the file.
     </para>
    </listitem>
 
@@ -3728,8 +4109,8 @@ ALTER TABLE ... SET ACCESS METHOD ...;
     2022-02-10 [7ec74730]
     -->
     <para>
-     添加对 <xref linkend="guc-wd-lifecheck-password">
-     和 <xref linkend="guc-recovery-password"> 格式的验证。(Masaya Kawamoto)
+     Add validations of <xref linkend="guc-wd-lifecheck-password">
+     and <xref linkend="guc-recovery-password"> format. (Masaya Kawamoto)
     </para>
    </listitem>
 
@@ -3738,10 +4119,12 @@ ALTER TABLE ... SET ACCESS METHOD ...;
     2022-01-31 [4bcba525]
     -->
     <para>
-     增强参数状态处理。(Tatsuo Ishii)
+     Enhance parameter status handling. (Tatsuo Ishii)
     </para>
     <para>
-     当参数状态消息从后端到达时，Pgpool-II 会记住它，但不会转发到前端。此提交允许将参数状态消息转发到前端。
+     When a parameter status message arrives from backend, Pgpool-II
+     memorized it but did not forward to frontend.  This commit allows
+     forwarding a parameter status message to frontend.
     </para>
    </listitem>
 
@@ -3750,10 +4133,15 @@ ALTER TABLE ... SET ACCESS METHOD ...;
     2022-01-29 [515860f3]
     -->
     <para>
-     更改在指定 <xref linkend="guc-delay-threshold-by-time"> 时获取复制延迟的方式。(Tatsuo Ishii)
+     Change the way to obtain replication delay when
+     <xref linkend="guc-delay-threshold-by-time"> is
+     specified. (Tatsuo Ishii)
     </para>
     <para>
-     使用 pg_stat_replication.replay_lag。这种方式使代码更简单，并且可以获得更精确的复制延迟。唯一的缺点是 pg_stat_replication.replay_lag 仅在 PostgreSQL 10 或更高版本中可用（以前的方法可以在 9.5 或更高版本中使用）。
+     Use pg_stat_replication.replay_lag.  This way makes the code much
+     simpler and more precise replication delay can be obtained. The only
+     downside is pg_stat_replication.replay_lag is only available in
+     PostgreSQL 10 or later (previous method can be used in 9.5 or later).
     </para>
    </listitem>
 
@@ -3762,10 +4150,16 @@ ALTER TABLE ... SET ACCESS METHOD ...;
 	2022-01-18 [f9521fe4]
       -->
     <para>
-     实现 flush 跟踪功能。(Tatsuo Ishii)
+     Implement flush tracking feature. (Tatsuo Ishii)
     </para>
     <para>
-     当从前端收到 flush 消息时，任何来自后端的待处理消息都应该被 flush 并发送到前端。为此，此提交实现了“flush 跟踪”功能。即，当 flush 消息到达时，pgpool 在每个待处理消息中设置“flush pending”标志。如果来自后端的响应消息对应于设置了 flush pending 标志的待处理消息，则该消息会立即被 flush 到前端，而不是缓冲。
+     When a flush message arrives from frontend, any pending message from
+     backend should be flushed and sent to frontend. In order to do that,
+     this commit implements "flush tracking" feature. i.e. when a flush
+     message arrives, pgpool sets "flush pending" flag in each pending
+     messages. If the response message from backend corresponds to the
+     pending message with the flush pending flag being set, the message is
+     immediately flushed to frontend, rather than buffered.
     </para>
    </listitem>
 
@@ -3775,13 +4169,15 @@ ALTER TABLE ... SET ACCESS METHOD ...;
     2022-01-12 [a14fe59a]
     -->
     <para>
-     增强 pgproto。(Tatsuo Ishii)
+     Enhance pgproto. (Tatsuo Ishii)
     </para>
     <para>
-     允许显示 ParameterStatus 的参数名称和值。
+     Allow to show ParameterStatus's parameter name and value.
     </para>
     <para>
-     添加新命令 'z'。这与 'y' 类似，只是 'z' 只读取 1 条消息，并且不等待“ready for query”到达（如果 1 秒内没有消息到达则超时）。
+     Add new command 'z'. This is similar to 'y' except 'z' reads only 1
+     message and do not wait for "ready for query" arrives (or timeout if
+     no message arrives within 1 second).
     </para>
    </listitem>
 
@@ -3790,35 +4186,38 @@ ALTER TABLE ... SET ACCESS METHOD ...;
     2022-12-03 [0b31fdc3]
     -->
     <para>
-     将 LOG 消息“new IPC connection received”降级为 DEBUG1。
+     Downgrade LOG message "new IPC connection received" to DEBUG1.
      (<ulink url="https://www.pgpool.net/mantisbt/view.php?id=775">bug 775</ulink>) (Bo Peng)
     </para>
     <para>
-     此消息会定期输出，不应记录为 LOG。
-     补丁由 pstef 创建，并由 Bo Peng 审查。
+     This message is output periodically and should not be logged as LOG.
+     Patch is created by pstef and reviewed by Bo Peng.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>Bug 修复</title>
+
+ <sect2>
+  <title>Bug fixes</title>
   <itemizedlist>
    <listitem>
     <para>
-     在此版本中，已经应用了与 <productname>Pgpool-II</productname> 4.3.4 相同的 bug 修复。有关这些修复的更多详细信息，请参阅 <xref linkend="release-4-3-4">。
+     In this release same bug fixes as <productname>Pgpool-II</productname> 4.3.4 are
+     already applied. See <xref linkend="release-4-3-4"> for more details of those fixes.
     </para>
    </listitem>
   </itemizedlist>
  </sect2>
-<sect2>
-  <title>文档更改</title>
+
+ <sect2>
+  <title>Documentation changes</title>
   <itemizedlist>
    <listitem>
     <!--
     2022-10-27 [89d1235]
     -->
     <para>
-     文档：更新 AWS 配置示例文档，并为 AWS 添加示例脚本。(Bo Peng)
+     Doc: Update documentation of AWS configuration example and add sample scripts for AWS. (Bo Peng)
     </para>
    </listitem>
   </itemizedlist>

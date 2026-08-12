@@ -2,15 +2,15 @@
 <!-- See header comment in release.sgml about typical markup -->
 
 <sect1 id="release-3-1-21">
- <title>版本 3.1.21</title>
+ <title>Release 3.1.21</title>
 
  <note>
-  <title>发布日期</title>
+  <title>Release Date</title>
   <simpara>2016-12-26</simpara>
  </note>
 
  <sect2>
-  <title>Bug 修复</title>
+  <title>Bug fixes</title>
 
   <itemizedlist>
 
@@ -19,10 +19,11 @@
     2016-10-27 [f37c592]
     -->
     <para>
-     当查询在非原生复制模式下产生错误时，不要取消该查询。(Tatsuo Ishii)
+     Do not cancel a query when the query resulted in an error other than in native replication mode. (Tatsuo Ishii)
     </para>
     <para>
-     其本意是为了保持一致性，但在非原生复制模式下没有意义。
+     It was intended to keep the consistency, but there's no point in other
+     than native replication mode.
     </para>
    </listitem>
 
@@ -31,10 +32,13 @@
     2016-09-09 [8231f65]
     -->
     <para>
-     在生成 MD5 盐值时不要使用 random()。(Tatsuo Ishii)
+     Do not use random() while generating MD5 salt. (Tatsuo Ishii)
     </para>
     <para>
-     random() 不应在安全相关应用中使用。为替换 random()，从 PostgreSQL 引入了 PostmasterRandom()。同时在 Pgpool-II 主进程启动时存储当前时间以备后续使用。
+     random() should not be used in security related applications.  To
+     replace random(), import PostmasterRandom() from PostgreSQL.  Also
+     store current time at the start up of Pgpool-II main process for later
+     use.
     </para>
    </listitem>
 
@@ -43,7 +47,7 @@
     2016-09-06 [891ce0f]
     -->
     <para>
-     当启用查询缓存时，不要忽略来自前端的同步消息。(Tatsuo Ishii)
+     Don't ignore sync message from frontend when query cache is enabled. (Tatsuo Ishii)
     </para>
    </listitem>
 
