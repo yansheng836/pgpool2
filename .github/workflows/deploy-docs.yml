@@ -2,7 +2,7 @@ name: Build and Deploy Docs
 
 on:
   push:
-    branches: [master]
+    branches: [master, chinese-docs]
   pull_request:
     branches: [master]
   schedule:
@@ -33,30 +33,31 @@ jobs:
             lynx perl autoconf automake libtool \
             build-essential libpq-dev
 
-      - name: Debug - check SGML catalog
-        run: |
-          echo "=== SGML catalog ==="
-          cat /etc/sgml/catalog 2>/dev/null || echo "No /etc/sgml/catalog"
-          echo ""
-          echo "=== DocBook DTD location ==="
-          find /usr/share/sgml/docbook -name "*.dtd" -o -name "*.cat" 2>/dev/null | head -10
-          echo ""
-          echo "=== nsgmls test ==="
-          echo '<!doctype book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"><book><title>t</title><chapter><title>c</title><para>t</para></chapter></book>' | onsgmls -s -
-
       - name: Generate configure script
         run: autoreconf -i
 
       - name: Configure
         run: ./configure
 
-      - name: Build HTML docs
+      - name: Build English HTML docs
         run: make -C doc/src/sgml html
+
+      - name: Build Chinese HTML docs
+        if: github.ref == 'refs/heads/chinese-docs'
+        run: make -C doc-zh/src/sgml html
+
+      - name: Organize docs for deployment
+        run: |
+          mkdir -p _pages/zh
+          cp -r doc/src/sgml/html/* _pages/
+          if [ -d doc-zh/src/sgml/html ]; then
+            cp -r doc-zh/src/sgml/html/* _pages/zh/
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: doc/src/sgml/html
+          path: _pages
 
   deploy:
     needs: build
