@@ -6,15 +6,13 @@ on:
   pull_request:
     branches: [master]
   schedule:
-    - cron: '0 0 * * 0'  # 每周日凌晨自动构建
-  workflow_dispatch:       # 手动触发
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
 
-# Pages 部署权限
 permissions:
   pages: write
   id-token: write
 
-# 防止并发部署冲突
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -31,8 +29,20 @@ jobs:
           sudo apt-get install -y -qq \
             openjade opensp docbook-dsssl \
             docbook-xsl xsltproc docbook-xml \
+            docbook \
             lynx perl autoconf automake libtool \
             build-essential libpq-dev
+
+      - name: Debug - check SGML catalog
+        run: |
+          echo "=== SGML catalog ==="
+          cat /etc/sgml/catalog 2>/dev/null || echo "No /etc/sgml/catalog"
+          echo ""
+          echo "=== DocBook DTD location ==="
+          find /usr/share/sgml/docbook -name "*.dtd" -o -name "*.cat" 2>/dev/null | head -10
+          echo ""
+          echo "=== nsgmls test ==="
+          echo '<!doctype book PUBLIC "-//OASIS//DTD DocBook V4.2//EN"><book><title>t</title><chapter><title>c</title><para>t</para></chapter></book>' | onsgmls -s -
 
       - name: Generate configure script
         run: autoreconf -i
