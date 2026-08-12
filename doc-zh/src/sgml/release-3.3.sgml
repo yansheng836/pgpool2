@@ -39,7 +39,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-21">
  <title>发布 3.3.21</title>
 
@@ -63,7 +62,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-20">
  <title>发布 3.3.20</title>
 
@@ -95,8 +93,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -112,7 +109,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-19">
  <title>发布 3.3.19</title>
 
@@ -171,7 +167,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-18">
  <title>发布 3.3.18</title>
 
@@ -220,7 +215,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-17">
  <title>发布 3.3.17</title>
 
@@ -303,7 +297,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-16">
  <title>发布 3.3.16</title>
 
@@ -374,7 +367,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-3-15">
  <title>发布 3.3.15</title>
 
@@ -422,7 +414,6 @@
  </sect2>
 
 </sect1>
-
 <sect1 id="release-3-3-14">
  <title>发布 3.3.14</title>
 

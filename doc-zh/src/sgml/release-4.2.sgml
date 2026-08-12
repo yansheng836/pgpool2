@@ -27,8 +27,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -130,8 +129,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -162,8 +160,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -216,7 +213,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-23">
  <title>Release 4.2.23</title>
  <note>
@@ -313,8 +309,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -410,8 +405,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -428,7 +422,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-22">
  <title>Release 4.2.22</title>
  <note>
@@ -549,8 +542,7 @@
    the vulnerable configuration patterns.
   </para>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
    <listitem>
@@ -563,8 +555,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -689,8 +680,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -721,7 +711,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-21">
  <title>Release 4.2.21</title>
   <note>
@@ -745,8 +734,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -833,8 +821,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -853,8 +840,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -868,7 +854,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-20">
  <title>Release 4.2.20</title>
   <note>
@@ -1107,8 +1092,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -1121,8 +1105,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -1137,7 +1120,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-19">
  <title>Release 4.2.19</title>
   <note>
@@ -1206,8 +1188,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    这可能会影响使用查询缓存功能时的性能。
   </para>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
    <listitem>
@@ -1226,8 +1207,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -1277,7 +1257,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-18">
  <title>Release 4.2.18</title>
   <note>
@@ -1306,8 +1285,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -1457,8 +1435,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -1486,7 +1463,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-17">
  <title>Release 4.2.17</title>
   <note>
@@ -1628,8 +1604,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -1653,8 +1628,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -1675,7 +1649,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-16">
  <title>Release 4.2.16</title>
   <note>
@@ -1699,8 +1672,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -1741,8 +1713,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -1771,7 +1742,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-15">
  <title>Release 4.2.15</title>
   <note>
@@ -1811,8 +1781,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -1878,8 +1847,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -1906,8 +1874,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -1924,7 +1891,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-14">
  <title>Release 4.2.14</title>
   <note>
@@ -1957,8 +1923,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -2041,8 +2006,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -2110,8 +2074,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -2131,7 +2094,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-13">
  <title>Release 4.2.13</title>
   <note>
@@ -2193,8 +2155,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -2389,8 +2350,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -2500,8 +2460,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -2536,7 +2495,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-12">
  <title>Release 4.2.12</title>
   <note>
@@ -2660,8 +2618,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    versions.
   </para>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
 
@@ -2687,8 +2644,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -2705,8 +2661,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -2724,7 +2679,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-11">
  <title>Release 4.2.11</title>
   <note>
@@ -2751,8 +2705,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -2892,8 +2845,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -2936,8 +2888,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -2954,7 +2905,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-10">
  <title>Release 4.2.10</title>
   <note>
@@ -3016,8 +2966,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -3052,8 +3001,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -3152,8 +3100,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
 
@@ -3180,8 +3127,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -3206,8 +3152,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
-
 <sect1 id="release-4-2-9">
  <title>Release 4.2.9</title>
   <note>
@@ -3290,8 +3234,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -3365,8 +3308,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -3408,9 +3350,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -3443,7 +3383,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-8">
  <title>Release 4.2.8</title>
   <note>
@@ -3521,8 +3460,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -3601,8 +3539,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -3649,8 +3586,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
 
@@ -3670,8 +3606,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -3713,7 +3648,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-7">
  <title>Release 4.2.7</title>
   <note>
@@ -3748,8 +3682,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -3786,7 +3719,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-6">
  <title>Release 4.2.6</title>
   <note>
@@ -3821,8 +3753,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
 
@@ -3855,8 +3786,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -3909,8 +3839,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -3946,8 +3875,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -3990,7 +3918,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-5">
  <title>Release 4.2.5</title>
   <note>
@@ -4016,8 +3943,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -4103,8 +4029,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -4118,8 +4043,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
    <listitem>
@@ -4133,7 +4057,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-4">
  <title>Release 4.2.4</title>
   <note>
@@ -4160,8 +4083,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -4346,8 +4268,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -4408,8 +4329,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
 
@@ -4464,8 +4384,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -4517,7 +4436,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-3">
  <title>Release 4.2.3</title>
  <note>
@@ -4718,7 +4636,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-2">
  <title>Release 4.2.2</title>
  <note>
@@ -4894,7 +4811,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-1">
  <title>Release 4.2.1</title>
  <note>
@@ -4937,8 +4853,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -5032,7 +4947,6 @@ ALTER ROLE user WITH CONNECTION LIMIT
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-2-0">
  <title>Release 4.2.0</title>
  <note>
@@ -5139,8 +5053,7 @@ ALTER ROLE user WITH CONNECTION LIMIT
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>迁移到版本 4.2</title>
 
   <itemizedlist>
@@ -5361,8 +5274,7 @@ Author: Bo Peng <pengbo@sraoss.co.jp>
   </itemizedlist>
 
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -5373,8 +5285,7 @@ Author: Bo Peng <pengbo@sraoss.co.jp>
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>主要增强</title>
   <itemizedlist>
 
@@ -5924,8 +5835,7 @@ Author: Bo Peng <pengbo@sraoss.co.jp>
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>主要文档增强</title>
   <itemizedlist>
 

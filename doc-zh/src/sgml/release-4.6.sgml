@@ -233,8 +233,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -250,8 +249,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -265,7 +263,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-6">
  <title>发行版 4.6.6</title>
  <note>
@@ -339,8 +336,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>
@@ -476,7 +472,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-5">
  <title>发行版 4.6.5</title>
  <note>
@@ -500,8 +495,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>
@@ -544,8 +538,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -565,7 +558,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-4">
  <title>发行版 4.6.4</title>
  <note>
@@ -644,8 +636,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>
@@ -794,8 +785,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -826,8 +816,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -916,7 +905,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-3">
  <title>发行版 4.6.3</title>
  <note>
@@ -950,8 +938,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>
@@ -1091,8 +1078,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -1223,8 +1209,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -1242,7 +1227,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-2">
  <title>发行版 4.6.2</title>
  <note>  <title>发行日期</title>
@@ -1282,8 +1266,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>
@@ -1305,7 +1288,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-1">
  <title>发行版 4.6.1</title>
  <note>
@@ -1418,8 +1400,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    易受攻击的配置模式匹配。
   </para>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
    <listitem>
@@ -1432,8 +1413,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>
@@ -1582,8 +1562,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -1628,8 +1607,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -1644,7 +1622,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-6-0">
  <title>发行版 4.6.0</title>
  <note>
@@ -1729,8 +1706,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
 
   </itemizedlist>
  </sect2>
-
- <sect2 id="migration-4-6-0">
+<sect2 id="migration-4-6-0">
   <title>迁移到版本 4.6</title>
   <itemizedlist>
 
@@ -1765,8 +1741,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
 
@@ -1958,8 +1933,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>缺陷修复</title>
   <itemizedlist>
    <listitem>

@@ -32,8 +32,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
 
@@ -65,8 +64,7 @@
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -98,8 +96,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -126,8 +123,7 @@
 
   </itemizedlist>
  </sect2>
-
-  <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
 
@@ -142,8 +138,7 @@
 
   </itemizedlist>
  </sect2>
-
-  <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -167,7 +162,8 @@
 
   </itemizedlist>
  </sect2>
-</sect1><sect1 id="release-3-6-27">
+</sect1>
+<sect1 id="release-3-6-27">
  <title>版本 3.6.27</title>
   <note>
    <title>发布日期</title>
@@ -193,8 +189,7 @@
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -238,8 +233,7 @@
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
 
@@ -272,8 +266,7 @@
 
   </itemizedlist>
  </sect2>
-
-  <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
 
@@ -309,8 +302,7 @@
 
   </itemizedlist>
  </sect2>
-
-  <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
 
@@ -325,7 +317,8 @@
 
   </itemizedlist>
  </sect2>
-</sect1><sect1 id="release-3-6-26">
+</sect1>
+<sect1 id="release-3-6-26">
  <title>版本 3.6.26</title>
  <note>
   <title>发布日期</title>
@@ -395,7 +388,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-6-25>
  <title>版本 3.6.25</title>
  <note>
@@ -419,8 +411,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -489,7 +480,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-24>
+</sect1>
+<sect1 id=release-3-6-24>
  <title>版本 3.6.24</title>
  <note>
   <title>发布日期</title>
@@ -522,8 +514,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -557,7 +548,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-6-23>
  <title>版本 3.6.23</title>
  <note>
@@ -590,8 +580,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -674,7 +663,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-22>
+</sect1>
+<sect1 id=release-3-6-22>
  <title>版本 3.6.22</title>
  <note>
   <title>发布日期</title>
@@ -730,8 +720,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -938,7 +927,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-6-20>
  <title>版本 3.6.20</title>
  <note>
@@ -959,8 +947,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -1119,9 +1106,7 @@
     <para>
      文档：提及如果不存在法定人数，VIP 将不会被启用。(Tatsuo Ishii)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -1134,7 +1119,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-18>
+</sect1>
+<sect1 id=release-3-6-18>
  <title>版本 3.6.18</title>
  <note>
   <title>发布日期</title>
@@ -1210,7 +1196,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -1365,7 +1351,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-17>
+</sect1>
+<sect1 id=release-3-6-17>
  <title>版本 3.6.17</title>
  <note>
   <title>发布日期</title>
@@ -1419,8 +1406,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -1552,7 +1538,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-16>
+</sect1>
+<sect1 id=release-3-6-16>
  <title>版本 3.6.16</title>
  <note>
   <title>发布日期</title>
@@ -1593,8 +1580,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -1616,7 +1602,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-6-15>
  <title>版本 3.6.15</title>
  <note>
@@ -1731,7 +1716,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-14>
+</sect1>
+<sect1 id=release-3-6-14>
  <title>版本 3.6.14</title>
  <note>
   <title>发布日期</title>
@@ -1815,7 +1801,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-6-13">
  <title>版本 3.6.13</title>
 
@@ -1904,8 +1889,7 @@
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -2120,7 +2104,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-12>
+</sect1>
+<sect1 id=release-3-6-12>
  <title>版本 3.6.12</title>
 
  <note>
@@ -2214,7 +2199,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-6-11>
  <title>版本 3.6.11</title>
 
@@ -2303,7 +2287,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-6-10>
  <title>版本 3.6.10</title>
 
@@ -2341,9 +2324,7 @@
     <para>
      文档：改进 watchdog 文档。(Tatsuo Ishii)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -2411,7 +2392,8 @@
 
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-9>
+</sect1>
+<sect1 id=release-3-6-9>
  <title>版本 3.6.9</title>
 
  <note>
@@ -2470,8 +2452,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
 
@@ -2491,9 +2472,7 @@
     <para>
      文档：修复文档拼写错误。(Bo Peng)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -2530,7 +2509,8 @@
 
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-7>
+</sect1>
+<sect1 id=release-3-6-7>
  <title>版本 3.6.7</title>
 
  <note>
@@ -2651,7 +2631,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-6>
+</sect1>
+<sect1 id=release-3-6-6>
  <title>版本 3.6.6</title>
 
  <note>
@@ -2743,9 +2724,7 @@
     <para>
      测试：回归测试脚本中的一些杂项小修复。(Muhammad Usama)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -2755,9 +2734,7 @@
     <para>
      文档：修复关于负载均衡的文档。(Yugo Nagata)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -2809,7 +2786,8 @@
     <!--
     2017-08-03 [5fe66ad]
     -->
-    <para><sect1 id="release-3-6-4">
+
+<sect1 id="release-3-6-4">
  <title>版本 3.6.4</title>
 
  <note>
@@ -2869,7 +2847,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-6-3">
  <title>版本 3.6.3</title>
 
@@ -2969,9 +2946,7 @@
     <para>
      修复文档缩进。(Tatsuo Ishii)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -3151,7 +3126,8 @@
 
  </sect2>
 
-</sect1><sect1 id=release-3-6-8>
+</sect1>
+<sect1 id=release-3-6-8>
  <title>版本 3.6.8</title>
 
  <note>
@@ -3171,9 +3147,7 @@
     <para>
      文档：修复文档拼写错误和错误。(Bo Peng)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -3204,9 +3178,7 @@
     <para>
      添加用于 SGML 文档构建的文档"Compiling and installing documents"。(Tatsuo Ishii)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -3310,7 +3282,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-5>
+</sect1>
+<sect1 id=release-3-6-5>
  <title>版本 3.6.5</title>
 
  <note>
@@ -3554,7 +3527,8 @@
    </listitem>
   </itemizedlist>
  </sect2>
-</sect1><sect1 id=release-3-6-2>
+</sect1>
+<sect1 id=release-3-6-2>
  <title>版本 3.6.2</title>
 
  <note>
@@ -3618,9 +3592,7 @@
     <para>
      修复文档错误。(Tatsuo Ishii, Bo Peng)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
    <listitem>
@@ -3825,7 +3797,8 @@
 
  </sect2>
 
-</sect1><sect1 id=release-3-6-1>
+</sect1>
+<sect1 id=release-3-6-1>
  <title>版本 3.6.1</title>
 
  <note>
@@ -3993,16 +3966,15 @@
     <para>
      允许在 doc.ja 下执行"make xslthtml"。(Tatsuo Ishii)
     </para>
-    <para>
-
-    </para>
+    
    </listitem>
 
   </itemizedlist>
 
  </sect2>
 
-</sect1><sect1 id=release-3-6>
+</sect1>
+<sect1 id=release-3-6>
  <title>版本 3.6</title>
 
  <note>
@@ -4068,8 +4040,7 @@
   </para>
 
  </sect2>
-
- <sect2>
+<sect2>
   <title>主要增强</title>
 
   <itemizedlist>
@@ -4192,8 +4163,7 @@
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>其他增强</title>
 
   <itemizedlist>
@@ -4324,8 +4294,7 @@
   </itemizedlist>
 
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
 
   <itemizedlist>
@@ -4385,8 +4354,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
 
   <itemizedlist>
@@ -4843,8 +4811,7 @@
     <para>
      修复扩展协议情况下的查询堆栈问题。(bug 167, 168)(Tatsuo Ishii)
     </para>
-    <para>
-    </para>
+    
    </listitem>
    <listitem>
     <!--
@@ -4914,4 +4881,8 @@
 
  </sect2>
 
+</sect1>
+    </listitem>
+  </itemizedlist>
+ </sect2>
 </sect1>

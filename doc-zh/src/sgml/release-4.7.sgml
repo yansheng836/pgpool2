@@ -157,8 +157,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -170,8 +169,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>
@@ -183,7 +181,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-7-1">
  <title>版本 4.7.1</title>
  <note>
@@ -254,8 +251,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>Bug 修复</title>
   <itemizedlist>
    <listitem>
@@ -356,7 +352,6 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-4-7-0">
  <title>版本 4.7.0</title>
  <note>
@@ -402,8 +397,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
 
   </itemizedlist>
  </sect2>
-
- <sect2 id="migration-4-7-0">
+<sect2 id="migration-4-7-0">
   <title>迁移到版本 4.7</title>
   <itemizedlist>
 
@@ -451,8 +445,7 @@ AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>变更</title>
   <itemizedlist>
 
@@ -644,8 +637,7 @@ WARNING: password file \"%s\" has group or world access; permissions should be u
 
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>文档</title>
   <itemizedlist>
    <listitem>
@@ -672,8 +664,7 @@ backend_clustering_mode
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>测试工具</title>
   <itemizedlist>
    <listitem>
@@ -689,8 +680,7 @@ backend_clustering_mode
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>回归测试</title>
   <itemizedlist>
    <listitem>

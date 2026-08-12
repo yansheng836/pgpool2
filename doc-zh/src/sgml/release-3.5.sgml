@@ -25,8 +25,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -60,7 +59,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-27>
  <title>Release 3.5.27</title>
  <note>
@@ -84,8 +82,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -162,7 +159,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-26> 
  <title>Release 3.5.26</title>
  <note>
@@ -183,8 +179,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -282,7 +277,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-25> 
  <title>Release 3.5.25</title>
  <note>
@@ -326,7 +320,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-24> 
  <title>Release 3.5.24</title>
  <note>
@@ -347,8 +340,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -403,7 +395,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-23> 
  <title>Release 3.5.23</title>
  <note>
@@ -472,7 +463,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-22> 
  <title>Release 3.5.22</title>
  <note>
@@ -532,7 +522,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
 
@@ -650,7 +640,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-21> 
  <title>Release 3.5.21</title>
  <note>
@@ -689,8 +678,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -802,7 +790,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-20> 
  <title>Release 3.5.20</title>
  <note>
@@ -848,8 +835,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -873,7 +859,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-19> 
  <title>Release 3.5.19</title>
  <note>
@@ -957,7 +942,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id=release-3-5-18> 
  <title>Release 3.5.18</title>
  <note>
@@ -1046,7 +1030,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-17">
  <title>Release 3.5.17</title>
 
@@ -1098,8 +1081,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
    <listitem>
@@ -1285,7 +1267,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-16">
  <title>Release 3.5.16</title>
 
@@ -1355,7 +1336,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-15">
  <title>Release 3.5.15</title>
 
@@ -1412,7 +1392,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-14">
  <title>Release 3.5.14</title>
 
@@ -1481,7 +1460,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-13">
  <title>Release 3.5.13</title>
 
@@ -1541,8 +1519,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
-
- <sect2>
+<sect2>
   <title>错误修复</title>
   <itemizedlist>
 
@@ -1594,7 +1571,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-12">
  <title>Release 3.5.12</title>
 
@@ -1735,7 +1711,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-11">
  <title>Release 3.5.11</title>
 
@@ -1851,7 +1826,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-10">
  <title>Release 3.5.10</title>
 
@@ -2090,7 +2064,7 @@
    </listitem>
   </itemizedlist>
  </sect2>
- <sect2>
+<sect2>
   <title>增强功能</title>
   <itemizedlist>
 
@@ -2115,7 +2089,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-9">
  <title>Release 3.5.9</title>
 
@@ -2341,7 +2314,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-8">
  <title>Release 3.5.8</title>
 
@@ -2375,7 +2347,6 @@
   </itemizedlist>
  </sect2>
 </sect1>
-
 <sect1 id="release-3-5-7">
  <title>Release 3.5.7</title>
 
@@ -2606,7 +2577,6 @@
  </sect2>
 
 </sect1>
-
 <sect1 id="release-3-5-6">
  <title>Release 3.5.6</title>
 
@@ -2919,9 +2889,6 @@
  </sect2>
 
 </sect1>
-
-
-
 <sect1 id="release-3-5-5">
  <title>Release 3.5.5</title>
 
