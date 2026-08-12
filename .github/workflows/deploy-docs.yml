@@ -49,9 +49,13 @@ jobs:
         run: |
           mkdir -p _pages/zh
           cp -r doc/src/sgml/html/* _pages/
-          if [ -d doc-zh/src/sgml/html ]; then
+          # Japanese docs use no chunks style, check for HTML files directly in sgml/
+          if ls doc-zh/src/sgml/html/*.html 2>/dev/null | grep -q .; then
             cp -r doc-zh/src/sgml/html/* _pages/zh/
+          elif ls doc-zh/src/sgml/*.html 2>/dev/null | grep -q .; then
+            cp doc-zh/src/sgml/*.html doc-zh/src/sgml/stylesheet.css doc-zh/src/sgml/figures/*.gif _pages/zh/ 2>/dev/null || true
           fi
+          ls _pages/zh/ | head -5 || echo "zh dir is empty"
 
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'
