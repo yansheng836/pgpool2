@@ -43,19 +43,30 @@ jobs:
 
       - name: Build Chinese HTML docs
         if: github.ref == 'refs/heads/chinese-docs'
-        run: make -C doc-zh/src/sgml html
+        run: |
+          make -C doc-zh/src/sgml html VERBOSE=1 2>&1 || true
+          echo "=== Checking Chinese HTML output ==="
+          find doc-zh/src/sgml -name "*.html" -type f 2>/dev/null | head -10
+          echo "Total HTML files: $(find doc-zh/src/sgml -name '*.html' -type f 2>/dev/null | wc -l)"
+          ls -la doc-zh/src/sgml/html/ 2>/dev/null || echo "html/ dir does not exist"
 
       - name: Organize docs for deployment
         run: |
           mkdir -p _pages/zh
-          cp -r doc/src/sgml/html/* _pages/
-          # Japanese docs use no chunks style, check for HTML files directly in sgml/
-          if ls doc-zh/src/sgml/html/*.html 2>/dev/null | grep -q .; then
-            cp -r doc-zh/src/sgml/html/* _pages/zh/
-          elif ls doc-zh/src/sgml/*.html 2>/dev/null | grep -q .; then
-            cp doc-zh/src/sgml/*.html doc-zh/src/sgml/stylesheet.css doc-zh/src/sgml/figures/*.gif _pages/zh/ 2>/dev/null || true
+          cp -r doc/src/sgml/html/* _pages/ 2>/dev/null || true
+          ZH_HTML=$(find doc-zh/src/sgml -name "*.html" -type f 2>/dev/null)
+          if [ -n "$ZH_HTML" ]; then
+            echo "Found Chinese HTML files"
+            echo "$ZH_HTML" | head -5
+            mkdir -p _pages/zh
+            cp doc-zh/src/sgml/html/*.html _pages/zh/ 2>/dev/null || true
+            cp doc-zh/src/sgml/*.html _pages/zh/ 2>/dev/null || true
+            cp doc-zh/src/sgml/stylesheet.css _pages/zh/ 2>/dev/null || true
+            find doc-zh/src -name "*.gif" -exec cp {} _pages/zh/ \; 2>/dev/null || true
+          else
+            echo "NO Chinese HTML files found"
           fi
-          ls _pages/zh/ | head -5 || echo "zh dir is empty"
+          ls _pages/zh/ 2>/dev/null | head -10
 
       - name: Deploy to GitHub Pages
         if: github.event_name != 'pull_request'
