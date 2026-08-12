@@ -7,14 +7,13 @@
   <primary>configuring watchdog</primary>
  </indexterm>
  <para>
-  Watchdog configuration parameters are described in pgpool.conf.
-  There is sample configuration in the WATCHDOG section of
-  <filename>pgpool.conf.sample</filename> file.
-  All following options are required to be specified in watchdog process.
+  Watchdog 配置参数在 pgpool.conf 中描述。
+  在 <filename>pgpool.conf.sample</filename> 文件的 WATCHDOG 部分有示例配置。
+  以下所有选项都必须在 watchdog 进程中指定。
  </para>
 
  <sect2 id="config-enable-watchdog">
-  <title>Enable watchdog</title>
+  <title>启用 watchdog</title>
 
   <variablelist>
    <varlistentry id="guc-use-watchdog" xreflabel="use_watchdog">
@@ -25,28 +24,28 @@
     </term>
     <listitem>
      <para>
-      If on, activates the watchdog. Default is off
+      如果设为 on，则激活 watchdog。默认是 off。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
      <para>
-      <productname>Pgpool-II</productname> 4.1 or earlier, because it is required to specify
-      its own pgpool node information and the destination pgpool nodes information, the
-      settings are different per pgpool node.
-      Since <productname>Pgpool-II</productname> 4.2, all configuration parameters are
-      identical on all hosts. If watchdog feature is enabled, to distinguish which host
-      is which, a <filename>pgpool_node_id</filename> file is required.
-      You need to create a <filename>pgpool_node_id</filename> file and specify the
-      pgpool (watchdog) node number (e.g. 0, 1, 2 ...) to identify pgpool (watchdog) host.
+      <productname>Pgpool-II</productname> 4.1 或更早版本，由于需要指定
+      自身的 pgpool 节点信息和目标 pgpool 节点信息，
+      每个 pgpool 节点的设置各不相同。
+      自 <productname>Pgpool-II</productname> 4.2 起，所有配置参数在所有主机上
+      都相同。如果启用了 watchdog 功能，为了区分哪个主机是哪个，
+      需要一个 <filename>pgpool_node_id</filename> 文件。
+      你需要创建一个 <filename>pgpool_node_id</filename> 文件并指定
+      pgpool（watchdog）节点编号（例如 0、1、2 ...）以标识 pgpool（watchdog）主机。
      </para>
      <example id="example-pgpool-node-id-1">
-      <title>pgpool_node_id configuration</title>
+      <title>pgpool_node_id 配置</title>
       <para>
-       If you have 3 pgpool nodes with hostname server1, server2 and server3, create the
-       <filename>pgpool_node_id</filename> file on each host as follows.
-       When installing <productname>Pgpool-II</productname> using RPM,
-       <filename>pgpool.conf</filename> is installed under <filename>/etc/pgpool-II/</filename>.
+       如果你有 3 个主机名为 server1、server2 和 server3 的 pgpool 节点，请按如下方式在
+       每个主机上创建 <filename>pgpool_node_id</filename> 文件。
+       使用 RPM 安装 <productname>Pgpool-II</productname> 时，
+       <filename>pgpool.conf</filename> 安装在 <filename>/etc/pgpool-II/</filename> 下。
       </para>
       <itemizedlist>
        <listitem>
@@ -84,7 +83,7 @@
  </sect2>
 
  <sect2 id="config-communication-watchdog">
-  <title>Watchdog communication</title>
+  <title>Watchdog 通信</title>
 
   <variablelist>
 
@@ -96,15 +95,15 @@
     </term>
     <listitem>
      <para>
-      Specifies the hostname or IP (IPv4 or IPv6) address of
-      <productname>Pgpool-II</productname> server.
-      This is used for sending/receiving queries and packets,
-      and also as an identifier of the watchdog node.
-      The number at the end of the parameter name is referred
-      as "pgpool node id", and it starts from 0 (e.g. hostname0).
+      指定 <productname>Pgpool-II</productname> 服务器的主机名或 IP（IPv4 或 IPv6）
+      地址。
+      这用于发送/接收查询和数据包，
+      也用作 watchdog 节点的标识符。
+      参数名称末尾的数字被称为 "pgpool node id"，
+      并且从 0 开始（例如 hostname0）。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -117,15 +116,15 @@
     </term>
     <listitem>
      <para>
-      Specifies the hostname or IP (IPv4 or IPv6) address which watchdog will listen on.
-      Default is <literal>''</literal> (empty). Specify only one address here.
-      If a value other than the default value is set,
-      the value of hostnameX of the local node will be ignored and a socket
-      that listens on the address specified in wd_listen_address will be created.
-      For <varname>wd_listen_address</varname>, specifying <literal>*</literal> will listen on all addresses.
+      指定 watchdog 将要监听的地址上的主机名或 IP（IPv4 或 IPv6）地址。
+      默认是 <literal>''</literal>（空）。这里只指定一个地址。
+      如果设置了非默认值，
+      则本地节点的 hostnameX 的值将被忽略，并会创建一个
+      监听 wd_listen_address 中指定地址的 socket。
+      对于 <varname>wd_listen_address</varname>，指定 <literal>*</literal> 将监听所有地址。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -138,13 +137,13 @@
     </term>
     <listitem>
      <para>
-      Specifies the port number to be used by watchdog
-      process to listen for connections. Default is 9000.
-      The number at the end of the parameter name is referred
-      as "pgpool node id", and it starts from 0 (e.g. wd_port0).
+      指定 watchdog
+      进程用于监听连接的端口号。默认是 9000。
+      参数名称末尾的数字被称为 "pgpool node id"，
+      并且从 0 开始（例如 wd_port0）。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -157,14 +156,14 @@
     </term>
     <listitem>
      <para>
-      Specifies the port number which watchdog will listen on.
-      Default is 0. Specify only one address here.
-      If a value other than the default value is set,
-      the value of wd_portX of the local node will be ignored and a socket
-      that listens on the port specified in wd_listen_port will be created.
+      指定 watchdog 将要监听的端口号。
+      默认是 0。这里只指定一个地址。
+      如果设置了非默认值，
+      则本地节点的 wd_portX 的值将被忽略，并会创建一个
+      监听 wd_listen_port 中指定端口的 socket。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -177,21 +176,21 @@
     </term>
     <listitem>
      <para>
-      Specifies the <productname>Pgpool-II</productname> port number.
-      Default is 9999.
-      The number at the end of the parameter name is referred
-      as "pgpool node id", and it starts from 0 (e.g. pgpool_port0).
+      指定 <productname>Pgpool-II</productname> 端口号。
+      默认是 9999。
+      参数名称末尾的数字被称为 "pgpool node id"，
+      并且从 0 开始（例如 pgpool_port0）。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
 
      <example id="example-watchdog-1">
-      <title>Watchdog configuration</title>
+      <title>Watchdog 配置</title>
       <para>
-       If you have 3 pgpool nodes with hostname server1, server2 and server3,
-       you can configure <xref linkend="guc-hostname">,
-       <xref linkend="guc-wd-port"> and <xref linkend="guc-pgpool-port"> like below:
+       如果你有 3 个主机名为 server1、server2 和 server3 的 pgpool 节点，
+       你可以像下面这样配置 <xref linkend="guc-hostname">、
+       <xref linkend="guc-wd-port"> 和 <xref linkend="guc-pgpool-port">：
     <programlisting>
 hostname0 = 'server1'
 wd_port0 = 9000
@@ -218,27 +217,24 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the authentication key used for all watchdog communications.
-      All <productname>Pgpool-II</productname> must have the same key.
-      Packets from watchdog having different key will get rejected.
-      This authentication is also applied to the heartbeat signals
-      when the <literal>heartbeat</> mode is used as a lifecheck method.
+      指定用于所有 watchdog 通信的身份验证密钥。
+      所有 <productname>Pgpool-II</productname> 必须使用相同的密钥。
+      来自密钥不同的 watchdog 的数据包将被拒绝。
+      当以 <literal>heartbeat</> 模式作为 lifecheck 方法时，
+      此身份验证也应用于心跳信号。
      </para>
      <para>
-      Since in <productname>Pgpool-II</productname><emphasis>V3.5</emphasis> or beyond
-      <varname>wd_authkey</varname> is also used to authenticate
-      the watchdog IPC clients,
-      all clients communicating with <productname>Pgpool-II</productname>
-      watchdog process needs to provide this wd_authkey value
-      for <literal>"IPCAuthKey"</literal> key in the JSON data
-      of the command.
+      由于在 <productname>Pgpool-II</productname><emphasis>V3.5</emphasis> 或更高版本中
+      <varname>wd_authkey</varname> 也用于验证 watchdog IPC 客户端，
+      所有与 <productname>Pgpool-II</productname> watchdog 进程通信的客户端
+      都需要在命令的 JSON 数据中
+      为 <literal>"IPCAuthKey"</literal> 键提供此 wd_authkey 值。
      </para>
      <para>
-      Default is <literal>''</literal> (empty) which means disables
-      the watchdog authentication.
+      默认是 <literal>''</literal>（空），表示禁用 watchdog 身份验证。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -246,17 +242,14 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-upstream-connections">
-  <title>Upstream server connection</title>
+  <title>上游服务器连接</title>
 
   <para>
-   Upstream servers are the clients (DB clients) served by
-   <productname>Pgpool-II</productname>.
-   Even if <productname>Pgpool-II</productname> is alive and
-   connected to <productname>PostgreSQL</productname>, 
-   if the link with the upstream server is broken,
-   <productname>Pgpool-II</productname> cannot provide services.
-   Therefore, the watchdog also monitors connections to upstream servers
-   from the <productname>Pgpool-II</productname>.
+   上游服务器是由 <productname>Pgpool-II</productname> 服务的客户端（数据库客户端）。
+   即使 <productname>Pgpool-II</productname> 处于存活状态并已连接到 <productname>PostgreSQL</productname>，
+   如果与上游服务器的链路中断，
+   <productname>Pgpool-II</productname> 也无法提供服务。
+   因此，watchdog 也会监控来自 <productname>Pgpool-II</productname> 到上游服务器的连接。
   </para>
 
   <variablelist>
@@ -269,19 +262,18 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the list of trusted servers to check the upstream connections.
-      For example, the list of upstream servers or routers between
-      <productname>Pgpool-II</productname> and upstream servers.
-      Each server in the list is required to respond to ping.
-      Specify a comma separated list of servers such as
-      <literal>"hostA,hostB,hostC"</literal>.
-      If none of the server are reachable, watchdog will regard it as
-      failure of the <productname>Pgpool-II</productname>.
-      Therefore, it is recommended to specify multiple servers.
-      Please note that you should not assign PostgreSQL servers to this parameter.
+      指定用于检查上游连接的受信任服务器列表。
+      例如，<productname>Pgpool-II</productname> 与上游服务器之间的上游服务器或路由器的列表。
+      列表中的每台服务器都必须能响应 ping。
+      指定一个以逗号分隔的服务器列表，
+      例如 <literal>"hostA,hostB,hostC"</literal>。
+      如果没有任何服务器可达，watchdog 将视为
+      <productname>Pgpool-II</productname> 发生故障。
+      因此，建议指定多台服务器。
+      请注意，你不应该将 PostgreSQL 服务器指定到此参数。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -294,13 +286,12 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies a user command to run when <productname>Pgpool-II</productname> check
-      that trusted servers respond to ping. Any %h in the string is replaced by each host
-      name specified <varname>trusted_servers</varname>. Default is
-      <literal>ping -q -c3 %h</literal>.
+      指定当 <productname>Pgpool-II</productname> 检查受信任服务器是否响应 ping 时要运行的用户命令。字符串中的任何 %h 都会被替换为
+      <varname>trusted_servers</varname> 中指定的各个主机名。默认是
+      <literal>ping -q -c3 %h</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -308,7 +299,7 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-vip-control">
-  <title>Virtual IP control</title>
+  <title>虚拟 IP 控制</title>
 
   <variablelist>
 
@@ -320,17 +311,15 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the virtual IP address (VIP) of
-      <productname>Pgpool-II</productname> that is connected from
-      client servers (application servers etc.).  When a
-      <productname>Pgpool-II</productname> is switched from standby to
-      leader, the <productname>Pgpool-II</productname> takes over this
-      VIP. <emphasis>VIP will not be brought up in case the quorum
-      does not exist</emphasis>. Default is <literal>''</literal>(empty): which
-      means virtual IP will never be brought up.
+      指定客户端服务器（应用服务器等）所连接的
+      <productname>Pgpool-II</productname> 的虚拟 IP 地址（VIP）。
+      当一个 <productname>Pgpool-II</productname> 从 standby 切换到 leader 时，
+      该 <productname>Pgpool-II</productname> 会接管这个 VIP。
+      <emphasis>当不存在 quorum 时，VIP 不会被启用</emphasis>。默认是 <literal>''</literal>（空）：
+      表示虚拟 IP 永远不会被启用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -343,16 +332,16 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the path to the command that <productname>Pgpool-II</productname>
-      will use to switch the virtual IP on the system.
-      Set only the path of the directory containing the binary,
-      such as <literal>"/sbin"</literal> or such directory.
-      If <xref linkend="guc-if-up-cmd"> or <xref linkend="guc-if-down-cmd"> starts with "/",
-      this parameter will be ignored.
-      Default is <literal>/sbin</literal>.
+      指定 <productname>Pgpool-II</productname> 将用于在系统上切换虚拟 IP
+      的命令路径。
+      只设置包含二进制的目录的路径，
+      例如 <literal>"/sbin"</literal> 或类似的目录。
+      如果 <xref linkend="guc-if-up-cmd"> 或 <xref linkend="guc-if-down-cmd"> 以 "/" 开头，
+      将忽略此参数。
+      默认是 <literal>/sbin</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -365,22 +354,22 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the command to bring up the virtual IP.
-      Set the command and parameters such as
-      <literal>"ip addr add $_IP_$/24 dev eth0 label eth0:0"</literal>.
-      Since root privilege is required to execute this command,
-      use <command>setuid</command> on <command>ip</command> command or
-      allow <productname>Pgpool-II</productname> startup user (<literal>postgres</literal> user by default)
-      to run <command>sudo</command> command without a password, and specify it such as
-      <literal>"/usr/bin/sudo /sbin/ip addr add $_IP_$/24 dev eth0 label eth0:0"</literal>.
-      <literal>$_IP_$</literal> will get replaced by the IP address
-      specified in the <xref linkend="guc-delegate-ip">.
+      指定启用虚拟 IP 的命令。
+      设置命令和参数，
+      例如 <literal>"ip addr add $_IP_$/24 dev eth0 label eth0:0"</literal>。
+      由于执行此命令需要 root 权限，
+      请对 <command>ip</command> 命令使用 <command>setuid</command>，或
+      允许 <productname>Pgpool-II</productname> 启动用户（默认是 <literal>postgres</literal> 用户）
+      无需密码运行 <command>sudo</command> 命令，并指定为
+      例如 <literal>"/usr/bin/sudo /sbin/ip addr add $_IP_$/24 dev eth0 label eth0:0"</literal>。
+      <literal>$_IP_$</literal> 将会被替换为
+      <xref linkend="guc-delegate-ip"> 中指定的 IP 地址。
      </para>
      <para>
-      Default is <literal>/usr/bin/sudo /sbin/ip addr add $_IP_$/24 dev eth0 label eth0:0</literal>.
+      默认是 <literal>/usr/bin/sudo /sbin/ip addr add $_IP_$/24 dev eth0 label eth0:0</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -393,22 +382,22 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the command to bring down the virtual IP.
-      Set the command and parameters such as
-      <literal>"ip addr del $_IP_$/24 dev eth0"</literal>.
-      Since root privilege is required to execute this command,
-      use <command>setuid</command> on <command>ip</command> command or
-      allow <productname>Pgpool-II</productname> startup user (<literal>postgres</literal> user by default)
-      to run <command>sudo</command> command without a password, and specify it such as
-      <literal>"/usr/bin/sudo /sbin/ip addr del $_IP_$/24 dev eth0"</literal>.
-      <literal>$_IP_$</literal> will get replaced by the IP address
-      specified in the <xref linkend="guc-delegate-ip">.
+      指定停用虚拟 IP 的命令。
+      设置命令和参数，
+      例如 <literal>"ip addr del $_IP_$/24 dev eth0"</literal>。
+      由于执行此命令需要 root 权限，
+      请对 <command>ip</command> 命令使用 <command>setuid</command>，或
+      允许 <productname>Pgpool-II</productname> 启动用户（默认是 <literal>postgres</literal> 用户）
+      无需密码运行 <command>sudo</command> 命令，并指定为
+      例如 <literal>"/usr/bin/sudo /sbin/ip addr del $_IP_$/24 dev eth0"</literal>。
+      <literal>$_IP_$</literal> 将会被替换为
+      <xref linkend="guc-delegate-ip"> 中指定的 IP 地址。
      </para>
      <para>
-      Default is <literal>/usr/bin/sudo /sbin/ip addr del $_IP_$/24 dev eth0</literal>.
+      默认是 <literal>/usr/bin/sudo /sbin/ip addr del $_IP_$/24 dev eth0</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -421,16 +410,16 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the path to the command that <productname>Pgpool-II</productname>
-      will use to send the ARP requests after the virtual IP switch.
-      Set only the path of the directory containing the binary,
-      such as <literal>"/usr/sbin"</literal> or such directory.
-      If <xref linkend="guc-arping-cmd"> starts with "/",
-      this parameter will be ignored.
-      Default is <literal>/usr/sbin</literal>.
+      指定 <productname>Pgpool-II</productname> 在虚拟 IP 切换后
+      将用于发送 ARP 请求的命令路径。
+      只设置包含二进制的目录的路径，
+      例如 <literal>"/usr/sbin"</literal> 或类似的目录。
+      如果 <xref linkend="guc-arping-cmd"> 以 "/" 开头，
+      将忽略此参数。
+      默认是 <literal>/usr/sbin</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -443,23 +432,22 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the command to use for sending the ARP requests
-      after the virtual IP switch.
-      Set the command and parameters such as
-      <literal>"arping -U $_IP_$ -w 1 -I eth0"</literal>.
-      Since root privilege is required to execute this command,
-      use <command>setuid</command> on <command>ip</command> command or
-      allow <productname>Pgpool-II</productname> startup user (<literal>postgres</literal> user by default)
-      to run <command>sudo</command> command without a password, and specify it such as
-      <literal>"/usr/bin/sudo /usr/sbin/arping -U $_IP_$ -w 1 -I eth0"</literal>.
-      <literal>$_IP_$</literal> will get replaced by
-      the IP address specified in the <varname>delegate_ip</varname>.
+      指定用于在虚拟 IP 切换后发送 ARP 请求的命令。
+      设置命令和参数，
+      例如 <literal>"arping -U $_IP_$ -w 1 -I eth0"</literal>。
+      由于执行此命令需要 root 权限，
+      请对 <command>ip</command> 命令使用 <command>setuid</command>，或
+      允许 <productname>Pgpool-II</productname> 启动用户（默认是 <literal>postgres</literal> 用户）
+      无需密码运行 <command>sudo</command> 命令，并指定为
+      例如 <literal>"/usr/bin/sudo /usr/sbin/arping -U $_IP_$ -w 1 -I eth0"</literal>。
+      <literal>$_IP_$</literal> 将会被替换为
+      <varname>delegate_ip</varname> 中指定的 IP 地址。
      </para>
      <para>
-      Default is <literal>/usr/bin/sudo /usr/sbin/arping -U $_IP_$ -w 1 -I eth0</literal>.
+      默认是 <literal>/usr/bin/sudo /usr/sbin/arping -U $_IP_$ -w 1 -I eth0</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -472,13 +460,13 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the path of a ping command to check startup of the virtual IP.
-      Set the only path of the directory containing the ping utility,
-      such as <literal>"/bin"</literal> or such directory.
-      Default is <literal>/bin</literal>.
+      指定用于检查虚拟 IP 是否启动的 ping 命令的路径。
+      只设置包含 ping 工具的目录的路径，
+      例如 <literal>"/bin"</literal> 或类似的目录。
+      默认是 <literal>/bin</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -486,11 +474,10 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-escalation-de-escalation">
-  <title>Behaviour on escalation and de-escalation</title>
+  <title>升级和降级时的行为</title>
 
   <para>
-   Configuration about behavior when <productname>Pgpool-II</productname>
-   escalates to leader (virtual IP holder)
+   关于 <productname>Pgpool-II</productname> 升级为 leader（虚拟 IP 持有者）时的行为配置
   </para>
 
   <variablelist>
@@ -503,19 +490,18 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      When set to on, watchdog clears all the query cache in the shared memory
-      when pgpool-II escalates to leader. This prevents the new leader <productname>Pgpool-II</productname>
-      from using old query caches inconsistent to the old leader.
+      当设为 on 时，当 pgpool-II 升级为 leader 时，watchdog 会清除共享内存中的所有查询缓存。这可以防止新的 leader <productname>Pgpool-II</productname>
+      使用与旧 leader 不一致的旧查询缓存。
      </para>
      <para>
-      Default is on.
+      默认是 on。
      </para>
      <para>
-      This works only if <xref linkend="guc-memqcache-method">
-       is <literal>'shmem'</literal>.
+      这仅在 <xref linkend="guc-memqcache-method">
+       为 <literal>'shmem'</literal> 时才有效。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -528,15 +514,14 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Watchdog executes this command on the node that is escalated
-      to the leader watchdog.
+      Watchdog 在升级为 leader watchdog 的节点上执行此命令。
      </para>
      <para>
-      This command is executed just before bringing up the
-      virtual IP if that is configured on the node.
+      如果该节点上配置了虚拟 IP，
+      此命令会在启用虚拟 IP 之前执行。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -549,22 +534,21 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Watchdog executes this command on the leader <productname>Pgpool-II</productname>
-      watchdog node when that node resigns from the leader node responsibilities.
-      A leader watchdog node can resign from being a leader node,
-      when the leader node <productname>Pgpool-II</productname> shuts down, detects a network
-      blackout or detects the lost of <indexterm><primary>quorum</primary></indexterm><firstterm>quorum</firstterm>.
+      当 leader watchdog 节点辞去 leader 节点职责时，watchdog 会在该 leader <productname>Pgpool-II</productname>
+      watchdog 节点上执行此命令。
+      当 leader 节点 <productname>Pgpool-II</productname> 关闭、检测到网络
+      中断或检测到 <indexterm><primary>quorum</primary></indexterm><firstterm>quorum</firstterm> 丢失时，
+      leader watchdog 节点可能会辞去 leader 节点的职责。
      </para>
      <para>
-      This command is executed before bringing down the virtual/floating IP address
-      if it is configured on the watchdog node.
+      如果 watchdog 节点上配置了虚拟/浮动 IP 地址，
+      此命令会在停用该 IP 地址之前执行。
      </para>
      <para>
-      <varname>wd_de_escalation_command</varname> is not available prior to
-      <productname>Pgpool-II </productname><emphasis>V3.5</emphasis>.
+      <varname>wd_de_escalation_command</varname> 在 <productname>Pgpool-II </productname><emphasis>V3.5</emphasis> 之前不可用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -572,13 +556,13 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-failover-behavior">
-  <title>Controlling the Failover behavior</title>
+  <title>控制故障转移行为</title>
 
   <para>
-   These settings are used to control the behavior of backend node failover when the watchdog is enabled.
-   The effect of these configurations is limited to the failover/degenerate requests initiated by
-   <productname>Pgpool-II</productname> internally, while the user initiated detach backend requests
-   (using PCP command) by-pass these configuration settings.
+   当 watchdog 启用时，这些设置用于控制后端节点故障转移的行为。
+   这些配置的效果仅限于由 <productname>Pgpool-II</productname> 内部发起的
+   故障转移/降级请求，而用户发起的 detach 后端请求
+   （使用 PCP 命令）则会绕过这些配置设置。
   </para>
 
   <variablelist>
@@ -591,108 +575,90 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      When enabled, <productname>Pgpool-II</productname> will consider <indexterm><primary>quorum</primary></indexterm>quorum when it performs the degenerate/failover on backend node.
+      启用时，<productname>Pgpool-II</productname> 在对后端节点执行降级/故障转移时会考虑 <indexterm><primary>quorum</primary></indexterm>quorum。
      </para>
      <para>
-      We can say that "quorum exists" if the number of live
-      watchdog nodes (that is number
-      of <productname>Pgpool-II</productname> nodes) can be a
-      majority against the total number of watchdog nodes. For
-      example, suppose number of watchdog nodes is 5. If number of
-      live nodes is greater than or equal to 3, then quorum
-      exists. On the other hand if number of live nodes is 2 or
-      lower, quorum does not exist since it never be
-      majority.
+      如果存活 watchdog 节点（也就是 <productname>Pgpool-II</productname> 节点的数量）的数量
+      能够占 watchdog 节点总数的大多数，则可以说 "存在 quorum"。
+      例如，假设 watchdog 节点数为 5。如果存活节点数
+      大于或等于 3，则存在 quorum。
+      另一方面，如果存活节点数为 2 或更少，则不存在 quorum，
+      因为它永远不会占大多数。
      </para>
      <para>
-      If the quorum exists, <productname>Pgpool-II</productname>
-      could work better on failure detection because even if a
-      watchdog node mistakenly detects a failure of backend node,
-      it would be denied by other major watchdog nodes.
-      <productname>Pgpool-II</productname> works that way
-      when <xref linkend="guc-failover-require-consensus"> is on
-       (the default), but you can change it so that immediate
-       failover happens when a failure is detected.
-       A <productname>Pgpool-II</productname> node which mistakenly
-       detects failure of backend node will quarantine the backend
-       node.
+      如果存在 quorum，<productname>Pgpool-II</productname> 在故障检测方面
+      可能工作得更好，因为即使某个 watchdog 节点错误地检测到后端节点故障，
+      它也会被其他主要的 watchdog 节点否决。
+      <productname>Pgpool-II</productname> 在 <xref linkend="guc-failover-require-consensus"> 为 on
+       （默认）时就是这样工作的，但你可以更改它，
+      以便在检测到故障时立即进行故障转移。
+      错误地检测到后端节点故障的 <productname>Pgpool-II</productname> 节点
+      会隔离该后端节点。
      </para>
      <para>
-      The existence of quorum can be shown by invoking <xref linkend="pcp-watchdog-info"> command with <literal>--verbose</literal> option.
-       If <literal>Quorum state</literal> is <literal>QUORUM EXIST</literal> or <literal>QUORUM IS ON THE EDGE</literal>, then the quorum exists.
-       If <literal>Quorum state</literal> is <literal>QUORUM ABSENT</literal>, then the quorum does not exist.
+      可以通过使用 <literal>--verbose</literal> 选项调用 <xref linkend="pcp-watchdog-info"> 命令来显示 quorum 是否存在。
+       如果 <literal>Quorum state</literal> 为 <literal>QUORUM EXIST</literal> 或 <literal>QUORUM IS ON THE EDGE</literal>, 则存在 quorum。
+       如果 <literal>Quorum state</literal> 为 <literal>QUORUM ABSENT</literal>, 则不存在 quorum。
      </para>
      <para>
-      In the absence of the
-      quorum, <productname>Pgpool-II</productname> node that
-      detects the backend failure will quarantine the failed
-      backend node until the quorum exists again.
+      在没有
+      quorum 的情况下，检测到后端故障的 <productname>Pgpool-II</productname> 节点
+      会隔离发生故障的后端节点，直到再次存在 quorum。
      </para>
      <para>
-      Although it is possible to force detaching the quarantine
-      node by using <command>pcp_detach_node</command> command, it
-      is not possible to attach the node again by
-      using <command>pcp_attach_node</command> command.
+      虽然可以使用 <command>pcp_detach_node</command> 命令强制解除对隔离节点的 detach，
+      但无法使用 <command>pcp_attach_node</command> 命令再次 attach 该节点。
      </para>
      <para>
-      The <indexterm><primary>quarantine</primary></indexterm>
-      quarantine nodes behaves similar to the detached backend nodes
-      but unlike failed/degenerated backends the quarantine status is
-      not propagated to the other <productname>Pgpool-II</productname>
-      nodes in the watchdog cluster, So even if the backend node is in
-      the quarantine state on one <productname>Pgpool-II</productname>
-      node, other <productname>Pgpool-II</productname> nodes may still
-      continue to use that backend.
+      <indexterm><primary>quarantine</primary></indexterm>
+      隔离节点与被 detach 的后端节点行为类似，
+      但与故障/降级的后端不同，隔离状态不会传播到
+      watchdog 集群中的其他 <productname>Pgpool-II</productname> 节点，
+      因此即使后端节点在一个 <productname>Pgpool-II</productname> 节点上处于隔离状态，
+      其他 <productname>Pgpool-II</productname> 节点可能仍会继续使用该后端。
      </para>
      <para>
-      Although there are many similarities in quarantine and failover operations, but they both differ in a very
-      fundamental way. The quarantine operations does not executes the <xref linkend="guc-failover-command">
-       and silently detaches the problematic node, so in the case when the primary backend node is quarantined, the
-       <productname>Pgpool-II</productname> will not promote the standby to take over the primary node responsibilities
-       and until the primary node is quarantined the <productname>Pgpool-II</productname> will not have
-       any usable primary backend node.
+      虽然隔离和故障转移操作有很多相似之处，但它们在根本上有区别。
+      隔离操作不会执行 <xref linkend="guc-failover-command">，
+      而是静默地 detach 有问题的节点，因此当主后端节点被隔离时，
+      <productname>Pgpool-II</productname> 不会提升 standby 来接管主节点职责，
+      并且在主节点被隔离期间，<productname>Pgpool-II</productname> 不会有任何可用的主后端节点。
      </para>
      <para>
-      Moreover, unlike for the failed nodes,
-      <productname>Pgpool-II</productname> keeps the health-check
-      running on the quarantined nodes and as soon as the quarantined
-      node becomes reachable again it gets automatically
-      re-attached. Note that this is only applied to
-      <productname>Pgpool-II </productname><emphasis>V4.1</emphasis>
-      or greater. If you are using previous versions you need to
-      re-attach the quarantined node by using <xref
-      linkend="pcp-attach-node"> when the connectivity issue is
-      solved.
+      此外，与故障节点不同，
+      <productname>Pgpool-II</productname> 会继续对隔离节点运行健康检查，
+      一旦隔离节点再次变得可达，它就会被自动重新 attach。
+      请注意，这仅适用于 <productname>Pgpool-II </productname><emphasis>V4.1</emphasis>
+      或更高版本。如果你使用的是以前的版本，
+      当连接问题解决后，你需要使用 <xref linkend="pcp-attach-node"> 重新 attach 隔离节点。
      </para>
      <para>
-      From <productname>Pgpool-II </productname><emphasis>V4.1</emphasis> onward, if the watchdog-leader node
-      fails to build the consensus for primary backend node failover and the primary backend node gets into a
-      quarantine state, then it resigns from its leader responsibilities and lowers its wd_priority
-      for next leader election and let the cluster elect some different new leader.
+      从 <productname>Pgpool-II </productname><emphasis>V4.1</emphasis> 开始，如果 watchdog leader 节点
+      无法就主后端节点故障转移达成共识，并且主后端节点进入隔离状态，
+      那么它会辞去 leader 职责，并降低其 wd_priority
+      以用于下一次 leader 选举，让集群选举出某个不同的新 leader。
       <note>
        <para>
-	When the leader node fails to build the consensus for standby backend node failure, it takes no action
-	and similarly quarantined standby backend nodes on watchdog-leader do not trigger a new leader election.
+	当 leader 节点无法就 standby 后端节点故障达成共识时，它不会采取任何行动，
+	并且 watchdog leader 上被隔离的 standby 后端节点也不会触发新的 leader 选举。
        </para>
       </note>
      </para>
      <para>
-      If this parameter is off, failover will be triggered even if
-      quorum does not exist.
+      如果此参数为 off，即使不存在 quorum，也会触发故障转移。
      </para>
      <para>
-      Default is on.
+      默认是 on。
      </para>
      <para>
-      <varname>failover_when_quorum_exists</varname> is not available prior to
-      <productname>Pgpool-II </productname><emphasis>V3.7</emphasis>.
+      <varname>failover_when_quorum_exists</varname> 在 <productname>Pgpool-II </productname><emphasis>V3.7</emphasis> 之前不可用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
      <note>
       <para>
-       enabling <varname>failover_when_quorum_exists</varname> is not allowed in native replication mode.
+       在原生复制模式中不允许启用 <varname>failover_when_quorum_exists</varname>。
       </para>
      </note>
    </listitem>
@@ -706,50 +672,44 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      When enabled, <productname>Pgpool-II</productname> will perform the degenerate/failover on a
-      backend node if the watchdog quorum exists and at-least minimum number of nodes necessary
-      for the quorum vote for the failover.
+      启用时，如果 watchdog quorum 存在，并且至少有达成 quorum 所需的最少节点数
+      对故障转移投了赞成票，<productname>Pgpool-II</productname> 就会对
+      后端节点执行降级/故障转移。
      </para>
      <para>
-      For example, in a three node watchdog cluster, the failover will only be performed until at
-      least two nodes ask for performing the failover on the particular backend node.
+      例如，在三节点 watchdog 集群中，只有在
+      至少两个节点要求对特定后端节点执行故障转移时，才会执行故障转移。
      </para>
      <para>
-      If this parameter is off, failover will be triggered even if
-      there's no consensus.
+      如果此参数为 off，即使没有共识，也会触发故障转移。
      </para>
      <para>
-      Default is on.
+      默认是 on。
      </para>
 
      <caution>
       <para>
-       When <varname>failover_require_consensus</varname> is
-       enabled, <productname>Pgpool-II</productname> does not
-       execute the failover until it get enough votes from
-       other <productname>Pgpool-II</productname> nodes. So it is
-       strongly recommended to enable the backend health check on
-       all
-       <productname>Pgpool-II</productname> nodes to ensure
-       proper detection of backend node failures.  For more
-       details of health check,
-       see <xref linkend="runtime-config-health-check">.
+       当 <varname>failover_require_consensus</varname>
+       启用时，<productname>Pgpool-II</productname> 在从其他
+       <productname>Pgpool-II</productname> 节点获得足够的赞成票之前不会执行故障转移。因此强烈建议在所有
+       <productname>Pgpool-II</productname> 节点上启用后端健康检查，以确保正确检测后端节点故障。
+       有关健康检查的更多详细信息，
+       请参阅 <xref linkend="runtime-config-health-check">。
       </para>
      </caution>
 
      <note>
       <para>
-       enabling <varname>failover_require_consensus</varname> is not allowed in native replication mode.
+       在原生复制模式中不允许启用 <varname>failover_require_consensus</varname>。
       </para>
      </note>
 
      <para>
-      <varname>failover_require_consensus</varname> is not available prior to
-      <productname>Pgpool-II </productname><emphasis>V3.7</emphasis>. and it is only
-      effective when <xref linkend="guc-failover-when-quorum-exists"> is enabled
+      <varname>failover_require_consensus</varname> 在 <productname>Pgpool-II </productname><emphasis>V3.7</emphasis> 之前不可用，并且只有在
+      <xref linkend="guc-failover-when-quorum-exists"> 启用时才有效。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -762,34 +722,30 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      This parameter works in connection with the
-      <xref linkend="guc-failover-require-consensus">. When enabled, a single <productname>Pgpool-II</productname>
-       node can cast multiple votes for the failover.
+      此参数与
+      <xref linkend="guc-failover-require-consensus"> 配合工作。启用后，单个 <productname>Pgpool-II</productname>
+       节点可以针对故障转移投出多票。
      </para>
      <para>
-      For example, in a three node watchdog cluster, if one <productname>Pgpool-II</productname> node sends two
-      failover requests for a particular backend node failover, Both requests will be counted as a separate
-      vote in the favor of the failover and <productname>Pgpool-II</productname> will execute the failover,
-      even if it does not get the vote from any other <productname>Pgpool-II</productname> node.
+      例如，在三节点 watchdog 集群中，如果一个 <productname>Pgpool-II</productname> 节点针对特定后端节点故障转移发送了两个
+      故障转移请求，这两个请求都会被计为对该故障转移的独立赞成票，
+      并且 <productname>Pgpool-II</productname> 会执行故障转移，
+      即使没有从任何其他 <productname>Pgpool-II</productname> 节点获得赞成票。
      </para>
      <para>
-      For example, if an error found in a health check round does
-      not get enough vote and the error still persists, next round
-      of health check will give one more vote.  This parameter is
-      useful if you want to detect a persistent error which might
-      not be found by other watchdog nodes.
+      例如，如果一轮健康检查中发现一个错误但未获得足够的赞成票，并且该错误仍然存在，
+      下一轮健康检查会再多投一票。如果你想要检测其他 watchdog 节点可能无法发现的
+      持续性错误，此参数很有用。
      </para>
      <para>
-      Default is off.
+      默认是 off。
      </para>
      <para>
-      <varname>allow_multiple_failover_requests_from_node</varname> is not available prior to
-      <productname>Pgpool-II </productname><emphasis>V3.7</emphasis>. and it is only
-      effective when both <xref linkend="guc-failover-when-quorum-exists"> and
-       <xref linkend="guc-failover-require-consensus"> are enabled
+      <varname>allow_multiple_failover_requests_from_node</varname> 在 <productname>Pgpool-II </productname><emphasis>V3.7</emphasis> 之前不可用，并且只有在
+      <xref linkend="guc-failover-when-quorum-exists"> 和 <xref linkend="guc-failover-require-consensus"> 都启用时才有效。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -802,61 +758,51 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      This parameter configures how the majority rule computation
-      is made by <productname>Pgpool-II</productname> for calculating
-      the quorum and resolving the consensus for failover.
+      此参数配置 <productname>Pgpool-II</productname> 如何进行大多数规则的计算，
+      用于计算 quorum 和解决故障转移的共识。
      </para>
      <note>
       <para>
-       This parameter affects not only the failover behavior of the
-       backend but the quorum and the failover behavior of
-       <productname>Pgpool-II</productname> itself.
+       此参数不仅影响后端的故障转移行为，
+       还影响 <productname>Pgpool-II</productname> 自身的 quorum 和故障转移行为。
       </para>
      </note>
      <para>
-      When enabled the existence of quorum and consensus on failover requires only half of
-      the total number of votes configured in the cluster. Otherwise, both of these
-      decisions require at least one more vote than half of the total number of votes.
-      For failover, this parameter works in conjunction with the
-      <xref linkend="guc-failover-require-consensus">. In both cases, whether making a
-      decision of quorum existence or building the consensus on failover this
-      parameter only comes into play when the watchdog cluster is configured for even
-      number of <productname>Pgpool-II</productname> nodes.
-      The majority rule decision in the watchdog cluster having an odd number of participants.
-      It is not affected by the value of this configuration parameter.
+      启用时，quorum 的存在和故障转移共识只需要集群中配置的总票数的一半。
+      否则，这两个决策都需要比总票数一半至少多一票。
+      对于故障转移，此参数与
+      <xref linkend="guc-failover-require-consensus"> 配合使用。在这两种情况下，
+      无论是做出 quorum 存在的决策还是在故障转移上建立共识，
+      此参数只在 watchdog 集群配置为偶数个 <productname>Pgpool-II</productname> 节点时才起作用。
+      在参与者数量为奇数的 watchdog 集群中，大多数规则决策不受此配置参数值的影响。
      </para>
      <para>
-      For example, when this parameter is enabled in a two node watchdog
-      cluster, one <productname>Pgpool-II</productname> node needs to
-      be alive to make the quorum exist. If the parameter is off, two
-      nodes need to be alive to make quorum exist.
+      例如，在两节点 watchdog 集群中启用此参数时，
+      需要一个 <productname>Pgpool-II</productname> 节点存活才能存在 quorum。如果参数为 off，
+      则需要两个节点存活才能存在 quorum。
      </para>
      <para>
-      When this parameter is enabled in a four node watchdog cluster,
-      two <productname>Pgpool-II</productname> node needs to be alive
-      to make the quorum exist. If the parameter is off, three nodes
-      need to be alive to make quorum exist.
+      在四节点 watchdog 集群中启用此参数时，
+      需要两个 <productname>Pgpool-II</productname> 节点存活才能存在 quorum。如果参数为 off，
+      则需要三个节点存活才能存在 quorum。
      </para>
      <para>
-      By enabling this parameter, you should aware that you take a
-      risk to make split-brain happen. For example, in four node
-      cluster consisted of node A, B, C and D, it is possible that the
-      cluster goes into two separated networks (A, B) and (C, D). For
-      (A, B) and (C, D) the quorum still exist since for both groups
-      there are two live nodes out of 4. The two groups choose their
-      own leader watchdog, which is a split-brain.
+      通过启用此参数，你应该意识到存在发生脑裂的风险。
+      例如，在由节点 A、B、C 和 D 组成的四节点集群中，
+      集群有可能分裂成两个相互隔离的网络 (A、B) 和 (C、D)。
+      对于 (A、B) 和 (C、D)，quorum 仍然存在，因为两个组在 4 个节点中都有两个存活节点。
+      这两个组会选出各自的 leader watchdog，这即为脑裂。
      </para>
      <para>
-      Default is off.
+      默认是 off。
      </para>
      <para>
-      <varname>enable_consensus_with_half_votes</varname> is not available
-      prior to <productname>Pgpool-II
-      </productname><emphasis>V4.1</emphasis>. The prior versions work
-      as if the parameter is on.
+      <varname>enable_consensus_with_half_votes</varname> 在 <productname>Pgpool-II
+      </productname><emphasis>V4.1</emphasis> 之前不可用。之前的版本表现得
+      如同该参数为 on。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -865,57 +811,49 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-cluster-membership">
-  <title>Controlling the watchdog cluster membership </title>
+  <title>控制 watchdog 集群成员关系</title>
 
   <para>
-	By default the watchdog cluster consists of all watchdog nodes
-	that are defined in the <filename>pgpool.conf</filename> file
-	irrespective of the current state of the node. Whether the node
-	is <literal>LOST</literal>, <literal>SHUTDOWN</literal>
-	or never started, the node is considered as the member of the
-	watchdog cluster definition as long as it is configured in the
-	configuration file.
-	All the majority rule computations for identifying the existence
-	of a quorum and resolving the consensus are made based on the
-	number of watchdog nodes that makes up the watchdog cluster.
+	默认情况下，watchdog 集群由 <filename>pgpool.conf</filename> 文件中定义的
+	所有 watchdog 节点组成，无论节点的当前状态如何。无论节点是
+	<literal>LOST</literal>、<literal>SHUTDOWN</literal> 还是从未启动过，
+	只要它在配置文件中配置了，就被视为 watchdog 集群定义中的成员。
+	用于识别 quorum 存在和解决共识的所有大多数规则计算
+	都是基于组成 watchdog 集群的 watchdog 节点数量进行的。
   </para>
 
   <para>
-	<productname>Pgpool-II</productname> <emphasis>V4.3</emphasis> enables
-	dynamic cluster definition by introducing the concept of
-	<emphasis>Member</emphasis> and <emphasis>Nonmember</emphasis>.
-	If the node's membership gets revoked from the watchdog cluster,
-	then the cluster re-calibrate itself dynamically to adjust all
-	subsequent majority rule computations.
+	<productname>Pgpool-II</productname> <emphasis>V4.3</emphasis> 通过引入
+	<emphasis>Member</emphasis> 和 <emphasis>Nonmember</emphasis> 的概念，
+	启用了动态集群定义。
+	如果节点的成员资格被从 watchdog 集群中撤销，
+	那么集群会动态地重新校准自身，以调整所有后续的大多数规则计算。
 	</para>
 	<para>
-	All majority rule computations are done based on the number of
-	member watchdog nodes instead of total number of configured nodes.
+	所有大多数规则计算都是基于成员 watchdog 节点的数量进行的，
+	而不是基于已配置节点的总数。
   </para>
 
   <para>
-	For example: In a five node cluster (<filename>pgpool.conf</filename> has five
-	watchdog nodes defined) at-least three nodes need to be alive to make the quorum.
-	With the dynamic cluster membership mechanism the cluster can re-adjust
-	itself to only count the <emphasis>MEMBER</emphasis> nodes
-	(Member node doesn't necessarily need to be alive).
-	That means effectively a single alive node
-	can also fulfill the quorum requirements (depending on the membership criteria settings)
-	if at some point in time the cluster only has one or two member nodes.
+	例如：在一个五节点集群中（<filename>pgpool.conf</filename> 定义了五个
+	watchdog 节点），至少需要三个节点存活才能存在 quorum。
+	借助动态集群成员机制，集群可以重新调整自身，
+	只计算 <emphasis>MEMBER</emphasis> 节点（Member 节点不一定是存活节点）。
+	这意味着，如果集群在某时刻只有一两个成员节点，
+	那么实际上单个存活节点也可以满足 quorum 要求（取决于成员资格设置）。
   </para>
   <para>
 	<caution>
 		<para>
-		Using the dynamic cluster membership has an associated risk of causing a split-brain.
-		So it is strongly recommended to carefully review if the setup requires the dynamic cluster
-		membership and consider using conservative values for related settings.
+		使用动态集群成员机制存在引发脑裂的相关风险。
+		因此强烈建议仔细审查该设置是否确实需要动态集群成员机制，
+		并考虑在使用相关设置时采用保守的值。
 		</para>
 	</caution>
   </para>
   <para>
-  These settings configures when the node is marked as Nonmember.
-  Leaving all these settings to default values retains the
-  pre <emphasis>V4.3</emphasis> behaviour.
+  这些设置配置节点何时被标记为 Nonmember。
+  将所有这些设置保持为默认值即可保留 <emphasis>V4.3</emphasis> 之前的行为。
   </para>
 
   <variablelist>
@@ -928,11 +866,11 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-	 When enabled, the <literal>SHUTDOWN</literal> nodes are immediately marked as Nonmember
-	 and removed from the cluster. If the previously shutdown node starts again,
-	 it gets added to cluster automatically.
+	 启用时，<literal>SHUTDOWN</literal> 节点会立即被标记为 Nonmember
+	 并从集群中移除。如果之前关闭的节点再次启动，
+	 它会自动被添加到集群中。
      </para>
-	 <para> Default is off. </para>
+	 <para> 默认是 off。 </para>
 	</listitem>
    </varlistentry>
 
@@ -945,15 +883,13 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Timeout in seconds to mark the <literal>LOST</literal> watchdog node as
-	  Nonmember and remove from the cluster.
-	  When LOST node re-connects to the cluster, its cluster membership is restored.
+      将 <literal>LOST</literal> watchdog 节点标记为 Nonmember 并从集群中移除的超时时间（秒）。
+	  当 LOST 节点重新连接到集群时，其集群成员资格会被恢复。
      </para>
 	 <para>
-	 Setting the timeout to <literal>0</literal> disables the removal
-	 of LOST nodes from cluster.
+	 将超时设置为 <literal>0</literal> 可禁用从集群中移除 LOST 节点。
 	 </para>
-	 <para> Default is 0. </para>
+	 <para> 默认是 0。 </para>
 
 	</listitem>
    </varlistentry>
@@ -966,15 +902,12 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Timeout in seconds to mark the node as Nonmember if it doesn't show up
-	  at cluster initialisation. Nonmember node becomes the cluster Member as
-	  soon as it starts up and connects to the cluster.
+      如果节点在集群初始化时没有出现，则在将其标记为 Nonmember 前的超时时间（秒）。一旦 Nonmember 节点启动并连接到集群，它就会成为集群 Member。
 	 </para>
 	 <para>
-	 Setting the timeout to <literal>0</literal> disables the removal
-	 of <literal>NO-SHOW</literal> nodes from cluster.
+	 将超时设置为 <literal>0</literal> 可禁用从集群中移除 <literal>NO-SHOW</literal> 节点。
 	 </para>
-	 <para> Default is 0. </para>
+	 <para> 默认是 0。 </para>
 
 	</listitem>
   </varlistentry>
@@ -983,10 +916,10 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-lifecheck">
-  <title>Life checking <productname>Pgpool-II</productname> </title>
+  <title>存活检查 <productname>Pgpool-II</productname></title>
 
   <para>
-   Watchdog checks pgpool-II status periodically. This is called "life check".
+   Watchdog 会周期性地检查 pgpool-II 的状态。这被称为 "life check"。
   </para>
 
   <variablelist>
@@ -999,44 +932,42 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the method of life check. This can be either of <literal>heartbeat</literal> (default),
-      <literal>query</literal> or <literal>external</literal>.
+      指定存活检查的方法。可以是 <literal>heartbeat</literal>（默认）中的任何一个、
+      <literal>query</literal> 或 <literal>external</literal>。
      </para>
      <para>
-      <literal>heartbeat</literal>: In this mode, watchdog sends the heartbeat signals (<acronym>UDP</acronym> packets)
-      periodically to other <productname>Pgpool-II</productname>. Similarly watchdog also receives the signals
-      from other <productname>Pgpool-II</productname> .
-      If there are no signal for a certain period, watchdog regards is as failure
-      of the <productname>Pgpool-II</productname> .
+      <literal>heartbeat</literal>：在此模式下，watchdog 周期性地向其他
+      <productname>Pgpool-II</productname> 发送心跳信号（<acronym>UDP</acronym> 数据包）。
+      同样，watchdog 也接收来自其他 <productname>Pgpool-II</productname> 的信号。
+      如果在某段时间内没有信号，watchdog 就认为
+      <productname>Pgpool-II</productname> 发生故障。
      </para>
      <para>
-      <literal>query</literal>: In this mode, watchdog sends the monitoring queries
-      to other <productname>Pgpool-II</productname> and checks the response.
-      When installation location between <productname>Pgpool-II</productname>
-      servers is far, <literal>query</literal> may be useful.
+      <literal>query</literal>：在此模式下，watchdog 向其他
+      <productname>Pgpool-II</productname> 发送监控查询并检查响应。
+      当 <productname>Pgpool-II</productname> 各服务器之间的安装位置相距较远时，
+      <literal>query</literal> 可能很有用。
       <caution>
        <para>
-        In query mode, you need to set <xref linkend="guc-num-init-children">
-	 large enough if you plan to use watchdog.
-	 This is because the watchdog process connects to
-	 <productname>Pgpool-II</productname> as a client.
+        在 query 模式下，如果你打算使用 watchdog，你需要将 <xref linkend="guc-num-init-children">
+	设置得足够大。
+	这是因为 watchdog 进程会作为客户端连接到
+	<productname>Pgpool-II</productname>。
        </para>
       </caution>
      </para>
      <para>
-      <literal>external</literal>: This mode disables the built
-      in lifecheck of <productname>Pgpool-II</productname> watchdog
-      and relies on external system to provide node health checking
-      of local and remote watchdog nodes.
+      <literal>external</literal>：此模式禁用
+      <productname>Pgpool-II</productname> watchdog 的内置存活检查，
+      并依赖外部系统提供本地和远程 watchdog 节点的健康检查。
      </para>
 
      <para>
-      <literal>external</literal> mode is not available in versions prior to
-      <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>.
+      <literal>external</literal> 模式在 <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 之前的版本中不可用。
      </para>
 
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1049,22 +980,21 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specify a comma separated list of network device names, to be monitored by the watchdog process
-      for the network link state. If all network interfaces in the list becomes inactive
-      (disabled or cable unplugged), the watchdog will consider it as a complete network failure
-      and the <productname>Pgpool-II</productname> node will commit the suicide.
-      Specifying an <literal>''</literal>(empty) list disables the network interface monitoring.
-      Setting it to <literal>'any'</literal> enables the monitoring on all available network interfaces
-      except the loopback. Default is <literal>''</literal> empty list (monitoring disabled).
+      指定一个以逗号分隔的网络设备名称列表，由 watchdog 进程监控
+      以检查网络链路状态。如果列表中的所有网络接口都变为不活动
+      （已禁用或网线被拔出），watchdog 将认为这是完全的网络故障，
+      并且 <productname>Pgpool-II</productname> 节点会自杀。
+      指定一个 <literal>''</literal>（空）列表会禁用网络接口监控。
+      将其设置为 <literal>'any'</literal> 会启用对所有可用网络接口的监控
+      （环回接口除外）。默认是 <literal>''</literal> 空列表（监控已禁用）。
      </para>
 
      <para>
-      <varname>wd_monitoring_interfaces_list</varname> is not available in versions prior to
-      <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>.
+      <varname>wd_monitoring_interfaces_list</varname> 在 <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 之前的版本中不可用。
      </para>
 
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1077,12 +1007,12 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the interval between life checks of <productname>Pgpool-II</productname>
-      in seconds. (A number greater than or equal to 1) Default is 10.
+      指定对 <productname>Pgpool-II</productname> 进行存活检查的时间间隔
+      （秒）。默认是 10。
      </para>
 
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1095,26 +1025,22 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      This parameter can be used to elevate the local watchdog node priority in the elections
-      to select leader watchdog node.
-      The node with the higher <varname>wd_priority</varname> value will get selected
-      as leader watchdog node when cluster will be electing its new leader node
-      in the event of old leader watchdog node failure.
-      <varname>wd_priority</varname> is also valid at the time of cluster startup.
-      When some watchdog nodes start up at same time,a node with the higher <varname>wd_priority</varname>
-      value is selected as a leader node.
-      So we should start watchdog nodes in order of <varname>wd_priority</varname> priority to prevent
-      unintended nodes from being selected as leader.
-      If <varname>wd_priority</varname> of each nodes has the same value,
-      leader node will be decided on base of starting time of watchdog.
+      此参数可用于在选举 leader watchdog 节点的选举中提升本地 watchdog 节点的优先级。
+      当集群在旧 leader watchdog 节点故障时选举新 leader 节点时，
+      <varname>wd_priority</varname> 值较高的节点会被选为 leader watchdog 节点。
+      <varname>wd_priority</varname> 在集群启动时也有效。
+      当某些 watchdog 节点同时启动时，<varname>wd_priority</varname> 值较高的节点会被选为 leader 节点。
+      因此，我们应该按照 <varname>wd_priority</varname> 优先级的顺序启动 watchdog 节点，
+      以防止意外节点被选为 leader。
+      如果每个节点的 <varname>wd_priority</varname> 值相同，
+      leader 节点将根据 watchdog 的启动时间来决定。
      </para>
      <para>
-      <varname>wd_priority</varname> is not available in versions prior to
-      <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>.
+      <varname>wd_priority</varname> 在 <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 之前的版本中不可用。
      </para>
 
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1127,19 +1053,17 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      The directory where the <acronym>UNIX</acronym> domain socket
-      accepting <productname>Pgpool-II</productname>
-      watchdog <acronym>IPC</acronym> connections will be created.
-      Default is <literal>'/tmp'</literal>.
-      Be aware that this socket might be deleted by a cron job.
-      We recommend to set this value to <literal>'/var/run'</literal> or such directory.
+      将创建接受 <productname>Pgpool-II</productname> watchdog <acronym>IPC</acronym> 连接的
+      <acronym>UNIX</acronym> 域 socket 的目录。
+      默认是 <literal>'/tmp'</literal>。
+      请注意，此 socket 可能会被 cron 作业删除。
+      我们建议将此值设置为 <literal>'/var/run'</literal> 或类似的目录。
      </para>
      <para>
-      <varname>wd_ipc_socket_dir</varname> is not available in versions prior to
-      <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>.
+      <varname>wd_ipc_socket_dir</varname> 在 <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 之前的版本中不可用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1148,7 +1072,7 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-lifecheck-heartbeat">
-  <title>Lifecheck Heartbeat mode configuration</title>
+  <title>Lifecheck Heartbeat 模式配置</title>
   <variablelist>
    <varlistentry id="guc-heartbeat-hostname" xreflabel="heartbeat_hostname">
     <term><varname>heartbeat_hostnameX</varname> (<type>string</type>)
@@ -1158,19 +1082,17 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the <acronym>IP (IPv4 or IPv6)</acronym> address or <acronym>hostname</acronym>
-	  for sending and receiving the heartbeat signals.
-      The number at the end of the parameter name is referred
-      as "pgpool node id", and it starts from 0 (e.g. heartbeat_hostname0).
-	  You can specify multiple <acronym>IP</acronym> address or <acronym>hostname</acronym>
-      by separating them using semicolon (;).
+      指定用于发送和接收心跳信号的 <acronym>IP (IPv4 或 IPv6)</acronym> 地址或 <acronym>hostname</acronym>。
+      参数名称末尾的数字被称为 "pgpool node id"，
+      并且从 0 开始（例如 heartbeat_hostname0）。
+	  你可以在多个 <acronym>IP</acronym> 地址或 <acronym>hostname</acronym> 之间使用分号 (;) 分隔来指定它们。
      </para>
      <para>
-      <varname>heartbeat_hostnameX</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'heartbeat'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'heartbeat'</literal> 时，
+      <varname>heartbeat_hostnameX</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1183,18 +1105,16 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the <acronym>IP (IPv4 or IPv6)</acronym> address or <acronym>hostname</acronym>
-	    which heartbeat process will listen on.
-      Default is <literal>''</literal> (empty).
-	    You can specify multiple <acronym>IP</acronym> address or <acronym>hostname</acronym>
-      by separating them using semicolon (;).
-      If a value other than the default value is set,
-      the value of heartbeat_hostnameX of the local node will be ignored and a socket
-      that listens on the address specified in wd_heartbeat_listen_addresses will be created.
-      For <varname>wd_heartbeat_listen_addresses</varname>, specifying <literal>*</literal> will listen on all addresses.
+      指定 heartbeat 进程将要监听的 <acronym>IP (IPv4 或 IPv6)</acronym> 地址或 <acronym>hostname</acronym>。
+      默认是 <literal>''</literal>（空）。
+	   你可以在多个 <acronym>IP</acronym> 地址或 <acronym>hostname</acronym> 之间使用分号 (;) 分隔来指定它们。
+      如果设置了非默认值，
+      则本地节点的 heartbeat_hostnameX 的值将被忽略，并会创建一个
+      监听 wd_heartbeat_listen_addresses 中指定地址的 socket。
+      对于 <varname>wd_heartbeat_listen_addresses</varname>，指定 <literal>*</literal> 将监听所有地址。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1207,17 +1127,17 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the port number for sending and receiving the heartbeat signals.
-      Specify only one port number here. Default is 9694.
-      The number at the end of the parameter name is referred
-      as "pgpool node id", and it starts from 0 (e.g. heartbeat_port0).
+      指定用于发送和接收心跳信号的端口号。
+      这里只指定一个端口号。默认是 9694。
+      参数名称末尾的数字被称为 "pgpool node id"，
+      并且从 0 开始（例如 heartbeat_port0）。
      </para>
      <para>
-      <varname>heartbeat_portX</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'heartbeat'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'heartbeat'</literal> 时，
+      <varname>heartbeat_portX</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1230,14 +1150,14 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the port number which heartbeat process will listen on.
-      Specify only one port number here. Default is 0.
-      If a value other than the default value is set,
-      the value of heartbeat_portX of the local node will be ignored and a socket
-      that listens on the port specified in wd_heartbeat_listen_port will be created.
+      指定 heartbeat 进程将要监听的端口号。
+      这里只指定一个端口号。默认是 0。
+      如果设置了非默认值，
+      则本地节点的 heartbeat_portX 的值将被忽略，并会创建一个
+      监听 wd_heartbeat_listen_port 中指定端口的 socket。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1250,29 +1170,28 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the network device name for sending and receiving the heartbeat signals.
-      The number at the end of the parameter name is referred
-      as "pgpool node id", and it starts from 0 (e.g. heartbeat_device0).
-	  You can specify multiple network devices by separating them using semicolon (;).
+      指定用于发送和接收心跳信号的网络设备名称。
+      参数名称末尾的数字被称为 "pgpool node id"，
+      并且从 0 开始（例如 heartbeat_device0）。
+	  你可以在多个网络设备之间使用分号 (;) 分隔来指定它们。
      </para>
      <para>
-      <varname>heartbeat_deviceX</varname> is only applicable if
-      <productname>Pgpool-II</productname> is started with root
-      privilege. If not, leave it as an empty string ('').
+      仅当 <productname>Pgpool-II</productname> 以 root 权限启动时，
+      <varname>heartbeat_deviceX</varname> 才适用。如果不是，请将其留为空字符串 (')。
      </para>
      <para>
-      <varname>heartbeat_deviceX</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'heartbeat'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'heartbeat'</literal> 时，
+      <varname>heartbeat_deviceX</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
      <example id="example-heartbeat-1">
-      <title>Heartbeat configuration</title>
+      <title>Heartbeat 配置</title>
       <para>
-       If you have 3 pgpool nodes with hostname server1, server2 and server3,
-       you can configure <xref linkend="guc-heartbeat-hostname">,
-       <xref linkend="guc-heartbeat-port"> and <xref linkend="guc-heartbeat-device"> like below:
+       如果你有 3 个主机名为 server1、server2 和 server3 的 pgpool 节点，
+       你可以像下面这样配置 <xref linkend="guc-heartbeat-hostname">、
+       <xref linkend="guc-heartbeat-port"> 和 <xref linkend="guc-heartbeat-device">：
 	<programlisting>
      heartbeat_hostname0 = 'server1'
      heartbeat_port0 = 9694
@@ -1299,14 +1218,14 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the interval time in seconds between sending the heartbeat signals.
-      Default is 2.
-      <varname>wd_heartbeat_keepalive</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'heartbeat'</literal>
+      指定发送心跳信号之间的时间间隔（秒）。
+      默认是 2。
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'heartbeat'</literal> 时，
+      <varname>wd_heartbeat_keepalive</varname> 才适用。
      </para>
 
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1319,14 +1238,14 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the time in seconds before marking the remote watchdog node as failed/dead node,
-      if no heartbeat signal is received within that time.
-      Default is <literal>30</literal>
-      <varname>wd_heartbeat_deadtime</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'heartbeat'</literal>
+      指定在将远程 watchdog 节点标记为故障/死节点之前的时间（秒），
+      如果在该时间内未收到心跳信号。
+      默认是 <literal>30</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'heartbeat'</literal> 时，
+      <varname>wd_heartbeat_deadtime</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1334,7 +1253,7 @@ pgpool_port2 = 9999
  </sect2>
 
  <sect2 id="config-watchdog-lifecheck-query">
-  <title>Lifecheck Query mode configuration</title>
+  <title>Lifecheck Query 模式配置</title>
   <variablelist>
 
    <varlistentry id="guc-wd-life-point" xreflabel="wd_life_point">
@@ -1345,16 +1264,16 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the number of times to retry a failed life check of pgpool-II.
-      Valid value could be a number greater than or equal to 1.
-      Default is 3.
+      指定对 pgpool-II 重试失败的存活检查的次数。
+      有效值可以是大于或等于 1 的数字。
+      默认是 3。
      </para>
      <para>
-      <varname>wd_life_point</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'query'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'query'</literal> 时，
+      <varname>wd_life_point</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1367,15 +1286,15 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the query to use for the life check of remote <productname>Pgpool-II</productname>.
-      Default is <literal>"SELECT 1"</literal>.
+      指定用于对远程 <productname>Pgpool-II</productname> 进行存活检查的查询。
+      默认是 <literal>"SELECT 1"</literal>。
      </para>
      <para>
-      <varname>wd_lifecheck_query</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'query'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'query'</literal> 时，
+      <varname>wd_lifecheck_query</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1388,16 +1307,16 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the database name for the connection used for the
-      life check of remote <productname>Pgpool-II</productname>.
-      Default is <literal>"template1"</literal>.
+      指定用于对远程 <productname>Pgpool-II</productname> 进行
+      存活检查的连接所使用的数据库名称。
+      默认是 <literal>"template1"</literal>。
      </para>
      <para>
-      <varname>wd_lifecheck_dbname</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'query'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'query'</literal> 时，
+      <varname>wd_lifecheck_dbname</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1410,16 +1329,15 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the user name for the connection used for the life
-      check of remote <productname>Pgpool-II</productname>.
-      Default is <literal>''</literal>(empty).
+      指定用于对远程 <productname>Pgpool-II</productname> 进行存活检查的连接所使用的用户名。
+      默认是 <literal>''</literal>（空）。
      </para>
      <para>
-      <varname>wd_lifecheck_user</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'query'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'query'</literal> 时，
+      <varname>wd_lifecheck_user</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -1432,47 +1350,45 @@ pgpool_port2 = 9999
     </term>
     <listitem>
      <para>
-      Specifies the password for the user used for the life check of remote <productname>Pgpool-II</productname>.
+      指定用于对远程 <productname>Pgpool-II</productname> 进行存活检查的用户的密码。
      </para>
      <para>
-      If <varname>wd_lifecheck_password</varname> is left blank <productname>Pgpool-II</productname>
-      will first try to get the password for <xref linkend="guc-wd-lifecheck-user"> from
-       <xref linkend="guc-pool-passwd"> file before using the empty password.
+      如果 <varname>wd_lifecheck_password</varname> 留空，<productname>Pgpool-II</productname>
+      在使用空密码之前，会首先尝试从 <xref linkend="guc-pool-passwd"> 文件中获取
+       <xref linkend="guc-wd-lifecheck-user"> 的密码。
      </para>
      <para>
-      You can also specify AES256-CBC encrypted password in <varname>wd_lifecheck_password</varname> field.
-      To specify the <literal>AES</literal> encrypted password, password string must be prefixed with
-      <literal>AES</literal> after encrypting (using <literal>aes-256-cbc</literal> algorithm) and
-      encoding to <literal>base64</literal>.
+      你也可以在 <varname>wd_lifecheck_password</varname> 字段中指定 AES256-CBC 加密的密码。
+      要指定 <literal>AES</literal> 加密的密码，密码字符串在加密（使用 <literal>aes-256-cbc</literal> 算法）并
+      编码为 <literal>base64</literal> 后，必须以 <literal>AES</literal> 作为前缀。
      </para>
      <para>
-      To specify the unencrypted clear text password, prefix the password string with
-      <literal>TEXT</literal>. For example if you want to set <literal>mypass</literal> as
-      a password, you should specify <literal>TEXTmypass</literal> in the password field.
-      In the absence of a valid prefix, <productname>Pgpool-II</productname> will considered
-      the string as a plain text password.
+      要指定未加密的明文密码，请以 <literal>TEXT</literal> 作为密码字符串的前缀。
+      例如，如果你想将 <literal>mypass</literal> 设置为密码，
+      你应该在密码字段中指定 <literal>TEXTmypass</literal>。
+      在没有有效前缀的情况下，<productname>Pgpool-II</productname> 会将
+      该字符串视为明文密码。
      </para>
      <para>
-      You can also use <xref linkend="PG-ENC"> utility to create the correctly formatted
-       <literal>AES</literal> encrypted password strings.
+      你也可以使用 <xref linkend="PG-ENC"> 工具来创建格式正确的
+       <literal>AES</literal> 加密密码字符串。
        <note>
 	<para>
-	 <productname>Pgpool-II</productname> will require a valid decryption key at the
-	 startup to use the encrypted passwords.
-	 see <xref linkend="auth-aes-decryption-key"> for more details on providing the
-	  decryption key to <productname>Pgpool-II</productname>
+	 <productname>Pgpool-II</productname> 在启动时需要有效的解密密钥才能使用加密密码。
+	 有关如何为 <productname>Pgpool-II</productname> 提供解密密钥的更多详细信息，
+	 请参阅 <xref linkend="auth-aes-decryption-key">。
 	</para>
        </note>
      </para>
      <para>
-      <varname>wd_lifecheck_password</varname> is only applicable if the
-      <xref linkend="guc-wd-lifecheck-method"> is set to <literal>'query'</literal>
+      仅当 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>'query'</literal> 时，
+      <varname>wd_lifecheck_password</varname> 才适用。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
      <para>
-      Default is <literal>''</literal>(empty).
+      默认是 <literal>''</literal>（空）。
      </para>
     </listitem>
    </varlistentry>

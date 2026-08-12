@@ -1,275 +1,190 @@
 <!-- doc/src/sgml/restrictions.sgml -->
 
 <sect1 id="restrictions" xreflabel="restrictions">
- <title>Restrictions</title>
+ <title>限制</title>
 
  <para>
-  This section describes current restrictions of <productname>Pgpool-II</productname>.
+  本节描述了 <productname>Pgpool-II</productname> 当前的限制。
 
   <variablelist>
 
    <varlistentry>
-    <term>Using pg_terminate_backend</term>
+    <term>使用 pg_terminate_backend</term>
     <listitem>
      <para>
-      If you use <function>pg_terminate_backend()</function> to stop a
-      backend, this will trigger a failover.  The reason why this
-      happens is that <productname>PostgreSQL</productname> sends
-      exactly the same message for a terminated backend as for a full
-      postmaster shutdown.  There is no workaround prior of version
-      3.6. From version 3.6, this limitation has been mitigated. If
-      the argument to the function (that is a process id) is a
-      constant, you can safely use the function. In extended protocol
-      mode, you cannot use the function though.  In 4.3 or later you
-      can completely prevent the failover caused
-      by <function>pg_terminate_backend()</function> by
-      setting <literal>off</literal>
-      to <xref linkend="guc-failover-on-backend-shutdown">, this will
-      prevent failover caused by termination of postmaster though.
+      如果使用 <function>pg_terminate_backend()</function> 停止后端进程，这将触发故障转移。发生这种情况的原因是 <productname>PostgreSQL</productname> 为终止的后端进程发送的消息与完全关闭 postmaster 时发送的消息完全相同。在 3.6 版本之前没有解决方法。从 3.6 版本开始，此限制已得到缓解。如果该函数的参数（即进程 ID）是常量，则可以安全地使用该函数。但在扩展协议模式下，您无法使用该函数。在 4.3 或更高版本中，您可以通过设置 <xref linkend="guc-failover-on-backend-shutdown"> 为 <literal>off</literal> 来完全防止由 <function>pg_terminate_backend()</function> 引起的故障转移，但这也会防止由 postmaster 终止引起的故障转移。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Load Balancing</term>
+    <term>负载均衡</term>
     <listitem>
      <para>
-      Multi-statement queries (multiple SQL commands on single line)
-      are always sent to primary node (in streaming replication mode)
-      or main node (in other
-      modes). Usually <productname>Pgpool-II</productname> dispatch
-      query to appropriate node, but it's not applied to
-      multi-statement queries.
+      多语句查询（单行中的多个 SQL 命令）始终发送到主节点（在流复制模式下）或主节点（在其他模式下）。通常 <productname>Pgpool-II</productname> 将查询分派到适当的节点，但这不适用于多语句查询。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Authentication/Access Controls</term>
+    <term>认证/访问控制</term>
     <listitem>
      <para>
-      Trust and pam methods are supported. md5 is also
-      supported since <productname>Pgpool-II</productname> 3.0.  md5
-      is supported by using an authentication file <filename>pool_passwd</filename>.
-      scram-sha-256, cert, and clear text password is also supported since
-      <productname>Pgpool-II</productname> 4.0.
-      <filename>pool_passwd</filename> is default name of the
-      authentication file. Here are the
-      steps to enable md5 authentication:
+      支持 trust 和 pam 方法。自 <productname>Pgpool-II</productname> 3.0 起也支持 md5。md5 通过使用认证文件 <filename>pool_passwd</filename> 来支持。自 <productname>Pgpool-II</productname> 4.0 起还支持 scram-sha-256、cert 和明文密码。<filename>pool_passwd</filename> 是认证文件的默认名称。以下是启用 md5 认证的步骤：
      </para>
 
      <orderedlist>
 
       <listitem>
        <para>
-	Login as the database's operating system user and type:
-	<programlisting>
-	 pg_md5 --md5auth --username=<literal>your_username</literal> <literal>your_passwd</literal>
-	</programlisting>
-	user name and md5 encrypted password are registered into
-	pool_passwd.  If pool_passwd does not exist yet, pg_md5
-	command will automatically create it for you.  The format
-	of pool_passwd
-	is <literal>username:encrypted_passwd</literal>.
+        以数据库的操作系统用户身份登录并输入：
+        <programlisting>
+         pg_md5 --md5auth --username=<literal>your_username</literal> <literal>your_passwd</literal>
+        </programlisting>
+        用户名和 md5 加密密码将注册到 pool_passwd。如果 pool_passwd 尚不存在，pg_md5 命令将自动为您创建它。pool_passwd 的格式为 <literal>username:encrypted_passwd</literal>。
        </para>
       </listitem>
 
       <listitem>
        <para>
-	You also need to add an appropriate md5 entry to
-	pool_hba.conf.  See <xref linkend="auth-pool-hba-conf"> for more details.
+        您还需要在 pool_hba.conf 中添加相应的 md5 条目。详情请参阅 <xref linkend="auth-pool-hba-conf">。
        </para>
       </listitem>
 
       <listitem>
        <para>
-	Please note that the user name and password must be
-	identical to those registered
-	in <productname>PostgreSQL</productname>.
+        请注意，用户名和密码必须与在 <productname>PostgreSQL</productname> 中注册的相同。
        </para>
       </listitem>
 
       <listitem>
        <para>
-	After changing md5 password (in both pool_passwd and
-	PostgreSQL of course), you need to
-	execute <application>pgpool reload</application>.
+        更改 md5 密码后（当然是在 pool_passwd 和 PostgreSQL 中），您需要执行 <application>pgpool reload</application>。
        </para>
       </listitem>
      </orderedlist>
 
      <para>
-      See <xref linkend="setting-scram-sha-256-authentication"> for
-      details about setting scram-sha-256 authentication.
+      有关设置 scram-sha-256 认证的详细信息，请参阅 <xref linkend="setting-scram-sha-256-authentication">。
      </para>
 
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Large objects</term>
+    <term>大对象</term>
     <listitem>
      <para>
-      In <xref linkend="runtime-config-streaming-replication-mode">, <productname>Pgpool-II</productname>
-      supports large objects.
+      在 <xref linkend="runtime-config-streaming-replication-mode"> 中，<productname>Pgpool-II</productname> 支持大对象。
      </para>
      <para>
-      In <xref linkend="guc-snapshot-isolation-mode">
-      and <xref linkend="guc-replication-mode">, <productname>Pgpool-II</productname>
-      supports large objects if the backend
-      is <productname>PostgreSQL</productname> 8.1 or later.  For
-      this, you need to enable lobj_lock_table directive
-      in <filename>pgpool.conf</filename>.  Large object replication
-      using backend function <function>lo_import</function> is not
-      supported, however.
+      在 <xref linkend="guc-snapshot-isolation-mode">
+      和 <xref linkend="guc-replication-mode"> 中，如果后端是 <productname>PostgreSQL</productname> 8.1 或更高版本，<productname>Pgpool-II</productname> 支持大对象。为此，您需要在 <filename>pgpool.conf</filename> 中启用 lobj_lock_table 指令。但不支持使用后端函数 <function>lo_import</function> 进行大对象复制。
      </para>
      <para>
-      In other mode, large
-      objects are not supported.
+      在其他模式下，不支持大对象。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Temporary tables</term>
+    <term>临时表</term>
     <listitem>
      <para>
-      Creating/inserting/updating/deleting temporary tables are
-      always executed on the primary in native replication mode.
-      SELECT on these tables is executed on primary as well.  However
-      if the temporary table name is used as a literal in SELECT,
-      there's no way to detect it, and the SELECT will be load
-      balanced.  That will trigger a "not found the table" error or
-      will find another table having same name.  To avoid the
-      problem, use SQL comment.
+      在本机复制模式下，创建/插入/更新/删除临时表始终在主节点上执行。对这些表的 SELECT 也在主节点上执行。但是，如果在 SELECT 中将临时表名称用作字面量，则无法检测到它，并且该 SELECT 将被负载均衡。这将触发"未找到表"错误，或者会找到另一个同名表。为避免此问题，请使用 SQL 注释。
      </para>
      <para>
-      Note that such literal table names used in queries to access
-      system catalogs do cause problems described above.  psql's \d
-      command produces such that query:
+      请注意，在访问系统目录的查询中使用此类字面量表名确实会导致上述问题。psql 的 \d 命令会产生这样的查询：
       <programlisting>
        SELECT 't1'::regclass::oid;
       </programlisting>
-      In such that case <productname>Pgpool-II</productname> always
-      sends the query to primary and will not cause the problem.
+      在这种情况下，<productname>Pgpool-II</productname> 始终将查询发送到主节点，不会导致问题。
      </para>
 
      <para>
-      Tables created by <command>CREATE TEMP TABLE</command> will be
-      deleted at the end of the session by specifying DISCARD ALL in
-      reset_query_list if you are using PostgreSQL 8.3 or later.
+      如果使用 PostgreSQL 8.3 或更高版本，通过在 reset_query_list 中指定 DISCARD ALL，由 <command>CREATE TEMP TABLE</command> 创建的表将在会话结束时被删除。
      </para>
      <para>
-      For 8.2.x or earlier, tables created by <command>CREATE TEMP
-       TABLE</command> will not be deleted after exiting a
-      session. It is because of the connection pooling which, from
-      PostgreSQL's backend point of view, keeps the session
-      alive. To avoid this, you must explicitly drop the temporary
-      tables by issuing <command>DROP TABLE</command>, or
-      use <command>CREATE TEMP TABLE ... ON COMMIT DROP</command>
-      inside the transaction block.
+      对于 8.2.x 或更早版本，由 <command>CREATE TEMP
+       TABLE</command> 创建的表在退出会话后不会被删除。这是因为连接池从 PostgreSQL 后端的角度来看保持了会话的活动状态。为避免这种情况，您必须通过执行 <command>DROP TABLE</command> 显式删除临时表，或在事务块内使用 <command>CREATE TEMP TABLE ... ON COMMIT DROP</command>。
      </para>
 
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Functions,
-    etc. in <xref linkend="guc-snapshot-isolation-mode">
-    and <xref linkend="guc-replication-mode"></term>
+    <term><xref linkend="guc-snapshot-isolation-mode">
+    和 <xref linkend="guc-replication-mode"> 中的函数等</term>
     <listitem>
      <para>
-      There is no guarantee that any data provided using a
-      context-dependent mechanism (e.g. random number, transaction
-      ID, OID, SERIAL, sequence etc,), will be replicated correctly on
-      multiple backends. For SERIAL, enabling insert_lock will help
-      replicating data.  insert_lock also helps SELECT setval() and
-      SELECT nextval().
+      无法保证使用上下文相关机制（例如随机数、事务 ID、OID、SERIAL、序列等）提供的任何数据能够在多个后端上正确复制。对于 SERIAL，启用 insert_lock 将有助于复制数据。insert_lock 也有助于 SELECT setval() 和 SELECT nextval()。
      </para>
      <para>
-      INSERT/UPDATE
-      using <function>CURRENT_TIMESTAMP</function>, <function>CURRENT_DATE</function>,
-      <function>now()</function> will be replicated
-      correctly. INSERT/UPDATE for tables
-      using <function>CURRENT_TIMESTAMP</function>, <function>CURRENT_DATE</function>,
-      <function>now()</function> as their DEFAULT values will also
-      be replicated correctly.  This is done by replacing those
-      functions by constants fetched from <productname>PostgreSQL</productname> at query execution
-      time.  There are a few limitations however:
+      使用 <function>CURRENT_TIMESTAMP</function>、<function>CURRENT_DATE</function>、
+      <function>now()</function> 的 INSERT/UPDATE 将被正确复制。对于使用 <function>CURRENT_TIMESTAMP</function>、<function>CURRENT_DATE</function>、
+      <function>now()</function> 作为其 DEFAULT 值的表的 INSERT/UPDATE 也将被正确复制。这是通过在查询执行时将这些函数替换为从 <productname>PostgreSQL</productname> 获取的常量来实现的。但存在一些限制：
      </para>
      <para>
-      In <productname>Pgpool-II</productname> 3.0 or before, the
-      calculation of temporal data in table default value is not
-      accurate in some cases. For example, the following table
-      definition:
+      在 <productname>Pgpool-II</productname> 3.0 或更早版本中，某些情况下表默认值中的时间数据计算不准确。例如，以下表定义：
       <programlisting>
        CREATE TABLE rel1(
        d1 date DEFAULT CURRENT_DATE + 1
        )
       </programlisting>
-      is treated the same as:
+      与以下内容处理方式相同：
       <programlisting>
        CREATE TABLE rel1(
        d1 date DEFAULT CURRENT_DATE
        )
       </programlisting>
-      <productname>Pgpool-II</productname> 3.1 or later handles
-      these cases correctly.  Thus the column "d1" will have
-      tomorrow as the default value.  However this enhancement does
-      not apply if extended protocols (used in JDBC, PHP PDO for
-      example) or PREPARE are used.
+      <productname>Pgpool-II</productname> 3.1 或更高版本正确处理这些情况。因此列 "d1" 将以明天作为默认值。但是，如果使用扩展协议（例如 JDBC、PHP PDO 中使用的）或 PREPARE，则此增强功能不适用。
      </para>
      <para>
-      Please note that if the column type is not a temporal one,
-      rewriting is not performed. Such example:
+      请注意，如果列类型不是时间类型，则不会进行重写。例如：
       <programlisting>
        foo bigint default (date_part('epoch'::text,('now'::text)::timestamp(3) with time zone) * (1000)::double precision)
       </programlisting>
-      Suppose we have the following table:
+      假设我们有以下表：
       <programlisting>
        CREATE TABLE rel1(
        c1 int,
        c2 timestamp default now()
        )
       </programlisting>
-      We can replicate
+      我们可以复制
       <programlisting>
        INSERT INTO rel1(c1) VALUES(1)
       </programlisting>
 
-      since this turn into
+      因为这变成
 
       <programlisting>
        INSERT INTO rel1(c1, c2) VALUES(1, '2009-01-01 23:59:59.123456+09')
       </programlisting>
 
-      However,
+      但是，
       <programlisting>
        INSERT INTO rel1(c1) SELECT 1
       </programlisting>
-      cannot to be transformed, thus cannot be properly replicated in the current implementation.
-      Values will still be inserted, with no transformation at all.
+      无法被转换，因此在当前实现中无法正确复制。值仍会被插入，但不进行任何转换。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>SQL type commands</term>
+    <term>SQL 类型命令</term>
     <listitem>
      <para>
-      <link linkend="sql-commands">SQL type commands</link> cannot
-      be used in extended query mode.
+      <link linkend="sql-commands">SQL 类型命令</link>不能在扩展查询模式下使用。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Multi-byte Characters</term>
+    <term>多字节字符</term>
     <listitem>
      <para>
-      <productname>Pgpool-II</productname> does not perform encoding conversion between client and
-      <productname>PostgreSQL</productname> for multi-byte characters.
-      The encoding for the client and backends must be the same.
+      <productname>Pgpool-II</productname> 不对客户端和 <productname>PostgreSQL</productname> 之间的多字节字符执行编码转换。客户端和后端的编码必须相同。
      </para>
     </listitem>
    </varlistentry>
@@ -278,8 +193,7 @@
     <term>libpq</term>
     <listitem>
      <para>
-      libpq is linked while building <productname>Pgpool-II</productname>.
-      libpq version must be 3.0 or later. Building <productname>Pgpool-II</productname> with libpq version 2.0 will fail.
+      构建 <productname>Pgpool-II</productname> 时会链接 libpq。libpq 版本必须为 3.0 或更高版本。使用 libpq 2.0 版本构建 <productname>Pgpool-II</productname> 将会失败。
      </para>
     </listitem>
    </varlistentry>
@@ -288,38 +202,10 @@
     <term>ParameterStatus</term>
     <listitem>
      <para>
-       When a client connects
-       to <productname>PostgreSQL</productname>, <productname>PostgreSQL</productname>
-       sends back some parameter/value pairs to clients. This protocol
-       is
-       called <ulink url="https://www.postgresql.org/docs/14/protocol-flow.html#id-1.10.5.7.3"><firstterm>ParameterStatus</firstterm></ulink>.
-       The parameter/value pairs can be extracted by using some APIs
-       such as <function>PQParameterStatus</function> of libpq.  The
-       actual parameter names can be
-       found <ulink url="https://www.postgresql.org/docs/14/protocol-flow.html#PROTOCOL-ASYNC">here</ulink>.
-       <productname>Pgpool-II</productname> collects ParameterStatus
-       values from multiple <productname>PostgreSQL</productname>
-       servers and it is possible that the values vary among the
-       servers. A typical example is <literal>in_hot_standby</literal>,
-       which is introduced in <productname>PostgreSQL</productname>
-       14. The value for the variable is <literal>off</literal> on
-       primary server and <literal>on</literal> on standby
-       servers. Problem is, <productname>Pgpool-II</productname> has
-       to return client only one of them. In this case it chooses the
-       value reported by the primary
-       server. So <function>PQParameterStatus</function> will
-       return <literal>off</literal>. On the other hand, when the
-       client issues <literal>show in_hot_standby</literal>, the
-       returned value can either <literal>on</literal>
-       or <literal>off</literal> depending on which is the load
-       balance node for the session.
+      当客户端连接到 <productname>PostgreSQL</productname> 时，<productname>PostgreSQL</productname> 会向客户端返回一些参数/值对。此协议称为 <ulink url="https://www.postgresql.org/docs/14/protocol-flow.html#id-1.10.5.7.3"><firstterm>ParameterStatus</firstterm></ulink>。可以使用一些 API（例如 libpq 的 <function>PQParameterStatus</function>）来提取参数/值对。实际的参数名称可以在此 <ulink url="https://www.postgresql.org/docs/14/protocol-flow.html#PROTOCOL-ASYNC">处</ulink>找到。<productname>Pgpool-II</productname> 从多个 <productname>PostgreSQL</productname> 服务器收集 ParameterStatus 值，并且这些值在不同服务器之间可能不同。一个典型的例子是 <literal>in_hot_standby</literal>，它在 <productname>PostgreSQL</productname> 14 中引入。该变量在主服务器上的值为 <literal>off</literal>，在备用服务器上的值为 <literal>on</literal>。问题在于，<productname>Pgpool-II</productname> 只能向客户端返回其中一个值。在这种情况下，它选择主服务器报告的值。因此 <function>PQParameterStatus</function> 将返回 <literal>off</literal>。另一方面，当客户端发出 <literal>show in_hot_standby</literal> 时，返回值可以是 <literal>on</literal> 或 <literal>off</literal>，具体取决于会话的负载均衡节点。
      </para>
      <para>
-       Note that if the values differ among
-       servers, <productname>Pgpool-II</productname> will emit a log
-       message except <literal>in_hot_standby</literal>. This is to
-       prevent the log file from being flooded
-       since <literal>in_hot_standby</literal> always differs.
+      请注意，如果各服务器之间的值不同，<productname>Pgpool-II</productname> 将发出日志消息，但 <literal>in_hot_standby</literal> 除外。这是为了防止日志文件被淹没，因为 <literal>in_hot_standby</literal> 总是不同的。
      </para>
     </listitem>
    </varlistentry>
@@ -328,39 +214,10 @@
     <term>set_config</term>
     <listitem>
      <para>
-       <productname>PostgreSQL</productname>
-       has <function>set_config</function> function which allows to
-       change parameter values within current session
-       like <command>SET</command> command
-       (actually <function>set_config</function> has more feature than
-       SET. See <productname>PostgreSQL</productname> manual for more
-       details).  When <productname>Pgpool-II</productname> is
-       operated
-       with <link linkend="guc-backend-clustering-mode">clustering
-       mode</link> being set to
-       <literal>streaming_replication</literal>, it sends the function
-       only to the primary server. As the function is not sent to the
-       standby servers, the parameter values are different among each
-       servers. To avoid the problem, you can
-       use <command>SET</command> command instead
-       of <function>set_config</function>.
-       Since <command>SET</command> command is sent to all servers
-       used for this session, the issue will not happen.  However, if
-       you use more than 2 <productname>PostgreSQL</productname>
-       servers, you need to
-       disable <xref linkend="guc-statement-level-load-balance"> and
-       use <command>SET</command> command. This is because,
-       if <xref linkend="guc-statement-level-load-balance"> enabled,
-       queries might be sent to the third server in addition to the
-       primary server and the server which is assigned to the load
-       balance node.
+      <productname>PostgreSQL</productname> 具有 <function>set_config</function> 函数，该函数允许像 <command>SET</command> 命令一样更改当前会话中的参数值（实际上 <function>set_config</function> 比 SET 有更多功能。有关更多详细信息，请参阅 <productname>PostgreSQL</productname> 手册）。当 <productname>Pgpool-II</productname> 在 <link linkend="guc-backend-clustering-mode">集群模式</link>设置为 <literal>streaming_replication</literal> 的情况下运行时，它仅将该函数发送到主服务器。由于该函数未发送到备用服务器，因此各服务器之间的参数值不同。为避免此问题，您可以使用 <command>SET</command> 命令代替 <function>set_config</function>。由于 <command>SET</command> 命令会发送到本次会话使用的所有服务器，因此不会出现此问题。但是，如果您使用超过 2 个 <productname>PostgreSQL</productname> 服务器，则需要禁用 <xref linkend="guc-statement-level-load-balance"> 并使用 <command>SET</command> 命令。这是因为，如果启用了 <xref linkend="guc-statement-level-load-balance">，查询可能会发送到第三个服务器，此外还有主服务器和分配给负载均衡节点的服务器。
      </para>
      <para>
-       If you need to use <function>set_config</function>, turn off
-       load balancing for the session (not only
-       for <function>set_config</function>, load balancing should be
-       disabled in the whole session).  You can avoid the issue by
-       sacrificing performance.
+      如果您需要使用 <function>set_config</function>，请关闭会话的负载均衡（不仅针对 <function>set_config</function>，整个会话都应禁用负载均衡）。您可以通过牺牲性能来避免此问题。
      </para>
     </listitem>
    </varlistentry>

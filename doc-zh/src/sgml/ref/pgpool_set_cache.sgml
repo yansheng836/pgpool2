@@ -16,7 +16,7 @@ PostgreSQL documentation
 
  <refnamediv>
   <refname>PGPOOL SET CACHE</refname>
-  <refpurpose>delete query cache</refpurpose>
+  <refpurpose>删除查询缓存</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -26,39 +26,34 @@ PostgreSQL documentation
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>描述</title>
 
   <para>
-   The <command>PGPOOL SET CACHE DELETE</command> command deletes the
-   <link linkend="runtime-in-memory-query-cache">query cache</link>
-   previously created by the query. The query string must be exactly
-   identical to the previous query, including
-   trailing <literal>';'</literal>. Nevertheless if the query
-   includes <literal>'</literal> (single quore), it needs to be
-   prefixed by <literal>'</literal> like:
+   <command>PGPOOL SET CACHE DELETE</command> 命令会删除
+   <link linkend="runtime-in-memory-query-cache">查询缓存</link>
+   中先前由该查询所创建的缓存。查询字符串必须与之前的查询完全
+   一致，包括末尾的 <literal>';'</literal>。然而，如果查询
+   中包含 <literal>'</literal>（单引号），则需要像下面这样用
+   <literal>'</literal> 进行转义：
    <programlisting>
 PGPOOL SET CACHE DELETE 'SELECT ''FOO'';';
    </programlisting>
-   This command is particularly useful for queries that are not
-   invalidated by
-   the <link linkend="guc-memqcache-auto-cache-invalidation">auto
-   cache invalidation feature</link> because the query does not have
-   any reference to tables.
+   对于因查询未引用任何表而不会被
+   <link linkend="guc-memqcache-auto-cache-invalidation">自动
+   缓存失效特性</link> 所失效的查询来说，此命令尤其有用。
   </para>
   <para>
-   If you do not remember the previous query, you can
-   use <xref linkend="PCP-INVALIDATE-QUERY-CACHE"> to delete all the
-   query cache including the cache you want to delete. However it
-   requires the <productname>Pgpool-II</productname> admin privilege.
+   如果您不记得之前的查询，可以使用
+   <xref linkend="PCP-INVALIDATE-QUERY-CACHE"> 删除包括您想要删除的缓存在内的所有
+   查询缓存。但这需要 <productname>Pgpool-II</productname> 管理员权限。
   </para>
   <para>
-   Upon successful deletion of the query cache, this command emits a
-   notice message:
+   成功删除查询缓存后，此命令会输出一条提示消息：
    <programlisting>
 NOTICE:  query cache deleted. query: "<literal>query string</literal>"
    </programlisting>
-   If the cache does not exist or query cache is not enabled, it emits
-   a notice message:
+   如果缓存不存在或未启用查询缓存，它会输出
+   一条提示消息：
    <programlisting>
 NOTICE:  query cache does not exist for query: "<literal>query string</literal>"
    </programlisting>
@@ -66,14 +61,13 @@ NOTICE:  query cache does not exist for query: "<literal>query string</literal>"
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>示例</title>
 
   <para>
-   Accidentally created an unwanted query cache. Delete it by using
-   the command.
+   意外创建了一个多余的查询缓存。请使用该命令将其删除。
     <programlisting>
 test=# /*FORCE QUERY CACHE*/SELECT current_timestamp;
-       current_timestamp       
+       current_timestamp
 -------------------------------
  2024-10-18 18:25:07.826423+09
 (1 row)
@@ -87,7 +81,7 @@ SET
  </refsect1>
 
  <refsect1>
-  <title>See Also</title>
+  <title>另请参阅</title>
 
   <simplelist type="inline">
    <member><xref linkend="PCP-INVALIDATE-QUERY-CACHE"></member>

@@ -1,76 +1,73 @@
 <!-- doc/src/sgml/start.sgml -->
 
 <chapter id="tutorial-start">
- <title>Getting Started</title>
+ <title>入门指南</title>
 
  <sect1 id="tutorial-install">
-  <title>Installation</title>
+  <title>安装</title>
 
   <para>
-   In this section we assume that you have already
-   installed <productname>Pgpool-II</productname> following an
-   instruction described in <xref linkend="admin">.
-    Alternatively you can use <xref linkend="PGPOOL-SETUP"> to
-     create a temporary installation
-     of <productname>Pgpool-II</productname>
-     and <productname>PostgreSQL</productname>.
+   在本节中，我们假设您已经按照
+   <xref linkend="admin"> 中描述的说明安装了
+   <productname>Pgpool-II</productname>。
+   或者您也可以使用 <xref linkend="PGPOOL-SETUP"> 来
+   创建一个临时的
+   <productname>Pgpool-II</productname>
+   和 <productname>PostgreSQL</productname> 安装。
   </para>
  </sect1>
 
  <sect1 id="tutorial-replication">
-  <title>Your First Replication</title>
+  <title>您的第一次复制</title>
 
   <para>
-   In this section we are going to explain how to manage a
-   <productname>PostgreSQL</productname> cluster with streaming
-   replication using <productname>Pgpool-II</productname>, which is
-   one of most common setup.
+   在本节中，我们将介绍如何使用
+   <productname>Pgpool-II</productname> 管理一个带有流复制的
+   <productname>PostgreSQL</productname> 集群，这是
+   最常见的配置之一。
   </para>
 
   <para>
-   Before going further, you should properly set
-   up <filename>pgpool.conf</filename> with streaming replication
-   mode. Sample configurations are provided with
-   <productname>Pgpool-II</productname>, there configuration file
-   are located at /usr/local/etc with default installation from
-   source code. you can copy
-   <filename>pgpool.conf.sample</filename> as pgpool.conf.
+   在继续之前，您应该正确设置好
+   流复制模式下的
+   <filename>pgpool.conf</filename> 文件。
+   <productname>Pgpool-II</productname> 提供了示例配置文件，
+   从源代码默认安装后，这些配置文件位于
+   /usr/local/etc 目录下。您可以将
+   <filename>pgpool.conf.sample</filename> 复制为 pgpool.conf。
    <programlisting>
     cp /usr/local/etc/pgpool.conf.sample pgpool.conf
    </programlisting>
   </para>
   <para>
-   If you plan to use <command>pgpool_setup</command>, type:
+   如果您打算使用 <command>pgpool_setup</command>，请键入：
    <programlisting>
     pgpool_setup
    </programlisting>
-   This will create
-   a <productname>Pgpool-II</productname> with streaming
-   replication mode installation,
-   primary <productname>PostgreSQL</productname> installation, and
-   a async standby <productname>PostgreSQL</productname>
-   installation.
+   这将创建一个带有流复制模式的
+   <productname>Pgpool-II</productname> 安装、
+   主 <productname>PostgreSQL</productname> 安装，以及
+   一个异步备用 <productname>PostgreSQL</productname>
+   安装。
   </para>
   <para>
-   From now on, we assume that you
-   use <command>pgpool_setup</command> to create the installation
-   under current directory. Please note that the current directory
-   must be empty before executing <command>pgpool_setup</command>.
+   从现在开始，我们假设您使用
+   <command>pgpool_setup</command> 在当前目录下创建了安装。
+   请注意，在执行 <command>pgpool_setup</command> 之前，
+   当前目录必须为空。
   </para>
   <para>
-   To start the whole system, type:
+   要启动整个系统，请键入：
    <programlisting>
     ./startall
    </programlisting>
   </para>
   <para>
-   Once the system starts, you can check the cluster status by
-   issuing a pseudo SQL command called "show pool_nodes" to any of
-   databases. <command>pgpool_setup</command> automatically creates
-   "test" database. We use the database. Note that the port number
-   is 11000, which is the default port number assigned
-   to <productname>Pgpool-II</productname>
-   by <command>pgpool_setup</command>.
+   系统启动后，您可以通过向任意数据库发出名为 "show pool_nodes"
+   的伪 SQL 命令来检查集群状态。<command>pgpool_setup</command> 会自动创建
+   "test" 数据库。我们使用这个数据库。请注意端口号
+   是 11000，这是 <command>pgpool_setup</command> 分配给
+   <productname>Pgpool-II</productname> 的默认端口号。
    <programlisting>
     $ psql -p 11000 -c "show pool_nodes" test
     node_id | hostname | port  | status | lb_weight |  role   | select_cnt | load_balance_node | replication_delay | last_status_change
@@ -79,32 +76,28 @@
     1       | /tmp     | 11003 | up     | 0.500000  | standby | 0          | true              | 0                 | 2019-01-31 10:23:09
     (2 rows)
    </programlisting>
-   The result shows that the "status" column is "up", which means
-   the
-   <productname>PostgreSQL</productname> is up and running, which
-   is good.
+   结果显示 "status" 列是 "up"，这意味着
+   <productname>PostgreSQL</productname> 已经启动并运行，这很好。
   </para>
  </sect1>
 
  <sect1 id="tutorial-testing-replication">
-  <title>Testing Replication</title>
+  <title>测试复制</title>
 
   <para>
-   Let's test the replication functionality using a benchmark
-   tool <command>pgbench</command>, which comes with the
-   standard <productname>PostgreSQL</productname> installation.
-   Type following to create the benchmark tables.
+   让我们使用基准测试工具 <command>pgbench</command> 来测试复制功能，
+   该工具随标准 <productname>PostgreSQL</productname> 安装一起提供。
+   键入以下命令来创建基准测试表。
    <programlisting>
     $ pgbench -i -p 11000 test
    </programlisting>
-   To see if the replication works correctly, directly connect to
-   the primary and the standby server to see if they return
-   identical results.
+   要检查复制是否正确工作，直接连接到主服务器和备用服务器，
+   查看它们是否返回相同的结果。
    <programlisting>
     $ psql -p 11002 test
     \dt
     List of relations
-    Schema |       Name       | Type  |  Owner  
+    Schema |       Name       | Type  |  Owner
     --------+------------------+-------+---------
     public | pgbench_accounts | table | t-ishii
     public | pgbench_branches | table | t-ishii
@@ -115,7 +108,7 @@
     $ psql -p 11003 test
     \dt
     List of relations
-    Schema |       Name       | Type  |  Owner  
+    Schema |       Name       | Type  |  Owner
     --------+------------------+-------+---------
     public | pgbench_accounts | table | t-ishii
     public | pgbench_branches | table | t-ishii
@@ -123,9 +116,9 @@
     public | pgbench_tellers  | table | t-ishii
     (4 rows)
    </programlisting>
-   The primary server (port 11002) and the standby server (port
-   11003) return identical results. Next, let's run pgbench for a
-   while and check to results.
+   主服务器（端口 11002）和备用服务器（端口
+   11003）返回了相同的结果。接下来，让我们运行 pgbench 一段时间，
+   然后检查结果。
    <programlisting>
     $ pgbench -p 11000 -T 10 test
     starting vacuum...end.
@@ -152,16 +145,16 @@
     216117
     (1 row)
    </programlisting>
-   Again, the results are identical.
+   再次，结果相同。
   </para>
  </sect1>
 
  <sect1 id="tutorial-testing-load-balance">
-  <title>Testing Load Balance</title>
+  <title>测试负载均衡</title>
   <para>
-   <productname>Pgpool-II</productname> allows read query load
-   balancing. It is enabled by default. To see the effect, let's
-   use <command>pgbench -S</command> command.
+   <productname>Pgpool-II</productname> 允许读查询的负载均衡。
+   默认情况下它是启用的。要查看效果，让我们使用
+   <command>pgbench -S</command> 命令。
    <programlisting>
     $ ./shutdownall
     $ ./startall
@@ -185,29 +178,26 @@
     1       | /tmp     | 11003 | up     | 0.500000  | standby | 548582     | true              | 0                 | 2019-01-31 11:51:58
     (2 rows)
    </programlisting>
-   "select_cnt" column shows how many SELECT are dispatched to each
-   node. Since with the default
-   configuration, <productname>Pgpool-II</productname> tries to
-   dispatch equal number of SELECT, the column shows almost same
-   numbers.
+   "select_cnt" 列显示每个节点分配了多少个 SELECT。
+   由于在默认配置下，<productname>Pgpool-II</productname> 尝试
+   分配相等数量的 SELECT，因此该列显示的数字几乎相同。
   </para>
   <para>
-   <productname>Pgpool-II</productname> offers more sophisticated
-   strategy for load
-   balancing. See <xref linkend="runtime-config-load-balancing">
-    for more details.
+   <productname>Pgpool-II</productname> 提供了更复杂的
+   负载均衡策略。
+   更多详情请参见 <xref linkend="runtime-config-load-balancing">。
   </para>
  </sect1>
 
  <sect1 id="tutorial-testing-failover">
-  <title>Testing Fail Over</title>
+  <title>测试故障转移</title>
 
   <para>
-   <productname>Pgpool-II</productname> allows an automatic fail
-   over when <productname>PostgreSQL</productname> server goes
-   down. In this case <productname>Pgpool-II</productname> sets the
-   status of the server to "down" and continue the database
-   operation using remaining servers.
+   <productname>Pgpool-II</productname> 允许在
+   <productname>PostgreSQL</productname> 服务器宕机时自动进行故障
+   转移。在这种情况下，<productname>Pgpool-II</productname> 会将
+   该服务器的状态设置为 "down"，并使用剩余的服务器继续数据库
+   操作。
    <programlisting>
     $ pg_ctl -D data1 stop
     waiting for server to shut down.... done
@@ -219,22 +209,20 @@
     1       | /tmp     | 11003 | down   | 0.500000  | standby | 1          | false             | 0                 | 2019-01-31 12:03:07
     (2 rows)
    </programlisting>
-   The standby node was shut down by pg_ctl
-   command. <productname>Pgpool-II</productname> detects it and
-   detaches the standby node. "show pool_nodes" command shows that
-   the standby node is in down status. You can continue to use the
-   cluster without the standby node:
+   备用节点被 pg_ctl 命令关闭了。<productname>Pgpool-II</productname> 检测到这一点并
+   分离了备用节点。"show pool_nodes" 命令显示
+   备用节点处于 down 状态。您可以在没有备用节点的情况下继续使用
+   集群：
    <programlisting>
     $ psql -p 11000 -c "SELECT sum(abalance) FROM pgbench_accounts" test
-    sum   
+    sum
     --------
     216117
     (1 row)
    </programlisting>
-   What happens if the primary server goes down? In this case, one
-   of remaining standby server is promoted to new primary
-   server. For this testing, we start from the state in which both
-   nodes are up.
+   如果主服务器宕机了会发生什么？在这种情况下，其中一个
+   剩余的备用服务器会被提升为新的主服务器。
+   为此测试，我们从两个节点都启动的状态开始。
    <programlisting>
     $ psql -p 11000 -c "show pool_nodes" test
     node_id | hostname | port  | status | lb_weight |  role   | select_cnt | load_balance_node | replication_delay | last_status_change
@@ -253,12 +241,10 @@
     1       | /tmp     | 11003 | up     | 0.500000  | primary | 0          | true              | 0                 | 2019-01-31 12:05:20
     (2 rows)
    </programlisting>
-   Now the primary node is changed from 0 to 1. What happens
-   inside? When the node 0 goes
-   down, <productname>Pgpool-II</productname> detects it and
-   executes <varname>failover_command</varname> defined
-   in <filename>pgpool.conf</filename>.  Here is the content of the
-   file.
+   现在主节点从 0 变更为 1。内部发生了什么？
+   当节点 0 宕机时，<productname>Pgpool-II</productname> 检测到它，
+   并执行在 <filename>pgpool.conf</filename> 中定义的
+   <varname>failover_command</varname>。以下是该文件的内容。
    <programlisting>
     #! /bin/sh
     # Execute command by failover.
@@ -299,28 +285,25 @@
     sleep 2
     fi
    </programlisting>
-   The script receives necessary information as parameters
-   from <productname>Pgpool-II</productname>. If the primary server
-   goes down, it executes "pg_ctl -D data1 promote", which should
-   promote the standby server to a new primary server.
+   该脚本从 <productname>Pgpool-II</productname> 接收必要的信息作为参数。
+   如果主服务器宕机，它会执行 "pg_ctl -D data1 promote"，
+   这会将备用服务器提升为新的主服务器。
   </para>
  </sect1>
 
 
  <sect1 id="tutorial-testing-online-recovery">
-  <title>Testing Online Recovery</title>
+  <title>测试在线恢复</title>
   <para>
-   <productname>Pgpool-II</productname> allows to recover a downed
-   node by technique called "Online Recovery". This copies data
-   from the primary node to a standby node so that it sync with the
-   primary. This may take long time and database may be updated
-   during the process. That's no problem because in the streaming
-   configuration, the standby will receive WAL log and applies it
-   to catch up the primary. To test online recovery, let's start
-   with previous cluster, where node 0 is in down state.
+   <productname>Pgpool-II</productname> 允许通过一种称为
+   "在线恢复" 的技术来恢复宕机的节点。这会将数据从主节点复制到备用节点，
+   使其与主节点同步。这可能需要很长时间，并且数据库可能会在此过程中
+   被更新。这没有问题，因为在流复制配置中，备用节点会接收 WAL 日志
+   并应用它以追赶主节点。要测试在线恢复，让我们从之前的集群开始，
+   此时节点 0 处于 down 状态。
    <programlisting>
     $ pcp_recovery_node -p 11001 -n 0
-    Password: 
+    Password:
     pcp_recovery_node -- Command Successful
 
     $ psql -p 11000 -c "show pool_nodes" test
@@ -330,19 +313,17 @@
     1       | /tmp     | 11003 | up     | 0.500000  | primary | 0          | true              | 0                 | 2019-01-31 12:05:20
     (2 rows)
    </programlisting>
-   <xref linkend="pcp-recovery-node"> is one of control commands
-    coming with <productname>Pgpool-II</productname>
-    installation. The argument -p is to specify the port number
-    assigned to the command, which is 11001 set
-    by <command>pgpool_setup</command>. The argument -n is to
-    specify the node id to be recovered. After executing the command,
-    node 0 returned to "up" status.
+   <xref linkend="pcp-recovery-node"> 是 <productname>Pgpool-II</productname>
+   安装附带的控制命令之一。参数 -p 用于指定分配给该命令的端口号，
+   该端口号由 <command>pgpool_setup</command> 设置为 11001。
+   参数 -n 用于指定要恢复的节点 ID。执行该命令后，
+   节点 0 恢复为 "up" 状态。
   </para>
   <para>
-   The script executed by <command>pcp_recovery_node</command> is
-   specified as "recovery_1st_stage_command"
-   in <filename>pgpool.conf</filename>. Here is the file installed
-   by <command>pgpool_setup</command>.
+   <command>pcp_recovery_node</command> 执行的脚本在
+   <filename>pgpool.conf</filename> 中指定为
+   "recovery_1st_stage_command"。以下是由
+   <command>pgpool_setup</command> 安装的文件。
    <programlisting>
     #! /bin/sh
     psql=/usr/local/pgsql/bin/psql
@@ -372,7 +353,7 @@
     --exclude pg_xlog \
     $main_db_cluster/ $DEST_CLUSTER/
 
-    rm -fr $DEST_CLUSTER/pg_xlog 
+    rm -fr $DEST_CLUSTER/pg_xlog
     mkdir $DEST_CLUSTER/pg_xlog
     chmod 700 $DEST_CLUSTER/pg_xlog
     rm $DEST_CLUSTER/recovery.done
@@ -396,46 +377,42 @@
  </sect1>
 
  <sect1 id="tutorial-arch">
-  <title>Architectural Fundamentals</title>
+  <title>架构基础</title>
 
   <para>
-   <productname>Pgpool-II</productname> is a proxy server sitting
-   between clients and <productname>PostgreSQL</productname>.
-   <productname>Pgpool-II</productname> understands the wire level
-   protocol used by <productname>PostgreSQL</productname> called
-   "frontend and backend protocol". For more details of the
-   protocol, see the <productname>PostgreSQL</productname> manual.
-   No modified <productname>PostgreSQL</productname> is required to
-   use <productname>Pgpool-II</productname> (more precisely, you
-   will need a few extensions to use full functions
-   of <productname>Pgpool-II</productname>). So <productname>Pgpool-II</productname>
-   can cope with variety of <productname>PostgreSQL</productname>
-   versions. In theory, even the earliest version
-   of <productname>PostgreSQL</productname> can be used
-   with <productname>Pgpool-II</productname>. Same thing can be
-   said to client side. As long as it follows the
-   protocol, <productname>Pgpool-II</productname> happily accept
-   connections from it, no matter what kind of languages or drivers
-   it uses.
+   <productname>Pgpool-II</productname> 是一个位于客户端和
+   <productname>PostgreSQL</productname> 之间的代理服务器。
+   <productname>Pgpool-II</productname> 理解 <productname>PostgreSQL</productname>
+   使用的称为 "前端和后端协议" 的线级协议。有关该协议的更多详细信息，
+   请参见 <productname>PostgreSQL</productname> 手册。
+   使用 <productname>Pgpool-II</productname> 不需要修改
+   <productname>PostgreSQL</productname>（更准确地说，
+   您需要一些扩展才能使用 <productname>Pgpool-II</productname>
+   的全部功能）。因此 <productname>Pgpool-II</productname>
+   可以兼容多种 <productname>PostgreSQL</productname>
+   版本。理论上，即使是早期版本的
+   <productname>PostgreSQL</productname> 也可以
+   与 <productname>Pgpool-II</productname> 一起使用。
+   对于客户端来说也是如此。只要它遵循该协议，
+   <productname>Pgpool-II</productname> 就会愉快地接受来自它的连接，
+   无论它使用何种语言或驱动。
   </para>
   <para>
-   <productname>Pgpool-II</productname> consists of multiple
-   process. There is a main process, which is the parent process of
-   all other process. It is responsible for forking child process
-   each of which accepts connections from clients. There are some
-   worker process those are forked from the main process as well,
-   which is responsible for detecting streaming replication
-   delay. There is also a special process called "pcp process",
-   which is solely used for management
-   of <productname>Pgpool-II</productname>
-   itself. <productname>Pgpool-II</productname> has a built-in high
-   availability function called "watchdog". Watchdog consists of
-   some process. For more details of watchdog,
-   see <xref linkend="tutorial-watchdog">.
+   <productname>Pgpool-II</productname> 由多个进程组成。
+   有一个主进程，它是所有其他进程的父进程。
+   它负责派生子进程，每个子进程接受来自客户端的连接。
+   还有一些工作进程，它们也由主进程派生，
+   负责检测流复制延迟。还有一个称为 "pcp 进程" 的特殊进程，
+   它专门用于管理
+   <productname>Pgpool-II</productname>
+   自身。<productname>Pgpool-II</productname> 有一个内置的高可用性
+   功能，称为 "watchdog"。Watchdog 由一些进程组成。
+   有关 watchdog 的更多详细信息，
+   请参见 <xref linkend="tutorial-watchdog">。
   </para>
   <para>
    <figure>
-    <title>Process architecture of <productname>Pgpool-II</productname></title>
+    <title><productname>Pgpool-II</productname> 的进程架构</title>
     <mediaobject>
      <imageobject>
       <imagedata fileref="process-diagram.gif">

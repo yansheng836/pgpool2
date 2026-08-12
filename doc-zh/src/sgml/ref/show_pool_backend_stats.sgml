@@ -17,7 +17,7 @@
  <refnamediv>
   <refname>SHOW POOL_BACKEND_STATS</refname>
   <refpurpose>
-   show backend SQL command statistics
+   显示后端 SQL 命令统计信息
   </refpurpose>
  </refnamediv>
 
@@ -28,30 +28,28 @@
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>描述</title>
 
   <para>
-   <command>SHOW POOL_BACKEND_STATS</command> displays the node id,
-   the hostname, the port, the status, the role, the
-   SELECT/INSERT/UPDATE/DELETE/DDL/other query counts issued to each
-   backend. Also error messages returned from backend are counted and
-   shown, classified by the severity. The node id, the hostname, the
-   port, the status, the role are same as <xref
-   linkend="sql-show-pool-nodes">.
+   <command>SHOW POOL_BACKEND_STATS</command> 显示节点 ID、
+   主机名、端口、状态、角色，以及
+   发送到各后端的 SELECT/INSERT/UPDATE/DELETE/DDL/other 查询计数。同时还会统计并显示
+   从后端返回的错误消息，并按严重程度分类。节点 ID、主机名、
+   端口、状态、角色与 <xref
+   linkend="sql-show-pool-nodes"> 相同。
   </para>
   <para>
-   select_cnt, insert_cnt, update_cnt, delete_cnt, ddl_cnt, other_cnt
-   are the numbers of SQL command: SELECT, INSERT, UPDATE, DELETE, DDL
-   and others issued since <productname>Pgpool-II</productname>
-   started. Failed commands (for example SELECT from non-existing
-   table) are counted. Commands rolled back are also
-   counted. Currently, other than
+   select_cnt、insert_cnt、update_cnt、delete_cnt、ddl_cnt、other_cnt
+   是自 <productname>Pgpool-II</productname>
+   启动以来执行的 SQL 命令：SELECT、INSERT、UPDATE、DELETE、DDL
+   及其他命令的数量。失败的命令（例如从不存在的表中进行 SELECT）也会被计数。已回滚的命令同样
+   会被计数。目前，除
    SELECT/WITH/INSERT/UPDATE/DELETE/CHECKPOINT/DEALLOCATE/DISCARD/EXECUTE/
-   EXPLAIN/LISTEN/LOAD/LOCK/NOTIFY/PREPARE/SET/SHOW/Transaction
-   commands/UNLISTEN are considered as DDL.
+   EXPLAIN/LISTEN/LOAD/LOCK/NOTIFY/PREPARE/SET/SHOW/事务
+   命令/UNLISTEN 之外的命令均被视为 DDL。
   </para>
   <para>
-   Here is an example session:
+   以下是一个示例会话：
    <programlisting>
 test=# show pool_backend_stats;
  node_id | hostname | port  | status |  role   | select_cnt | insert_cnt | update_cnt | delete_cnt | ddl_cnt | other_cnt | panic_cnt | fatal_cnt | error_cnt 

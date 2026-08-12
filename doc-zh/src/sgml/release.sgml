@@ -1,91 +1,88 @@
 <!-- doc/src/sgml/release.sgml -->
 <!--
-
-Typical markup:
-
-&<>                             use & escapes
-PostgreSQL                      <productname>
-postgresql.conf, pg_hba.conf,
-        recovery.conf           <filename>
-[A-Z][A-Z_ ]+[A-Z_]             <command>, <literal>, <envar>, <acronym>
-[A-Za-z_][A-Za-z0-9_]+()        <function>
--[-A-Za-z_]+                    <option>
-[A-Za-z_]+/[A-Za-z_]+           <filename>
-psql                            <application>
-pg_[A-Za-z0-9_]+                <application>, <structname>
-[A-Z][A-Z][A-Z_ ]*              <type>
-[a-z]+_[a-z_]+                  <varname>
-
-non-ASCII characters            find using grep -P '[\x80-\xFF]'
-                                convert to HTML4 named entity (&) escapes
-
-        official:      http://www.w3.org/TR/html4/sgml/entities.html
-        one page:      http://www.zipcon.net/~swhite/docs/computers/browsers/entities_page.html
-        other lists:   http://www.zipcon.net/~swhite/docs/computers/browsers/entities.html
-                       http://www.zipcon.net/~swhite/docs/computers/browsers/entities_page.html
-                       http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
-
-        we cannot use UTF8 because SGML Docbook does not support it
-
-        do not use numeric _UTF_ numeric character escapes (&#nnn;),
-        we can only use Latin1
-
-        Example: Alvaro Herrera is &Aacute;lvaro Herrera
-
-wrap long lines
-
-For new features, add links to the documentation sections.
-
--->
-
-<appendix id="release">
- <title>Release Notes</title>
-
- <para>
-  The release notes contain the significant changes in each
-  <productname>Pgpool-II</> release, with major features and migration
-  issues listed at the top.  The release notes do not contain changes
-  that affect only a few users or changes that are internal and therefore not
-  user-visible.
- </para>
-
- <para>
-  A complete list of changes for each release can be obtained by
-  viewing the <!--<link linkend="git">-->Git<!--</link>--> logs for each release.
-  The <ulink
-   url="http://www.pgpool.net/pipermail/pgpool-committers/"><literal>pgpool-committers</literal>
-   email list</ulink> records all source code changes as well.  There is also
-  a <ulink url="http://git.postgresql.org/gitweb?p=pgpool2.git;a=summary">web
-   interface</ulink> that shows changes to specific files.
- </para>
-
- <para>
-  The name appearing next to each item represents the major developer for
-  that item.  Of course all changes involve community discussion and patch
-  review, so each item is truly a community effort.
- </para>
-
- <!--
- To add a new major-release series, add an entry here and in filelist.sgml.
-
- The reason for splitting the release notes this way is so that appropriate
- subsets can easily be copied into back branches.
+ 
+ Typical markup:
+ 
+ &<>                             use & escapes
+ PostgreSQL                      <productname>
+ postgresql.conf, pg_hba.conf,
+         recovery.conf           <filename>
+ [A-Z][A-Z_ ]+[A-Z_]             <command>, <literal>, <envar>, <acronym>
+ [A-Za-z_][A-Za-z0-9_]+()        <function>
+ -[-A-Za-z_]+                    <option>
+ [A-Za-z_]+/[A-Za-z_]+           <filename>
+ psql                            <application>
+ pg_[A-Za-z0-9_]+                <application>, <structname>
+ [A-Z][A-Z][A-Z_ ]*              <type>
+ [a-z]+_[a-z_]+                  <varname>
+ 
+ non-ASCII characters            find using grep -P '[\x80-\xFF]'
+                                 convert to HTML4 named entity (&) escapes
+ 
+         official:      http://www.w3.org/TR/html4/sgml/entities.html
+         one page:      http://www.zipcon.net/~swhite/docs/computers/browsers/entities_page.html
+         other lists:   http://www.zipcon.net/~swhite/docs/computers/browsers/entities.html
+                        http://www.zipcon.net/~swhite/docs/computers/browsers/entities_page.html
+                        http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references
+ 
+         we cannot use UTF8 because SGML Docbook does not support it
+ 
+         do not use numeric _UTF_ numeric character escapes (&#nnn;),
+         we can only use Latin1
+ 
+         Example: Alvaro Herrera is &Aacute;lvaro Herrera
+ 
+ wrap long lines
+ 
+ For new features, add links to the documentation sections.
+ 
  -->
-
- &release-4.7;
- &release-4.6;
- &release-4.5;
- &release-4.4;
- &release-4.3;
- &release-4.2;
- &release-4.1;
- &release-4.0;
- &release-3.7;
- &release-3.6;
- &release-3.5;
- &release-3.4;
- &release-3.3;
- &release-3.2;
- &release-3.1;
-
-</appendix>
+ 
+ <appendix id="release">
+  <title>发布说明</title>
+ 
+  <para>
+   发布说明包含每个 <productname>Pgpool-II</> 版本的重要变更，主要功能和迁移
+   问题在顶部列出。发布说明不包含只影响少量用户的变更，也不包含内部变更（因此
+   对用户不可见）。
+  </para>
+ 
+  <para>
+   通过查看每个版本的 <!--<link linkend="git">-->Git<!--</link>--> 日志，可以获得每个版本
+   的完整变更列表。
+   <ulink
+    url="http://www.pgpool.net/pipermail/pgpool-committers/"><literal>pgpool-committers</literal>
+    邮件列表</ulink>也记录了所有源代码变更。还有一个
+   <ulink url="http://git.postgresql.org/gitweb?p=pgpool2.git;a=summary">网页界面</ulink>
+   ，可以查看特定文件的变更。
+  </para>
+ 
+  <para>
+   每项旁边出现的名字代表该项目的主要开发者。当然，所有变更都经过了社区讨论和
+   补丁审查，因此每一项都是真正的社区协作成果。
+  </para>
+ 
+  <!--
+  To add a new major-release series, add an entry here and in filelist.sgml.
+ 
+  The reason for splitting the release notes this way is so that appropriate
+  subsets can easily be copied into back branches.
+  -->
+ 
+  &release-4.7;
+  &release-4.6;
+  &release-4.5;
+  &release-4.4;
+  &release-4.3;
+  &release-4.2;
+  &release-4.1;
+  &release-4.0;
+  &release-3.7;
+  &release-3.6;
+  &release-3.5;
+  &release-3.4;
+  &release-3.3;
+  &release-3.2;
+  &release-3.1;
+ 
+ </appendix>

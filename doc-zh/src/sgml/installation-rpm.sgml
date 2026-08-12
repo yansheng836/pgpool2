@@ -1,85 +1,83 @@
 <!-- doc/src/sgml/installation-rpm.sgml -->
 
  <sect1 id="install-rpm">
- <title>Installation from RPM</title>
+ <title>从 RPM 安装</title>
  <para>
-  This chapter describes the installation of <productname>Pgpool-II</productname> from RPM.
-  If you are going to install from the source code, please check <xref linkend="install-source">.
+  本章介绍如何从 RPM 包安装 <productname>Pgpool-II</productname>。
+  如果您计划从源码安装，请参考 <xref linkend="install-source">。
  </para>
  <para>
-  <productname>Pgpool-II</productname> community provides RPM packages for RHEL10/9/8
-  and the operating system which is compatible with RHEL.
-  You can download package files from
-  <ulink url="https://www.pgpool.net/yum/">official Pgpool-II repository</ulink>.
+  <productname>Pgpool-II</productname> 社区为 RHEL10/9/8 及兼容 RHEL 的操作系统提供 RPM 包。
+  您可以从
+  <ulink url="https://www.pgpool.net/yum/">Pgpool-II 官方仓库</ulink>下载软件包文件。
  </para>
  <para>
-   <productname>Pgpool-II</productname> official repository contains the following packages:
+   <productname>Pgpool-II</productname> 官方仓库包含以下软件包：
  </para>
  <table id="rpm-packages">
-  <title>Pgpool-II RPM Packages</title>
+  <title>Pgpool-II RPM 软件包</title>
   <tgroup cols="2">
    <thead>
     <row>
-     <entry>Package</entry>
-     <entry>Description</entry>
+     <entry>软件包</entry>
+     <entry>描述</entry>
     </row>
    </thead>
    <tbody>
     <row>
      <entry>pgpool-II-pgXX</entry>
-     <entry>Libraries and binaries required to run Pgpool-II</entry>
+     <entry>运行 Pgpool-II 所需的库和二进制文件</entry>
     </row>
     <row>
      <entry>pgpool-II-pgXX-extensions</entry>
-     <entry>This package must be installed on all PostgreSQL servers to use online recovery functionality</entry>
+     <entry>该包必须安装在所有 PostgreSQL 服务器上才能使用在线恢复功能</entry>
     </row>
     <row>
      <entry>pgpool-II-pgXX-debuginfo</entry>
-     <entry>Debug symbols for debugging</entry>
+     <entry>用于调试的调试符号</entry>
     </row>
     <row>
      <entry>pgpool-II-pgXX-debugsource</entry>
-     <entry>Only for RHEL10/9/8. Debug symbols for debugging</entry>
+     <entry>仅适用于 RHEL10/9/8。用于调试的调试符号</entry>
     </row>
     <row>
      <entry>pgpool-II-pgXX-extensions-debuginfo</entry>
-     <entry>Only for RHEL10/9/8. Debug symbols for debugging</entry>
+     <entry>仅适用于 RHEL10/9/8。用于调试的调试符号</entry>
     </row>
     <row>
      <entry>pgpool-II-pgXX-devel</entry>
-     <entry>Header files for developers</entry>
+     <entry>供开发者使用的头文件</entry>
     </row>
    </tbody>
   </tgroup>
  </table>
 
  <para>
-  <productname>Pgpool-II</productname> needs <productname>PostgreSQL</productname>'s
-  library and extensions directory. Since the directory paths are different in
-  the particular <productname>PostgreSQL</productname> versions,
-  <productname>Pgpool-II</productname> provides separate packages for each PostgreSQL version.
-  "XX" in the above package is a two-digit number representing the version of PostgreSQL.
-  Choose <productname>Pgpool-II</productname> RPM corresponding to your PostgreSQL version.
-  (For example, if you are using PostgreSQL 18, you need to install <filename>pgpool-II-pg18</filename>)
+  <productname>Pgpool-II</productname> 需要 <productname>PostgreSQL</productname> 的
+  库和扩展目录。由于不同版本的 <productname>PostgreSQL</productname> 目录路径不同，
+  <productname>Pgpool-II</productname> 为每个 PostgreSQL 版本提供独立的软件包。
+  上述软件包名称中的 "XX" 是一个两位数字，代表 PostgreSQL 的版本号。
+  请根据您的 PostgreSQL 版本选择对应的 <productname>Pgpool-II</productname> RPM 包。
+  （例如，如果您使用的是 PostgreSQL 18，则需要安装 <filename>pgpool-II-pg18</filename>）
  </para>
 
  <sect2 id="before-installing">
-  <title>Before Installing</title>
+  <title>安装前准备</title>
   <para>
-   Since <productname>Pgpool-II</productname> related packages are also included in
-   <productname>PostgreSQL</productname> YUM repository,
-   if PostgreSQL repository package is already installed,
-   add the "exclude" settings to <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>,
-   so that <productname>Pgpool-II</productname> will not be installed from
-   <productname>PostgreSQL</productname> YUM repository.
-   If <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname>
-   are installed on separate servers, you can skip this section.
+   由于 <productname>Pgpool-II</productname> 相关软件包也包含在
+   <productname>PostgreSQL</productname> YUM 仓库中，
+   如果已安装 PostgreSQL 仓库包，
+   请在 <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename> 中添加 "exclude" 设置，
+   以免 <productname>Pgpool-II</productname> 从
+   <productname>PostgreSQL</productname> YUM 仓库被安装。
+   如果 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname>
+   安装在不同的服务器上，可以跳过本节。
   </para>
   <programlisting>
 vi /etc/yum.repos.d/pgdg-redhat-all.repo
   </programlisting>
   <para>
-   The following is a setting example of <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>.
+   以下是 <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename> 的设置示例。
   </para>
   <programlisting>
 [pgdg-common]
@@ -113,46 +111,47 @@ exclude=pgpool*
  </sect2>
 
  <sect2 id="installing-rpm">
-  <title>Installing RPM</title>
+  <title>安装 RPM</title>
   <para>
-   Here we install <productname>Pgpool-II</productname> using
-   <ulink url="https://www.pgpool.net/yum/">Pgpool-II official YUM repository</ulink>.
+   本节介绍如何使用
+   <ulink url="https://www.pgpool.net/yum/">Pgpool-II 官方 YUM 仓库</ulink>
+   安装 <productname>Pgpool-II</productname>。
   </para>
 
   <para>
-   The following commands assume that you are using Pgpool-II 4.6.x for PostgreSQL 18 on RHEL10.
-   If you are using other versions, replace "pgXX" with your PostgreSQL version.
+   以下命令以在 RHEL10 上为 PostgreSQL 18 安装 Pgpool-II 4.6.x 为例。
+   如果您使用其他版本，请将 "pgXX" 替换为您的 PostgreSQL 版本号。
   </para>
   <para>
-   First, install the repository corresponding to your <productname>Pgpool-II</productname>
-   version and distribution.
-   For REHL9/8, see <ulink url="https://www.pgpool.net/download/yum/">here</ulink>.
+   首先，安装与您 <productname>Pgpool-II</productname>
+   版本和发行版对应的仓库。
+   对于 REHL9/8，请参阅 <ulink url="https://www.pgpool.net/download/yum/">此处</ulink>。
   </para>
   <programlisting>
 dnf install https://www.pgpool.net/yum/rpms/4.6/redhat/rhel-10-x86_64/pgpool-II-release-4.6-1.noarch.rpm
   </programlisting>
   <para>
-   Then, install <productname>Pgpool-II</productname>.
+   然后，安装 <productname>Pgpool-II</productname>。
   </para>
   <programlisting>
 dnf install pgpool-II-pg18
   </programlisting>
   <para>
-   To use online recovery feature, install <filename>pgpool-II-pg18-extensions</filename>
-   on <emphasis>all PostgreSQL servers</emphasis>.
-   Because <filename>pgpool-II-pgXX-extensions</filename> depends on
-   <filename>pgpool-II-pgXX</filename> package,
-   if <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname>
-   are installed on separate servers, <filename>pgpool-II-pgXX</filename> also need to be installed
-   on PostgreSQL servers.
+   如需使用在线恢复功能，请在<emphasis>所有 PostgreSQL 服务器</emphasis>上安装
+   <filename>pgpool-II-pg18-extensions</filename>。
+   由于 <filename>pgpool-II-pgXX-extensions</filename> 依赖于
+   <filename>pgpool-II-pgXX</filename> 软件包，
+   如果 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname>
+   安装在不同的服务器上，则也需要在 PostgreSQL 服务器上安装
+   <filename>pgpool-II-pgXX</filename>。
   </para>
   <note>
    <para>
-    <filename>pgpool-II-pgXX-extensions</filename> needs to be installed
-    <emphasis>on the PostgreSQL servers</emphasis>.
-    If <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname>
-    are installed on separate servers,
-    it is not required to install it on the servers where <productname>Pgpool-II</productname> are running.
+    <filename>pgpool-II-pgXX-extensions</filename> 需要安装在
+    <emphasis>PostgreSQL 服务器上</emphasis>。
+    如果 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname>
+    安装在不同的服务器上，
+    则不需要在运行 <productname>Pgpool-II</productname> 的服务器上安装它。
    </para>
   </note>
   <programlisting>
@@ -160,7 +159,7 @@ dnf install pgpool-II-pg18-extensions pgpool-II-pg18
   </programlisting>
 
   <para>
-   Optionally you can install debuginfo and devel packages for developers if necessary.
+   如有需要，您还可以选择安装调试信息和开发包。
   </para>
   <programlisting>
 dnf install pgpool-II-pg18-debuginfo pgpool-II-pg18-devel
@@ -168,40 +167,40 @@ dnf install pgpool-II-pg18-debuginfo pgpool-II-pg18-devel
  </sect2>
 
  <sect2 id="configure-rpm">
-  <title>Configuration Pgpool-II</title>
+  <title>配置 Pgpool-II</title>
   <para>
-   All the <productname>Pgpool-II</productname> configuration files
-   are installed in <filename>/etc/pgpool-II</filename>. Please refer
-   to <xref linkend="configuring-pgpool"> to see how to set up
-    configuration files.
+   所有 <productname>Pgpool-II</productname> 配置文件
+   均安装在 <filename>/etc/pgpool-II</filename> 目录下。有关如何配置
+   文件的说明，请参考 <xref linkend="configuring-pgpool">。
   </para>
  </sect2>
 
  <sect2 id="start-rpm">
-  <title>Starting/stopping Pgpool-II</title>
+  <title>启动/停止 Pgpool-II</title>
   <para>
-   On RHEL10/9/8, do this once, if set the automatic startup of <productname>Pgpool-II</productname>.
+   在 RHEL10/9/8 上，如果设置了 <productname>Pgpool-II</productname> 的自动启动，
+   只需执行一次以下操作。
    <programlisting>
 systemctl enable pgpool.service
    </programlisting>
 
-   After this, to start <productname>Pgpool-II</productname>,
-   run the following command or restart the whole system.
-   Please note that PostgreSQL servers must have been started before this. 
+   此后，要启动 <productname>Pgpool-II</productname>，
+   运行以下命令或重启整个系统。
+   请注意，在此之前 PostgreSQL 服务器必须已经启动。
 
    <programlisting>
-systemctl start pgpool.service 
+systemctl start pgpool.service
    </programlisting>
 
-   To stop <productname>Pgpool-II</productname>, do this once.
-   Please note that <productname>Pgpool-II</productname> must be stopped
-   before stopping <productname>PostgreSQL</productname>.
+   要停止 <productname>Pgpool-II</productname>，执行以下操作。
+   请注意，必须在停止 <productname>PostgreSQL</productname> 之前
+   先停止 <productname>Pgpool-II</productname>。
    <programlisting>
-systemctl stop pgpool.service 
+systemctl stop pgpool.service
    </programlisting>
 
-   After this, you can stop <productname>PostgreSQL</productname>
-   servers.
+   此后，您可以停止 <productname>PostgreSQL</productname>
+   服务器。
   </para>
  </sect2>
 </sect1>

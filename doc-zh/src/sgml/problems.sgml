@@ -1,9 +1,9 @@
 <!-- doc/src/sgml/problems.sgml -->
 
 <sect1 id="bug-reporting">
- <title>Bug Reporting Guidelines</title>
+ <title>Bug 报告指南</title>
 
  <para>
-  When you find a bug in <productname>Pgpool-II</productname>, please register to our <ulink url="http://pgpool.net/mediawiki/index.php/Bug_tracking_system">bug tracking system</ulink>.
+  当您在 <productname>Pgpool-II</productname> 中发现 Bug 时，请在我们的 <ulink url="http://pgpool.net/mediawiki/index.php/Bug_tracking_system">Bug 跟踪系统</ulink> 中登记报告。
  </para>
 </sect1>

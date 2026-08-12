@@ -1,34 +1,27 @@
 <!-- doc/src/sgml/config.sgml -->
 
 <sect1 id="runtime-online-recovery">
- <title>Online Recovery</title>
+ <title>在线恢复</title>
  <indexterm>
-  <primary>online recovery</primary>
+  <primary>在线恢复</primary>
  </indexterm>
 
  <para>
-  <productname>Pgpool-II</productname> can synchronize database
-  nodes and attach a node without stopping the service.  This
-  feature is called <acronym>"online recovery"</acronym>.  Online
-  recovery can be executed by
-  using <xref linkend="pcp-recovery-node"> command.
+  <productname>Pgpool-II</productname> 可以在不停止服务的情况下同步数据库节点并附加节点。
+  此特性称为 <acronym>"在线恢复"</acronym>。
+  可以使用 <xref linkend="pcp-recovery-node"> 命令执行在线恢复。
  </para>
  <para>
-  For online recovery, the recovery target node must be in detached
-  state. This means the node must be either manually detached by
-  <xref linkend="pcp-detach-node"> or automatically detached
-   by <productname>Pgpool-II</productname> as a consequence of
-   failover.
+  对于在线恢复，恢复目标节点必须处于分离状态。
+  这意味着该节点必须通过 <xref linkend="pcp-detach-node"> 手动分离，
+  或者因故障转移由 <productname>Pgpool-II</productname> 自动分离。
  </para>
  <para>
-  If you wish to add a <productname>PostgreSQL</productname> server
-  node dynamically, reload the
-  <filename>pgpool.conf</filename> after adding the
-  <xref linkend="guc-backend-hostname"> and its associated
-   parameters.  This will register the new server
-   to <productname>Pgpool-II</productname> as a detached backend
-   node, after that you execute <xref linkend="pcp-recovery-node"> command,
-    the server is add.
+  如果您希望动态添加 <productname>PostgreSQL</productname> 服务器节点，
+  请在添加 <xref linkend="guc-backend-hostname"> 及其相关参数后重新加载
+  <filename>pgpool.conf</filename>。这将把新服务器注册到
+  <productname>Pgpool-II</productname> 中作为一个已分离的后端节点，
+  之后执行 <xref linkend="pcp-recovery-node"> 命令即可添加该服务器。
  </para>
  <!--
  <caution>
@@ -47,135 +40,116 @@
  -->
  <note>
   <para>
-   The recovery target <productname>PostgreSQL</> server must not
-   be running for performing the online recovery.  If the
-   target <productname>PostgreSQL</> server has already started,
-   you must shut it down before starting the online recovery.
+   执行在线恢复时，恢复目标 <productname>PostgreSQL</> 服务器必须处于未运行状态。
+   如果目标 <productname>PostgreSQL</> 服务器已经启动，必须在开始在线恢复之前将其关闭。
   </para>
  </note>
 
  <para>
-  Online recovery is performed in two phases. The first phase is
-  called "first stage" and the second phase is called "second
-  stage". Only <xref linkend="guc-replication-mode"> and <xref
-  linkend="guc-snapshot-isolation-mode"> require the second stage.
-  For other modes including streaming replication mode the second
-  stage is not performed and you don't need to provide a script for
-  the stage in <xref
-  linkend="guc-recovery-2nd-stage-command">. i.e. you can safely leave
-  it as an empty string.
+  在线恢复分两个阶段执行。第一阶段称为"第一阶段"，第二阶段称为"第二阶段"。
+  只有 <xref linkend="guc-replication-mode"> 和 <xref linkend="guc-snapshot-isolation-mode">
+  需要第二阶段。对于其他模式（包括流复制模式），不执行第二阶段，
+  因此不需要在 <xref linkend="guc-recovery-2nd-stage-command"> 中为该阶段提供脚本。
+  即您可以安全地将其保留为空字符串。
  </para>
 
  <para>
-  In the first stage the standby (replica) node is created by using
-  <productname>PostgreSQL</productname>'s
-  <command>pg_basebackup</command>, for example, from a backup of the
-  main (primary) node. Update data while executing the first stage
-  will be logged into the <productname>PostgreSQL</productname>'s
-  transaction log.
+  在第一阶段，通过使用 <productname>PostgreSQL</productname> 的
+  <command>pg_basebackup</command>（例如从主节点的备份）创建备用（副本）节点。
+  执行第一阶段期间的更新数据将被记录到 <productname>PostgreSQL</productname> 的事务日志中。
  </para>
 
  <para>
-  In the second stage the target recovery node is started. The
-  transaction log will be replayed and the replica node will be
-  completely synced with the master node.
+  在第二阶段，启动目标恢复节点。事务日志将被重放，副本节点将与主节点完全同步。
  </para>
 
  <para>
-  You need to provide scripts for each stage.  Complete sample scripts
-  are provided at <ulink
-  url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/recovery_1st_stage.sample;hb=refs/heads/master">/etc/pgpool-II/recovery_1st_stage.sample</ulink>
-  and <ulink
-  url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/recovery_2nd_stage.sample;hb=refs/heads/master">/etc/pgpool-II/recovery_2nd_stage.sample</ulink>.
-  Example installation using those scripts can be found in <xref
-  linkend="example-cluster-pgpool-config-online-recovery">.
+  您需要为每个阶段提供脚本。完整的示例脚本可在
+  <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/recovery_1st_stage.sample;hb=refs/heads/master">/etc/pgpool-II/recovery_1st_stage.sample</ulink>
+  和
+  <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/recovery_2nd_stage.sample;hb=refs/heads/master">/etc/pgpool-II/recovery_2nd_stage.sample</ulink>
+  获取。使用这些脚本的安装示例可在 <xref linkend="example-cluster-pgpool-config-online-recovery"> 中找到。
  </para>
 
  <para>
-  Connections from clients are not allowed only in the second stage
-  while the data can be updated or retrieved during the first stage.
+  仅在第二阶段不允许客户端连接，而在第一阶段期间可以更新或检索数据。
  </para>
  <para>
-  <productname>Pgpool-II</productname> performs the follows steps in online recovery:
+  <productname>Pgpool-II</productname> 在在线恢复中执行以下步骤：
  </para>
  <itemizedlist>
 
   <listitem>
    <para>
-    CHECKPOINT.
+    CHECKPOINT。
    </para>
   </listitem>
   <listitem>
    <para>
-    Execute first stage of online recovery.
+    执行在线恢复的第一阶段。
    </para>
   </listitem>
   <listitem>
    <para>
-    Wait until all client connections have disconnected (only in <xref
-    linkend="guc-replication-mode"> and <xref
-    linkend="guc-snapshot-isolation-mode">).
+    等待所有客户端连接断开（仅适用于 <xref linkend="guc-replication-mode"> 和
+    <xref linkend="guc-snapshot-isolation-mode">）。
    </para>
   </listitem>
   <listitem>
    <para>
-    CHECKPOINT (only in <xref linkend="guc-replication-mode"> and
-  <xref linkend="guc-snapshot-isolation-mode">).
+    CHECKPOINT（仅适用于 <xref linkend="guc-replication-mode"> 和
+    <xref linkend="guc-snapshot-isolation-mode">）。
    </para>
   </listitem>
   <listitem>
    <para>
-    Execute second stage of online recovery (only in <xref
-    linkend="guc-replication-mode"> and <xref
-    linkend="guc-snapshot-isolation-mode">).
+    执行在线恢复的第二阶段（仅适用于 <xref linkend="guc-replication-mode"> 和
+    <xref linkend="guc-snapshot-isolation-mode">）。
    </para>
   </listitem>
   <listitem>
    <para>
-    Start up postmaster (perform <literal>pgpool_remote_start</literal>)
+    启动 postmaster（执行 <literal>pgpool_remote_start</literal>）
    </para>
    <para>
-    The <literal>pgpool_remote_start</literal> is script to start up the <productname>PostgreSQL</productname> node of recovery target.
-    <literal>pgpool_remote_start</literal> receives following 2 parameters:
+    <literal>pgpool_remote_start</literal> 是用于启动恢复目标
+    <productname>PostgreSQL</productname> 节点的脚本。
+    <literal>pgpool_remote_start</literal> 接收以下 2 个参数：
     <itemizedlist>
      <listitem>
       <para>
-       Hostname of the backend node to be recovered.
+       要恢复的后端节点的主机名。
       </para>
      </listitem>
      <listitem>
       <para>
-       Path to the database cluster of the main(primary) node.
+       主（主）节点的数据库集群路径。
       </para>
      </listitem>
     </itemizedlist>
-    The script example can be found in <xref linkend="example-cluster-pgpool-config-online-recovery">.
+    脚本示例可在 <xref linkend="example-cluster-pgpool-config-online-recovery"> 中找到。
      <note>
       <para>
-       The script path and filename are hard coded, <command>$PGDATA/pgpool_remote_start</command> is executed on main(primary) node.
+       脚本路径和文件名是硬编码的，<command>$PGDATA/pgpool_remote_start</command> 在主（主）节点上执行。
       </para>
      </note>
    </para>
   </listitem>
   <listitem>
    <para>
-    Node attach
+    节点附加
    </para>
   </listitem>
 
  </itemizedlist>
  <note>
   <para>
-   There is a restriction in the online recovery in
-   <xref linkend="guc-replication-mode"> and <xref linkend="guc-snapshot-isolation-mode">.
-   If <productname>Pgpool-II</productname> itself is installed
-   on multiple hosts without enabling watchdog,
-   online recovery does not work correctly,
-   because <productname>Pgpool-II</productname> has to stop all
-   the clients during the 2nd stage of online recovery.
-   If there are several <productname>Pgpool-II</productname> hosts,
-   only one of them will have received the online recovery command and will
-   block the connections from clients.
+   在 <xref linkend="guc-replication-mode"> 和 <xref linkend="guc-snapshot-isolation-mode">
+   中的在线恢复存在一个限制。如果 <productname>Pgpool-II</productname> 本身安装在多个主机上
+   但未启用 watchdog，则在线恢复无法正常工作，
+   因为 <productname>Pgpool-II</productname> 必须在在线恢复的第二阶段停止所有客户端。
+   如果有多个 <productname>Pgpool-II</productname> 主机，则只有其中一个会收到在线恢复命令，
+   并将阻止来自客户端的连接。
   </para>
  </note>
  <variablelist>
@@ -183,19 +157,18 @@
   <varlistentry id="guc-recovery-user" xreflabel="recovery_user">
    <term><varname>recovery_user</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>recovery_user</varname> configuration parameter</primary>
+     <primary><varname>recovery_user</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies the <productname>PostgreSQL</> user name to perform online recovery.
-     Default is <literal>''</literal>(empty).
-     <varname>recovery_user</varname> must specify superuser,
-     because <function>pgpool_recovery</function> function is executed
-     during online recovery, require superuser privilege.
+     指定用于执行在线恢复的 <productname>PostgreSQL</> 用户名。
+     默认值为 <literal>''</literal>（空字符串）。
+     <varname>recovery_user</varname> 必须指定超级用户，
+     因为在在线恢复期间执行的 <function>pgpool_recovery</function> 函数需要超级用户权限。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
     </para>
    </listitem>
   </varlistentry>
@@ -203,47 +176,45 @@
   <varlistentry id="guc-recovery-password" xreflabel="recovery_password">
    <term><varname>recovery_password</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>recovery_password</varname> configuration parameter</primary>
+     <primary><varname>recovery_password</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies the password for the <productname>PostgreSQL</> user name configured in
-     <xref linkend="guc-recovery-user"> to perform online recovery.
+     指定 <xref linkend="guc-recovery-user"> 中配置的 <productname>PostgreSQL</> 用户名的密码，
+     用于执行在线恢复。
     </para>
     <para>
-     If <varname>recovery_password</varname> is left blank <productname>Pgpool-II</productname>
-     will first try to get the password for <xref linkend="guc-recovery-user"> from
-      <xref linkend="guc-pool-passwd"> file before using the empty password.
+     如果 <varname>recovery_password</varname> 留空，<productname>Pgpool-II</productname>
+     将首先尝试从 <xref linkend="guc-pool-passwd"> 文件中获取
+     <xref linkend="guc-recovery-user"> 的密码，然后再使用空密码。
     </para>
     <para>
-     You can also specify AES256-CBC encrypted password in <varname>recovery_password</varname> field.
-     To specify the <literal>AES</literal> encrypted password, password string must be prefixed with
-     <literal>AES</literal> after encrypting (using <literal>aes-256-cbc</literal> algorithm) and
-     encoding to <literal>base64</literal>.
+     您也可以在 <varname>recovery_password</varname> 字段中指定 AES256-CBC 加密密码。
+     要指定 <literal>AES</literal> 加密密码，密码字符串必须在使用
+     <literal>aes-256-cbc</literal> 算法加密并编码为 <literal>base64</literal> 后，
+     以 <literal>AES</literal> 为前缀。
     </para>
     <para>
-     To specify the unencrypted clear text password, prefix the password string with
-     <literal>TEXT</literal>. For example if you want to set <literal>mypass</literal> as
-     a password, you should specify <literal>TEXTmypass</literal> in the password field.
-     In the absence of a valid prefix, <productname>Pgpool-II</productname> will considered
-     the string as a plain text password.
+     要指定未加密的明文密码，请在密码字符串前加上 <literal>TEXT</literal> 前缀。
+     例如，如果您想将 <literal>mypass</literal> 设置为密码，则应在密码字段中指定
+     <literal>TEXTmypass</literal>。如果没有有效的前缀，<productname>Pgpool-II</productname>
+     将把该字符串视为明文密码。
     </para>
     <para>
-     You can also use <xref linkend="PG-ENC"> utility to create the correctly formatted
-      <literal>AES</literal> encrypted password strings.
+     您也可以使用 <xref linkend="PG-ENC"> 工具来创建格式正确的
+     <literal>AES</literal> 加密密码字符串。
       <note>
        <para>
-	<productname>Pgpool-II</productname> will require a valid decryption key at the
-	startup to use the encrypted passwords.
-	see <xref linkend="auth-aes-decryption-key"> for more details on providing the
-	 decryption key to <productname>Pgpool-II</productname>
+        <productname>Pgpool-II</productname> 在启动时需要有效的解密密钥才能使用加密密码。
+        有关向 <productname>Pgpool-II</productname> 提供解密密钥的更多详细信息，
+        请参阅 <xref linkend="auth-aes-decryption-key">。
        </para>
       </note>
     </para>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
     </para>
    </listitem>
   </varlistentry>
@@ -251,30 +222,26 @@
   <varlistentry id="guc-recovery-database" xreflabel="recovery_database">
    <term><varname>recovery_database</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>recovery_database</varname> configuration parameter</primary>
+     <primary><varname>recovery_database</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies the PostgreSQL database name to be used for online recovery.
-     The default is <literal>'postgres'</literal>. If an empty string ('')
-     is specified, <productname>Pgpool-II</productname> will attempt to use
-     the <literal>"postgres"</literal> database.
+     指定用于在线恢复的 PostgreSQL 数据库名称。
+     默认值为 <literal>'postgres'</literal>。如果指定了空字符串（''），
+     <productname>Pgpool-II</productname> 将尝试使用 <literal>"postgres"</literal> 数据库。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
     </para>
     <note>
      <para>
-      To perform online recovery, the functions <varname>pgpool_recovery</varname>,
-      <varname>pgpool_remote_start</varname> and
-      <varname>pgpool_switch_xlog</varname> must be created in the database
-      specified by the <xref linkend="guc-recovery-database"> parameter.
-      To install these functions in the default database
-      <literal>"postgres"</literal>, execute the following command
-      (<emphasis>if a value other than the default is configured, replace
-      <literal>"postgres"</literal> with the setting of
-      <varname>recovery_database</varname></emphasis>):
+      要执行在线恢复，必须在 <xref linkend="guc-recovery-database"> 参数指定的数据库中
+      创建 <varname>pgpool_recovery</varname>、<varname>pgpool_remote_start</varname>
+      和 <varname>pgpool_switch_xlog</varname> 函数。
+      要在默认数据库 <literal>"postgres"</literal> 中安装这些函数，请执行以下命令
+      （<emphasis>如果配置了默认值以外的值，请将 <literal>"postgres"</literal>
+      替换为 <varname>recovery_database</varname> 的设置</emphasis>）：
       <programlisting>
 $ psql postgres -c "CREATE EXTENSION pgpool_recovery"
       </programlisting>
@@ -286,100 +253,90 @@ $ psql postgres -c "CREATE EXTENSION pgpool_recovery"
   <varlistentry id="guc-recovery-1st-stage-command" xreflabel="recovery_1st_stage_command">
    <term><varname>recovery_1st_stage_command</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>recovery_1st_stage_command</varname> configuration parameter</primary>
+     <primary><varname>recovery_1st_stage_command</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies a command to be run by main (primary) node at the
-     first stage of online recovery. The command file must be placed in the
-     database cluster directory for security reasons.
-     For example, if <varname>recovery_1st_stage_command</varname> = <literal>
-      'sync-command'</literal>, then <productname>Pgpool-II</productname> will
-     look for the command script in <literal>$PGDATA</literal> directory and will
-     try to execute <command>$PGDATA/sync-command</command>.
+     指定在线恢复第一阶段由主（主）节点运行的命令。出于安全原因，
+     命令文件必须放置在数据库集群目录中。
+     例如，如果 <varname>recovery_1st_stage_command</varname> = <literal>
+      'sync-command'</literal>，那么 <productname>Pgpool-II</productname> 将在
+     <literal>$PGDATA</literal> 目录中查找命令脚本，并尝试执行
+     <command>$PGDATA/sync-command</command>。
     </para>
     <para>
-     <varname>recovery_1st_stage_command</varname> receives following 7 parameters:
+     <varname>recovery_1st_stage_command</varname> 接收以下 7 个参数：
     </para>
 
     <itemizedlist>
      <listitem>
       <para>
-       Path to the database cluster of the main (primary) node.
+       主（主）节点的数据库集群路径。
       </para>
      </listitem>
      <listitem>
       <para>
-       Hostname of the backend node to be recovered.
+       要恢复的后端节点的主机名。
       </para>
      </listitem>
      <listitem>
       <para>
-       Path to the database cluster of the node to be recovered.
+       要恢复的节点的数据库集群路径。
       </para>
      </listitem>
      <listitem>
       <para>
-       Port number of the main (primary) node (<productname>Pgpool-II</productname> 3.4 or after).
+       主（主）节点的端口号（<productname>Pgpool-II</productname> 3.4 或之后）。
       </para>
      </listitem>
      <listitem>
       <para>
-       Node number to be recovered (<productname>Pgpool-II</productname> 4.0 or after)
+       要恢复的节点编号（<productname>Pgpool-II</productname> 4.0 或之后）
       </para>
      </listitem>
      <listitem>
       <para>
-       Port number to be recovered (<productname>Pgpool-II</productname> 4.1 or after)
+       要恢复的端口号（<productname>Pgpool-II</productname> 4.1 或之后）
       </para>
      </listitem>
      <listitem>
       <para>
-       Hostname of the main (primary) node
-       (<productname>Pgpool-II</productname> 4.3 or after)
+       主（主）节点的主机名
+       （<productname>Pgpool-II</productname> 4.3 或之后）
       </para>
       <para>
-       Before the hostname of the main (primary) node was obtained by
-       using <command>hostname</command> command. This is mostly ok
-       since the script runs on the main (primary) node
-       anyway. However in some systems the hostname obtained
-       by <command>hostname</command> command is different from the
-       hostname defined in backend_hostname configuration parameter.
-       This could cause a trouble
-       in <xref linkend="guc-detach-false-primary"> because it checks
-       connectivity between primary and standby node by
-       using <literal>host</literal> parameter
-       in <varname>primary_conninfo</varname> parameter, which is
-       generated
-       by <varname>recovery_1st_stage_command</varname>. Thus it is
-       strongly recommended to use this parameter instead of
-       using <command>hostname</command> command to obtain the
-       hostname of the primary node
-       in <varname>recovery_1st_stage_command</varname>.
+       以前，主（主）节点的主机名是通过使用 <command>hostname</command> 命令获取的。
+       这在大多数情况下是可以的，因为脚本毕竟是在主（主）节点上运行的。
+       但是在某些系统中，通过 <command>hostname</command> 命令获取的主机名
+       与 backend_hostname 配置参数中定义的主机名不同。
+       这可能会导致 <xref linkend="guc-detach-false-primary"> 出现问题，
+       因为它通过使用 <varname>recovery_1st_stage_command</varname> 生成的
+       <varname>primary_conninfo</varname> 参数中的 <literal>host</literal> 参数来检查主节点和备节点之间的连接性。
+       因此，强烈建议在 <varname>recovery_1st_stage_command</varname> 中使用此参数，
+       而不是使用 <command>hostname</command> 命令来获取主节点的主机名。
       </para>
      </listitem>
     </itemizedlist>
 
     <note>
      <para>
-      <productname>Pgpool-II</productname> accept connections and queries
-      while <varname>recovery_1st_stage command</varname> is executed,
-      so you can retrieve and update data.
+      在执行 <varname>recovery_1st_stage command</varname> 期间，
+      <productname>Pgpool-II</productname> 接受连接和查询，
+      因此您可以检索和更新数据。
      </para>
     </note>
 
     <caution>
      <para>
-      <varname>recovery_1st_stage command</varname> runs as a <acronym>SQL</acronym>
-      command from PostgreSQL's point of view. So <varname>recovery_1st_stage command
-      </varname> can get prematurely killed by PostgreSQL if the PostgreSQL's
-      <varname>statement_time_out</varname> is configured with the value that is
-      smaller than the time <varname>recovery_1st_stage_command</varname> takes for
-      completion.
+      从 PostgreSQL 的角度来看，<varname>recovery_1st_stage command</varname>
+      作为 <acronym>SQL</acronym> 命令运行。因此，如果 PostgreSQL 的
+      <varname>statement_time_out</varname> 配置的值小于
+      <varname>recovery_1st_stage_command</varname> 完成所需的时间，
+      则 <varname>recovery_1st_stage command</varname> 可能会被 PostgreSQL 提前终止。
      </para>
      <para>
-      Typical error in such case is
+      这种情况下的典型错误是
       <programlisting>
        rsync used in the command is killed by signal 2 for example.
       </programlisting>
@@ -387,7 +344,7 @@ $ psql postgres -c "CREATE EXTENSION pgpool_recovery"
     </caution>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
     </para>
    </listitem>
   </varlistentry>
@@ -395,90 +352,85 @@ $ psql postgres -c "CREATE EXTENSION pgpool_recovery"
   <varlistentry id="guc-recovery-2nd-stage-command" xreflabel="recovery_2nd_stage_command">
    <term><varname>recovery_2nd_stage_command</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>recovery_2nd_stage_command</varname> configuration parameter</primary>
+     <primary><varname>recovery_2nd_stage_command</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies a command to be run by main node at the second
-     stage of online recovery. This command is required only
-     <xref linkend="guc-replication-mode">, so for other modes don't need
-      to provide a command file. The command file must be placed in the
-      database cluster directory for security reasons.
-      For example, if <varname>recovery_2nd_stage_command</varname> = <literal>
-       'sync-command'</literal>, then <productname>Pgpool-II</productname> will
-      look for the command script in <literal>$PGDATA</literal> directory and will
-      try to execute <command>$PGDATA/sync-command</command>.
+     指定在线恢复第二阶段由主节点运行的命令。此命令仅
+     <xref linkend="guc-replication-mode"> 需要，其他模式不需要提供命令文件。
+     出于安全原因，命令文件必须放置在数据库集群目录中。
+     例如，如果 <varname>recovery_2nd_stage_command</varname> = <literal>
+      'sync-command'</literal>，那么 <productname>Pgpool-II</productname> 将在
+     <literal>$PGDATA</literal> 目录中查找命令脚本，并尝试执行
+     <command>$PGDATA/sync-command</command>。
     </para>
     <para>
-     <varname>recovery_2nd_stage_command</varname> receives following 7 parameters:
+     <varname>recovery_2nd_stage_command</varname> 接收以下 7 个参数：
     </para>
 
     <itemizedlist>
      <listitem>
       <para>
-       Path to the database cluster of the main(primary) node.
+       主（主）节点的数据库集群路径。
       </para>
      </listitem>
      <listitem>
       <para>
-       Hostname of the backend node to be recovered.
+       要恢复的后端节点的主机名。
       </para>
      </listitem>
      <listitem>
       <para>
-       Path to the database cluster of the node to be recovered.
+       要恢复的节点的数据库集群路径。
       </para>
      </listitem>
      <listitem>
       <para>
-       Port number of the main (primary) node (<productname>Pgpool-II</productname> 3.4 or after).
+       主（主）节点的端口号（<productname>Pgpool-II</productname> 3.4 或之后）。
       </para>
      </listitem>
      <listitem>
       <para>
-       Node number to be recovered (<productname>Pgpool-II</productname> 4.0 or after)
+       要恢复的节点编号（<productname>Pgpool-II</productname> 4.0 或之后）
       </para>
      </listitem>
      <listitem>
       <para>
-       Port number to be recovered (<productname>Pgpool-II</productname> 4.1 or after)
+       要恢复的端口号（<productname>Pgpool-II</productname> 4.1 或之后）
       </para>
      </listitem>
      <listitem>
       <para>
-       Hostname of the main (primary) node
-       (<productname>Pgpool-II</productname> 4.3 or after)
+       主（主）节点的主机名
+       （<productname>Pgpool-II</productname> 4.3 或之后）
       </para>
      </listitem>
     </itemizedlist>
 
     <note>
      <para>
-      <productname>Pgpool-II</productname> <emphasis>does not</emphasis>
-      accept client connections and queries during the execution
-      of <varname>recovery_2nd_stage_command</varname> command, and waits
-      for the existing clients to close their connections before executing the
-      command.
-      Therefore, the <varname>recovery_2nd_stage_command</varname> may not execute
-      if the client stays connected for a long time.
+      <productname>Pgpool-II</productname> <emphasis>不</emphasis>接受
+      在执行 <varname>recovery_2nd_stage_command</varname> 命令期间的客户端连接和查询，
+      并在执行该命令之前等待现有客户端关闭其连接。
+      因此，如果客户端长时间保持连接，<varname>recovery_2nd_stage_command</varname>
+      可能无法执行。
      </para>
     </note>
 
     <caution>
      <para>
-      <varname>recovery_2nd_stage command</varname> runs as a <acronym>SQL</acronym>
-      command from PostgreSQL's point of view. Therefore, <varname>recovery_2nd_stage command
-      </varname> can get prematurely killed by PostgreSQL if the PostgreSQL's
-      <varname>statement_time_out</varname> is configured with the value that is
-      smaller than the time <varname>recovery_2nd_stage_command</varname> takes for
-      completion.
+      从 PostgreSQL 的角度来看，<varname>recovery_2nd_stage command</varname>
+      作为 <acronym>SQL</acronym> 命令运行。因此，如果 PostgreSQL 的
+      <varname>statement_time_out</varname> 配置的值小于
+      <varname>recovery_2nd_stage_command</varname> 完成所需的时间，
+      则 <varname>recovery_2nd_stage command</varname> 可能会被 PostgreSQL 提前终止。
      </para>
     </caution>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
     </para>
    </listitem>
   </varlistentry>
@@ -486,19 +438,17 @@ $ psql postgres -c "CREATE EXTENSION pgpool_recovery"
   <varlistentry id="guc-recovery-timeout" xreflabel="recovery_timeout">
    <term><varname>recovery_timeout</varname> (<type>integer</type>)
     <indexterm>
-     <primary><varname>recovery_timeout</varname> configuration parameter</primary>
+     <primary><varname>recovery_timeout</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies the timeout in seconds to cancel the online recovery if it
-     does not completes within this time.
-     Since <productname>Pgpool-II</productname> does not accepts the connections
-     during the second stage of online recovery, this parameter can be used to cancel
-     the online recovery to manage the service down time during the online recovery.
+     指定以秒为单位的超时时间，如果在线恢复未在此时间内完成，则取消该恢复。
+     由于 <productname>Pgpool-II</productname> 在在线恢复的第二阶段不接受连接，
+     此参数可用于取消在线恢复，以管理在线恢复期间的服务停机时间。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
     </para>
    </listitem>
   </varlistentry>
@@ -506,47 +456,41 @@ $ psql postgres -c "CREATE EXTENSION pgpool_recovery"
   <varlistentry id="guc-client-idle-limit-in-recovery" xreflabel="client_idle_limit_in_recovery">
    <term><varname>client_idle_limit_in_recovery</varname> (<type>integer</type>)
     <indexterm>
-     <primary><varname>client_idle_limit_in_recovery</varname> configuration parameter</primary>
+     <primary><varname>client_idle_limit_in_recovery</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies the time in seconds to disconnect a client if it remains idle
-     since the last query during the online recovery.
-     <varname>client_idle_limit_in_recovery</varname> is similar to the
-     <xref linkend="guc-client-idle-limit"> but only takes effect during the
-      second stage of online recovery.
+     指定在在线恢复期间，如果客户端自上次查询后保持空闲状态，则断开该客户端的连接的时间（秒）。
+     <varname>client_idle_limit_in_recovery</varname> 类似于
+     <xref linkend="guc-client-idle-limit">，但仅在在线恢复的第二阶段生效。
     </para>
     <para>
-     This is useful for preventing the <productname>Pgpool-II</productname>
-     recovery from being disturbed by the lazy clients or if the TCP/IP
-     connection between the client and <productname>Pgpool-II</productname>
-     is accidentally down (a cut cable for instance).
+     这对于防止 <productname>Pgpool-II</productname> 恢复被懒惰的客户端干扰，
+     或者客户端与 <productname>Pgpool-II</productname> 之间的 TCP/IP 连接意外断开
+     （例如电缆被切断）的情况非常有用。
     </para>
 
     <note>
      <para>
-      <varname>client_idle_limit_in_recovery</varname> must be smaller than
-      <xref linkend="guc-recovery-timeout">.
-       Otherwise, <xref linkend="guc-recovery-timeout"> comes
-	first and you will see following error while executing online recovery:
-	<programlisting>
-	 ERROR:  node recovery failed, waiting connection closed in the other pgpools timeout
-	</programlisting>
+      <varname>client_idle_limit_in_recovery</varname> 必须小于
+      <xref linkend="guc-recovery-timeout">。
+      否则，<xref linkend="guc-recovery-timeout"> 会先触发，
+      您将在执行在线恢复时看到以下错误：
+      <programlisting>
+       ERROR:  node recovery failed, waiting connection closed in the other pgpools timeout
+      </programlisting>
      </para>
     </note>
 
     <para>
-     If set to -1, all clients get immediately disconnected when the second
-     stage of online recovery starts.
-     The default is 0, which turns off the feature.
+     如果设置为 -1，当在线恢复的第二阶段开始时，所有客户端将立即断开连接。
+     默认值为 0，表示关闭此功能。
     </para>
 
-
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
-     You can also use <xref linkend="SQL-PGPOOL-SET"> command to alter the value of
-      this parameter for a current session.
+     此参数可以通过重新加载 <productname>Pgpool-II</> 配置来更改。
+     您也可以使用 <xref linkend="SQL-PGPOOL-SET"> 命令为当前会话更改此参数的值。
     </para>
    </listitem>
   </varlistentry>

@@ -1,41 +1,39 @@
 <!-- doc/src/sgml/config.sgml -->
 
 <sect1 id="runtime-ssl">
- <title>Secure Socket Layer (SSL)</title>
+ <title>安全套接层 (SSL)</title>
 
  <sect2 id="runtime-config-ssl-settings">
 
-  <title>SSL Settings</title>
+  <title>SSL 设置</title>
 
   <variablelist>
 
    <varlistentry id="guc-ssl" xreflabel="ssl">
     <term><varname>ssl</varname> (<type>boolean</type>)
      <indexterm>
-      <primary><varname>ssl</varname> configuration parameter</primary>
+      <primary><varname>ssl</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      When set to on, <productname>Pgpool-II</productname> enables the <acronym>SSL</acronym>
-      for both the frontend and backend communications.
-      Default is off.
+      设置为 on 时，<productname>Pgpool-II</productname> 将在前端和后端通信中启用 <acronym>SSL</acronym>。
+      默认值为 off。
      </para>
      <note>
       <para>
-       <xref linkend="guc-ssl-key"> and <xref linkend="guc-ssl-cert"> must also be
-	 configured in order for SSL to work with frontend connections.
+       为了使 SSL 能够用于前端连接，还必须配置
+	<xref linkend="guc-ssl-key"> 和 <xref linkend="guc-ssl-cert">。
       </para>
      </note>
      <note>
       <para>
-       For SSL to work <productname>Pgpool-II</productname> must be build with OpenSSL support.
-       See <xref linkend="install-pgpool"> for details on building the
-	<productname>Pgpool-II</productname>.
+       要使 SSL 正常工作，<productname>Pgpool-II</productname> 必须使用 OpenSSL 支持进行编译。
+       有关编译 <productname>Pgpool-II</productname> 的详细信息，请参阅 <xref linkend="install-pgpool">。
       </para>
      </note>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -43,23 +41,20 @@
    <varlistentry id="guc-ssl-key" xreflabel="ssl_key">
     <term><varname>ssl_key</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_key</varname> configuration parameter</primary>
+      <primary><varname>ssl_key</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the private key file to be used for
-      incoming frontend connections. Relative paths are relative to
-      <productname>Pgpool-II</productname> configuration directory.
-      There is no default value for this option, and if left unset
-      <acronym>SSL</acronym> will be disabled for incoming frontend connections.
+      指定用于入站前端连接的私钥文件。相对路径是相对于
+      <productname>Pgpool-II</productname> 配置目录的。
+      此选项没有默认值，如果未设置，则入站前端连接的
+      <acronym>SSL</acronym> 将被禁用。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -67,24 +62,21 @@
    <varlistentry id="guc-ssl-cert" xreflabel="ssl_cert">
     <term><varname>ssl_cert</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_cert</varname> configuration parameter</primary>
+      <primary><varname>ssl_cert</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the public x509 certificate file to be used
-      for the incoming frontend connections. Relative paths are relative to
-      <productname>Pgpool-II</productname> configuration directory.
-      There is no default value for this option, and if left unset
-      <acronym>SSL</acronym> will be disabled for incoming frontend connections.
+      指定用于入站前端连接的公钥 x509 证书文件。
+      相对路径是相对于 <productname>Pgpool-II</productname> 配置目录的。
+      此选项没有默认值，如果未设置，则入站前端连接的
+      <acronym>SSL</acronym> 将被禁用。
      </para>
 
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -92,25 +84,22 @@
    <varlistentry id="guc-ssl-ca-cert" xreflabel="ssl_ca_cert">
     <term><varname>ssl_ca_cert</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_ca_cert</varname> configuration parameter</primary>
+      <primary><varname>ssl_ca_cert</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies a <acronym>PEM</acronym> format <acronym>CA</acronym>
-      certificate file, which can be used to verify the backend server
-      certificates. Relative paths are relative to
-      <productname>Pgpool-II</productname> configuration directory. This is
-      analogous to the <command>-CApath</command> option of the
-      <command>OpenSSL verify(1)</command> command.
+      指定 <acronym>PEM</acronym> 格式的 <acronym>CA</acronym>
+      证书文件，可用于验证后端服务器证书。
+      相对路径是相对于 <productname>Pgpool-II</productname> 配置目录的。
+      这类似于 <command>OpenSSL verify(1)</command> 命令的
+      <command>-CApath</command> 选项。
      </para>
 
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -118,29 +107,25 @@
    <varlistentry id="guc-ssl-ca-cert-dir" xreflabel="ssl_ca_cert_dir">
     <term><varname>ssl_ca_cert_dir</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_ca_cert_dir</varname> configuration parameter</primary>
+      <primary><varname>ssl_ca_cert_dir</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the path to a directory containing <acronym>PEM</acronym>
-      format <acronym>CA</acronym> certificate files, which can be used
-      to verify the backend server certificates. This is analogous to
-      the <command>-CApath</command> option of the
-      <command>OpenSSL verify(1)</command> command.
+      指定包含 <acronym>PEM</acronym> 格式 <acronym>CA</acronym>
+      证书文件的目录路径，可用于验证后端服务器证书。
+      这类似于 <command>OpenSSL verify(1)</command> 命令的
+      <command>-CApath</command> 选项。
      </para>
      <para>
-      The default value for this option is unset, which means no
-      verification takes place. Verification will still happen if
-      this option is not set but a value is provided for
-      <xref linkend="guc-ssl-ca-cert">.
+      此选项的默认值为未设置，这意味着不进行任何验证。
+      如果未设置此选项但为 <xref linkend="guc-ssl-ca-cert"> 提供了值，
+      则仍会进行验证。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -148,23 +133,20 @@
    <varlistentry id="guc-ssl-crl-file" xreflabel="ssl_crl_file">
     <term><varname>ssl_crl_file</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_crl_file</varname> configuration parameter</primary>
+      <primary><varname>ssl_crl_file</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the file containing the SSL server certificate
-      revocation list (CRL). Relative paths are relative to
-      <productname>Pgpool-II</productname> configuration directory.
-      The default is empty, meaning no <acronym>CRL</acronym> file is loaded.
+      指定包含 SSL 服务器证书吊销列表 (CRL) 的文件。
+      相对路径是相对于 <productname>Pgpool-II</productname> 配置目录的。
+      默认为空，表示不加载任何 <acronym>CRL</acronym> 文件。
      </para>
 
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -172,31 +154,26 @@
    <varlistentry id="guc-ssl-ciphers" xreflabel="ssl_ciphers">
     <term><varname>ssl_ciphers</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_ciphers</varname> configuration parameter</primary>
+      <primary><varname>ssl_ciphers</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies a list of <acronym>SSL</acronym> cipher suites that
-      are allowed to be used by SSL connections.  See
-      the <citerefentry><refentrytitle>ciphers</refentrytitle></citerefentry>
-      manual page in the <application>OpenSSL</application> package
-      for the syntax of this setting and a list of supported values.
-      Only connections using TLS version 1.2 and lower are affected.
-      There is currently no setting that controls the cipher choices
-      used by TLS version 1.3 connections.
-      The default value
-      is <literal>HIGH:MEDIUM:+3DES:!aNULL</literal>, which is same
-      as <productname>PostgreSQL</productname>.
-      See <productname>PostgreSQL</productname> manual to know why
-      the value is chosen.
+      指定 SSL 连接允许使用的 <acronym>SSL</acronym> 密码套件列表。
+      有关此设置的语法和支持值的列表，请参阅
+      <application>OpenSSL</application> 包中的
+      <citerefentry><refentrytitle>ciphers</refentrytitle></citerefentry>
+      手册页。
+      仅影响使用 TLS 1.2 及更低版本的连接。
+      目前没有控制 TLS 1.3 连接使用的密码选择的设置。
+      默认值为 <literal>HIGH:MEDIUM:+3DES:!aNULL</literal>，与
+      <productname>PostgreSQL</productname> 相同。
+      有关为何选择该值，请参阅 <productname>PostgreSQL</productname> 手册。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -204,21 +181,19 @@
    <varlistentry id="guc-ssl-prefer-server-ciphers" xreflabel="ssl_prefer_server_ciphers">
     <term><varname>ssl_prefer_server_ciphers</varname> (<type>boolean</type>)
      <indexterm>
-      <primary><varname>ssl_prefer_server_ciphers</varname> configuration parameter</primary>
+      <primary><varname>ssl_prefer_server_ciphers</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies whether to use the server's <acronym>SSL</acronym>
-      cipher preferences, rather than the client's.
-      The default value is false.
+      指定是否使用服务器的 <acronym>SSL</acronym>
+      密码偏好设置，而不是客户端的。
+      默认值为 false。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -226,31 +201,28 @@
    <varlistentry id="guc-ssl-ecdh-curve" xreflabel="ssl_ecdh_curve">
     <term><varname>ssl_ecdh_curve</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_ecdh_curve</varname> configuration parameter</primary>
+      <primary><varname>ssl_ecdh_curve</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the name of the curve to use in <acronym>ECDH</acronym> key
-      exchange. It needs to be supported by all clients that connect.
-      It does not need to be the same curve used by the server's Elliptic
-      Curve key. The default value is <literal>prime256v1</literal>.
+      指定在 <acronym>ECDH</acronym> 密钥交换中使用的曲线名称。
+      所有连接的客户端都必须支持该曲线。
+      它不需要与服务器椭圆曲线密钥使用的曲线相同。
+      默认值为 <literal>prime256v1</literal>。
      </para>
      <para>
-      OpenSSL names for the most common curves are:
-      <literal>prime256v1</literal> (NIST P-256),
-      <literal>secp384r1</literal> (NIST P-384),
-      <literal>secp521r1</literal> (NIST P-521).
-      The full list of available curves can be shown with the command
-      <command>openssl ecparam -list_curves</command>. Not all of them
-      are usable in <acronym>TLS</acronym> though.
+      最常见曲线的 OpenSSL 名称为：
+      <literal>prime256v1</literal> (NIST P-256)，
+      <literal>secp384r1</literal> (NIST P-384)，
+      <literal>secp521r1</literal> (NIST P-521)。
+      可使用命令 <command>openssl ecparam -list_curves</command> 显示所有可用曲线的完整列表，
+      但它们并非全部都能在 <acronym>TLS</acronym> 中使用。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -258,24 +230,22 @@
    <varlistentry id="guc-ssl-dh-params-file" xreflabel="ssl_dh_params_file">
     <term><varname>ssl_dh_params_file</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_dh_params_file</varname> configuration parameter</primary>
+      <primary><varname>ssl_dh_params_file</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the name of the file containing Diffie-Hellman parameters
-      used for so-called ephemeral DH family of SSL ciphers. The default is
-      empty. If empty or specified file is not correct one, compiled-in default DH parameters used. Using
-      Custom DH parameters reduces the exposure if an attacker manages to
-      crack the well-known compiled-in DH parameters. You can create your own
-      DH parameters file with the command <command>openssl -out dhparams.pem 2048</command>.
+      指定包含 Diffie-Hellman 参数的文件名，
+      这些参数用于所谓的一次性 DH 系列的 SSL 密码。默认为空。
+      如果为空或指定文件不正确，则使用编译内置的默认 DH 参数。
+      使用自定义 DH 参数可以降低攻击者破解知名编译内置 DH 参数时的风险。
+      可使用命令 <command>openssl -out dhparams.pem 2048</command> 创建自己的
+      DH 参数文件。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -283,33 +253,29 @@
    <varlistentry id="guc-ssl-passphrase-command" xreflabel="ssl_passphrase_command">
     <term><varname>ssl_passphrase_command</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>ssl_passphrase_command</varname> configuration parameter</primary>
+      <primary><varname>ssl_passphrase_command</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Sets an external command to be invoked when a passphrase for decrypting
-      an SSL file such as a private key needs to be obtained. By default,
-      this parameter is empty, which means SSL file will not be loaded if passphrase is required.
+      设置一个外部命令，当需要获取解密 SSL 文件（如私钥）的密码短语时，将调用该命令。
+      默认情况下，此参数为空，这意味着如果需要密码短语则不会加载 SSL 文件。
      </para>
      <para>
-      The command must print the passphrase to the standard output and
-      exit with code 0. In the parameter value, %p is replaced by a prompt
-      string. (Write %% for a literal %.) Note that the prompt string will probably
-      contain whitespace, so be sure to quote adequately. A single newline is stripped
-      from the end of the output if present.
+      该命令必须将密码短语打印到标准输出，并以代码 0 退出。
+      在参数值中，%p 将被替换为提示字符串。（写入 %% 表示字面量 %。）
+      注意，提示字符串可能包含空格，因此请确保适当引用。
+      如果存在换行符，则从输出的末尾去除单个换行符。
      </para>
      <para>
-      The command does not actually have to prompt the user for a passphrase.
-      It can read it from a file, obtain it from a keychain facility, or similar.
-      It is up to the user to make sure the chosen mechanism is adequately secure.
+      该命令实际上不一定需要向用户提示输入密码短语。
+      它可以读取密码短语来自文件、从钥匙串设施获取，或以类似方式获取。
+      确保所选机制足够安全是用户的责任。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</> configurations.  However, if the
-      new parameter is not valid, the old value will be retained until
-      <productname>Pgpool-II</> is restarted, even if the new
-      parameter is displayed in "pgpool show".
+      通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
+      但是，如果新参数无效，则在重新启动 <productname>Pgpool-II</>
+      之前将保留旧值，即使在 "pgpool show" 中显示了新参数也是如此。
      </para>
     </listitem>
    </varlistentry>
@@ -319,14 +285,12 @@
 
  <sect2 id="runtime-g-connection-pooling-settings">
 
-  <title>Generating SSL certificates</title>
+  <title>生成 SSL 证书</title>
 
   <para>
-   Certificate handling is outside the scope of this document. The
-   <ulink url="http://developer.postgresql.org/pgdocs/postgres/ssl-tcp.html">
-    Secure TCP/IP Connections with SSL</> page at postgresql.org has
-   pointers with sample commands for how to generate self-signed
-   certificates. 
+   证书处理不在本文档范围内。<ulink url="http://developer.postgresql.org/pgdocs/postgres/ssl-tcp.html">
+    Secure TCP/IP Connections with SSL</> 页面提供了有关如何生成自签名
+   证书的示例命令和指引。
   </para>
 
  </sect2>

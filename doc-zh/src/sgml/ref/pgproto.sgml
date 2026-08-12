@@ -17,7 +17,8 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pgproto</refname>
   <refpurpose>
-   tests <productname>PostgreSQL</productname> or any other servers that understand the frontend/backend protocol.</refpurpose>
+   测试 <productname>PostgreSQL</productname> 或任何理解前端/后端协议的其他服务器。
+  </refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -28,15 +29,15 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R1-PGPROTO-1">
-  <title>Description</title>
+  <title>描述</title>
   <para>
    <command>pgproto</command>
-   tests <productname>PostgreSQL</productname> or any other servers that understand the frontend/backend protocol.
+   测试 <productname>PostgreSQL</productname> 或任何理解前端/后端协议的其他服务器。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
    <variablelist>
     <varlistentry>
@@ -44,7 +45,7 @@ Pgpool-II documentation
      <term><option>--hostname=<replaceable class="parameter">hostname</replaceable></option></term>
      <listitem>
       <para>
-       The host name of the machine on which the server is running. If the value begins with a slash, it is used as the directory for the Unix-domain socket (default: Unix-domain socket).
+       运行服务器的机器的主机名。如果值以斜杠开头，则用作 Unix 域套接字的目录（默认：使用 Unix 域套接字）。
       </para>
      </listitem>
     </varlistentry>
@@ -54,7 +55,7 @@ Pgpool-II documentation
      <term><option>--port=<replaceable class="parameter">port</replaceable></option></term>
      <listitem>
       <para>
-       The port number (default:5432).
+       端口号（默认：5432）。
       </para>
      </listitem>
     </varlistentry>
@@ -64,7 +65,7 @@ Pgpool-II documentation
      <term><option>--user=<replaceable class="parameter">username</replaceable></option></term>
      <listitem>
       <para>
-       The user name (default: OS user name).
+       用户名（默认：操作系统用户名）。
       </para>
      </listitem>
     </varlistentry>
@@ -74,7 +75,7 @@ Pgpool-II documentation
      <term><option>--database=<replaceable class="parameter">databasename</replaceable></option></term>
      <listitem>
       <para>
-       The database name (default: same as user).
+       数据库名（默认：与用户名相同）。
       </para>
      </listitem>
     </varlistentry>
@@ -84,7 +85,7 @@ Pgpool-II documentation
      <term><option>--proto-data-file=<replaceable class="parameter">filename</replaceable></option></term>
      <listitem>
       <para>
-       Text file describing message data to be sent to <productname>PostgreSQL</productname> (default: pgproto.data).
+       描述要发送到 <productname>PostgreSQL</productname> 的消息数据的文本文件（默认：pgproto.data）。
       </para>
      </listitem>
     </varlistentry>
@@ -94,9 +95,9 @@ Pgpool-II documentation
      <term><option>--read-nap=<replaceable class="parameter">naptime</replaceable></option></term>
      <listitem>
       <para>
-       The nap time in micro seconds (default:0).
-       Greater than 0 will let pgproto sleep between each data reading from socket.
-       This is useful to simulate slow clients.
+       休眠时间，单位为微秒（默认：0）。
+       大于 0 将使 pgproto 在从套接字每次读取数据之间休眠。
+       这对于模拟慢速客户端非常有用。
       </para>
      </listitem>
     </varlistentry>
@@ -106,7 +107,7 @@ Pgpool-II documentation
      <term><option>--debug</option></term>
      <listitem>
       <para>
-       Enable debug message.
+       启用调试消息。
       </para>
      </listitem>
     </varlistentry>
@@ -116,7 +117,7 @@ Pgpool-II documentation
      <term><option>--version</option></term>
      <listitem>
       <para>
-       Print the command version, then exit.
+       打印命令版本，然后退出。
       </para>
      </listitem>
     </varlistentry>
@@ -126,7 +127,7 @@ Pgpool-II documentation
      <term><option>--help</option></term>
      <listitem>
       <para>
-       Shows help for the command line arguments, then exit.
+       显示命令行参数的帮助信息，然后退出。
       </para>
      </listitem>
     </varlistentry>
@@ -136,37 +137,34 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   In the example below, the first character in the file (i.e. 'Q')
-   indicates the message kind specified in the PostgreSQL frontend/backend protocol.
+   在下面的示例中，文件中的第一个字符（即 'Q'）
+   表示 PostgreSQL 前端/后端协议中指定的消息类型。
   </para>
   <para>
-   Exceptions are 'Y' , 'y', 'z' and 's'. 'Y' reads messages from backend
-   until 'Ready for query' is received.
-   'y' reads messages from backend while messages are coming from backend then stops
-   if messages are not available for 1 second.
-   'Y' is used for waiting for reply of 'Q' (simple query) or after 'S' (sync) in extended queries.
-   'y' can be used for receiving messages after 'H' (flush).
-   'z' reads 1 messages from backend. If no message arrives within 1 second, 'z' stops.
-   If you want to read multiple messages, you can use repeat 'z' for the message count.
-   'z' can be useful for 'H' message test when you already know how
-   many reply messages will come.
-   's' causes pgproto to sleep for the specified milliseconds.
+   例外情况是 'Y'、'y'、'z' 和 's'。'Y' 从后端读取消息，
+   直到收到 'Ready for query' 为止。
+   'y' 在后端有消息时持续读取，如果在 1 秒内没有可用消息则停止。
+   'Y' 用于等待 'Q'（简单查询）的回复，或在扩展查询的 'S'（sync）之后。
+   'y' 可用于接收 'H'（flush）之后的消息。
+   'z' 从后端读取 1 条消息。如果在 1 秒内没有消息到达，则 'z' 停止。
+   如果要读取多条消息，可以重复使用 'z' 来控制消息数量。
+   当您已经知道会有多少条回复消息时，'z' 对于 'H' 消息测试非常有用。
+   's' 使 pgproto 睡眠指定的毫秒数。
   </para>
   <para>
-   If you want to include a " (double quotation) in a string data type,
-   for example "SELECT * FROM "aaa"", you can qualify it by using \ (back slash) like ""SELECT * FROM "aaa""
+   如果要在字符串数据类型中包含双引号（"），
+   例如 "SELECT * FROM "aaa""，则可以使用 \（反斜杠）进行转义，如 ""SELECT * FROM "aaa""。
 
-   A command line spread over multiple lines can be created using \ as well.
+   也可以使用 \ 来创建跨多行的命令行。
    <programlisting>
-    'Q' "SELECT * FROM aaa \
+    'Q'	"SELECT * FROM aaa \
     WHERE a = 1"
    </programlisting>
   </para>
   <para>
-   You can insert a new line by using "\n" if you want to use some
-   commands like COPY.  Below is an example.
+   如果您想使用 COPY 等命令，可以使用 "\n" 插入换行符。如下所示。
    <programlisting>
     'Q'	"COPY t1 FROM STDIN"
     'd'	"1\n"
@@ -176,10 +174,10 @@ Pgpool-II documentation
    </programlisting>
   </para>
   <para>
-   Here is an example input file:
+   以下是输入文件的示例：
    <programlisting>
     #
-    # Test data example
+    # 测试数据示例
     #
     'Q'	"SELECT * FROM aaa"
     'Y'
@@ -200,7 +198,7 @@ Pgpool-II documentation
    </programlisting>
   </para>
   <para>
-   Here is an example output:
+   以下是输出示例：
    <programlisting>
     $ pgproto -p 11000 -d test -f sample.data
     FE=> Query (query="SELECT * FROM aaa")
@@ -236,13 +234,13 @@ Pgpool-II documentation
    </programlisting>
   </para>
   <para>
-   Other example data files:
+   其他示例数据文件：
   </para>
   <para>
    Copy
    <programlisting>
     #
-    # Test data example
+    # 测试数据示例
     #
 
     # CopyIn
@@ -260,7 +258,7 @@ Pgpool-II documentation
     'Y'
 
     #
-    # Copy fail case
+    # Copy 失败情况
     #
     'Q'	"COPY t1 FROM STDIN"
     # CopyData
@@ -272,14 +270,14 @@ Pgpool-II documentation
    </programlisting>
   </para>
   <para>
-   Function Call
+   函数调用
    <programlisting>
     #
-    # Test data example
+    # 测试数据示例
     #
 
-    # Function call (lo_creat)
-    # from PostgreSQL's src/include/catalog/pg_proc.data
+    # 函数调用 (lo_creat)
+    # 来自 PostgreSQL 的 src/include/catalog/pg_proc.data
     # { oid => '957', descr => 'large object create',
     #  proname => 'lo_creat', provolatile => 'v', proparallel => 'u',
     #  prorettype => 'oid', proargtypes => 'int4', prosrc => 'be_lo_creat' },

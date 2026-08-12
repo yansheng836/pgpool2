@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pgpool_adm_pcp_health_check_stats</refname>
   <refpurpose>
-   a function to display health check statistics data on given node ID</refpurpose>
+   显示指定节点 ID 的健康检查统计数据的函数</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -81,15 +81,15 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R3-PCP-HEALTH-CHECK-STATS-3">
-  <title>Description</title>
+  <title>描述</title>
   <para>
    <function>pcp_health_check_stats</function>
-   displays health check statistics data on given node ID.
+   显示指定节点 ID 的健康检查统计数据。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Arguments</title>
+  <title>参数</title>
   <para>
    <variablelist>
 
@@ -97,7 +97,7 @@ Pgpool-II documentation
      <term><replaceable class="parameter">node_id</replaceable></term>
      <listitem>
       <para>
-       The index of backend node to get information of.
+       要获取信息的后端节点的索引。
       </para>
      </listitem>
     </varlistentry>
@@ -106,16 +106,16 @@ Pgpool-II documentation
      <term><replaceable class="parameter">pcp_server</replaceable></term>
      <listitem>
       <para>
-       The foreign server name for pcp server.
+       PCP 服务器的外部服务器名称。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other arguments </option></term>
+     <term><option>其他参数</option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
@@ -124,9 +124,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是示例输出：
    <programlisting>
 test=# select * from pcp_health_check_stats(node_id => 0, host => '', port => 11001, username => 't-ishii', password => 't-ishii');
 -[ RECORD 1 ]-----------------+--------------------
@@ -148,13 +148,13 @@ min_health_check_duration     | 3
 average_health_check_duration | 4.333333
 last_health_check             | 2020-02-25 16:05:47
 last_successful_health_check  | 2020-02-25 16:05:47
-last_skip_health_check        | 
-last_failed_health_check      | 
+last_skip_health_check        |
+last_failed_health_check      |
    </programlisting>
   </para>
 
   <para>
-   See <xref linkend="health-check-stats-data-table"> for details of data.
+   有关数据的详细信息，请参见 <xref linkend="health-check-stats-data-table">。
   </para>
 
  </refsect1>

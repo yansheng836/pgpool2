@@ -2,712 +2,712 @@
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 00 &mdash; Successful Completion</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 00 &mdash; 成功完成</></entry>
 </row>
 
 <row>
  <entry><literal>00000</literal></entry>
- <entry><symbol>successful_completion</symbol></entry>
+ <entry><symbol>成功完成</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 01 &mdash; Warning</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 01 &mdash; 警告</></entry>
 </row>
 
 <row>
  <entry><literal>01000</literal></entry>
- <entry><symbol>warning</symbol></entry>
+ <entry><symbol>警告</symbol></entry>
 </row>
 
 <row>
  <entry><literal>0100C</literal></entry>
- <entry><symbol>dynamic_result_sets_returned</symbol></entry>
+ <entry><symbol>返回了动态结果集</symbol></entry>
 </row>
 
 <row>
  <entry><literal>01008</literal></entry>
- <entry><symbol>implicit_zero_bit_padding</symbol></entry>
+ <entry><symbol>隐式零位填充</symbol></entry>
 </row>
 
 <row>
  <entry><literal>01003</literal></entry>
- <entry><symbol>null_value_eliminated_in_set_function</symbol></entry>
+ <entry><symbol>集合函数中消除了空值</symbol></entry>
 </row>
 
 <row>
  <entry><literal>01007</literal></entry>
- <entry><symbol>privilege_not_granted</symbol></entry>
+ <entry><symbol>未授予权限</symbol></entry>
 </row>
 
 <row>
  <entry><literal>01006</literal></entry>
- <entry><symbol>privilege_not_revoked</symbol></entry>
+ <entry><symbol>未撤销权限</symbol></entry>
 </row>
 
 <row>
  <entry><literal>01004</literal></entry>
- <entry><symbol>string_data_right_truncation</symbol></entry>
+ <entry><symbol>字符串数据右截断</symbol></entry>
 </row>
 
 <row>
  <entry><literal>01P01</literal></entry>
- <entry><symbol>deprecated_feature</symbol></entry>
+ <entry><symbol>已弃用的功能</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 02 &mdash; No Data (this is also a warning class per the SQL standard)</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 02 &mdash; 无数据（按照 SQL 标准，这也属于警告类）</></entry>
 </row>
 
 <row>
  <entry><literal>02000</literal></entry>
- <entry><symbol>no_data</symbol></entry>
+ <entry><symbol>无数据</symbol></entry>
 </row>
 
 <row>
  <entry><literal>02001</literal></entry>
- <entry><symbol>no_additional_dynamic_result_sets_returned</symbol></entry>
+ <entry><symbol>未返回其他动态结果集</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 03 &mdash; SQL Statement Not Yet Complete</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 03 &mdash; SQL 语句尚未完成</></entry>
 </row>
 
 <row>
  <entry><literal>03000</literal></entry>
- <entry><symbol>sql_statement_not_yet_complete</symbol></entry>
+ <entry><symbol>SQL 语句尚未完成</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 08 &mdash; Connection Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 08 &mdash; 连接异常</></entry>
 </row>
 
 <row>
  <entry><literal>08000</literal></entry>
- <entry><symbol>connection_exception</symbol></entry>
+ <entry><symbol>连接异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>08003</literal></entry>
- <entry><symbol>connection_does_not_exist</symbol></entry>
+ <entry><symbol>连接不存在</symbol></entry>
 </row>
 
 <row>
  <entry><literal>08006</literal></entry>
- <entry><symbol>connection_failure</symbol></entry>
+ <entry><symbol>连接失败</symbol></entry>
 </row>
 
 <row>
  <entry><literal>08001</literal></entry>
- <entry><symbol>sqlclient_unable_to_establish_sqlconnection</symbol></entry>
+ <entry><symbol>SQL 客户端无法建立 SQL 连接</symbol></entry>
 </row>
 
 <row>
  <entry><literal>08004</literal></entry>
- <entry><symbol>sqlserver_rejected_establishment_of_sqlconnection</symbol></entry>
+ <entry><symbol>SQL 服务器拒绝建立 SQL 连接</symbol></entry>
 </row>
 
 <row>
  <entry><literal>08007</literal></entry>
- <entry><symbol>transaction_resolution_unknown</symbol></entry>
+ <entry><symbol>事务解析未知</symbol></entry>
 </row>
 
 <row>
  <entry><literal>08P01</literal></entry>
- <entry><symbol>protocol_violation</symbol></entry>
+ <entry><symbol>协议违规</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 09 &mdash; Triggered Action Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 09 &mdash; 触发动作异常</></entry>
 </row>
 
 <row>
  <entry><literal>09000</literal></entry>
- <entry><symbol>triggered_action_exception</symbol></entry>
+ <entry><symbol>触发动作异常</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 0A &mdash; Feature Not Supported</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 0A &mdash; 不支持的功能</></entry>
 </row>
 
 <row>
  <entry><literal>0A000</literal></entry>
- <entry><symbol>feature_not_supported</symbol></entry>
+ <entry><symbol>不支持的功能</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 0B &mdash; Invalid Transaction Initiation</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 0B &mdash; 无效的事务初始化</></entry>
 </row>
 
 <row>
  <entry><literal>0B000</literal></entry>
- <entry><symbol>invalid_transaction_initiation</symbol></entry>
+ <entry><symbol>无效的事务初始化</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 0F &mdash; Locator Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 0F &mdash; 定位符异常</></entry>
 </row>
 
 <row>
  <entry><literal>0F000</literal></entry>
- <entry><symbol>locator_exception</symbol></entry>
+ <entry><symbol>定位符异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>0F001</literal></entry>
- <entry><symbol>invalid_locator_specification</symbol></entry>
+ <entry><symbol>无效的定位符规范</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 0L &mdash; Invalid Grantor</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 0L &mdash; 无效的授权者</></entry>
 </row>
 
 <row>
  <entry><literal>0L000</literal></entry>
- <entry><symbol>invalid_grantor</symbol></entry>
+ <entry><symbol>无效的授权者</symbol></entry>
 </row>
 
 <row>
  <entry><literal>0LP01</literal></entry>
- <entry><symbol>invalid_grant_operation</symbol></entry>
+ <entry><symbol>无效的授权操作</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 0P &mdash; Invalid Role Specification</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 0P &mdash; 无效的角色规范</></entry>
 </row>
 
 <row>
  <entry><literal>0P000</literal></entry>
- <entry><symbol>invalid_role_specification</symbol></entry>
+ <entry><symbol>无效的角色规范</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 0Z &mdash; Diagnostics Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 0Z &mdash; 诊断异常</></entry>
 </row>
 
 <row>
  <entry><literal>0Z000</literal></entry>
- <entry><symbol>diagnostics_exception</symbol></entry>
+ <entry><symbol>诊断异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>0Z002</literal></entry>
- <entry><symbol>stacked_diagnostics_accessed_without_active_handler</symbol></entry>
+ <entry><symbol>在没有活动处理程序的情况下访问了堆叠诊断</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 20 &mdash; Case Not Found</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 20 &mdash; 未找到分支</></entry>
 </row>
 
 <row>
  <entry><literal>20000</literal></entry>
- <entry><symbol>case_not_found</symbol></entry>
+ <entry><symbol>未找到分支</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 21 &mdash; Cardinality Violation</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 21 &mdash; 基数违规</></entry>
 </row>
 
 <row>
  <entry><literal>21000</literal></entry>
- <entry><symbol>cardinality_violation</symbol></entry>
+ <entry><symbol>基数违规</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 22 &mdash; Data Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 22 &mdash; 数据异常</></entry>
 </row>
 
 <row>
  <entry><literal>22000</literal></entry>
- <entry><symbol>data_exception</symbol></entry>
+ <entry><symbol>数据异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2202E</literal></entry>
- <entry><symbol>array_subscript_error</symbol></entry>
+ <entry><symbol>数组下标错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22021</literal></entry>
- <entry><symbol>character_not_in_repertoire</symbol></entry>
+ <entry><symbol>字符不在字符集中</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22008</literal></entry>
- <entry><symbol>datetime_field_overflow</symbol></entry>
+ <entry><symbol>日期时间字段溢出</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22012</literal></entry>
- <entry><symbol>division_by_zero</symbol></entry>
+ <entry><symbol>除以零</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22005</literal></entry>
- <entry><symbol>error_in_assignment</symbol></entry>
+ <entry><symbol>赋值错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200B</literal></entry>
- <entry><symbol>escape_character_conflict</symbol></entry>
+ <entry><symbol>转义字符冲突</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22022</literal></entry>
- <entry><symbol>indicator_overflow</symbol></entry>
+ <entry><symbol>指示器溢出</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22015</literal></entry>
- <entry><symbol>interval_field_overflow</symbol></entry>
+ <entry><symbol>间隔字段溢出</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2201E</literal></entry>
- <entry><symbol>invalid_argument_for_logarithm</symbol></entry>
+ <entry><symbol>对数函数的参数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22014</literal></entry>
- <entry><symbol>invalid_argument_for_ntile_function</symbol></entry>
+ <entry><symbol>NTILE 函数的参数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22016</literal></entry>
- <entry><symbol>invalid_argument_for_nth_value_function</symbol></entry>
+ <entry><symbol>NTH_VALUE 函数的参数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2201F</literal></entry>
- <entry><symbol>invalid_argument_for_power_function</symbol></entry>
+ <entry><symbol>POWER 函数的参数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2201G</literal></entry>
- <entry><symbol>invalid_argument_for_width_bucket_function</symbol></entry>
+ <entry><symbol>WIDTH_BUCKET 函数的参数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22018</literal></entry>
- <entry><symbol>invalid_character_value_for_cast</symbol></entry>
+ <entry><symbol>CAST 的字符值无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22007</literal></entry>
- <entry><symbol>invalid_datetime_format</symbol></entry>
+ <entry><symbol>日期时间格式无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22019</literal></entry>
- <entry><symbol>invalid_escape_character</symbol></entry>
+ <entry><symbol>转义字符无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200D</literal></entry>
- <entry><symbol>invalid_escape_octet</symbol></entry>
+ <entry><symbol>转义字节组无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22025</literal></entry>
- <entry><symbol>invalid_escape_sequence</symbol></entry>
+ <entry><symbol>转义序列无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22P06</literal></entry>
- <entry><symbol>nonstandard_use_of_escape_character</symbol></entry>
+ <entry><symbol>转义字符的非标准用法</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22010</literal></entry>
- <entry><symbol>invalid_indicator_parameter_value</symbol></entry>
+ <entry><symbol>指示器参数值无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22023</literal></entry>
- <entry><symbol>invalid_parameter_value</symbol></entry>
+ <entry><symbol>参数值无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2201B</literal></entry>
- <entry><symbol>invalid_regular_expression</symbol></entry>
+ <entry><symbol>正则表达式无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2201W</literal></entry>
- <entry><symbol>invalid_row_count_in_limit_clause</symbol></entry>
+ <entry><symbol>LIMIT 子句中的行数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2201X</literal></entry>
- <entry><symbol>invalid_row_count_in_result_offset_clause</symbol></entry>
+ <entry><symbol>结果偏移子句中的行数无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22009</literal></entry>
- <entry><symbol>invalid_time_zone_displacement_value</symbol></entry>
+ <entry><symbol>时区偏移值无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200C</literal></entry>
- <entry><symbol>invalid_use_of_escape_character</symbol></entry>
+ <entry><symbol>转义字符的无效使用</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200G</literal></entry>
- <entry><symbol>most_specific_type_mismatch</symbol></entry>
+ <entry><symbol>最具体类型不匹配</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22004</literal></entry>
- <entry><symbol>null_value_not_allowed</symbol></entry>
+ <entry><symbol>不允许空值</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22002</literal></entry>
- <entry><symbol>null_value_no_indicator_parameter</symbol></entry>
+ <entry><symbol>空值无指示器参数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22003</literal></entry>
- <entry><symbol>numeric_value_out_of_range</symbol></entry>
+ <entry><symbol>数值超出范围</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22026</literal></entry>
- <entry><symbol>string_data_length_mismatch</symbol></entry>
+ <entry><symbol>字符串数据长度不匹配</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22001</literal></entry>
- <entry><symbol>string_data_right_truncation</symbol></entry>
+ <entry><symbol>字符串数据右截断</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22011</literal></entry>
- <entry><symbol>substring_error</symbol></entry>
+ <entry><symbol>子字符串错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22027</literal></entry>
- <entry><symbol>trim_error</symbol></entry>
+ <entry><symbol>截断错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22024</literal></entry>
- <entry><symbol>unterminated_c_string</symbol></entry>
+ <entry><symbol>未终止的 C 字符串</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200F</literal></entry>
- <entry><symbol>zero_length_character_string</symbol></entry>
+ <entry><symbol>零长度字符字符串</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22P01</literal></entry>
- <entry><symbol>floating_point_exception</symbol></entry>
+ <entry><symbol>浮点异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22P02</literal></entry>
- <entry><symbol>invalid_text_representation</symbol></entry>
+ <entry><symbol>文本表示无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22P03</literal></entry>
- <entry><symbol>invalid_binary_representation</symbol></entry>
+ <entry><symbol>二进制表示无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22P04</literal></entry>
- <entry><symbol>bad_copy_file_format</symbol></entry>
+ <entry><symbol>复制文件格式错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>22P05</literal></entry>
- <entry><symbol>untranslatable_character</symbol></entry>
+ <entry><symbol>不可转义的字符</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200L</literal></entry>
- <entry><symbol>not_an_xml_document</symbol></entry>
+ <entry><symbol>不是 XML 文档</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200M</literal></entry>
- <entry><symbol>invalid_xml_document</symbol></entry>
+ <entry><symbol>无效的 XML 文档</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200N</literal></entry>
- <entry><symbol>invalid_xml_content</symbol></entry>
+ <entry><symbol>无效的 XML 内容</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200S</literal></entry>
- <entry><symbol>invalid_xml_comment</symbol></entry>
+ <entry><symbol>无效的 XML 注释</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2200T</literal></entry>
- <entry><symbol>invalid_xml_processing_instruction</symbol></entry>
+ <entry><symbol>无效的 XML 处理指令</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 23 &mdash; Integrity Constraint Violation</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 23 &mdash; 完整性约束违规</></entry>
 </row>
 
 <row>
  <entry><literal>23000</literal></entry>
- <entry><symbol>integrity_constraint_violation</symbol></entry>
+ <entry><symbol>完整性约束违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>23001</literal></entry>
- <entry><symbol>restrict_violation</symbol></entry>
+ <entry><symbol>RESTRICT 违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>23502</literal></entry>
- <entry><symbol>not_null_violation</symbol></entry>
+ <entry><symbol>NOT NULL 违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>23503</literal></entry>
- <entry><symbol>foreign_key_violation</symbol></entry>
+ <entry><symbol>外键违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>23505</literal></entry>
- <entry><symbol>unique_violation</symbol></entry>
+ <entry><symbol>唯一性违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>23514</literal></entry>
- <entry><symbol>check_violation</symbol></entry>
+ <entry><symbol>CHECK 违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>23P01</literal></entry>
- <entry><symbol>exclusion_violation</symbol></entry>
+ <entry><symbol>排除约束违规</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 24 &mdash; Invalid Cursor State</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 24 &mdash; 无效的光标状态</></entry>
 </row>
 
 <row>
  <entry><literal>24000</literal></entry>
- <entry><symbol>invalid_cursor_state</symbol></entry>
+ <entry><symbol>无效的光标状态</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 25 &mdash; Invalid Transaction State</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 25 &mdash; 无效的事务状态</></entry>
 </row>
 
 <row>
  <entry><literal>25000</literal></entry>
- <entry><symbol>invalid_transaction_state</symbol></entry>
+ <entry><symbol>无效的事务状态</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25001</literal></entry>
- <entry><symbol>active_sql_transaction</symbol></entry>
+ <entry><symbol>活动的 SQL 事务</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25002</literal></entry>
- <entry><symbol>branch_transaction_already_active</symbol></entry>
+ <entry><symbol>分支事务已处于活动状态</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25008</literal></entry>
- <entry><symbol>held_cursor_requires_same_isolation_level</symbol></entry>
+ <entry><symbol>保持的光标需要相同的隔离级别</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25003</literal></entry>
- <entry><symbol>inappropriate_access_mode_for_branch_transaction</symbol></entry>
+ <entry><symbol>分支事务的访问模式不恰当</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25004</literal></entry>
- <entry><symbol>inappropriate_isolation_level_for_branch_transaction</symbol></entry>
+ <entry><symbol>分支事务的隔离级别不恰当</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25005</literal></entry>
- <entry><symbol>no_active_sql_transaction_for_branch_transaction</symbol></entry>
+ <entry><symbol>分支事务没有活动的 SQL 事务</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25006</literal></entry>
- <entry><symbol>read_only_sql_transaction</symbol></entry>
+ <entry><symbol>只读 SQL 事务</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25007</literal></entry>
- <entry><symbol>schema_and_data_statement_mixing_not_supported</symbol></entry>
+ <entry><symbol>不支持混合使用架构和数据语句</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25P01</literal></entry>
- <entry><symbol>no_active_sql_transaction</symbol></entry>
+ <entry><symbol>无活动的 SQL 事务</symbol></entry>
 </row>
 
 <row>
  <entry><literal>25P02</literal></entry>
- <entry><symbol>in_failed_sql_transaction</symbol></entry>
+ <entry><symbol>在失败的 SQL 事务中</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 26 &mdash; Invalid SQL Statement Name</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 26 &mdash; 无效的 SQL 语句名称</></entry>
 </row>
 
 <row>
  <entry><literal>26000</literal></entry>
- <entry><symbol>invalid_sql_statement_name</symbol></entry>
+ <entry><symbol>无效的 SQL 语句名称</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 27 &mdash; Triggered Data Change Violation</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 27 &mdash; 触发的数据变更违规</></entry>
 </row>
 
 <row>
  <entry><literal>27000</literal></entry>
- <entry><symbol>triggered_data_change_violation</symbol></entry>
+ <entry><symbol>触发的数据变更违规</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 28 &mdash; Invalid Authorization Specification</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 28 &mdash; 无效的授权规范</></entry>
 </row>
 
 <row>
  <entry><literal>28000</literal></entry>
- <entry><symbol>invalid_authorization_specification</symbol></entry>
+ <entry><symbol>无效的授权规范</symbol></entry>
 </row>
 
 <row>
  <entry><literal>28P01</literal></entry>
- <entry><symbol>invalid_password</symbol></entry>
+ <entry><symbol>密码无效</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 2B &mdash; Dependent Privilege Descriptors Still Exist</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 2B &mdash; 依赖的权限描述符仍然存在</></entry>
 </row>
 
 <row>
  <entry><literal>2B000</literal></entry>
- <entry><symbol>dependent_privilege_descriptors_still_exist</symbol></entry>
+ <entry><symbol>依赖的权限描述符仍然存在</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2BP01</literal></entry>
- <entry><symbol>dependent_objects_still_exist</symbol></entry>
+ <entry><symbol>依赖的对象仍然存在</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 2D &mdash; Invalid Transaction Termination</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 2D &mdash; 无效的事务终止</></entry>
 </row>
 
 <row>
  <entry><literal>2D000</literal></entry>
- <entry><symbol>invalid_transaction_termination</symbol></entry>
+ <entry><symbol>无效的事务终止</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 2F &mdash; SQL Routine Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 2F &mdash; SQL 例程异常</></entry>
 </row>
 
 <row>
  <entry><literal>2F000</literal></entry>
- <entry><symbol>sql_routine_exception</symbol></entry>
+ <entry><symbol>SQL 例程异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2F005</literal></entry>
- <entry><symbol>function_executed_no_return_statement</symbol></entry>
+ <entry><symbol>函数执行无返回语句</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2F002</literal></entry>
- <entry><symbol>modifying_sql_data_not_permitted</symbol></entry>
+ <entry><symbol>不允许修改 SQL 数据</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2F003</literal></entry>
- <entry><symbol>prohibited_sql_statement_attempted</symbol></entry>
+ <entry><symbol>尝试了禁止的 SQL 语句</symbol></entry>
 </row>
 
 <row>
  <entry><literal>2F004</literal></entry>
- <entry><symbol>reading_sql_data_not_permitted</symbol></entry>
+ <entry><symbol>不允许读取 SQL 数据</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 34 &mdash; Invalid Cursor Name</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 34 &mdash; 无效的光标名称</></entry>
 </row>
 
 <row>
  <entry><literal>34000</literal></entry>
- <entry><symbol>invalid_cursor_name</symbol></entry>
+ <entry><symbol>无效的光标名称</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 38 &mdash; External Routine Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 38 &mdash; 外部例程异常</></entry>
 </row>
 
 <row>
  <entry><literal>38000</literal></entry>
- <entry><symbol>external_routine_exception</symbol></entry>
+ <entry><symbol>外部例程异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>38001</literal></entry>
- <entry><symbol>containing_sql_not_permitted</symbol></entry>
+ <entry><symbol>不允许包含 SQL</symbol></entry>
 </row>
 
 <row>
  <entry><literal>38002</literal></entry>
- <entry><symbol>modifying_sql_data_not_permitted</symbol></entry>
+ <entry><symbol>不允许修改 SQL 数据</symbol></entry>
 </row>
 
 <row>
  <entry><literal>38003</literal></entry>
- <entry><symbol>prohibited_sql_statement_attempted</symbol></entry>
+ <entry><symbol>尝试了禁止的 SQL 语句</symbol></entry>
 </row>
 
 <row>
  <entry><literal>38004</literal></entry>
- <entry><symbol>reading_sql_data_not_permitted</symbol></entry>
+ <entry><symbol>不允许读取 SQL 数据</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 39 &mdash; External Routine Invocation Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 39 &mdash; 外部例程调用异常</></entry>
 </row>
 
 <row>
@@ -717,432 +717,432 @@
 
 <row>
  <entry><literal>39001</literal></entry>
- <entry><symbol>invalid_sqlstate_returned</symbol></entry>
+ <entry><symbol>返回的 SQLSTATE 无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>39004</literal></entry>
- <entry><symbol>null_value_not_allowed</symbol></entry>
+ <entry><symbol>不允许空值</symbol></entry>
 </row>
 
 <row>
  <entry><literal>39P01</literal></entry>
- <entry><symbol>trigger_protocol_violated</symbol></entry>
+ <entry><symbol>触发器协议违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>39P02</literal></entry>
- <entry><symbol>srf_protocol_violated</symbol></entry>
+ <entry><symbol>集合返回函数协议违规</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 3B &mdash; Savepoint Exception</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 3B &mdash; 保存点异常</></entry>
 </row>
 
 <row>
  <entry><literal>3B000</literal></entry>
- <entry><symbol>savepoint_exception</symbol></entry>
+ <entry><symbol>保存点异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>3B001</literal></entry>
- <entry><symbol>invalid_savepoint_specification</symbol></entry>
+ <entry><symbol>无效的保存点规范</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 3D &mdash; Invalid Catalog Name</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 3D &mdash; 无效的目录名称</></entry>
 </row>
 
 <row>
  <entry><literal>3D000</literal></entry>
- <entry><symbol>invalid_catalog_name</symbol></entry>
+ <entry><symbol>无效的目录名称</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 3F &mdash; Invalid Schema Name</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 3F &mdash; 无效的架构名称</></entry>
 </row>
 
 <row>
  <entry><literal>3F000</literal></entry>
- <entry><symbol>invalid_schema_name</symbol></entry>
+ <entry><symbol>无效的架构名称</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 40 &mdash; Transaction Rollback</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 40 &mdash; 事务回滚</></entry>
 </row>
 
 <row>
  <entry><literal>40000</literal></entry>
- <entry><symbol>transaction_rollback</symbol></entry>
+ <entry><symbol>事务回滚</symbol></entry>
 </row>
 
 <row>
  <entry><literal>40002</literal></entry>
- <entry><symbol>transaction_integrity_constraint_violation</symbol></entry>
+ <entry><symbol>事务完整性约束违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>40001</literal></entry>
- <entry><symbol>serialization_failure</symbol></entry>
+ <entry><symbol>序列化失败</symbol></entry>
 </row>
 
 <row>
  <entry><literal>40003</literal></entry>
- <entry><symbol>statement_completion_unknown</symbol></entry>
+ <entry><symbol>语句完成状态未知</symbol></entry>
 </row>
 
 <row>
  <entry><literal>40P01</literal></entry>
- <entry><symbol>deadlock_detected</symbol></entry>
+ <entry><symbol>检测到死锁</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 42 &mdash; Syntax Error or Access Rule Violation</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 42 &mdash; 语法错误或访问规则违规</></entry>
 </row>
 
 <row>
  <entry><literal>42000</literal></entry>
- <entry><symbol>syntax_error_or_access_rule_violation</symbol></entry>
+ <entry><symbol>语法错误或访问规则违规</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42601</literal></entry>
- <entry><symbol>syntax_error</symbol></entry>
+ <entry><symbol>语法错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42501</literal></entry>
- <entry><symbol>insufficient_privilege</symbol></entry>
+ <entry><symbol>权限不足</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42846</literal></entry>
- <entry><symbol>cannot_coerce</symbol></entry>
+ <entry><symbol>无法强制转换</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42803</literal></entry>
- <entry><symbol>grouping_error</symbol></entry>
+ <entry><symbol>分组错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P20</literal></entry>
- <entry><symbol>windowing_error</symbol></entry>
+ <entry><symbol>窗口函数错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P19</literal></entry>
- <entry><symbol>invalid_recursion</symbol></entry>
+ <entry><symbol>无效递归</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42830</literal></entry>
- <entry><symbol>invalid_foreign_key</symbol></entry>
+ <entry><symbol>无效的外键</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42602</literal></entry>
- <entry><symbol>invalid_name</symbol></entry>
+ <entry><symbol>无效的名称</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42622</literal></entry>
- <entry><symbol>name_too_long</symbol></entry>
+ <entry><symbol>名称过长</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42939</literal></entry>
- <entry><symbol>reserved_name</symbol></entry>
+ <entry><symbol>保留名称</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42804</literal></entry>
- <entry><symbol>datatype_mismatch</symbol></entry>
+ <entry><symbol>数据类型不匹配</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P18</literal></entry>
- <entry><symbol>indeterminate_datatype</symbol></entry>
+ <entry><symbol>不确定的数据类型</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P21</literal></entry>
- <entry><symbol>collation_mismatch</symbol></entry>
+ <entry><symbol>排序规则不匹配</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P22</literal></entry>
- <entry><symbol>indeterminate_collation</symbol></entry>
+ <entry><symbol>不确定的排序规则</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42809</literal></entry>
- <entry><symbol>wrong_object_type</symbol></entry>
+ <entry><symbol>错误的对象类型</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42703</literal></entry>
- <entry><symbol>undefined_column</symbol></entry>
+ <entry><symbol>未定义的列</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42883</literal></entry>
- <entry><symbol>undefined_function</symbol></entry>
+ <entry><symbol>未定义的函数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P01</literal></entry>
- <entry><symbol>undefined_table</symbol></entry>
+ <entry><symbol>未定义的表</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P02</literal></entry>
- <entry><symbol>undefined_parameter</symbol></entry>
+ <entry><symbol>未定义的参数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42704</literal></entry>
- <entry><symbol>undefined_object</symbol></entry>
+ <entry><symbol>未定义的对象</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42701</literal></entry>
- <entry><symbol>duplicate_column</symbol></entry>
+ <entry><symbol>重复的列</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P03</literal></entry>
- <entry><symbol>duplicate_cursor</symbol></entry>
+ <entry><symbol>重复的光标</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P04</literal></entry>
- <entry><symbol>duplicate_database</symbol></entry>
+ <entry><symbol>重复的数据库</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42723</literal></entry>
- <entry><symbol>duplicate_function</symbol></entry>
+ <entry><symbol>重复的函数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P05</literal></entry>
- <entry><symbol>duplicate_prepared_statement</symbol></entry>
+ <entry><symbol>重复的预准备语句</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P06</literal></entry>
- <entry><symbol>duplicate_schema</symbol></entry>
+ <entry><symbol>重复的架构</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P07</literal></entry>
- <entry><symbol>duplicate_table</symbol></entry>
+ <entry><symbol>重复的表</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42712</literal></entry>
- <entry><symbol>duplicate_alias</symbol></entry>
+ <entry><symbol>重复的别名</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42710</literal></entry>
- <entry><symbol>duplicate_object</symbol></entry>
+ <entry><symbol>重复的对象</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42702</literal></entry>
- <entry><symbol>ambiguous_column</symbol></entry>
+ <entry><symbol>歧义列</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42725</literal></entry>
- <entry><symbol>ambiguous_function</symbol></entry>
+ <entry><symbol>歧义函数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P08</literal></entry>
- <entry><symbol>ambiguous_parameter</symbol></entry>
+ <entry><symbol>歧义参数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P09</literal></entry>
- <entry><symbol>ambiguous_alias</symbol></entry>
+ <entry><symbol>歧义别名</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P10</literal></entry>
- <entry><symbol>invalid_column_reference</symbol></entry>
+ <entry><symbol>无效的列引用</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42611</literal></entry>
- <entry><symbol>invalid_column_definition</symbol></entry>
+ <entry><symbol>无效的列定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P11</literal></entry>
- <entry><symbol>invalid_cursor_definition</symbol></entry>
+ <entry><symbol>无效的光标定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P12</literal></entry>
- <entry><symbol>invalid_database_definition</symbol></entry>
+ <entry><symbol>无效的数据库定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P13</literal></entry>
- <entry><symbol>invalid_function_definition</symbol></entry>
+ <entry><symbol>无效的函数定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P14</literal></entry>
- <entry><symbol>invalid_prepared_statement_definition</symbol></entry>
+ <entry><symbol>无效的预准备语句定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P15</literal></entry>
- <entry><symbol>invalid_schema_definition</symbol></entry>
+ <entry><symbol>无效的架构定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P16</literal></entry>
- <entry><symbol>invalid_table_definition</symbol></entry>
+ <entry><symbol>无效的表定义</symbol></entry>
 </row>
 
 <row>
  <entry><literal>42P17</literal></entry>
- <entry><symbol>invalid_object_definition</symbol></entry>
+ <entry><symbol>无效的对象定义</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 44 &mdash; WITH CHECK OPTION Violation</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 44 &mdash; WITH CHECK OPTION 违规</></entry>
 </row>
 
 <row>
  <entry><literal>44000</literal></entry>
- <entry><symbol>with_check_option_violation</symbol></entry>
+ <entry><symbol>WITH CHECK OPTION 违规</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 53 &mdash; Insufficient Resources</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 53 &mdash; 资源不足</></entry>
 </row>
 
 <row>
  <entry><literal>53000</literal></entry>
- <entry><symbol>insufficient_resources</symbol></entry>
+ <entry><symbol>资源不足</symbol></entry>
 </row>
 
 <row>
  <entry><literal>53100</literal></entry>
- <entry><symbol>disk_full</symbol></entry>
+ <entry><symbol>磁盘已满</symbol></entry>
 </row>
 
 <row>
  <entry><literal>53200</literal></entry>
- <entry><symbol>out_of_memory</symbol></entry>
+ <entry><symbol>内存不足</symbol></entry>
 </row>
 
 <row>
  <entry><literal>53300</literal></entry>
- <entry><symbol>too_many_connections</symbol></entry>
+ <entry><symbol>连接数过多</symbol></entry>
 </row>
 
 <row>
  <entry><literal>53400</literal></entry>
- <entry><symbol>configuration_limit_exceeded</symbol></entry>
+ <entry><symbol>配置限制超出</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 54 &mdash; Program Limit Exceeded</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 54 &mdash; 程序限制超出</></entry>
 </row>
 
 <row>
  <entry><literal>54000</literal></entry>
- <entry><symbol>program_limit_exceeded</symbol></entry>
+ <entry><symbol>程序限制超出</symbol></entry>
 </row>
 
 <row>
  <entry><literal>54001</literal></entry>
- <entry><symbol>statement_too_complex</symbol></entry>
+ <entry><symbol>语句过于复杂</symbol></entry>
 </row>
 
 <row>
  <entry><literal>54011</literal></entry>
- <entry><symbol>too_many_columns</symbol></entry>
+ <entry><symbol>列数过多</symbol></entry>
 </row>
 
 <row>
  <entry><literal>54023</literal></entry>
- <entry><symbol>too_many_arguments</symbol></entry>
+ <entry><symbol>参数过多</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 55 &mdash; Object Not In Prerequisite State</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 55 &mdash; 对象不在前置状态</></entry>
 </row>
 
 <row>
  <entry><literal>55000</literal></entry>
- <entry><symbol>object_not_in_prerequisite_state</symbol></entry>
+ <entry><symbol>对象不在前置状态</symbol></entry>
 </row>
 
 <row>
  <entry><literal>55006</literal></entry>
- <entry><symbol>object_in_use</symbol></entry>
+ <entry><symbol>对象正在使用中</symbol></entry>
 </row>
 
 <row>
  <entry><literal>55P02</literal></entry>
- <entry><symbol>cant_change_runtime_param</symbol></entry>
+ <entry><symbol>无法更改运行时参数</symbol></entry>
 </row>
 
 <row>
  <entry><literal>55P03</literal></entry>
- <entry><symbol>lock_not_available</symbol></entry>
+ <entry><symbol>锁不可用</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class 57 &mdash; Operator Intervention</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class 57 &mdash; 操作员干预</></entry>
 </row>
 
 <row>
  <entry><literal>57000</literal></entry>
- <entry><symbol>operator_intervention</symbol></entry>
+ <entry><symbol>操作员干预</symbol></entry>
 </row>
 
 <row>
  <entry><literal>57014</literal></entry>
- <entry><symbol>query_canceled</symbol></entry>
+ <entry><symbol>查询已取消</symbol></entry>
 </row>
 
 <row>
  <entry><literal>57P01</literal></entry>
- <entry><symbol>admin_shutdown</symbol></entry>
+ <entry><symbol>管理员关闭</symbol></entry>
 </row>
 
 <row>
  <entry><literal>57P02</literal></entry>
- <entry><symbol>crash_shutdown</symbol></entry>
+ <entry><symbol>崩溃关闭</symbol></entry>
 </row>
 
 <row>
  <entry><literal>57P03</literal></entry>
- <entry><symbol>cannot_connect_now</symbol></entry>
+ <entry><symbol>当前无法连接</symbol></entry>
 </row>
 
 <row>
  <entry><literal>57P04</literal></entry>
- <entry><symbol>database_dropped</symbol></entry>
+ <entry><symbol>数据库已删除</symbol></entry>
 </row>
 
 
@@ -1152,220 +1152,220 @@
 
 <row>
  <entry><literal>58000</literal></entry>
- <entry><symbol>system_error</symbol></entry>
+ <entry><symbol>系统错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>58030</literal></entry>
- <entry><symbol>io_error</symbol></entry>
+ <entry><symbol>I/O 错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>58P01</literal></entry>
- <entry><symbol>undefined_file</symbol></entry>
+ <entry><symbol>未定义的文件</symbol></entry>
 </row>
 
 <row>
  <entry><literal>58P02</literal></entry>
- <entry><symbol>duplicate_file</symbol></entry>
+ <entry><symbol>重复的文件</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class F0 &mdash; Configuration File Error</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class F0 &mdash; 配置文件错误</></entry>
 </row>
 
 <row>
  <entry><literal>F0000</literal></entry>
- <entry><symbol>config_file_error</symbol></entry>
+ <entry><symbol>配置文件错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>F0001</literal></entry>
- <entry><symbol>lock_file_exists</symbol></entry>
+ <entry><symbol>锁文件存在</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class HV &mdash; Foreign Data Wrapper Error (SQL/MED)</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class HV &mdash; 外部数据封装器错误（SQL/MED）</></entry>
 </row>
 
 <row>
  <entry><literal>HV000</literal></entry>
- <entry><symbol>fdw_error</symbol></entry>
+ <entry><symbol>FDW 错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV005</literal></entry>
- <entry><symbol>fdw_column_name_not_found</symbol></entry>
+ <entry><symbol>FDW 未找到列名</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV002</literal></entry>
- <entry><symbol>fdw_dynamic_parameter_value_needed</symbol></entry>
+ <entry><symbol>FDW 需要动态参数值</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV010</literal></entry>
- <entry><symbol>fdw_function_sequence_error</symbol></entry>
+ <entry><symbol>FDW 函数序列错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV021</literal></entry>
- <entry><symbol>fdw_inconsistent_descriptor_information</symbol></entry>
+ <entry><symbol>FDW 描述符信息不一致</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV024</literal></entry>
- <entry><symbol>fdw_invalid_attribute_value</symbol></entry>
+ <entry><symbol>FDW 属性值无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV007</literal></entry>
- <entry><symbol>fdw_invalid_column_name</symbol></entry>
+ <entry><symbol>FDW 列名无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV008</literal></entry>
- <entry><symbol>fdw_invalid_column_number</symbol></entry>
+ <entry><symbol>FDW 列号无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV004</literal></entry>
- <entry><symbol>fdw_invalid_data_type</symbol></entry>
+ <entry><symbol>FDW 数据类型无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV006</literal></entry>
- <entry><symbol>fdw_invalid_data_type_descriptors</symbol></entry>
+ <entry><symbol>FDW 数据类型描述符无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV091</literal></entry>
- <entry><symbol>fdw_invalid_descriptor_field_identifier</symbol></entry>
+ <entry><symbol>FDW 描述符字段标识符无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00B</literal></entry>
- <entry><symbol>fdw_invalid_handle</symbol></entry>
+ <entry><symbol>FDW 句柄无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00C</literal></entry>
- <entry><symbol>fdw_invalid_option_index</symbol></entry>
+ <entry><symbol>FDW 选项索引无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00D</literal></entry>
- <entry><symbol>fdw_invalid_option_name</symbol></entry>
+ <entry><symbol>FDW 选项名称无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV090</literal></entry>
- <entry><symbol>fdw_invalid_string_length_or_buffer_length</symbol></entry>
+ <entry><symbol>FDW 字符串长度或缓冲区长度无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00A</literal></entry>
- <entry><symbol>fdw_invalid_string_format</symbol></entry>
+ <entry><symbol>FDW 字符串格式无效</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV009</literal></entry>
- <entry><symbol>fdw_invalid_use_of_null_pointer</symbol></entry>
+ <entry><symbol>FDW 空指针无效使用</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV014</literal></entry>
- <entry><symbol>fdw_too_many_handles</symbol></entry>
+ <entry><symbol>FDW 句柄过多</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV001</literal></entry>
- <entry><symbol>fdw_out_of_memory</symbol></entry>
+ <entry><symbol>FDW 内存不足</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00P</literal></entry>
- <entry><symbol>fdw_no_schemas</symbol></entry>
+ <entry><symbol>FDW 无架构</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00J</literal></entry>
- <entry><symbol>fdw_option_name_not_found</symbol></entry>
+ <entry><symbol>FDW 未找到选项名称</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00K</literal></entry>
- <entry><symbol>fdw_reply_handle</symbol></entry>
+ <entry><symbol>FDW 回复句柄</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00Q</literal></entry>
- <entry><symbol>fdw_schema_not_found</symbol></entry>
+ <entry><symbol>FDW 未找到架构</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00R</literal></entry>
- <entry><symbol>fdw_table_not_found</symbol></entry>
+ <entry><symbol>FDW 未找到表</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00L</literal></entry>
- <entry><symbol>fdw_unable_to_create_execution</symbol></entry>
+ <entry><symbol>FDW 无法创建执行</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00M</literal></entry>
- <entry><symbol>fdw_unable_to_create_reply</symbol></entry>
+ <entry><symbol>FDW 无法创建回复</symbol></entry>
 </row>
 
 <row>
  <entry><literal>HV00N</literal></entry>
- <entry><symbol>fdw_unable_to_establish_connection</symbol></entry>
+ <entry><symbol>FDW 无法建立连接</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class P0 &mdash; PL/pgSQL Error</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class P0 &mdash; PL/pgSQL 错误</></entry>
 </row>
 
 <row>
  <entry><literal>P0000</literal></entry>
- <entry><symbol>plpgsql_error</symbol></entry>
+ <entry><symbol>PL/pgSQL 错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>P0001</literal></entry>
- <entry><symbol>raise_exception</symbol></entry>
+ <entry><symbol>抛出异常</symbol></entry>
 </row>
 
 <row>
  <entry><literal>P0002</literal></entry>
- <entry><symbol>no_data_found</symbol></entry>
+ <entry><symbol>未找到数据</symbol></entry>
 </row>
 
 <row>
  <entry><literal>P0003</literal></entry>
- <entry><symbol>too_many_rows</symbol></entry>
+ <entry><symbol>行数过多</symbol></entry>
 </row>
 
 
 <row>
- <entry spanname="span12"><emphasis role="bold">Class XX &mdash; Internal Error</></entry>
+ <entry spanname="span12"><emphasis role="bold">Class XX &mdash; 内部错误</></entry>
 </row>
 
 <row>
  <entry><literal>XX000</literal></entry>
- <entry><symbol>internal_error</symbol></entry>
+ <entry><symbol>内部错误</symbol></entry>
 </row>
 
 <row>
  <entry><literal>XX001</literal></entry>
- <entry><symbol>data_corrupted</symbol></entry>
+ <entry><symbol>数据损坏</symbol></entry>
 </row>
 
 <row>
  <entry><literal>XX002</literal></entry>
- <entry><symbol>index_corrupted</symbol></entry>
+ <entry><symbol>索引损坏</symbol></entry>
 </row>

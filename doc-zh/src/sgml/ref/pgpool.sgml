@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pgpool</refname>
   <refpurpose>
-   <productname>Pgpool-II</productname> main server</refpurpose>
+   <productname>Pgpool-II</productname> 主服务器</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -40,24 +40,24 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R8-PGPOOL-8">
-  <title>Description</title>
+  <title>描述</title>
   <para>
-   the <productname>Pgpool-II</productname> main server
+   <productname>Pgpool-II</productname> 主服务器
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Usages</title>
+  <title>用法</title>
   <para>
-   <command>pgpool</command> runs in 3 modes: start, stop and reload.
-   If none of stop or reload is given, it is assumed that "start" is specified.
+   <command>pgpool</command> 以三种模式运行：启动、停止和重载。
+   如果未指定 stop 或 reload，则默认为启动模式。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Common options</title>
+  <title>通用选项</title>
   <para>
-   These are common options for 3 modes.
+   以下是三种模式通用的选项。
 
    <variablelist>
 
@@ -66,8 +66,8 @@ Pgpool-II documentation
      <term><option>--hba-file=<replaceable class="parameter">hba_config_file</replaceable></option></term>
      <listitem>
       <para>
-       Set the path to the <filename>pool_hba.conf</filename> configuration file.
-       Mandatory if the file is placed other than the standard location.
+       设置 <filename>pool_hba.conf</filename> 配置文件的路径。
+       如果文件未放置在标准位置，则必须指定此选项。
       </para>
      </listitem>
     </varlistentry>
@@ -77,8 +77,8 @@ Pgpool-II documentation
      <term><option>--config-file=<replaceable class="parameter">config_file</replaceable></option></term>
      <listitem>
       <para>
-       Set the path to the <filename>pgpool.conf</filename> configuration file.
-       Mandatory if the file is placed other than the standard location.
+       设置 <filename>pgpool.conf</filename> 配置文件的路径。
+       如果文件未放置在标准位置，则必须指定此选项。
       </para>
      </listitem>
     </varlistentry>
@@ -88,8 +88,8 @@ Pgpool-II documentation
      <term><option>--pcp-file=<replaceable class="parameter">pcp_config_file</replaceable></option></term>
      <listitem>
       <para>
-       Set the path to the <filename>pcp.conf</filename> configuration file.
-       Mandatory if the file is placed other than the standard location.
+       设置 <filename>pcp.conf</filename> 配置文件的路径。
+       如果文件未放置在标准位置，则必须指定此选项。
       </para>
      </listitem>
     </varlistentry>
@@ -99,8 +99,8 @@ Pgpool-II documentation
      <term><option>--key-file=<replaceable class="parameter">key_file</replaceable></option></term>
      <listitem>
       <para>
-       Set the path to the <filename>.pgpoolkey</filename> file.
-       Mandatory if you use AES256 encrypted password and the file is placed other than the standard location and used.
+       设置 <filename>.pgpoolkey</filename> 文件的路径。
+       如果使用 AES256 加密密码且文件未放置在标准位置，则必须指定此选项。
       </para>
      </listitem>
     </varlistentry>
@@ -110,7 +110,7 @@ Pgpool-II documentation
      <term><option>--help</option></term>
      <listitem>
       <para>
-       Print help.
+       打印帮助信息。
       </para>
      </listitem>
     </varlistentry>
@@ -122,9 +122,9 @@ Pgpool-II documentation
 
  <refsect1>
 
-  <title>Starting <productname>Pgpool-II</productname> main server</title>
+  <title>启动 <productname>Pgpool-II</productname> 主服务器</title>
   <para>
-   Here are options for the start mode.
+   以下是启动模式的选项。
 
    <variablelist>
 
@@ -133,8 +133,8 @@ Pgpool-II documentation
      <term><option>--debug</option></term>
      <listitem>
       <para>
-       Run <productname>Pgpool-II</productname> in debug mode.
-       Lots of debug messages are produced.
+       以调试模式运行 <productname>Pgpool-II</productname>。
+       会产生大量调试信息。
       </para>
      </listitem>
     </varlistentry>
@@ -144,7 +144,7 @@ Pgpool-II documentation
      <term><option>--dont-detach</option></term>
      <listitem>
       <para>
-       Don't run in daemon mode, does not detach control ttys.
+       不以后台守护进程模式运行，不脱离控制终端。
       </para>
      </listitem>
     </varlistentry>
@@ -154,7 +154,7 @@ Pgpool-II documentation
      <term><option>--debug-assertions</option></term>
      <listitem>
       <para>
-       Turns on various assertion checks, This is a debugging aid.
+       启用各种断言检查，用于调试辅助功能。
       </para>
      </listitem>
     </varlistentry>
@@ -164,14 +164,12 @@ Pgpool-II documentation
      <term><option>--clear-oidmaps</option></term>
      <listitem>
       <para>
-       Clear query cache oidmaps when <xref linkend="guc-memqcache-method"> is
-	<varname>memcached</varname>.
+       当 <xref linkend="guc-memqcache-method"> 设置为
+	<varname>memcached</varname> 时，清除查询缓存的 oidmap。
       </para>
       <para>
-       If memqcache_method
-       is <varname>shmem</varname>, <productname>Pgpool-II</productname>
-       always discards oidmaps at the start-up time. So this option
-       is not necessary.
+       如果 memqcache_method 为 <varname>shmem</varname>，<productname>Pgpool-II</productname>
+       在启动时总会丢弃 oidmap，因此此选项在此情况下不需要。
       </para>
      </listitem>
     </varlistentry>
@@ -181,16 +179,12 @@ Pgpool-II documentation
      <term><option>--discard-status</option></term>
      <listitem>
       <para>
-       Discard <filename>pgpool_status</filename> file and do not
-       restore previous status.
+       丢弃 <filename>pgpool_status</filename> 文件，不恢复上次状态。
       </para>
       <caution>
        <para>
-       This option is testing purpose only for developers and you
-       should not use it for other purposes.
-       If <filename>pgpool_status</filename> is accidentally
-       removed, <productname>Pgpool-II</productname> may go into
-       split-brain (there are multiple primary servers exist).
+       此选项仅供开发者测试使用，不应在其他场景中使用。
+       如果 <filename>pgpool_status</filename> 被意外删除，<productname>Pgpool-II</productname> 可能进入脑裂状态（存在多个主服务器）。
        </para>
       </caution>
      </listitem>
@@ -201,9 +195,9 @@ Pgpool-II documentation
 
  <refsect1>
 
-  <title>Stopping <productname>Pgpool-II</productname> main server</title>
+  <title>停止 <productname>Pgpool-II</productname> 主服务器</title>
   <para>
-   Here are options for the stop mode.
+   以下是停止模式的选项。
 
    <variablelist>
 
@@ -212,19 +206,13 @@ Pgpool-II documentation
      <term><option>--mode=<replaceable class="parameter">shutdown_mode</replaceable></option></term>
      <listitem>
       <para>
-       Stop <productname>Pgpool-II</productname>.
-       <varname>shutdown_mode</varname> is
-       either <literal>smart</literal>, <literal>fast</literal>
-       or <literal>immediate</literal>.  If <literal>smart</literal>
-       is specified, <productname>Pgpool-II</productname> will wait
-       for all clients are disconnected. If <literal>fast</literal>
-       or <literal>immediate</literal> are
-       specified, <productname>Pgpool-II</productname> immediately
-       stops itself without waiting for all clients are
-       disconnected. There's no difference
-       between <literal>fast</literal>
-       and <literal>immediate</literal> in the current
-       implementation.
+       停止 <productname>Pgpool-II</productname>。
+       <varname>shutdown_mode</varname> 可以是 <literal>smart</literal>、<literal>fast</literal>
+       或 <literal>immediate</literal>。如果指定 <literal>smart</literal>，
+       <productname>Pgpool-II</productname> 会等待所有客户端断开连接后再停止。
+       如果指定 <literal>fast</literal> 或 <literal>immediate</literal>，
+       <productname>Pgpool-II</productname> 将立即停止，不等待客户端断开连接。
+       在当前实现中，<literal>fast</literal> 和 <literal>immediate</literal> 没有区别。
       </para>
      </listitem>
     </varlistentry>
@@ -234,11 +222,10 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Reloading <productname>Pgpool-II</productname> configuration files</title>
+  <title>重新加载 <productname>Pgpool-II</productname> 配置文件</title>
   <para>
-   Reload configuration file
-   of <productname>Pgpool-II</productname>. No specific options
-   exist for reload mode. Common options are applicable.
+   重新加载 <productname>Pgpool-II</productname> 的配置文件。
+   重载模式无特定选项，通用选项同样适用。
   </para>
  </refsect1>
 

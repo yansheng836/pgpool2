@@ -1,73 +1,72 @@
 <!-- doc/src/sgml/example-AWS.sgml -->
 
 <sect1 id="example-AWS">
- <title>AWS Configuration Example</title>
+ <title>AWS 配置示例</title>
 
  <para>
-  This tutorial shows an example of setting a virtual IP
-  when using watchdog on <ulink url="https://aws.amazon.com/">AWS</ulink>.
+  本教程演示在使用 <ulink url="https://aws.amazon.com/">AWS</ulink>上的
  </para>
  <para>
-  There are several methods to set up a virtual IP on AWS. This example describes the following methods:
+  在 AWS 上设置虚拟 IP 有多种方法。本示例介绍以下方法：
  </para>
  <itemizedlist>
   <listitem>
    <para>
-    <xref linkend="example-AWS-eip"> Assigning Elastic IP
+    <xref linkend="example-AWS-eip"> 分配弹性 IP
    </para>
   </listitem>
 
   <listitem>
    <para>
-    <xref linkend="example-AWS-rtb"> Updating route table
+    <xref linkend="example-AWS-rtb"> 更新路由表 更新路由表
    </para>
   </listitem>
  </itemizedlist>
 
  <sect2 id="example-AWS-eip">
-  <title>Assigning Elastic IP</title>
+  <title>分配弹性 IP</title>
   <para>
-   This section explains how to use an Elastic IP address as a virtual IP and associate it with the leader Pgpool-II (watchdog) instance.
+   本节说明如何将弹性 IP 地址用作虚拟 IP，并将其关联到主 Pgpool-II（watchdog）实例。
   </para>
 
   <sect3 id="example-AWS-eip-setup">
-   <title>AWS Setup</title>
+   <title>AWS 设置</title>
    <para>
-    When using this method, it is assumed that the <productname>Pgpool-II</productname>
-    EC2 instance is placed in a public subnet and clients connect to
-    <productname>Pgpool-II</productname> via Internet.
-    <EMPHASIS>This method supports multiple availability zones.</EMPHASIS>
+    使用此方法时，假设 <productname>Pgpool-II</productname>
+    EC2 实例位于公网子网中，客户端通过互联网连接到
+    <productname>Pgpool-II</productname>。
+    <EMPHASIS>此方法支持多可用区。</EMPHASIS>
    </para>
    <para>
-    In this example, we will use three nodes <productname>Pgpool-II</productname>
-    (watchdog) cluster. So we will create three EC2 instances and one Elastic IP address.
+    在本示例中，我们将使用三个节点的 <productname>Pgpool-II</productname>
+    （watchdog）集群。因此我们将创建三个 EC2 实例和一个弹性 IP 地址。
    </para>
    <para>
-    Complete the following steps to setup AWS:
+    完成以下步骤以设置 AWS：
    </para>
 
    <itemizedlist>
 
     <listitem>
      <para>
-      Launch three EC2 instances.
+      启动三个 EC2 实例。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Configure the security group for the <productname>Pgpool-II</productname> instances.
+      为 <productname>Pgpool-II</productname> 实例配置安全组。
      </para>
      <itemizedlist>
       <listitem>
        <para>
-        Allow inbound traffic on ports used by <productname>Pgpool-II</productname> and watchdog.
+        允许 <productname>Pgpool-II</productname> 和 watchdog 所用端口的入站流量。
        </para>
       </listitem>
       <listitem>
        <para>
-        Since <productname>Pgpool-II</productname> (watchdog) will ping the virtual IP to check connectivity,
-        allow inbound ICMP traffic from the Elastic IP (Source).
+        由于 <productname>Pgpool-II</productname>（watchdog）会向虚拟 IP 发送 ICMP 探测以检查连通性，
+        因此需允许来自弹性 IP（源）的入站 ICMP 流量。
        </para>
       </listitem>
      </itemizedlist>
@@ -75,48 +74,46 @@
 
     <listitem>
      <para>
-      Install <productname>Pgpool-II</productname> on each instance.
+      在每个实例上安装 <productname>Pgpool-II</productname>。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <ulink url="https://docs.aws.amazon.com/cli/index.html">AWS CLI</ulink> is
-      a tool to manage your AWS services on EC2 instances.
-      Install <ulink url="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html">AWS CLI</ulink> on each <productname>Pgpool-II</productname> instance.
+      <ulink url="https://docs.aws.amazon.com/cli/index.html">AWS CLI</ulink> 是
+      用于管理 EC2 实例上 AWS 服务的工具。
+      在每个 <productname>Pgpool-II</productname> 实例上安装 <ulink url="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html">AWS CLI</ulink>。
      </para>
 
      <para>
-      Furthermore, <EMPHASIS>run aws configure as Pgpool-II startup user</EMPHASIS>
-      to create the config and credentials files so that <productname>Pgpool-II</productname>
-      startup user can run AWS CLI.
-      If <productname>Pgpool-II</productname> is installed using RPM packages,
-      <productname>Pgpool-II</productname> is running as <literal>postgres</literal>
-      user by default.
+      此外，<EMPHASIS>请以 Pgpool-II 启动用户的身份运行 aws configure</EMPHASIS>
+      以创建配置文件和凭证文件，从而使 <productname>Pgpool-II</productname>
+      启动用户能够运行 AWS CLI。
+      如果通过 RPM 包安装 <productname>Pgpool-II</productname>，
+      <productname>Pgpool-II</productname> 默认以 <literal>postgres</literal>
+      用户身份运行。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Allocate an Elastic IP address.
-      In this example, we will use "35.163.178.3".
+      分配一个弹性 IP 地址。
+      本示例中使用 "35.163.178.3"。
      </para>
     </listitem>
    </itemizedlist>
   </sect3>
 
   <sect3 id="example-AWS-eip-pgpool-config">
-   <title><productname>Pgpool-II</productname> configurations</title>
+   <title><productname>Pgpool-II</productname> 配置</title>
    <para>
-    This section explains how to configure <productname>Pgpool-II</productname>.
-    Mostly the <productname>Pgpool-II</productname> configurations for this
-    example will be same as in the <xref linkend="example-cluster">, except
-    using <xref linkend="guc-if-up-cmd">/<xref linkend="guc-if-down-cmd">
-    to assign/remove an Elastic IP address to/from the leader
-    <productname>Pgpool-II</productname> instance.
+    本节说明如何配置 <productname>Pgpool-II</productname>。
+    本示例中的 <productname>Pgpool-II</productname> 配置与 <xref linkend="example-cluster"> 基本相同，
+    不同之处在于使用 <xref linkend="guc-if-up-cmd">/<xref linkend="guc-if-down-cmd">
+    来为/从主 <productname>Pgpool-II</productname> 实例分配/移除弹性 IP 地址。
    </para>
    <para>
-    Specify the Elastic IP address to <xref linkend="guc-delegate-ip">.
+    将弹性 IP 地址指定给 <xref linkend="guc-delegate-ip">。
    </para>
    <programlisting>
 use_watchdog = on
@@ -124,12 +121,12 @@ delegate_ip = '35.163.178.3'
    </programlisting>
 
    <para>
-    Specify the script used to assign/remove Elastic IP address to
-    <xref linkend="guc-if-up-cmd"> and <xref linkend="guc-if-down-cmd">.
-    <xref linkend="guc-if-up-cmd"> is the script executed by the watchdog to
-    assign the Elastic IP to the instance when watchdog becomes the leader node.
-    <xref linkend="guc-if-down-cmd"> is the script executed by watchdog to
-    remove the Elastic IP from the instance when watchdog resign from the leader node.
+    将要用于分配/移除弹性 IP 地址的脚本指定给
+    <xref linkend="guc-if-up-cmd"> 和 <xref linkend="guc-if-down-cmd">。
+    <xref linkend="guc-if-up-cmd"> 是由 watchdog 在主节点成为主节点时
+    执行以将弹性 IP 分配给该实例的脚本。
+    <xref linkend="guc-if-down-cmd"> 是由 watchdog 在 watchdog 不再作为主节点时
+    执行以从该实例移除弹性 IP 的脚本。
    </para>
 
    <programlisting>
@@ -140,19 +137,19 @@ if_down_cmd = '&lt;path to script&gt; down $_IP_$ &lt;path to awscli&gt;'
    <itemizedlist>
     <listitem>
      <para>
-      &lt;path to script&gt;: Specify the path to the script used to assign or remove Elastic IP address.
+      &lt;path to script&gt;：指定用于分配或移除弹性 IP 地址的脚本路径。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      &lt;path to awscli&gt;: Specify the path to AWS CLI command.
+      &lt;path to awscli&gt;：指定 AWS CLI 命令的路径。
      </para>
     </listitem>
    </itemizedlist>
 
    <para>
-    In this example, we use the following settings. Replace them with your own settings.
+    在本示例中，我们使用以下设置。请替换为您自己的设置。
    </para>
 
    <programlisting>
@@ -161,7 +158,7 @@ if_down_cmd = '/etc/pgpool-II/aws_eip_if_cmd.sh down $_IP_$ /usr/local/bin/aws'
    </programlisting>
 
    <para>
-    Because <command>arping</command> isn't required on AWS, set it to 'true' to always return a successful exit status.
+    因为在 AWS 上不需要 <command>arping</command>，将其设置为 'true' 以使始终返回成功退出状态。
    </para>
    <programlisting>
 arping_cmd = 'true'
@@ -170,12 +167,12 @@ arping_cmd = 'true'
   </sect3>
 
   <sect3 id="example-AWS-eip-script">
-   <title>Elastic IP assigning/removing script</title>
+   <title>弹性 IP 分配/移除脚本</title>
    <para>
-    Create the script executed by if_up_cmd/if_down_cmd on each Pgpool-II instance.
+    在每个 Pgpool-II 实例上创建由 if_up_cmd/if_down_cmd 执行的脚本。
    </para>
    <para>
-    In this example, we use the sample script <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/aws_eip_if_cmd.sh.sample;hb=refs/heads/V4_4_STABLE">aws_eip_if_cmd.sh</ulink>. Modify it if necessary.
+    在本示例中，我们使用示例脚本 <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/aws_eip_if_cmd.sh.sample;hb=refs/heads/V4_4_STABLE">aws_eip_if_cmd.sh</ulink>. 如有需要请修改。
    </para>
    <programlisting>
 (run the following command on each Pgpool-II instance)
@@ -184,21 +181,19 @@ arping_cmd = 'true'
   </sect3>
 
   <sect3 id="example-AWS-eip-try">
-   <title>Try it out</title>
+   <title>测试</title>
    <para>
-    Start <productname>Pgpool-II</productname> on each <productname>Pgpool-II</productname>
-    instance.
-    Try to connect to <productname>Pgpool-II</productname> using the Elastic IP address.
+    在每个 <productname>Pgpool-II</productname> 实例上启动 <productname>Pgpool-II</productname>。
+    尝试使用弹性 IP 地址连接到 <productname>Pgpool-II</productname>。
    </para>
    <programlisting>
 [user@someserver]$ psql -h 35.163.178.3 -p 9999 -U postgres -c "show pool_nodes"
    </programlisting>
    <para>
-    Stop the leader <productname>Pgpool-II</productname>.
-    Then the Elastic IP address is reassigned to the new leader <productname>Pgpool-II</productname>.
-    Verify that you can connect to <productname>Pgpool-II</productname>
-    using Elastic IP address even if the leader <productname>Pgpool-II</productname>
-    has switched over.
+    停止主 <productname>Pgpool-II</productname>。
+    然后弹性 IP 地址将重新分配给新的主 <productname>Pgpool-II</productname>。
+    验证即使主 <productname>Pgpool-II</productname> 已切换，
+    您仍可以使用弹性 IP 地址连接到 <productname>Pgpool-II</productname>。
    </para>
    <programlisting>
 [user@someserver]$ psql -h 35.163.178.3 -p 9999 -U postgres -c "show pool_nodes"
@@ -207,125 +202,120 @@ arping_cmd = 'true'
  </sect2>
 
  <sect2 id="example-AWS-rtb">
-  <title>Updating Route Table</title>
+  <title>更新路由表</title>
   <para>
-   This section describes how to control routing for the leader Pgpool-II (watchdog)
-   by updating the route table entry.
+   本节说明如何通过更新路由表条目来控制主 Pgpool-II（watchdog）的路由。
   </para>
   <para>
-   In this method, a private IP address is used as a virtual IP and assigned to the
-   leader Pgpool-II instance. If a failover occurs, reassign the virtual IP,
-   and route traffic with a destination address of the virtual IP to the new leader
-   Pgpool-II instance by updating route tables.
+   在此方法中，使用私有 IP 地址作为虚拟 IP 并分配给
+   主 Pgpool-II 实例。如果发生故障切换，重新分配虚拟 IP，
+   并通过更新路由表，将使目标地址为虚拟 IP 的流量路由到新主
+   Pgpool-II 实例。
   </para>
 
   <sect3 id="example-AWS-rtb-setup">
-   <title>AWS Setup</title>
+   <title>AWS 设置</title>
    <para>
-    When using this method, it is assumed that the <productname>Pgpool-II</productname>
-    EC2 instance is placed in a private subnet and the client application connects to
-    <productname>Pgpool-II</productname> within the same VPC.
-    <EMPHASIS>This method supports multiple Availability Zones.</EMPHASIS>
+    使用此方法时，假设 <productname>Pgpool-II</productname>
+    EC2 实例位于私网子网中，且客户端应用在
+    同一 VPC 内连接到 <productname>Pgpool-II</productname>。
+    <EMPHASIS>此方法支持多可用区。</EMPHASIS>
    </para>
    <para>
-    In this example, we will use three nodes <productname>
-    Pgpool-II</productname> (watchdog) cluster. So we will create three
-    EC2 instances across multiple Availability Zones.
+    在本示例中，我们将使用三个节点的 <productname>
+    Pgpool-II</productname>（watchdog）集群。因此我们将在多个可用区中创建三个
+    EC2 实例。
    </para>
    <para>
-    Complete the following steps to setup AWS:
+    完成以下步骤以设置 AWS：
    </para>
 
    <itemizedlist>
 
     <listitem>
      <para>
-      Create a VPC with one public subnet and three private subnets,
-      and each private subnet is in a different Availability Zone.
-      For detailed information, please refer to the
-      <ulink url="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html">documentation</ulink>.
+      创建一个包含一个公网子网和三个私网子网的 VPC，
+      每个私网子网位于不同的可用区中。
+      详细信息请参考
+      <ulink url="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html">文档</ulink>。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      create two route tables associated with the public subnet and the private subnet
-      respectively. Please refer to this <ulink url="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html#VPC_Scenario2_Routing">documentation</ulink>
-      for detailed information.
+      创建两个路由表，分别与公网子网和私网子网关联。
+      详细信息请参考此 <ulink url="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html#VPC_Scenario2_Routing">文档</ulink>。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Launch one application EC2 instance in the public subnet and
-      three Pgpool-II EC2 instances in different private subnets.
+      在公网子网中启动一个应用程序 EC2 实例，
+      并在不同的私网子网中启动三个 Pgpool-II EC2 实例。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Configure a security group allowing traffic from the VPC CIDR block range
-      on the ports used by <productname>Pgpool-II</productname> and watchdog.
+      配置安全组，允许来自 VPC CIDR 地址段的流量通过
+      <productname>Pgpool-II</productname> 和 watchdog 所用端口。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Install <productname>Pgpool-II</productname> on each Pgpool-II EC2 instance.
+      在每个 Pgpool-II EC2 实例上安装 <productname>Pgpool-II</productname>。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      <ulink url="https://docs.aws.amazon.com/cli/index.html">AWS CLI</ulink> is
-      a tool to manage your AWS services on EC2 instances.
-      Install <ulink url="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html">AWS CLI</ulink> on each <productname>Pgpool-II</productname> instance.
+      <ulink url="https://docs.aws.amazon.com/cli/index.html">AWS CLI</ulink> 是
+      用于管理 EC2 实例上 AWS 服务的工具。
+      在每个 <productname>Pgpool-II</productname> 实例上安装 <ulink url="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html">AWS CLI</ulink>。
      </para>
 
      <para>
-      Furthermore, <EMPHASIS>run aws configure as Pgpool-II startup user</EMPHASIS>
-      to create the config and credentials files so that <productname>Pgpool-II</productname>
-      startup user can run AWS CLI.
-      If <productname>Pgpool-II</productname> is installed using RPM packages,
-      <productname>Pgpool-II</productname> is running as <literal>postgres</literal>
-      user by default.
-     </para>
-    </listitem>
-
-    <listitem>
-     <para>
-      Assigning or removing a virtual IP address requires root privileges.
-      If you start <productname>Pgpool-II</productname> as a non-root user,
-      configure the sudoers file and allow this user to run sudo without being
-      asked for the password.
-      If <productname>Pgpool-II</productname> is installed using RPM packages,
-      the settings for <literal>postgres</literal> user are automatically added to sudoers.
+      此外，<EMPHASIS>请以 Pgpool-II 启动用户的身份运行 aws configure</EMPHASIS>
+      以创建配置文件和凭证文件，从而使 <productname>Pgpool-II</productname>
+      启动用户能够运行 AWS CLI。
+      如果通过 RPM 包安装 <productname>Pgpool-II</productname>，
+      <productname>Pgpool-II</productname> 默认以 <literal>postgres</literal>
+      用户身份运行。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Choose an IPv4 address to be used as the virtual IP.
-      Because the secondary IP address cannot be reassigned across multiple subnets,
-      you need to choose a private IP address which should not belong to
-      the IP addresses range for VPC.
-      In this example, we use "20.0.0.50".
+      分配或移除虚拟 IP 地址需要 root 权限。
+      如果以非 root 用户身份启动 <productname>Pgpool-II</productname>，
+      请配置 sudoers 文件并允许该用户无需输入密码即可运行 sudo。
+      如果通过 RPM 包安装 <productname>Pgpool-II</productname>，
+      <literal>postgres</literal> 用户的设置将自动添加到 sudoers 中。
+     </para>
+    </listitem>
+
+    <listitem>
+     <para>
+      选择要用作虚拟 IP 的 IPv4 地址。
+      由于辅助 IP 地址无法在多个子网之间重新分配，
+      因此需要选择一个不属于 VPC IP 地址范围的私有 IP 地址。
+      在本示例中，我们使用 "20.0.0.50"。
      </para>
     </listitem>
    </itemizedlist>
   </sect3>
 
   <sect3 id="example-AWS-rtb-pgpool-config">
-   <title><productname>Pgpool-II</productname> configurations</title>
+   <title><productname>Pgpool-II</productname> 配置</title>
    <para>
-    This section explains how to configure <productname>Pgpool-II</productname>.
-    Mostly the <productname>Pgpool-II</productname> configurations for this
-    example will be same as in the <xref linkend="example-cluster">, except
-    using <xref linkend="guc-if-up-cmd"> and <xref linkend="guc-if-down-cmd">
-    to assign the virtual IP and update route tables.
+    本节说明如何配置 <productname>Pgpool-II</productname>。
+    本示例中的 <productname>Pgpool-II</productname> 配置与 <xref linkend="example-cluster"> 基本相同，
+    不同之处在于使用 <xref linkend="guc-if-up-cmd"> 和 <xref linkend="guc-if-down-cmd">
+    来分配虚拟 IP 并更新路由表。
    </para>
    <para>
-    Specify the virtual IP to <xref linkend="guc-delegate-ip">.
+    将虚拟 IP 指定给 <xref linkend="guc-delegate-ip">。
    </para>
 
    <programlisting>
@@ -334,12 +324,12 @@ delegate_ip = '20.0.0.50'
    </programlisting>
 
    <para>
-    Specify the script used to update route table to
-    <xref linkend="guc-if-up-cmd"> and <xref linkend="guc-if-down-cmd">.
-    <xref linkend="guc-if-up-cmd"> is the script executed by watchdog to
-    assign the virtual IP and update route tables when watchdog becomes the leader node.
-    <xref linkend="guc-if-down-cmd"> is the script executed by watchdog to
-    remove the virtual IP and update route tables when watchdog resign from the leader node.
+    将要用于更新路由表的脚本指定给
+    <xref linkend="guc-if-up-cmd"> 和 <xref linkend="guc-if-down-cmd">。
+    <xref linkend="guc-if-up-cmd"> 是由 watchdog 在主节点成为主节点时
+    执行以分配虚拟 IP 并更新路由表的脚本。
+    <xref linkend="guc-if-down-cmd"> 是由 watchdog 在 watchdog 不再作为主节点时
+    执行以移除虚拟 IP 并更新路由表的脚本。
    </para>
    <programlisting>
 if_up_cmd = '&lt;path to script&gt; up $_IP_$ &lt;interface&gt; &lt;route table ID&gt; &lt;path to awscli&gt;'
@@ -350,37 +340,36 @@ if_down_cmd = '&lt;path to script&gt; down $_IP_$ &lt;interface&gt; &lt;route ta
 
     <listitem>
      <para>
-      &lt;path to script&gt;: Specify the path to the script used to assign the virtual IP and update route tables.
+      &lt;path to script&gt;：指定用于分配虚拟 IP 并更新路由表的脚本路径。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      &lt;interface&gt;: Specify the network interface to assign the virtual IP.
+      &lt;interface&gt;：指定用于分配虚拟 IP 的网络接口。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      &lt;route table ID&gt;: Specify the route table IDs (e.g. client application or
-      <productname>Pgpool-II</productname> instance) to be updated.
-      You can specify multiple comma separated route table IDs.
+      &lt;route table ID&gt;：指定要更新的路由表 ID（例如客户端应用程序或
+      <productname>Pgpool-II</productname> 实例）。
+      可以指定多个以逗号分隔的路由表 ID。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      &lt;path to awscli&gt;: Specify the path to AWS CLI command.
+      &lt;path to awscli&gt;：指定 AWS CLI 命令的路径。
      </para>
     </listitem>
 
    </itemizedlist>
 
    <para>
-    In this example, we use the following settings. Replace them with your own settings.
-    Specify the route table IDs associated with the public subnet where the application
-    EC2 instance is located and the private subnet where the <productname>Pgpool-II</productname>
-    EC2 instances are located.
+    在本示例中，我们使用以下设置。请替换为您自己的设置。
+    指定与应用程序所在公网子网以及 <productname>Pgpool-II</productname>
+    EC2 实例所在的私网子网相关联的路由表 ID。
    </para>
 
    <programlisting>
@@ -389,7 +378,7 @@ if_down_cmd = '/etc/pgpool-II/aws_rtb_if_cmd.sh down $_IP_$ eth0 rtb-012345abcd,
    </programlisting>
 
    <para>
-    Because <command>arping</command> isn't required on AWS, set it to 'true' to always return a successful exit status.
+    因为在 AWS 上不需要 <command>arping</command>，将其设置为 'true' 以使始终返回成功退出状态。
    </para>
    <programlisting>
 arping_cmd = 'true'
@@ -397,13 +386,12 @@ arping_cmd = 'true'
   </sect3>
 
   <sect3 id="example-AWS-rtb-script">
-   <title>Route table updating script</title>
+   <title>路由表更新脚本</title>
    <para>
-    Create the script executed by <varname>if_up_cmd/if_down_cmd</varname> on each
-    <productname>Pgpool-II</productname> instance.
+    在每个 <productname>Pgpool-II</productname> 实例上创建由 <varname>if_up_cmd/if_down_cmd</varname> 执行的脚本。
    </para>
    <para>
-    In this example, we use the sample script <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/aws_rtb_if_cmd.sh.sample;hb=refs/heads/V4_4_STABLE">aws_rtb_if_cmd.sh</ulink>. Modify it if necessary.
+    在本示例中，我们使用示例脚本 <ulink url="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/aws_rtb_if_cmd.sh.sample;hb=refs/heads/V4_4_STABLE">aws_rtb_if_cmd.sh</ulink>。如有需要请修改。
    </para>
    <programlisting>
 (run the following command on each Pgpool-II instance)
@@ -412,20 +400,18 @@ arping_cmd = 'true'
   </sect3>
 
   <sect3 id="example-AWS-rtb-eni">
-   <title>Disabling source/destination check</title>
+   <title>禁用源/目的检查</title>
    <para>
-    AWS EC2 instance checks the source or the destination of any received
-    traffics by default. You <EMPHASIS>must disable source/destination check</EMPHASIS> on each
-    <productname>Pgpool-II</productname> instance to route the traffic for virtual IP
-    to the target instance.
+    AWS EC2 实例默认会检查所有接收到的流量的源地址或目的地址。
+    您<EMPHASIS>必须在每个 <productname>Pgpool-II</productname> 实例上禁用源/目的检查</EMPHASIS>，
+    才能将虚拟 IP 的流量路由到目标实例。
    </para>
    <para>
-    Disable "source/destination check" in the network interface settings of all
-    <productname>Pgpool-II</productname> instances.
-    It can be configured through the AWS Management Console
-    or using AWS CLI. When using the AWS CLI, execute the following command.
-    Set <varname>LOCAL_INTERFACE</varname> to the network interface where the virtual IP will be added.
-    In the example, we use eth0.
+    在所有 <productname>Pgpool-II</productname> 实例的网络接口设置中禁用"源/目的检查"。
+    可以通过 AWS Management Console 配置，或使用 AWS CLI 配置。
+    使用 AWS CLI 时，执行以下命令。
+    将 <varname>LOCAL_INTERFACE</varname> 设置为将要添加虚拟 IP 的网络接口。
+    示例中使用 eth0。
    </para>
 
    <programlisting>
@@ -439,22 +425,19 @@ $ aws ec2 modify-network-interface-attribute --network-interface-id ${EC2_NETWOR
   </sect3>
 
   <sect3 id="example-AWS-rbt-try">
-   <title>Try it out</title>
+   <title>测试</title>
    <para>
-    Start <productname>Pgpool-II</productname> on each <productname>Pgpool-II</productname>
-    instance.
-    Try to connect to <productname>Pgpool-II</productname> using the virtual IP
-    from the application instance.
+    在每个 <productname>Pgpool-II</productname> 实例上启动 <productname>Pgpool-II</productname>。
+    从应用程序实例尝试使用虚拟 IP 连接到 <productname>Pgpool-II</productname>。
    </para>
    <programlisting>
 [user@application instance]$ psql -h 20.0.0.50 -p 9999 -U postgres -c "show pool_nodes"
    </programlisting>
    <para>
-    Stop the leader <productname>Pgpool-II</productname>.
-    Then the virtual IP is reassigned to the new leader <productname>Pgpool-II</productname>.
-    Verify that you can connect to <productname>Pgpool-II</productname>
-    using Elastic IP address from application instance even if the leader
-    <productname>Pgpool-II</productname> has switched over.
+    停止主 <productname>Pgpool-II</productname>。
+    然后虚拟 IP 地址将重新分配给新的主 <productname>Pgpool-II</productname>。
+    验证即使主 <productname>Pgpool-II</productname> 已切换，
+    您仍可以从应用程序实例使用弹性 IP 地址连接到 <productname>Pgpool-II</productname>。
    </para>
    <programlisting>
 [user@application instance]$ psql -h 20.0.0.50 -p 9999 -U postgres -c "show pool_nodes"
@@ -463,7 +446,7 @@ $ aws ec2 modify-network-interface-attribute --network-interface-id ${EC2_NETWOR
  </sect2>
 
  <bibliography>
-  <title>AWS Command References</title>
+  <title>AWS 命令参考</title>
 
   <biblioentry>
    <biblioset relation="article">

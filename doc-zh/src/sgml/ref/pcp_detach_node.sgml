@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pcp_detach_node</refname>
   <refpurpose>
-   detaches the given node from Pgpool-II. Existing connections to Pgpool-II are forced to be disconnected.</refpurpose>
+   将指定节点从 Pgpool-II 中分离。正在连接到 Pgpool-II 的现有连接将被强制断开。</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -30,33 +30,25 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R1-PCP-DETACH-NODE-1">
-  <title>Description</title>
+  <title>描述</title>
   <para>
-   <command>pcp_detach_node</command> detaches the given node from
-   <productname>Pgpool-II</productname>. If <xref
-   linkend="guc-failover-command"> and/or <xref
-   linkend="guc-follow-primary-command"> are specified, they are
-   executed too. Existing connections to
-   <productname>Pgpool-II</productname> are forced to be disconnected.
+   <command>pcp_detach_node</command> 将指定节点从
+   <productname>Pgpool-II</productname> 中分离。如果已指定 <xref
+   linkend="guc-failover-command"> 和/或 <xref
+   linkend="guc-follow-primary-command">，它们也会一并执行。正在连接到
+   <productname>Pgpool-II</productname> 的现有连接将被强制断开。
   </para>
   <para>
-   <command>pcp_detach_node</command> just detaches the node, and does
-   not touch running backend behind the node. This command is useful
-   when admin needs to maintain the
-   <productname>PostgreSQL</productname> node. He/she can shutdown or
-   stop the backend as many times as he/she wants.
+   <command>pcp_detach_node</command> 仅分离该节点，不会触碰该节点后面的后端运行进程。当管理员需要对
+   <productname>PostgreSQL</productname> 节点进行维护时，此命令非常有用。管理员可以多次关闭或停止后端进程。
   </para>
   <para>
-   The safest way to re-attach the detached node is, stopping the
-    backend and apply <xref linkend="pcp-recovery-node">. However if
-    you are sure that there's no replication delay (or the delay will
-    be recovered later on) and the role of the node (primary/standby)
-    will not be changed, you can use <xref linkend="pcp-attach-node">.
+   重新附加已分离节点最安全的方式是先停止后端，然后执行 <xref linkend="pcp-recovery-node">。但是，如果您确定不存在复制延迟（或延迟将在稍后恢复），且该节点的角色（主节点/备节点）不会改变，您也可以使用 <xref linkend="pcp-attach-node">。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
    <variablelist>
 
@@ -65,7 +57,7 @@ Pgpool-II documentation
      <term><option>--node_id=<replaceable class="parameter">node_id</replaceable></option></term>
      <listitem>
       <para>
-       The index of backend node to detach.
+       要分离的后端节点的索引。
       </para>
      </listitem>
     </varlistentry>
@@ -75,16 +67,16 @@ Pgpool-II documentation
      <term><option>--gracefully</option></term>
      <listitem>
       <para>
-       wait until all clients are disconnected (unless client_idle_limit_in_recovery is -1 or recovery_timeout is expired).
+       等待所有客户端断开连接后再执行（除非 client_idle_limit_in_recovery 为 -1 或 recovery_timeout 已超时）。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other options </option></term>
+     <term><option>其他选项</option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       请参阅 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>

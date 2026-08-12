@@ -1,28 +1,23 @@
 <sect1 id="example-Aurora">
- <title>Aurora Configuration Example</title>
+ <title>Aurora 配置示例</title>
 
  <para>
   <productname>Amazon Aurora for PostgreSQL
-   Compatibility</productname> (Aurora) is a managed service for
-  <productname>PostgreSQL</productname>. From user's point of
-  view, <productname>Aurora</productname> can be regarded as a
-  streaming replication cluster with some exceptions. First,
-  fail over and online recovery are managed
-  by <productname>Aurora</productname>. So you don't need to
-  set <xref linkend="guc-failover-command">, <xref linkend="guc-follow-primary-command">,
-    and recovery related parameters. In this section we explain
-    how to set up <productname>Pgpool-II</productname> for Aurora.
+   Compatibility</productname>（Aurora）是一项针对
+  <productname>PostgreSQL</productname> 的托管服务。从用户的角度来看，<productname>Aurora</productname> 可以视为一个具有若干例外情况的流式复制集群。首先，
+  故障转移和在线恢复由 <productname>Aurora</productname> 管理。因此无需设置
+  <xref linkend="guc-failover-command">、<xref linkend="guc-follow-primary-command">
+  以及与恢复相关的参数。本节我们将介绍如何为 <productname>Aurora</productname> 配置 <productname>Pgpool-II</productname>。
  </para>
 
  <sect2 id="example-Aurora-config">
-  <title>Setting pgpool.conf for Aurora</title>
+  <title>为 Aurora 配置 pgpool.conf</title>
   <para>
    <itemizedlist>
     <listitem>
      <para>
-      Create <filename>pgpool.conf</filename>
-      from <filename>pgpool.conf.sample</filename>.
-      Make sure your <filename>pgpool.conf</filename> includes following line:
+      从 <filename>pgpool.conf.sample</filename> 创建 <filename>pgpool.conf</filename>。
+      确保 <filename>pgpool.conf</filename> 中包含以下行：
       <programlisting>
 backend_clustering_mode = streaming_replication
       </programlisting>
@@ -30,11 +25,10 @@ backend_clustering_mode = streaming_replication
     </listitem>
     <listitem>
      <para>
-      Set <xref linkend="guc-sr-check-period"> to 0 to
-       disable streaming replication delay checking.  This
-       is because <productname>Aurora</productname> does
-       not provide necessary functions to check the
-       replication delay.
+      将 <xref linkend="guc-sr-check-period"> 设置为 0
+       以禁用流式复制延迟检查。这是
+       因为 <productname>Aurora</productname> 不提供
+       用于检查复制延迟所需的功能。
      </para>
      <programlisting>
 sr_check_period = 0
@@ -42,10 +36,10 @@ sr_check_period = 0
     </listitem>
     <listitem>
      <para>
-      Enable <xref linkend="guc-enable-pool-hba"> to on so
-       that md5 authentication is enabled
-       (<productname>Aurora</productname> always use md5
-       authentication).
+      将 <xref linkend="guc-enable-pool-hba"> 设置为 on，
+       以启用 md5 认证
+       （<productname>Aurora</productname> 始终使用 md5
+       认证）。
      </para>
      <programlisting>
 enable_pool_hba = on
@@ -53,16 +47,15 @@ enable_pool_hba = on
     </listitem>
     <listitem>
      <para>
-      Create <filename>pool_password</filename>. See <xref linkend="auth-md5">
-       for more details.
+      创建 <filename>pool_password</filename>。详见 <xref linkend="auth-md5">。
      </para>
     </listitem>
     <listitem>
      <para>
-      Set <xref linkend="guc-backend-hostname">0 for the Aurora cluster endpoint.
-	  Set <xref linkend="guc-backend-hostname">1 for the Aurora reader endpoint.
-	  Set appropriate <xref linkend="guc-backend-weight"> as usual.
-	  You don't need to set <xref linkend="guc-backend-data-directory">.
+      将 <xref linkend="guc-backend-hostname">0 设置为 Aurora 集群端点。
+	  将 <xref linkend="guc-backend-hostname">1 设置为 Aurora 读取端点。
+	  按照通常方式设置合适的 <xref linkend="guc-backend-weight">。
+	  无需设置 <xref linkend="guc-backend-data-directory">。
      </para>
      <programlisting>
 backend_hostname0 = 'cluster endpoint'
@@ -71,16 +64,16 @@ backend_hostname1 = 'reader endpoint'
     </listitem>
     <listitem>
      <para>
-      Set <varname>ALWAYS_PRIMARY</varname> flag to
-      the <xref linkend="guc-backend-flag">
-      for <xref linkend="guc-backend-hostname">0.
+      将 <varname>ALWAYS_PRIMARY</varname> 标志
+      设置为 <xref linkend="guc-backend-flag">
+      对应于 <xref linkend="guc-backend-hostname">0。
      </para>
     </listitem>
     <listitem>
      <para>
-      Because failover is managed by Aurora, set <varname>DISALLOW_TO_FAILOVER</varname> flag to
-      the <xref linkend="guc-backend-flag">
-      for <xref linkend="guc-backend-hostname">0 and <xref linkend="guc-backend-hostname">1.
+      由于故障转移由 Aurora 管理，将 <varname>DISALLOW_TO_FAILOVER</varname> 标志
+      设置为 <xref linkend="guc-backend-flag">
+      对应于 <xref linkend="guc-backend-hostname">0 和 <xref linkend="guc-backend-hostname">1。
      </para>
      <programlisting>
 backend_flag0 = 'ALWAYS_PRIMARY|DISALLOW_TO_FAILOVER'
@@ -89,7 +82,7 @@ backend_flag1 = 'DISALLOW_TO_FAILOVER'
     </listitem>
     <listitem>
      <para>
-      Set <xref linkend="guc-health-check-period"> to 0 to disable health checking.
+      将 <xref linkend="guc-health-check-period"> 设置为 0 以禁用健康检查。
      </para>
      <programlisting>
 health_check_period = 0
@@ -97,10 +90,10 @@ health_check_period = 0
     </listitem>
     <listitem>
      <para>
-      Disable <xref linkend="guc-failover-on-backend-error">
-       to avoid failover when connecting to the backend or
-       detecting errors on backend side while executing
-       queries for the same reasons above.
+      禁用 <xref linkend="guc-failover-on-backend-error">
+       以避免在连接到后端或
+       执行查询时在后端侧检测到错误时触发故障转移，
+       原因同上。
      </para>
     </listitem>
    </itemizedlist>

@@ -1,10 +1,10 @@
 <!-- doc/src/sgml/config.sgml -->
 
 <sect1 id="runtime-config-connection">
- <title>Connections and Authentication</title>
+ <title>连接与认证</title>
 
  <sect2 id="runtime-config-connection-settings">
-  <title>Connection Settings</title>
+  <title>连接设置</title>
 
   <variablelist>
 
@@ -16,29 +16,22 @@
     </term>
     <listitem>
      <para>
-      Specifies the TCP/IP address(es) on which the server is
-      to listen for connections from client applications.
-      The value takes the form of a comma-separated list of host names
-      and/or numeric IP addresses.  The special entry <literal>*</literal>
-      corresponds to all available IP interfaces.  The entry
-      <literal>0.0.0.0</literal> allows listening for all IPv4 addresses and
-      <literal>::</literal> allows listening for all IPv6 addresses.
-      If the list is empty, the server does not listen on any IP interface
-      at all, in which case only Unix-domain sockets can be used to connect
-      to it.
-      The default value
-      is <systemitem class="systemname">localhost</systemitem>, which
-      allows only local TCP/IP <quote>loopback</quote> connections to
-      be made.  While client authentication
-      (<xref linkend="auth-pool-hba-conf">) allows fine-grained
-      control over who can access the
-      server, <varname>listen_addresses</varname> controls which
-      interfaces accept connection attempts, which can help prevent
-      repeated malicious connection requests on insecure network
-      interfaces.  This parameter can only be set at server start.
+      指定服务器在哪些 TCP/IP 地址上监听来自客户端应用程序的连接。
+      该值的形式为逗号分隔的主机名和/或数字 IP 地址列表。<literal>*</literal>
+      这个特殊条目对应所有可用的 IP 接口。<literal>0.0.0.0</literal>
+      允许监听所有 IPv4 地址，<literal>::</literal> 允许监听所有 IPv6 地址。
+      如果列表为空，则服务器不会在任何 IP 接口上进行监听，
+      此时只能通过 Unix 域套接字进行连接。
+      默认值是
+      <systemitem class="systemname">localhost</systemitem>，仅
+      允许本地 TCP/IP <quote>回环</quote> 连接。
+      虽然客户端认证（<xref linkend="auth-pool-hba-conf">）允许对谁可以访问服务器进行细粒度控制，
+      但 <varname>listen_addresses</varname> 控制哪些接口接受连接请求，
+      这有助于防止在不安全的网络接口上出现重复的恶意连接请求。
+      此参数仅在服务器启动时设置。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -51,12 +44,11 @@
     </term>
     <listitem>
      <para>
-      The port number used
-      by <productname>Pgpool-II</productname> to listen for
-      connections. Default is 9999.
+      <productname>Pgpool-II</productname> 用于监听连接所接受的端口号。
+      默认值为 9999。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -69,16 +61,14 @@
     </term>
     <listitem>
      <para>
-      The directory where the UNIX domain socket(s) accepting connections for
-      <productname>Pgpool-II</productname> will be created. Multiple sockets
-      can be created by listing multiple directories separated by commas.
-      Leading and trailing spaces in each setting value will be automatically
-      removed. Default is <literal>/tmp</literal>. Be aware that this sockets
-      might be deleted by a cron job. We recommend to set this value to
-      <literal>/var/run</literal> or such directory.
+      创建接受 <productname>Pgpool-II</productname> 连接的 Unix 域套接字所在的目录。
+      可以通过列出多个以逗号分隔的目录来创建多个套接字。
+      每个设置值中的前导和尾随空格将被自动移除。
+      默认为 <literal>/tmp</literal>。注意此套接字可能会被 cron 任务删除。
+      建议将此值设置为 <literal>/var/run</literal> 或类似目录。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -91,15 +81,12 @@
     </term>
     <listitem>
      <para>
-      Sets the owning group of the Unix-domain socket(s). (The owning user of
-      the sockets is always the user that starts the server.) In combination
-      with the parameter <varname>unix_socket_permissions</varname> this can be
-      used as an additional access control mechanism for Unix-domain connections.
-      By default this is the empty string, which uses the default group of the
-      server user.
+      设置 Unix 域套接字的所有者组。（套接字的所有者用户始终是启动服务器的用户。）
+      结合 <varname>unix_socket_permissions</varname> 参数，可用作 Unix 域连接的额外访问控制机制。
+      默认为空字符串，使用服务器用户的默认组。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -112,22 +99,18 @@
     </term>
     <listitem>
      <para>
-      Sets the access permissions of the Unix-domain socket(s). Unix-domain
-      sockets use the usual Unix file system permission set. The parameter value
-      is expected to be a numeric mode specified in the format accepted by the
-      chmod and umask system calls. (To use the customary octal format the number
-      must start with a <literal>0</literal> (zero).)
+      设置 Unix 域套接字的访问权限。Unix 域套接字使用标准的 Unix 文件系统权限集。
+      参数值应为以 chmod 和 umask 系统调用接受的格式指定的数字模式。
+      （要使用传统的八进制格式，数字必须以 <literal>0</literal>（零）开头。）
      </para>
      <para>
-      The default permissions are <literal>0777</literal>, meaning anyone can
-      connect. Reasonable alternatives are <literal>0770</literal> (only user
-      and group, see also <varname>unix_socket_group</varname>) and
-      <literal>0700</literal> (only user). (Note that for a Unix-domain socket,
-      only write permission matters, so there is no point in setting or revoking
-      read or execute permissions.)
+      默认权限为 <literal>0777</literal>，意味着任何人都可以连接。
+      合理的替代值是 <literal>0770</literal>（仅用户和组，参见 <varname>unix_socket_group</varname>）
+      和 <literal>0700</literal>（仅用户）。（注意对于 Unix 域套接字，
+      只有写权限是重要的，因此设置或撤销读或执行权限没有意义。）
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -140,26 +123,20 @@
     </term>
     <listitem>
      <para>
-      Specifies the TCP/IP address(es) on which the pcp server is
-      to listen for connections from client applications.
-      The value takes the form of a comma-separated list of host names
-      and/or numeric IP addresses.  The special entry <literal>*</literal>
-      corresponds to all available IP interfaces.  The entry
-      <literal>0.0.0.0</literal> allows listening for all IPv4 addresses and
-      <literal>::</literal> allows listening for all IPv6 addresses.
-      If the list is empty, the server does not listen on any IP interface
-      at all, in which case only Unix-domain sockets can be used to connect
-      to it.
-      The default value
-      is <systemitem class="systemname">localhost</systemitem>, which
-      allows only local TCP/IP <quote>loopback</quote> connections to
-      be made.  While client authentication
-      (<xref linkend="auth-pool-hba-conf">) allows fine-grained
-      control over who can access the
-      server, <varname>pcp_listen_addresses</varname> controls which
-      interfaces accept connection attempts, which can help prevent
-      repeated malicious connection requests on insecure network
-      interfaces.  This parameter can only be set at server start.
+      指定 pcp 服务器在哪些 TCP/IP 地址上监听来自客户端应用程序的连接。
+      该值的形式为逗号分隔的主机名和/或数字 IP 地址列表。
+      <literal>*</literal> 这个特殊条目对应所有可用的 IP 接口。
+      <literal>0.0.0.0</literal> 允许监听所有 IPv4 地址，
+      <literal>::</literal> 允许监听所有 IPv6 地址。
+      如果列表为空，则服务器不会在任何 IP 接口上进行监听，
+      此时只能通过 Unix 域套接字进行连接。
+      默认值是
+      <systemitem class="systemname">localhost</systemitem>，仅
+      允许本地 TCP/IP <quote>回环</quote> 连接。
+      虽然客户端认证（<xref linkend="auth-pool-hba-conf">）允许对谁可以访问服务器进行细粒度控制，
+      但 <varname>pcp_listen_addresses</varname> 控制哪些接口接受连接请求，
+      这有助于防止在不安全的网络接口上出现重复的恶意连接请求。
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -172,11 +149,11 @@
     </term>
     <listitem>
      <para>
-      The port number used by PCP
-      process to listen for connections. Default is 9898.
+      PCP 进程用于监听连接所接受的端口号。
+      默认值为 9898。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -189,17 +166,14 @@
     </term>
     <listitem>
      <para>
-      The directory where the UNIX domain socket accepting
-      connections for PCP process will be created. Multiple sockets
-      can be created by listing multiple directories separated by commas.
-      Leading and trailing spaces in each setting value will be
-      automatically removed.
-      Default is <literal>/tmp</literal>. Be aware that this socket
-      might be deleted by a cron job. We recommend to set this
-      value to <literal>/var/run</literal> or such directory.
+      创建接受 PCP 进程连接的 Unix 域套接字所在的目录。
+      可以通过列出多个以逗号分隔的目录来创建多个套接字。
+      每个设置值中的前导和尾随空格将被自动移除。
+      默认为 <literal>/tmp</literal>。注意此套接字可能会被 cron 任务删除。
+      建议将此值设置为 <literal>/var/run</literal> 或类似目录。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -212,87 +186,76 @@
     </term>
     <listitem>
      <para>
-      The number of
-      preforked <productname>Pgpool-II</productname> server
-      processes. Default is 32.  num_init_children is also the
-      concurrent connections limit
-      to <productname>Pgpool-II</productname> from clients.  If
-      more than num_init_children clients try to connect to
-      <productname>Pgpool-II</productname>, <emphasis>they are
-       blocked (not rejected with an error,
-       like <productname>PostgreSQL</productname>) until a
-       connection to any <productname>Pgpool-II</productname>
-       process is closed</emphasis>
-      unless <xref linkend="guc-reserved-connections"> is set
-       to 1 or more.  Up to
-       <xref linkend="guc-listen-backlog-multiplier">*
-	num_init_children can be queued.
+      预派生的 <productname>Pgpool-II</productname> 服务器进程数量。
+      默认值为 32。num_init_children 也是客户端连接到
+      <productname>Pgpool-II</productname> 的并发连接限制。
+      如果超过 num_init_children 个客户端尝试连接到
+      <productname>Pgpool-II</productname>，<emphasis>它们会被阻塞
+       （不会像 <productname>PostgreSQL</productname> 那样被错误拒绝，
+       而是直到某个 <productname>Pgpool-II</productname> 进程的连接被关闭）</emphasis>
+      ，除非将 <xref linkend="guc-reserved-connections"> 设置为 1 或更大。
+      最多可以排队 <xref linkend="guc-listen-backlog-multiplier">*
+      num_init_children 个连接。
      </para>
      <para>
-      The queue is inside the kernel called "listen queue". The
-      length of the listen queue is called "backlog".  There is
-      an upper limit of the backlog in some systems, and if
-      num_init_children*<xref linkend="guc-listen-backlog-multiplier">
-       exceeds the number, you need to set the backlog higher.
-       Otherwise, following problems may occur in heavy loaded systems:
-       <itemizedlist>
+      队列位于内核中，称为"监听队列"。
+      监听队列的长度称为"backlog"。
+      某些系统对 backlog 有上限限制，
+      如果 num_init_children * <xref linkend="guc-listen-backlog-multiplier">
+      超过该数值，则需要提高 backlog 值。
+      否则，在高负载系统中可能会出现以下问题：
+      <itemizedlist>
 	<listitem>
 	 <para>
-	  connecting to <productname>Pgpool-II</productname> fails
+	  连接到 <productname>Pgpool-II</productname> 失败
 	 </para>
 	</listitem>
 	<listitem>
 	 <para>
-	  connecting to <productname>Pgpool-II</productname> is
-	  getting slow because of retries in the kernel.
+	  由于内核中的重试，连接到 <productname>Pgpool-II</productname> 变慢。
 	 </para>
 	</listitem>
-       </itemizedlist>
-       You can check if the listen queue is actually overflowed by using
-       "netstat -s" command.  If you find something like:
-       <programlisting>
+      </itemizedlist>
+      可以使用 "netstat -s" 命令检查监听队列是否实际溢出。
+      如果找到类似以下的输出：
+      <programlisting>
 	535 times the listen queue of a socket overflowed
-       </programlisting>
-       then the listen queue is definitely overflowed.  You
-       should increase the backlog in this case (you will be
-       required a super user privilege).
-       <programlisting>
+      </programlisting>
+      则监听队列确实已溢出。在这种情况下应增加 backlog 值（需要超级用户权限）。
+      <programlisting>
 	# sysctl net.core.somaxconn
 	net.core.somaxconn = 128
 	# sysctl -w net.core.somaxconn = 256
-       </programlisting>
-       You could add following to /etc/sysctl.conf instead.
-       <programlisting>
-	net.core.somaxconn = 256
-       </programlisting>
-     </para>
-     <para>
-      Number of connections to
-      each <productname>PostgreSQL</productname> is roughly
-      max_pool*num_init_children.
-     </para>
-
-     <para>
-      However, canceling a query creates another
-      connection to the backend; thus, a query cannot be canceled if
-      all the connections are in use. If you want to ensure that queries can
-      be canceled, set this value to twice the expected connections.
-     </para>
-     <para>
-      In addition, <productname>PostgreSQL</productname> allows concurrent
-      connections for non superusers up to max_connections -
-      superuser_reserved_connections.
-     </para>
-     <para>
-      In summary, max_pool, num_init_children, max_connections,
-      superuser_reserved_connections must satisfy the following formula:
+      </programlisting>
+      或者可以向 /etc/sysctl.conf 中添加以下内容。
       <programlisting>
-       max_pool*num_init_children &lt;= (max_connections - superuser_reserved_connections) (no query canceling needed)
-       max_pool*num_init_children*2 &lt;= (max_connections - superuser_reserved_connections) (query canceling needed)
+	net.core.somaxconn = 256
       </programlisting>
      </para>
      <para>
-      This parameter can only be set at server start.
+      每个 <productname>PostgreSQL</productname> 的连接数大致为
+      max_pool * num_init_children。
+     </para>
+
+     <para>
+      然而，取消查询会创建另一个到后端的连接；
+      因此，如果所有连接都在使用中，则无法取消查询。
+      如果要确保可以取消查询，请将此值设置为预期连接数的两倍。
+     </para>
+     <para>
+      此外，<productname>PostgreSQL</productname> 允许非超级用户
+      的并发连接数最多为 max_connections - superuser_reserved_connections。
+     </para>
+     <para>
+      总之，max_pool、num_init_children、max_connections、
+      superuser_reserved_connections 必须满足以下公式：
+      <programlisting>
+       max_pool*num_init_children &lt;= (max_connections - superuser_reserved_connections) （不需要取消查询）
+       max_pool*num_init_children*2 &lt;= (max_connections - superuser_reserved_connections) （需要取消查询）
+      </programlisting>
+     </para>
+     <para>
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -305,28 +268,24 @@
     </term>
     <listitem>
      <para>
-      When this parameter is set to 1 or greater, incoming
-      connections from clients are not accepted with error
-      message "Sorry, too many clients already", rather than
-      blocked if the number of current connections from clients
-      is more than (<xref linkend="guc-num-init-children"> -
-       <varname>reserved_connections</varname>). For example,
-       if <varname>reserved_connections</varname> = 1
-       and <xref linkend="guc-num-init-children"> = 32, then the
-	32th connection from a client will be refused. This
-	behavior is similar
-	to <productname>PostgreSQL</productname> and good for
-	systems on which the number of connections from clients is
-	large and each session may take long time. In this case
-	length of the listen queue could be very long and may
-	cause the system unstable. In this situation setting this
-	parameter to non 0 is a good idea to prevent the listen
-	queue becomes very long.
+      当此参数设置为 1 或更大时，来自客户端的传入连接
+      将不会以错误消息"Sorry, too many clients already"拒绝，
+      而是被阻塞，如果当前来自客户端的连接数
+      超过（<xref linkend="guc-num-init-children"> -
+       <varname>reserved_connections</varname>）。
+      例如，如果 <varname>reserved_connections</varname> = 1
+      且 <xref linkend="guc-num-init-children"> = 32，则
+      第 32 个来自客户端的连接将被拒绝。
+      此行为类似于 <productname>PostgreSQL</productname>，
+      适用于客户端连接数较大且每个会话可能占用较长时间的系统。
+      在这种情况下，监听队列可能非常长，可能导致系统不稳定。
+      在此情况下，将此参数设置为非 0 是一个好主意，
+      以防止监听队列变得过长。
      </para>
      <para>
-      If this parameter is set to 0, no connection from clients
-      will be refused. The default value is 0.
-      This parameter can only be set at server start.
+      如果将此参数设置为 0，则不会拒绝来自客户端的任何连接。
+      默认值为 0。
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -334,7 +293,7 @@
  </sect2>
 
  <sect2 id="runtime-config-authentication-settings">
-  <title>Authentication Settings</title>
+  <title>认证设置</title>
   <variablelist>
 
    <varlistentry id="guc-enable-pool-hba" xreflabel="enable_pool_hba">
@@ -345,16 +304,14 @@
     </term>
     <listitem>
      <para>
-      If <literal>true</literal>, <productname>Pgpool-II</productname> will use the
-      <filename>pool_hba.conf</filename> for the client
-      authentication.  See <xref linkend="auth-pool-hba-conf">
-       for details on how to configure
-       <filename>pool_hba.conf</filename> for client authentication.
-       Default is <literal>false</literal>.
+      如果为 <literal>true</literal>，<productname>Pgpool-II</productname> 将使用
+      <filename>pool_hba.conf</filename> 文件进行客户端认证。
+      有关如何为客户端认证配置 <filename>pool_hba.conf</filename> 的详细信息，
+      请参阅 <xref linkend="auth-pool-hba-conf">。
+      默认为 <literal>false</literal>。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
     </listitem>
    </varlistentry>
@@ -367,39 +324,35 @@
     </term>
     <listitem>
      <para>
-      Specify the path (absolute or relative) to password file for
-      authentication. Default value is <literal>"pool_passwd"</literal>.
-      A relative path will be interpreted with respect to the directory
-      where configuration file is placed.
-      Specifying <literal>''</literal> (empty) disables the use
-      of password file.
+      指定用于认证的密码文件路径（绝对或相对路径）。
+      默认值为 <literal>"pool_passwd"</literal>。
+      相对路径将相对于配置文件所在的目录进行解释。
+      指定 <literal>''</literal>（空）将禁用密码文件的使用。
      </para>
      <para>
-      Passwords can be stored in the pool_passwd file using three formats.
-      AES256 encrypted format, plain text format and md5 format.
-      <productname>Pgpool-II</productname> identifies the password format type
-      by it's prefix, so each password entry in the pool_passwd must be prefixed
-      as per the password format.
+      可以使用三种格式将密码存储在 pool_passwd 文件中：
+      AES256 加密格式、明文格式和 md5 格式。
+      <productname>Pgpool-II</productname> 通过密码的前缀来识别密码格式类型，
+      因此 pool_passwd 中的每个密码条目必须根据密码格式添加前缀。
      </para>
      <para>
-      To store the password in the plain text format use <literal>TEXT</literal> prefix.
-      For example. to store clear text password string <literal>"mypassword"</literal>
-      in the pool_passwd, prepend the password string with <literal>TEXT</literal> prefix.
-      e.g. <literal>TEXTmypassword</literal>
+      要以明文格式存储密码，请使用 <literal>TEXT</literal> 前缀。
+      例如，要将纯文本密码字符串 <literal>"mypassword"</literal>
+      存储在 pool_passwd 中，请在密码字符串前添加 <literal>TEXT</literal> 前缀。
+      例如：<literal>TEXTmypassword</literal>
      </para>
      <para>
-      similarly md5 hashed passwords must be prefixed with <literal>md5</literal> and
-      AES256 encrypted password types can be stored using <literal>AES</literal> prefix.
-      see <xref linkend="auth-aes-encrypted-password"> for more details on using
-       AES256 encrypted passwords.
+      类似地，md5 哈希密码必须以 <literal>md5</literal> 为前缀，
+      AES256 加密密码类型可以使用 <literal>AES</literal> 前缀存储。
+      有关使用 AES256 加密密码的更多详细信息，请参阅 <xref linkend="auth-aes-encrypted-password">。
      </para>
 
      <para>
-      In the absence of a valid prefix, <productname>Pgpool-II</productname> will
-      be considered the string as a plain text password.
+      如果没有有效的有效前缀，<productname>Pgpool-II</productname> 将
+      把该字符串视为明文密码。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -412,25 +365,22 @@
     </term>
     <listitem>
      <para>
-      If <productname>PostgreSQL</productname> backend servers require
-      <literal>md5</literal> or <literal> SCRAM</literal> authentication for some
-      user's authentication but the password for that user is not present in the
-      <filename>"pool_passwd"</filename> file, then enabling
-      <literal>allow_clear_text_frontend_auth</literal> will allow the
-      <productname>Pgpool-II</productname> to use clear-text-password
-      authentication with frontend clients to get the password in plain text form
-      from the client and use it for backend authentication.
+      如果 <productname>PostgreSQL</productname> 后端服务器要求某些用户
+      使用 <literal>md5</literal> 或 <literal>SCRAM</literal> 认证，
+      但该用户的密码不在 <filename>"pool_passwd"</filename> 文件中，
+      则启用 <literal>allow_clear_text_frontend_auth</literal> 将允许
+      <productname>Pgpool-II</productname> 使用明文密码认证与前端客户端通信，
+      从客户端获取明文形式的密码，并用于后端认证。
      </para>
      <para>
-      Default is <literal>false</literal>.
+      默认为 <literal>false</literal>。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
      <note>
       <para>
-       <literal>allow_clear_text_frontend_auth</literal> only works when <xref linkend="guc-enable-pool-hba"> is not enabled
+       <literal>allow_clear_text_frontend_auth</literal> 仅在 <xref linkend="guc-enable-pool-hba"> 未启用时生效
       </para>
      </note>
     </listitem>
@@ -444,13 +394,12 @@
     </term>
     <listitem>
      <para>
-      Specify the timeout in seconds
-      for <productname>Pgpool-II</productname>
-      authentication. Specifying 0 disables the time out.
-      Default value is 60.
+      指定 <productname>Pgpool-II</productname>
+      认证的超时时间（秒）。设置为 0 表示禁用超时。
+      默认值为 60。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数仅在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -461,7 +410,7 @@
 </sect1>
 
 <sect1 id="runtime-config-process-management">
- <title>Process Management</title>
+ <title>进程管理</title>
 
   <para>
   <variablelist>
@@ -474,27 +423,26 @@
     </term>
     <listitem>
      <para>
-      Specify the idle process management method for
-      <productname>Pgpool-II</productname> child processes.
-      Valid options:
+      指定 <productname>Pgpool-II</productname> 子进程的空闲进程管理方式。
+      有效选项：
       <table id="process-management-mode-table">
-      <title>Possible Process Management Modes</title>
+      <title>可能的进程管理模式</title>
 
       <tgroup cols="2">
        <tbody>
         <row>
          <entry>static</entry>
          <entry>
-          All children are pre-forked at startup.
-	  Number of child processes is fixed (<xref linkend="guc-num-init-children">).
+          所有子进程在启动时预派生。
+	  子进程数量固定（<xref linkend="guc-num-init-children">）。
          </entry>
         </row>
 
        <row>
          <entry>dynamic</entry>
-         <entry>child processes are spawned on demand up to <xref linkend="guc-num-init-children">.
-          Number of idle child processes at any time depends on
-          min_spare_children and max_spare_children
+         <entry>按需派生子进程，最多到 <xref linkend="guc-num-init-children">。
+          任意时刻的空闲子进程数量取决于
+          min_spare_children 和 max_spare_children
          </entry>
         </row>
 
@@ -503,16 +451,16 @@
      </table>
      </para>
      <para>
-       Default is <literal>static</literal>, that is compatible with pre <emphasis>V4.4</emphasis>.
+       默认为 <literal>static</literal>，与 <emphasis>V4.4</emphasis> 之前的版本兼容。
      </para>
 
      <para>
-      <varname>process_management_mode</varname> is not available prior to
-      <productname>Pgpool-II </productname><emphasis>V4.4</emphasis>.
+      <varname>process_management_mode</varname> 在
+      <productname>Pgpool-II </productname><emphasis>V4.4</emphasis> 之前不可用。
      </para>
 
      <para>
-      See <xref linkend="process-management-mode"> for more details.
+      有关更多详细信息，请参阅 <xref linkend="process-management-mode">。
      </para>
 
     </listitem>
@@ -526,36 +474,33 @@
     </term>
     <listitem>
      <para>
-      Specify the process management strategy to satisfy spare (idle) processes count
-      Valid options:
+      指定满足空闲（idle）进程数量所需的进程管理策略。
+      有效选项：
       <table id="process-management-strategy-table">
-      <title>Possible Process Management Strategies</title>
+      <title>可能的进程管理策略</title>
 
       <tgroup cols="2">
        <tbody>
         <row>
          <entry>lazy</entry>
-         <entry>With this strategy the scale-down is performed gradually
-         and only gets triggered when excessive spare processes count
-         remains high for more than 5 mins
+         <entry>采用此策略时，缩容操作渐进执行，
+         仅当多余的空闲进程数量在超过 5 分钟后仍保持高位时才触发
          </entry>
         </row>
 
        <row>
          <entry>gentle</entry>
-         <entry>With this strategy the scale-down is performed gradually
-         and only gets triggered when excessive spare processes count
-         remains high for more than 2 mins
+         <entry>采用此策略时，缩容操作渐进执行，
+         仅当多余的空闲进程数量在超过 2 分钟后仍保持高位时才触发
          </entry>
         </row>
 
        <row>
          <entry>aggressive</entry>
-         <entry>With this strategy the scale-down is performed aggressively
-         and gets triggered more frequently in case of higher spare processes.
-         This mode uses faster and slightly less smart process selection criteria
-         to identify the child processes that can be serviced to satisfy
-         max_spare_children
+         <entry>采用此策略时，缩容操作激进执行，
+         空闲进程较高时会更频繁地触发。
+         此模式使用更快且略不智能的进程选择标准，
+         以识别可以被服务以满足 max_spare_children 的子进程
          </entry>
         </row>
 
@@ -564,11 +509,11 @@
      </table>
      </para>
      <para>
-       Default is <literal>gentle</literal>.
+       默认为 <literal>gentle</literal>。
      </para>
           <para>
-       <varname>process_management_strategy</varname> is not available prior to
-       <productname>Pgpool-II </productname><emphasis>V4.4</emphasis>.
+       <varname>process_management_strategy</varname> 在
+       <productname>Pgpool-II </productname><emphasis>V4.4</emphasis> 之前不可用。
       </para>
 
     </listitem>
@@ -582,17 +527,16 @@
     </term>
     <listitem>
      <para>
-      Specify the minimum number of spare (idle) child processes to keep.
-      If the idle process count falls below min_spare_children,
-      Pgpool-II will spawn new child processes unless it hits the total allowed child process ceiling (num_init_children).
-      Default value is 5.
+      指定要保持的最小空闲（idle）子进程数量。
+      如果空闲进程数量低于 min_spare_children，
+      Pgpool-II 将派生新的子进程，除非达到允许的子进程总数上限（num_init_children）。
+      默认值为 5。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
      <para>
-      This parameter is only applicable for <emphasis>dynamic</emphasis> process management mode.
+      此参数仅适用于 <emphasis>dynamic</emphasis> 进程管理模式。
      </para>
     </listitem>
    </varlistentry>
@@ -605,17 +549,16 @@
     </term>
     <listitem>
      <para>
-      Specify the maximum number of spare (idle) child processes to keep.
-      If the idle process count increases from max_spare_children, Pgpool-II will kill the excessive child processes.
-      Selection criteria is to select the processes with minimum number of pooled connections.
-      Default value is 10.
+      指定要保持的最大空闲（idle）子进程数量。
+      如果空闲进程数量超过 max_spare_children，Pgpool-II 将终止多余的子进程。
+      选择标准是选择具有最少池化连接数的进程。
+      默认值为 10。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
      <para>
-      This parameter is only applicable for <emphasis>dynamic</emphasis> process management mode.
+      此参数仅适用于 <emphasis>dynamic</emphasis> 进程管理模式。
      </para>
     </listitem>
    </varlistentry>
@@ -626,7 +569,7 @@
 </sect1>
 
 <sect1 id="runtime-config-running-mode">
- <title>Clustering mode</title>
+ <title>集群模式</title>
  <para>
   <variablelist>
    <varlistentry id="guc-backend-clustering-mode" xreflabel="backend_clustering_mode">
@@ -637,11 +580,10 @@
     </term>
     <listitem>
      <para>
-      Clustering mode is the method to sync
-      <productname>PostgreSQL</productname> servers. To set the clustering
-      mode, <varname>backend_clustering_mode</varname> can be used. In
-      this section we discuss how to set the clustering mode. See <xref
-       linkend="planning-postgresql"> for more details.
+      集群模式是同步 <productname>PostgreSQL</productname> 服务器的方法。
+      要设置集群模式，可使用 <varname>backend_clustering_mode</varname>。
+      在本节中我们将讨论如何设置集群模式。
+      有关更多详细信息，请参阅 <xref linkend="planning-postgresql">。
      </para>
     </listitem>
    </varlistentry>
@@ -649,69 +591,61 @@
  </para>
 
  <sect2 id="runtime-config-streaming-replication-mode" xreflabel="streaming replication mode">
-  <title>Streaming replication mode</title>
+  <title>流复制模式</title>
 
   <para>
-   This mode is most popular and recommended clustering mode. In this
-   mode <productname>PostgreSQL</productname> is responsible to
-   replicate each servers. To enable this mode, use
-   streaming_replication for
-   <varname>backend_clustering_mode</varname>.
+   此模式是最流行且推荐的集群模式。在此模式下，
+   <productname>PostgreSQL</productname> 负责各服务器之间的复制。
+   要启用此模式，请使用 streaming_replication 作为
+   <varname>backend_clustering_mode</varname> 的值。
     <programlisting>
 backend_clustering_mode = streaming_replication
     </programlisting>
-   In this mode you can have up to 127 streaming replication standby servers.
-   Also it is possible not to have standby server at all.
+   在此模式下，您可以拥有最多 127 个流复制备用服务器。
+   也可以完全不设置备用服务器。
   </para>
   <para>
-   The drawback of this mode is, it is necessary to consider the
-   replication delay while distributing read queries. The visibility
-   consistency among nodes is not guaranteed either. To mitigate these
-   problems lots of additional parameters are prepared but it may make
-   the administration task harder. Also it may take sometime to
-   perform failover when the primary server goes down and one of
-   standbys is promoted. If you want to avoid these problems, consider
-   <link linkend="guc-snapshot-isolation-mode">snapshot isolation
-   mode</link>.
+   此模式的缺点是，在分发读查询时必须考虑复制延迟。
+   节点之间的可见性一致性也无法保证。
+   为了缓解这些问题，准备了大量额外的参数，但这可能使管理任务更加复杂。
+   此外，当主服务器宕机并晋升某个备用节点时，故障转移可能需要一些时间。
+   如果您想避免这些问题，请考虑使用
+   <link linkend="guc-snapshot-isolation-mode">快照隔离模式</link>。
   </para>
   <para>
-   See <xref linkend="runtime-streaming-replication-check"> for
-    additional parameters for streaming replication mode.
+   有关流复制模式的额外参数，请参阅 <xref linkend="runtime-streaming-replication-check">。
   </para>
  </sect2>
- 
+
  <sect2 id="guc-replication-mode" xreflabel="native replication mode">
-  <title>Native replication mode</title>
+  <title>原生复制模式</title>
 
   <para>
-   This mode makes the <productname>Pgpool-II</productname> to
-   replicate data between <productname>PostgreSQL</productname>
-   backends.  To enable this mode, use native_replication for
-   <varname>backend_clustering_mode</varname>.
+   此模式使 <productname>Pgpool-II</productname> 在
+   <productname>PostgreSQL</productname> 后端之间复制数据。
+   要启用此模式，请使用 native_replication 作为
+   <varname>backend_clustering_mode</varname> 的值。
     <programlisting>
 backend_clustering_mode = native_replication
     </programlisting>
-   In this mode you can have up to 127 standby replication servers.
-   Also it is possible not to have standby server at all.
+   在此模式下，您可以拥有最多 127 个备用复制服务器。
+   也可以完全不设置备用服务器。
   </para>
 
   <para>
-   Load balancing (see <xref linkend="runtime-config-load-balancing"> ) can
-   also be used with replication mode to distribute the load to the
-   attached backend nodes.
+   复制模式还可以与负载均衡（参见 <xref linkend="runtime-config-load-balancing">）
+   配合使用，以将负载分发到所附加的后端节点。
   </para>
 
   <para>
-   The drawback of this mode is, visibility consistency among nodes is
-   not guaranteed. This could bring inconsistency among nodes and read
-   inconsistent data.  If you want to avoid these problems, consider
-   <link linkend="guc-snapshot-isolation-mode">snapshot isolation
-   mode</link>.
+   此模式的缺点是，节点之间的可见性一致性无法保证。
+   这可能导致节点间不一致并读取到不一致的数据。
+   如果您想避免这些问题，请考虑使用
+   <link linkend="guc-snapshot-isolation-mode">快照隔离模式</link>。
   </para>
 
   <para>
-   Following options affect the behavior of
-   <productname>Pgpool-II</productname> in the replication mode.
+   以下选项影响 <productname>Pgpool-II</productname> 在复制模式下的行为。
   </para>
 
   <variablelist>
@@ -724,41 +658,34 @@ backend_clustering_mode = native_replication
     </term>
     <listitem>
      <para>
-      When set to on, and all nodes do not reply with the same
-      packet kind to the query that was sent to
-      all <productname>PostgreSQL</productname> backend nodes,
-      then the backend node whose reply differs from the
-      majority is degenerated by
-      the <productname>Pgpool-II</productname>.
-      If <varname>replication_stop_on_mismatch</varname> is set
-      to off and a similar situation happens then
-      the <productname>Pgpool-II</productname> only terminates
-      the current user session but does not degenerate a backend
-      node.
+      当设置为 on 时，如果所有节点对发送到所有
+      <productname>PostgreSQL</productname> 后端节点的查询
+      返回相同类型的响应包，则正常；
+      否则，响应不同于多数节点的后台节点将被
+      <productname>Pgpool-II</productname> 降级。
+      如果将 <varname>replication_stop_on_mismatch</varname> 设置为 off，
+      且发生类似情况，则 <productname>Pgpool-II</productname> 仅终止当前用户会话，
+      而不会降级后端节点。
      </para>
 
      <note>
       <para>
-       <productname>Pgpool-II</productname> does not examine
-       the data returned by the backends and takes the decision
-       only by comparing the result packet types.
+       <productname>Pgpool-II</productname> 不检查后端返回的数据，
+       仅通过比较结果包类型来做出决策。
       </para>
      </note>
 
      <para>
-      A typical use case of enabling
-      the <varname>replication_stop_on_mismatch</varname> is to
-      guard against the data inconsistency among the backend
-      nodes.  For example, you may want to degenerate a backend
-      node if an UPDATE statement fails on one backend node
-      while passes on others.
+      启用 <varname>replication_stop_on_mismatch</varname> 的一个典型用例是
+      防止后端节点之间的数据不一致。例如，您可能希望
+      在某个后端节点上 UPDATE 语句失败而在其他节点上成功时，
+      降级该后端节点。
      </para>
      <para>
-      Default is off.
+      默认为 off。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
     </listitem>
    </varlistentry>
@@ -771,32 +698,27 @@ backend_clustering_mode = native_replication
     </term>
     <listitem>
      <para>
-      When set to on, and all nodes do not reply with the same
-      number of affected tuples to the INSERT/UPDATE/DELETE
-      query, then the backend node whose reply differs from the
-      majority is degenerated by
-      the <productname>Pgpool-II</productname>.
-      If <varname>failover_if_affected_tuples_mismatch</varname>
-      is set to off and a similar situation happens then
-      the <productname>Pgpool-II</productname> only terminates
-      the current user session but does not degenerate a backend
-      node.
+      当设置为 on 时，如果所有节点对 INSERT/UPDATE/DELETE
+      查询返回的受影响元组数不同，则响应不同于多数节点的后台节点将被
+      <productname>Pgpool-II</productname> 降级。
+      如果将 <varname>failover_if_affected_tuples_mismatch</varname>
+      设置为 off，且发生类似情况，则
+      <productname>Pgpool-II</productname> 仅终止当前用户会话，
+      而不会降级后端节点。
      </para>
 
      <note>
       <para>
-       In case of a tie, when two or more groups have the same
-       number of nodes, then the group containing the primary
-       node (backend node having the youngest node id) gets the
-       precedence.
+       在平局情况下，当两个或多个组的节点数相同时，
+       包含主节点（具有最年轻 node id 的后端节点）的组获得优先权。
       </para>
      </note>
 
      <para>
-      Default is off.
+      默认为 off。
      </para>
      <para>
-      This parameter can be changed by reloading the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
     </listitem>
    </varlistentry>
@@ -809,13 +731,12 @@ backend_clustering_mode = native_replication
     </term>
     <listitem>
      <para>
-      When set to on, <productname>Pgpool-II</productname> enables the
-      SELECT query replication mode. i.e. The SELECT queries are sent
-      to all backend nodes.
+      当设置为 on 时，<productname>Pgpool-II</productname> 启用 SELECT 查询复制模式，
+      即 SELECT 查询将发送到所有后端节点。
      </para>
 
      <table id="replicate-select-affect-table">
-      <title>replicate_select with <xref linkend="guc-load-balance-mode"> affects on SELECT routing</title>
+      <title>replicate_select 与 <xref linkend="guc-load-balance-mode"> 对 SELECT 路由的影响</title>
       <tgroup cols="6" align="center">
        <colspec colname="_1" colwidth="1*">
 	<colspec colname="_2" colwidth="1*">
@@ -826,20 +747,20 @@ backend_clustering_mode = native_replication
 
 	     <tbody>
 	      <row>
-	       <entry>replicate_select is true</entry>
+	       <entry>replicate_select 为 true</entry>
 	       <entry align="center">Y</entry>
 	       <entry align="center" nameend="_6" namest="_3">N</entry>
 	      </row>
 
 	      <row>
-	       <entry>load_balance_mode is true</entry>
+	       <entry>load_balance_mode 为 true</entry>
 	       <entry>ANY</entry>
 	       <entry align="center" nameend="_5" namest="_3">Y</entry>
 	       <entry align="center">N</entry>
 	      </row>
 
 	      <row>
-	       <entry>SELECT is inside a transaction block</entry>
+	       <entry>SELECT 在事务块内</entry>
 	       <entry align="center">ANY</entry>
 	       <entry nameend="_4" namest="_3" align="center"> Y </entry>
 	       <entry align="center">N</entry>
@@ -848,8 +769,7 @@ backend_clustering_mode = native_replication
 
 	      <row>
 	       <entry>
-		Transaction isolation level is SERIALIZABLE and
-		the transaction has issued a write query
+		 事务隔离级别为 SERIALIZABLE 且事务已发出写查询
 	       </entry>
 	       <entry align="center">ANY</entry>
 	       <entry align="center">Y</entry>
@@ -860,7 +780,7 @@ backend_clustering_mode = native_replication
 
 	      <row>
 	       <entry>
-		results(R:replication, M: send only to main, L: load balance)
+		 结果（R：复制，M：仅发送到主节点，L：负载均衡）
 	       </entry>
 	       <entry align="center">R</entry>
 	       <entry align="center">M</entry>
@@ -874,10 +794,10 @@ backend_clustering_mode = native_replication
      </table>
 
      <para>
-      Default is off.
+      默认为 off。
      </para>
      <para>
-      This parameter can be changed by reloading the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
     </listitem>
    </varlistentry>
@@ -890,26 +810,20 @@ backend_clustering_mode = native_replication
     </term>
     <listitem>
      <para>
-      When set to on, <productname>Pgpool-II</productname> will
-      automatically lock the table
-      on <productname>PostgreSQL</productname> before an INSERT
-      statement is issued for that.
+      当设置为 on 时，<productname>Pgpool-II</productname> 将在发出 INSERT
+      语句之前自动对 <productname>PostgreSQL</productname> 上的表加锁。
      </para>
 
      <para>
-      When replicating a table with SERIAL data type, the SERIAL
-      column value may get different values on the different
-      backends.  The workaround to this problem is to explicitly
-      lock the table before issuing the INSERT.
+      在复制具有 SERIAL 数据类型的表时，SERIAL 列的值可能在不同后端上获得不同的值。
+      解决此问题的方法是在发出 INSERT 之前显式锁表。
      </para>
      <para>
-      So for automatically locking the
-      table <productname>Pgpool-II</productname> do the
-      following transformation:
+      因此，为了自动锁定表，<productname>Pgpool-II</productname> 会进行以下转换：
       <programlisting>
        INSERT INTO ...
       </programlisting>
-      to
+      转换为
       <programlisting>
        BEGIN;
        LOCK TABLE ...
@@ -919,111 +833,91 @@ backend_clustering_mode = native_replication
      </para>
      <caution>
       <para>
-       This approach severely degrades the transactions'
-       parallelism
+       此方法会严重降低事务的并行性
       </para>
      </caution>
 
      <para>
       <productname>Pgpool-II</productname> <emphasis>V2.2</emphasis>
-      or later, automatically detects whether the table has a
-      SERIAL columns or not, so it never locks the table if it
-      doesn't have the SERIAL columns.
+      或更高版本会自动检测表是否具有 SERIAL 列，
+      因此如果没有 SERIAL 列则永远不会锁表。
      </para>
 
      <para>
-      <productname>Pgpool-II</productname> <emphasis>V3.0</emphasis> until
+      <productname>Pgpool-II</productname> <emphasis>V3.0</emphasis> 到
       <productname>Pgpool-II</productname> <emphasis>V3.0.4</emphasis>
-      uses a row lock against the sequence relation, rather than
-      table lock.  This is intended to minimize lock conflict
-      with <acronym>VACUUM</acronym> (including autovacuum).
-      However this can lead to another problem. After
-      transaction wraparound happens, row locking against the
-      sequence relation causes PostgreSQL internal error (more
-      precisely, access error on pg_clog, which keeps
-      transaction status).  To prevent
-      this, <productname>PostgreSQL</productname> core
-      developers decided to disallow row locking against
-      sequences and this broke
-      the <productname>Pgpool-II</productname>, of course (the
-      "fixed" version of PostgreSQL was released as 9.0.5,
-      8.4.9, 8.3.16 and 8.2.22).
+      使用针对序列关系的行锁，而非表锁。这是为了
+      最小化与 <acronym>VACUUM</acronym>（包括 autovacuum）的锁冲突。
+      然而这可能导致另一个问题。事务回绕发生后，
+      针对序列关系的行锁会导致 PostgreSQL 内部错误
+      （更准确地说，是 pg_clog 的访问错误，pg_clog 用于保持事务状态）。
+      为防止此问题，<productname>PostgreSQL</productname> 核心开发者决定
+      禁止对序列进行行锁，这当然破坏了
+      <productname>Pgpool-II</productname>（"修复"版本的 PostgreSQL 作为
+      9.0.5、8.4.9、8.3.16 和 8.2.22 发布）。
      </para>
 
      <para>
       <productname>Pgpool-II</productname> <emphasis>V3.0.5</emphasis>
-      or later uses a row lock
-      against <literal>pgpool_catalog.insert_lock</literal>
-      table because new PostgreSQL disallows a row lock against
-      the sequence relation.  So creating insert_lock table in
-      all databases which are accessed via
-      <productname>Pgpool-II</productname> beforehand is
-      required.  See <xref linkend="create-installlock-table">
-       for more details.  If does not exist insert_lock
-       table, <productname>Pgpool-II</productname> locks the
-       insert target table.  This behavior is same
-       as <productname>Pgpool-II</productname> <emphasis>V2.2</emphasis>
-       and <emphasis>V2.3</emphasis> series.
+      或更高版本使用针对 <literal>pgpool_catalog.insert_lock</literal>
+      表的行锁，因为新的 PostgreSQL 禁止对序列关系进行行锁。
+      因此，需要在使用 <productname>Pgpool-II</productname> 访问的所有数据库
+      中预先创建 insert_lock 表。
+      有关更多详细信息，请参阅 <xref linkend="create-installlock-table">。
+      如果 insert_lock 表不存在，<productname>Pgpool-II</productname> 将锁住
+      插入目标表。此行为与
+      <productname>Pgpool-II</productname> <emphasis>V2.2</emphasis>
+      和 <emphasis>V2.3</emphasis> 系列相同。
      </para>
      <para>
-      If you want to use <varname>insert_lock</varname> which is
-      compatible with older releases, you can specify lock
-      method by configure script.
-      See <xref linkend="install-pgpool"> for more details.
+      如果您想使用与旧版本兼容的 <varname>insert_lock</varname>，
+      可以通过 configure 脚本指定锁方法。
+      有关更多详细信息，请参阅 <xref linkend="install-pgpool">。
      </para>
 
      <para>
-      For fine (per statement) control:
+      精细（每条语句）控制：
      </para>
 
      <itemizedlist>
       <listitem>
        <para>
-	set insert_lock to true, and add /*NO INSERT LOCK*/ at
-	the beginning of an INSERT statement for which you do
-	not want to acquire the table lock.
+	将 insert_lock 设置为 true，并在您不想获取表锁的 INSERT
+	语句开头添加 /*NO INSERT LOCK*/。
        </para>
       </listitem>
       <listitem>
        <para>
-	set insert_lock to false, and add /*INSERT LOCK*/ at
-	the beginning of an INSERT statement for which you
-	want to acquire the table lock.
+	将 insert_lock 设置为 false，并在您想获取表锁的 INSERT
+	语句开头添加 /*INSERT LOCK*/。
        </para>
       </listitem>
 
      </itemizedlist>
      <note>
       <para>
-       If insert_lock is enabled, the regression tests for
-       PostgreSQL 8.0 gets fail in transactions, privileges,
-       rules, and alter_table.
+       如果启用了 insert_lock，PostgreSQL 8.0 的回归测试会在
+       transactions、privileges、rules 和 alter_table 中失败。
       </para>
       <para>
-       The reason for this is
-       that <productname>Pgpool-II</productname> tries to LOCK
-       the VIEW for the rule test, and it produces the below
-       error message:
+       原因是 <productname>Pgpool-II</productname> 尝试对规则测试的
+       VIEW 进行 LOCK，并产生以下错误消息：
        <programlisting>
 	! ERROR: current transaction is aborted, commands ignored until
 	end of transaction block
        </programlisting>
-       For example, the transactions test tries an INSERT into
-       a table which does not exist,
-       and <productname>Pgpool-II</productname>
-       causes <productname>PostgreSQL</productname> to acquire
-       the lock for the table. Of cause this results in an
-       error.  The transaction will be aborted, and the
-       following INSERT statement produces the above error
-       message.
+       例如，transactions 测试尝试向不存在的表插入数据，
+       而 <productname>Pgpool-II</productname> 导致
+       <productname>PostgreSQL</productname> 获取该表的锁。
+       这显然会导致错误。事务将被中止，后续的 INSERT 语句
+       会产生上述错误消息。
       </para>
      </note>
      <para>
-      Default is on.
+      默认为 on。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
     </listitem>
    </varlistentry>
@@ -1036,73 +930,69 @@ backend_clustering_mode = native_replication
     </term>
     <listitem>
      <para>
-      Specifies a table name used for large object replication control.
-      If it is specified, <productname>Pgpool-II</productname> will lock
-      the table specified by <varname>lobj_lock_table</varname> and generate
-      a large object id by looking into <literal>pg_largeobject</literal>
-      system catalog and then call <literal>lo_create</literal> to create
-      the large object.
-      This procedure guarantees that <productname>Pgpool-II</productname>
-      will get the same large object id in all DB nodes in replication mode.
+      指定用于大对象复制控制的表名。
+      如果已指定，<productname>Pgpool-II</productname> 将锁定
+      <varname>lobj_lock_table</varname> 指定的表，并通过查看
+      <literal>pg_largeobject</literal> 系统目录来生成大对象 ID，
+      然后调用 <literal>lo_create</literal> 来创建大对象。
+      此过程保证 <productname>Pgpool-II</productname>
+      在复制模式下在所有 DB 节点上获得相同的大对象 ID。
      </para>
      <note>
       <para>
-       <productname>PostgreSQL</productname> 8.0 and older does
-       not have <literal>lo_create</literal>, so this feature
-       does not work with PostgreSQL 8.0 and older versions.
+       <productname>PostgreSQL</productname> 8.0 及更早版本
+       没有 <literal>lo_create</literal>，因此此功能
+       不适用于 PostgreSQL 8.0 及更早版本。
       </para>
      </note>
      <para>
-      A call to the <literal>libpq</literal>
-      function <literal>lo_creat()</literal> triggers this
-      feature. Also large object creation
-      through <acronym>Java</acronym> API
-      (<acronym>JDBC</acronym> driver), <acronym>PHP</acronym>
-      API (<literal>pg_lo_create</literal>, or similar API in
-      PHP library such as PDO), and this same API in various
-      programming languages are known to use a similar protocol,
-      and thus should work.
+      对 <literal>libpq</literal> 函数
+      <literal>lo_creat()</literal> 的调用会触发此功能。
+      此外，通过 <acronym>Java</acronym> API
+      （<acronym>JDBC</acronym> 驱动程序）、<acronym>PHP</acronym>
+      API（<literal>pg_lo_create</literal>，或 PHP 库中类似的 API 如 PDO）
+      以及各种编程语言中的此相同 API 创建大对象的方式
+      已知会使用类似的协议，因此应该可以正常工作。
      </para>
 
      <para>
-      This feature does not works with following operations on large objects.
+      此功能不适用于以下大对象操作。
      </para>
      <itemizedlist>
       <listitem>
        <para>
-	All APIs using <literal>lo_create</literal>, <literal>lo_import_with_oid</literal>.
+	所有使用 <literal>lo_create</literal>、<literal>lo_import_with_oid</literal> 的 API。
        </para>
       </listitem>
       <listitem>
        <para>
-	<literal>lo_import</literal> function in backend called in SELECT.
+	在 SELECT 中调用的后端 <literal>lo_import</literal> 函数。
        </para>
       </listitem>
       <listitem>
        <para>
-	<literal>lo_create</literal> function in backend called in SELECT.
+	在 SELECT 中调用的后端 <literal>lo_create</literal> 函数。
        </para>
       </listitem>
      </itemizedlist>
 
      <note>
       <para>
-       All <productname>PostgreSQL</productname> users must
-       have a write access
-       on <varname>lobj_lock_table</varname> and it can be
-       created in any schema.
+       所有 <productname>PostgreSQL</productname> 用户必须对
+       <varname>lobj_lock_table</varname> 具有写访问权限，
+       且可以在任何 schema 中创建。
       </para>
      </note>
 
      <para>
-      Example to create a large object lock table:
+      创建大对象锁表的示例：
       <programlisting>
        CREATE TABLE public.my_lock_table ();
        GRANT ALL ON public.my_lock_table TO PUBLIC;
       </programlisting>
      </para>
      <para>
-      Default is <literal>''</literal>(empty), which disables the feature.
+      默认为 <literal>''</literal>（空），表示禁用此功能。
      </para>
     </listitem>
    </varlistentry>
@@ -1111,20 +1001,18 @@ backend_clustering_mode = native_replication
  </sect2>
 
  <sect2 id="guc-snapshot-isolation-mode" xreflabel="snapshot isolation mode">
-  <title>Snapshot isolation mode</title>
+  <title>快照隔离模式</title>
 
   <para>
-   This mode is similar to the native replication mode except it adds
-   the visibility consistency among nodes. The implementation is based
-   on a research paper <xref linkend="mishima2009">.
-   To enable this mode, use snapshot_isolation for
-   <varname>backend_clustering_mode</varname>.
+   此模式类似于原生复制模式，不同之处在于它增加了节点间的可见性一致性。
+   其实现基于研究论文 <xref linkend="mishima2009">。
+   要启用此模式，请使用 snapshot_isolation 作为
+   <varname>backend_clustering_mode</varname> 的值。
     <programlisting>
 backend_clustering_mode = snapshot_isolation
     </programlisting>
-   For example, you can avoid following inconsistency among nodes caused by the
-   visibility inconsistency. Here S1 and S2 denotes sessions, while N1
-   and N2 denotes the PostgreSQL server 1 and 2 respectively.
+   例如，您可以避免由可见性不一致引起的以下节点间不一致。
+   此处 S1 和 S2 表示会话，N1 和 N2 分别表示 PostgreSQL 服务器 1 和 2。
    <programlisting>
 S1/N1: BEGIN;
 S1/N2: BEGIN;
@@ -1133,15 +1021,13 @@ S1/N2: UPDATE t1 SET i = i + 1; -- i = 1
 S1/N1: COMMIT;
 S2/N1: BEGIN;
 S2/N2: BEGIN;
-S2/N2: DELETE FROM t1 WHERE i = 1; -- delete 1 row since S1/N2 is not committed yet
-S2/N1: DELETE FROM t1 WHERE i = 1; -- delete no row since S1/N1 is committed and i is not 1 anymore
+S2/N2: DELETE FROM t1 WHERE i = 1; -- 删除 1 行，因为 S1/N2 尚未提交
+S2/N1: DELETE FROM t1 WHERE i = 1; -- 不删除任何行，因为 S1/N1 已提交且 i 不再为 1
 S1/N2: COMMIT;
 S2/N1: COMMIT;
 S2/N2: COMMIT;
    </programlisting>
-   In the snapshot isolation mode, the result will be either one of
-   them below and it never damages the data consistency among database
-   nodes.
+   在快照隔离模式下，结果将是以下两者之一，且不会破坏数据库节点间的数据一致性。
    <programlisting>
 S1/N1: BEGIN;
 S1/N2: BEGIN;
@@ -1151,8 +1037,8 @@ S2/N1: BEGIN;
 S2/N2: BEGIN;
 S1/N1: COMMIT;
 S1/N2: COMMIT;
-S2/N1: DELETE FROM t1 WHERE i = 1; -- delete no row since S1/N1 is committed and i is not 1 anymore
-S2/N2: DELETE FROM t1 WHERE i = 1; -- delete no row since S1/N2 is committed and i is not 1 anymore
+S2/N1: DELETE FROM t1 WHERE i = 1; -- 不删除任何行，因为 S1/N1 已提交且 i 不再为 1
+S2/N2: DELETE FROM t1 WHERE i = 1; -- 不删除任何行，因为 S1/N2 已提交且 i 不再为 1
 S2/N1: COMMIT;
 S2/N2: COMMIT;
    </programlisting>
@@ -1164,8 +1050,8 @@ S1/N1: UPDATE t1 SET i = i + 1;	-- i = 1
 S1/N2: UPDATE t1 SET i = i + 1; -- i = 1
 S2/N1: BEGIN;
 S2/N2: BEGIN;
-S2/N1: DELETE FROM t1 WHERE i = 1; -- delete 1 row since S1/N1 is not committed yet
-S2/N2: DELETE FROM t1 WHERE i = 1; -- delete 1 row since S1/N2 is not committed yet
+S2/N1: DELETE FROM t1 WHERE i = 1; -- 删除 1 行，因为 S1/N1 尚未提交
+S2/N2: DELETE FROM t1 WHERE i = 1; -- 删除 1 行，因为 S1/N2 尚未提交
 S1/N1: COMMIT;
 S1/N2: COMMIT;
 S2/N1: COMMIT;
@@ -1176,9 +1062,8 @@ S2/N2: COMMIT;
   <itemizedlist>
    <listitem>
     <para>
-     It is necessary to set the transaction isolation level to
-     REPEATABLE READ.  That means you need to set it in
-     <filename>postgresql.conf</filename> like this:
+     必须将事务隔离级别设置为 REPEATABLE READ。
+     这意味着您需要在 <filename>postgresql.conf</filename> 中这样设置：
      <programlisting>
 default_transaction_isolation = 'repeatable read'
      </programlisting>
@@ -1189,36 +1074,34 @@ default_transaction_isolation = 'repeatable read'
  </sect2>
 
  <sect2 id="runtime-config-logical-replication-mode">
-  <title>Logical replication mode</title>
+  <title>逻辑复制模式</title>
 
   <para>
-   In this mode
-   <productname>PostgreSQL</productname> is responsible to replicate
-   each servers. To enable this mode, use logical_replication for
-   <varname>backend_clustering_mode</varname>.
+   在此模式下，<productname>PostgreSQL</productname> 负责各服务器之间的复制。
+   要启用此模式，请使用 logical_replication 作为
+   <varname>backend_clustering_mode</varname> 的值。
     <programlisting>
 backend_clustering_mode = logical_replication
     </programlisting>
-   In this mode you can have up to 127 logical replication standby servers.
-   Also it is possible not to have standby server at all.
+   在此模式下，您可以拥有最多 127 个逻辑复制备用服务器。
+   也可以完全不设置备用服务器。
   </para>
 
   <para>
-   The drawback of this mode is, it is necessary to consider the
-   replication delay while distributing read queries. The visibility
-   consistency among nodes is not guaranteed either.  Also certain
-   kind of objects such as DDL and large objects are not replicated.
+   此模式的缺点是，在分发读查询时必须考虑复制延迟。
+   节点之间的可见性一致性也无法保证。
+   此外，某些类型的对象（如 DDL 和大对象）不会被复制。
   </para>
 
  </sect2>
 
  <sect2 id="guc-raw-mode" xreflabel="raw mode">
-  <title>Raw mode</title>
+  <title>原始模式</title>
   <para>
-   In this mode, <productname>Pgpool-II</> does not care about the database synchronization.
-   It's user's responsibility to make the whole system does a meaningful thing.
-   Load balancing is <emphasis>not</emphasis> possible in the mode.
-   To enable this mode, use raw for <varname>backend_clustering_mode</varname>.
+   在此模式下，<productname>Pgpool-II</> 不关心数据库同步。
+   让用户负责使整个系统有意义地运行。
+   在此模式下<emphasis>不支持</emphasis>负载均衡。
+   要启用此模式，请将 raw 用作 <varname>backend_clustering_mode</varname> 的值。
    <programlisting>
 backend_clustering_mode = raw
    </programlisting>
@@ -1228,10 +1111,10 @@ backend_clustering_mode = raw
 </sect1>
 
 <sect1 id="runtime-config-backend-settings">
- <title>Backend Settings</title>
+ <title>后端设置</title>
 
  <sect2 id="runtime-config-backend-connection-settings">
-  <title>Backend Connection Settings</title>
+  <title>后端连接设置</title>
 
   <variablelist>
 
@@ -1244,75 +1127,62 @@ backend_clustering_mode = raw
 
     <listitem>
      <para>
-      <varname>backend_hostname</varname> specifies the
-      <productname>PostgreSQL</productname> backend to be
-      connected to.  It is used
-      by <productname>Pgpool-II</productname> to communicate
-      with the server.
+      <varname>backend_hostname</varname> 指定要连接的
+      <productname>PostgreSQL</productname> 后端。
+      <productname>Pgpool-II</productname> 使用此参数与服务器通信。
      </para>
 
      <para>
-      For TCP/IP communication, this parameter can take a
-      hostname or an IP address. If this begins with a
-      slash(<literal>/</literal>), it specifies Unix-domain
-      communication rather than TCP/IP; the value is the name of
-      the directory in which the socket file is stored. The
-      default behavior when backend_hostname is empty
-      (<literal>''</literal>) is to connect to a Unix-domain
-      socket in <filename>/tmp</filename>.
+      对于 TCP/IP 通信，此参数可以接受主机名或 IP 地址。
+      如果以斜杠（<literal>/</literal>）开头，则表示使用 Unix 域通信
+      而非 TCP/IP；该值为存储套接字文件的目录名称。
+      当 backend_hostname 为空（<literal>''</literal>）时的默认行为
+      是连接到 <filename>/tmp</filename> 中的 Unix 域套接字。
      </para>
 
      <para>
-      Multiple backends can be specified by adding a number at the
-      end of the parameter name (e.g.backend_hostname0). This
-      number is referred to as "DB node ID", and it starts from
-      0. The backend which was given the DB node ID of 0 will be
-      called "main node". When multiple backends are defined, the
-      service can be continued even if the main node is down (not
-      true in some modes). In this case, the youngest DB node ID
-      alive will be the new main node.
+      可以通过在参数名末尾添加数字（例如 backend_hostname0）来指定多个后端。
+      此数字称为"DB 节点 ID"，从 0 开始。
+      被赋予 DB 节点 ID 0 的后端称为"主节点"。
+      当定义了多个后端时，即使主节点宕机，服务也可以继续（某些模式下不成立）。
+      在这种情况下，存活的最年轻 DB 节点 ID 将成为新主节点。
      </para>
 
      <para>
-      Please note that the DB node which has id 0 has no special
-      meaning if operated in streaming replication mode. Rather,
-      you should care about if the DB node is the "primary node" or
-      not. See <xref linkend="runtime-config-load-balancing">,
-       <xref linkend="runtime-config-failover">,
-	<xref linkend="runtime-streaming-replication-check">
-	 for more details.
+      请注意，在以流复制模式运行时，ID 为 0 的 DB 节点没有特殊含义。
+      相反，您应该关注该 DB 节点是否为"主节点"。
+      有关更多详细信息，请参阅 <xref linkend="runtime-config-load-balancing">、
+      <xref linkend="runtime-config-failover">、
+      <xref linkend="runtime-streaming-replication-check">。
      </para>
 
      <para>
-      In a replication configuration, the <literal>host</literal> specified in
-      <literal>primary_conninfo</literal> on the standby side must match the value of
-      <varname>backend_hostname</varname> that <productname>Pgpool-II</productname> uses
-      to identify the primary node.
-      For example, if the primary node is backend0 (with hostname <literal>host0</literal>)
-      and the standby node is backend1 with <varname>backend_application_name</varname>
-      set to <literal>server1</literal>, then the <filename>postgresql.conf</filename>
-      on backend1 should be configured as follows:
+      在复制配置中，备用方 <literal>primary_conninfo</literal> 中指定的
+      <literal>host</literal> 必须与 <productname>Pgpool-II</productname>
+      用于标识主节点的 <varname>backend_hostname</varname> 值匹配。
+      例如，如果主节点是 backend0（主机名为 <literal>host0</literal>），
+      备用节点是 backend1 且 <varname>backend_application_name</varname>
+      设置为 <literal>server1</literal>，则 backend1 上的
+      <filename>postgresql.conf</filename> 应配置如下：
       <programlisting>
 primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server1'''
       </programlisting>
-      In this case, <varname>backend_hostname</varname> corresponding to backend0
-      should also be set to <literal>host0</literal>.
-      If these values do not match, <productname>Pgpool-II</productname> may fail to
-      identify the primary node correctly, and features such as streaming replication
-      checks may not work as expected.
+      在这种情况下，对应于 backend0 的 <varname>backend_hostname</varname>
+      也应设置为 <literal>host0</literal>。
+      如果这些值不匹配，<productname>Pgpool-II</productname> 可能无法正确
+      识别主节点，流复制检查等功能可能无法按预期工作。
      </para>
 
      <para>
-      If you plan to use only
-      one <productname>PostgreSQL</productname> server, specify
-      it by backend_hostname0.
+      如果计划只使用一个
+      <productname>PostgreSQL</productname> 服务器，
+      请通过 backend_hostname0 指定它。
      </para>
 
      <para>
-      New nodes can be added by adding parameter rows and
-      reloading a configuration file. However, the existing
-      values cannot be updated, so you must
-      restart <productname>Pgpool-II</productname> in that case.
+      可以通过添加参数行并重新加载配置文件来添加新节点。
+      但是，无法更新现有值，因此在这种情况下必须重启
+      <productname>Pgpool-II</productname>。
      </para>
 
     </listitem>
@@ -1328,17 +1198,15 @@ primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server
 
     <listitem>
      <para>
-      <varname>backend_port</varname> specifies the port number
-      of the backends. Multiple backends can be specified by
-      adding a number at the end of the parameter name
-      (e.g. backend_port0). If you plan to use only one
-      <productname>PostgreSQL</productname> server, specify it by backend_port0.
+      <varname>backend_port</varname> 指定后端的端口号。
+      可以通过在参数名末尾添加数字（例如 backend_port0）来指定多个后端。
+      如果计划只使用一个 <productname>PostgreSQL</productname> 服务器，
+      请通过 backend_port0 指定它。
      </para>
      <para>
-      New backend ports can be added by adding parameter rows
-      and reloading a configuration file. However, the existing
-      values cannot be updated, so you must
-      restart <productname>Pgpool-II</productname> in that case.
+      可以通过添加参数行并重新加载配置文件来添加新的后端端口。
+      但是，无法更新现有值，因此在这种情况下必须重启
+      <productname>Pgpool-II</productname>。
      </para>
     </listitem>
    </varlistentry>
@@ -1352,23 +1220,18 @@ primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server
 
     <listitem>
      <para>
-      <varname>backend_weight</varname> specifies the load balance
-      ratio of the backends. It may be set to any integer or
-      floating point value greater than or equal to zero.
-      Multiple backends can be specified by
-      adding a number at the end of the parameter name
-      (e.g. backend_weight0). If you plan to use only one
-      PostgreSQL server, specify it by backend_weight0.
+      <varname>backend_weight</varname> 指定后端的负载均衡比例。
+      可以设置为大于或等于零的任何整数或浮点值。
+      可以通过在参数名末尾添加数字（例如 backend_weight0）来指定多个后端。
+      如果计划只使用一个 PostgreSQL 服务器，请通过 backend_weight0 指定它。
      </para>
      <para>
-      New <varname>backend_weight</varname> can be added in this parameter by
-      reloading a configuration file. However, this will take
-      effect only for new established client sessions.
-      <productname>Pgpool-II</productname> <emphasis>V2.2.6</emphasis>, <emphasis>V2.3</emphasis>
-      or later allows updating the values by reloading a
-      configuration file.  This is useful if you want to prevent
-      any query sent to standbys to perform some administrative
-      work in streaming replication mode, logical replication mode and slony mode.
+      可以通过重新加载配置文件在此参数中新增 <varname>backend_weight</varname>。
+      但此更改仅对新建立的客户端会话生效。
+      <productname>Pgpool-II</productname> <emphasis>V2.2.6</emphasis>、<emphasis>V2.3</emphasis>
+      或更高版本允许通过重新加载配置文件来更新值。
+      如果您想在流复制模式、逻辑复制模式和 slony 模式下阻止任何发送到备用节点的查询
+      执行某些管理工作，这将非常有用。
      </para>
     </listitem>
    </varlistentry>
@@ -1377,7 +1240,7 @@ primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server
  </sect2>
 
  <sect2 id="runtime-config-backend-data">
-  <title>Backend Data Settings</title>
+  <title>后端数据设置</title>
 
   <variablelist>
 
@@ -1390,19 +1253,16 @@ primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server
 
     <listitem>
      <para>
-      <varname>backend_data_directory</varname> specifies the
-      database cluster directory of the backend. Multiple backends can be
-      specified by adding a number at the end of the parameter
-      name (e.g. backend_data_directory0). If you plan to use
-      only one PostgreSQL server, specify it by
-      backend_data_directory0. This parameter is used by online recovery.
-      If you do not use online recovery, you do not need to set it.
+      <varname>backend_data_directory</varname> 指定后端的数据库集群目录。
+      可以通过在参数名末尾添加数字（例如 backend_data_directory0）来指定多个后端。
+      如果计划只使用一个 PostgreSQL 服务器，请通过
+      backend_data_directory0 指定它。此参数由在线恢复功能使用。
+      如果您不使用在线恢复，则无需设置此参数。
      </para>
      <para>
-      New <varname>backend data_directory</varname> can be added by adding parameter rows and reloading a
-      configuration file. However, the existing values cannot be updated, so
-      you must restart <productname>Pgpool-II</productname> in
-      that case.
+      可以通过添加参数行并重新加载配置文件来添加新的 <varname>backend data_directory</varname>。
+      但是，无法更新现有值，因此在这种情况下必须重启
+      <productname>Pgpool-II</productname>。
      </para>
     </listitem>
    </varlistentry>
@@ -1416,69 +1276,60 @@ primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server
 
     <listitem>
      <para>
-      <varname>backend_flag</varname> controls various backend
-      behavior. Multiple backends can be specified by adding a
-      number at the end of the parameter name
-      (e.g. backend_flag0). If you plan to use only one
-      PostgreSQL server, specify it by backend_flag0.
+      <varname>backend_flag</varname> 控制各种后端行为。
+      可以通过在参数名末尾添加数字（例如 backend_flag0）来指定多个后端。
+      如果计划只使用一个 PostgreSQL 服务器，请通过 backend_flag0 指定它。
      </para>
      <para>
-      New backend flags can be added by adding parameter rows and reloading a
-      configuration file. Currently followings are allowed. Multiple flags can
-      be specified by using "|".
+      可以通过添加参数行并重新加载配置文件来添加新的后端标志。
+      当前支持以下标志。多个标志可以使用 "|" 指定。
      </para>
 
      <table id="backend-flag-table">
-      <title>Backend flags</title>
+      <title>后端标志</title>
       <tgroup cols="2">
        <thead>
 	<row>
-	 <entry>Flag</entry>
-	 <entry>Description</entry>
+	 <entry>标志</entry>
+	 <entry>说明</entry>
 	</row>
        </thead>
 
        <tbody>
 	<row>
 	 <entry><literal>ALLOW_TO_FAILOVER</literal></entry>
-	 <entry>Allow to failover or detaching backend. This
-	  is the default. You cannot specify with
-	  DISALLOW_TO_FAILOVER at a same time.</entry>
+	 <entry>允许故障转移或分离后端。
+	  这是默认值。不能与
+	  DISALLOW_TO_FAILOVER 同时指定。</entry>
 	</row>
 	<row>
 	 <entry><literal>DISALLOW_TO_FAILOVER</literal></entry>
-	 <entry>Disallow to failover or detaching backend
-	  This is useful when you protect backend by
-	  using HA (High Availability) softwares such as
-	  <productname>Heartbeat</productname>
-	  or <productname>Pacemaker</productname>. You cannot specify with
-	  ALLOW_TO_FAILOVER at a same time.
+	 <entry>禁止故障转移或分离后端。
+	  当您使用 <productname>Heartbeat</productname>
+	  或 <productname>Pacemaker</productname> 等 HA（高可用）软件
+	  保护后端时，此标志非常有用。不能与
+	  ALLOW_TO_FAILOVER 同时指定。
 	 </entry>
 	</row>
 
 	<row>
 	 <entry><literal>ALWAYS_PRIMARY</literal></entry>
-	 <entry>This is only useful in streaming replication
-	  mode. See <xref linkend="running-mode"> about
-	   streaming replication mode.  If this flag is set to
-	   one of
-	   backends, <productname>Pgpool-II</productname> will
-	   not find the primary node by inspecting
-	   backend. Instead, always regard the node which the
-	   flag is set as the primary node. This is useful for
-	   systems including <productname>Amazon Aurora for
-	    PostgreSQL Compatibility</productname> which has
-	   fixed primary server name. See <xref linkend="example-Aurora">
-	    for an example settings.
-	 </entry>
+	 <entry>此标志仅在流复制模式下有用。
+	  有关流复制模式的详细信息，请参阅 <xref linkend="running-mode">。
+	  如果将此标志设置为某个后端，
+	  <productname>Pgpool-II</productname> 将不会通过检查后端来
+	  查找主节点。相反，始终将设置了此标志的节点视为主节点。
+	  这对于包含具有固定主服务器名称的
+	  <productname>Amazon Aurora for PostgreSQL Compatibility</productname>
+	  的系统非常有用。
+	  有关示例配置，请参阅 <xref linkend="example-Aurora">。</entry>
 	</row>
 
        </tbody>
       </tgroup>
      </table>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
 
     </listitem>
@@ -1493,33 +1344,30 @@ primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server
 
     <listitem>
      <para>
-      <varname>backend_application_name</varname> specifies the
-      application name of walreceiver, which receives WAL log
-      from primary node. Thus in other than streaming
-      replication mode, this parameter does not need to be set.
-      Also this parameter is required to if you want to show
-      "replication_state" and "replication_sync_state" column
-      in <xref linkend="SQL-SHOW-POOL-NODES"> and <xref linkend="PCP-NODE-INFO"> commands.
-      Moreover <xref linkend="guc-delay-threshold-by-time"> requires
-      this parameter too.
+      <varname>backend_application_name</varname> 指定 walreceiver
+      的应用程序名称，walreceiver 从主节点接收 WAL 日志。
+      因此，在流复制模式之外的模式下，无需设置此参数。
+      此外，如果您想在 <xref linkend="SQL-SHOW-POOL-NODES">
+      和 <xref linkend="PCP-NODE-INFO"> 命令中显示
+      "replication_state" 和 "replication_sync_state" 列，
+      也需要此参数。此外，<xref linkend="guc-delay-threshold-by-time">
+      也需要此参数。
      </para>
      <para>
-      For example, suppose the primary node is backend0 (its host name
-      is "host0"), the standby node in question is backend1 and the
-      backend_application_name for backend1 is "server1", then
-      <literal>primary_conninfo</literal> parameter of
-      <filename>postgresql.conf</filename> should look like:
+      例如，假设主节点是 backend0（其主机名为 "host0"），
+      相关的备用节点是 backend1，且 backend1 的
+      backend_application_name 为 "server1"，则
+      <filename>postgresql.conf</filename> 的
+      <literal>primary_conninfo</literal> 参数应如下所示：
       <programlisting>
 primary_conninfo = 'host=host0 port=5432 user=postgres application_name='server1''
       </programlisting>
-      The <xref linkend="guc-recovery-1st-stage-command"> should
-      generate the parameter. See <xref
-      linkend="example-cluster-pgpool-config-online-recovery"> for a
-      complete example of the command.
+      <xref linkend="guc-recovery-1st-stage-command"> 应生成此参数。
+      有关命令的完整示例，请参阅
+      <xref linkend="example-cluster-pgpool-config-online-recovery">。
      </para>
      <para>
-      This parameter can be changed by reloading
-      the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改。
      </para>
     </listitem>
    </varlistentry>

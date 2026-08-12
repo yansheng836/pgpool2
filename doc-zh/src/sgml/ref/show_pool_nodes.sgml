@@ -11,13 +11,13 @@
  <refmeta>
   <refentrytitle>SHOW POOL NODES</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo>SQL - Language Statements</refmiscinfo>
+  <refmiscinfo>SQL - 语言语句</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>SHOW POOL_NODES</refname>
   <refpurpose>
-   sends back a list of all configured nodes
+   返回所有已配置节点列表
   </refpurpose>
  </refnamediv>
 
@@ -28,40 +28,19 @@
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>描述</title>
 
   <para>
-   <command>SHOW POOL_NODES</command> displays the node id, the
-   hostname, the port, the status, the weight (only meaningful if
-   you use the load balancing mode), the role, the SELECT query
-   counts issued to each backend, whether each node is the load
-   balance node or not, the replication delay (only if in streaming
-   replication mode) and last status change time. In addition to
-   this replication state and sync state are shown for standby nodes
-   in <productname>Pgpool-II</productname> 4.1 or after.
-   Also actual node status and node role are shown in
-   <productname>Pgpool-II</productname> 4.3 or after.
+   <command>SHOW POOL_NODES</command> 显示节点 ID、主机名、端口、状态、权重（仅在负载均衡模式下有意义）、角色、发送到每个后端的 SELECT 查询计数、各节点是否为负载均衡节点、复制延迟（仅在流复制模式下），以及最近一次状态变更时间。此外，在 <productname>Pgpool-II</productname> 4.1 及以上版本中，还显示备用节点的复制状态和同步状态。<productname>Pgpool-II</productname> 4.3 及以上版本还显示实际节点状态和节点角色。
   </para>
   <para>
-   The
-   possible values in the status column are explained in
-   the <xref linkend="pcp-node-info"> reference.
+   状态列中可能的值参见 <xref linkend="pcp-node-info"> 参考文档。
   </para>
   <para> 
-    If the hostname is
-    something like "/tmp", that means
-    <productname>Pgpool-II</productname> is connecting to backend by
-    using UNIX domain sockets. The SELECT count does not include
-    internal queries used
-    by <productname>Pgpool-II</productname>. Also the counters are
-    reset to zero upon starting up
-    of <productname>Pgpool-II</productname>.  The last status change
-    time is initially set to the
-    time <productname>Pgpool-II</productname> starts.  After that
-    whenever "status" or "role" is changed, it is updated.
+    如果主机名为类似 "/tmp" 的值，表示 <productname>Pgpool-II</productname> 正通过 UNIX 域套接字连接到后端。SELECT 计数不包含 <productname>Pgpool-II</productname> 使用的内部查询。计数器在 <productname>Pgpool-II</productname> 启动时重置为零。最近状态变更时间初始设置为 <productname>Pgpool-II</productname> 启动时间，此后每当 "status" 或 "role" 发生变化时都会更新。
   </para>
   <para>
-   Here is an example session:
+   示例会话如下：
    <programlisting>
 test=# show pool_nodes;
  node_id | hostname | port  | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  

@@ -17,8 +17,8 @@
  <refnamediv>
   <refname>SHOW POOL_PROCESSES</refname>
   <refpurpose>
-   sends back a list of all <productname>Pgpool-II</productname>
-   processes waiting for connections and dealing with a connection
+   返回所有等待连接以及正在处理连接的 <productname>Pgpool-II</productname>
+   进程列表
   </refpurpose>
  </refnamediv>
 
@@ -29,31 +29,29 @@
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>描述</title>
 
   <para>
-   <command>SHOW POOL_PROCESSES</command> sends back a list of all
-   <productname>Pgpool-II</productname> processes waiting for
-   connections and dealing with a connection.
+   <command>SHOW POOL_PROCESSES</command> 返回所有等待连接以及正在
+   处理连接的 <productname>Pgpool-II</productname> 进程列表。
   </para>
   <para>
-   It has 8 columns:
+   它包含 8 列：
    <itemizedlist>
     <listitem>
      <para>
-      <literal>pool_pid</literal> is the PID of the
-      displayed <productname>Pgpool-II</productname> process.
+      <literal>pool_pid</literal> 是所显示
+      <productname>Pgpool-II</productname> 进程的 PID。
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>start_time</literal> is the timestamp of when
-      this process was launched.
+      <literal>start_time</literal> 是该进程启动时的时间戳。
       <itemizedlist>
        <listitem>
         <para>
-         If <xref linkend="guc-child-life-time"> is set not 0,
-         the time before process restarting is displayed.
+         如果 <xref linkend="guc-child-life-time"> 的值不为 0，
+         则显示进程重启前的时间。
         </para>
        </listitem>
       </itemizedlist>
@@ -61,59 +59,54 @@
     </listitem>
     <listitem>
      <para>
-      <literal>client_connection_count</literal> counts the number of times
-      this process has been used by clients.
+      <literal>client_connection_count</literal> 统计该进程被客户端
+      使用的次数。
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>database</literal> is the database name of the
-      currently active backend for this process.
+      <literal>database</literal> 是该进程当前活动后端所使用的数据库名。
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>username</literal> is the user name used in the
-      connection of the currently active backend for this
-      process.
+      <literal>username</literal> 是该进程当前活动后端建立
+      连接时使用的用户名。
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>backend_connection_time</literal> is the creation time and
-      date of the connection.
+      <literal>backend_connection_time</literal> 是连接的创建时间和日期。
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>pool_counter</literal> counts the number of times
-      this pool of connections (process) has been used by
-      clients.
+      <literal>pool_counter</literal> 统计这个连接池（进程）被客户端
+      使用的次数。
      </para>
     </listitem>
     <listitem>
      <para>
-      <literal>status</literal> is current status of this process. Possible values are:
+      <literal>status</literal> 是该进程的当前状态。可能的值有：
         <itemizedlist>
           <listitem>
             <para>
-              <literal>Execute command</literal>: Executing a command.
+              <literal>Execute command</literal>：正在执行命令。
             </para>
           </listitem>
           <listitem>
             <para>
-              <literal>Idle</literal>: The process is waiting for a new client command.
+              <literal>Idle</literal>：进程正在等待新的客户端命令。
             </para>
           </listitem>
           <listitem>
             <para>
-              <literal>Idle</literal>: The process is waiting for a new client command
-              in a transaction.
+              <literal>Idle</literal>：进程正在事务中等待新的客户端命令。
             </para>
           </listitem>
           <listitem>
             <para>
-              <literal>Wait for connection</literal>: The process is waiting for a new client connection.
+              <literal>Wait for connection</literal>：进程正在等待新的客户端连接。
             </para>
           </listitem>
       </itemizedlist>
@@ -122,7 +115,7 @@
    </itemizedlist>
   </para>
   <para>
-   Here is an example session:
+   以下是一个示例会话：
    <programlisting>
 test=# show pool_processes;
  pool_pid |                      start_time                      | client_connection_count | database | username | backend_connection_time | pool_counter |       status

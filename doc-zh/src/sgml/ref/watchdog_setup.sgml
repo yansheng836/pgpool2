@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>watchdog_setup</refname>
   <refpurpose>
-   Create a temporary installation of Pgpool-II clusters with watchdog</refpurpose>
+   创建带有 watchdog 功能的 Pgpool-II 集群临时安装</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -29,35 +29,30 @@ Pgpool-II documentation
 
  <refsect1 id="R1-WATCHDOG-SETUP-1">
   <title>
-   Description
+   描述
   </title>
   <para>
-   <application>watchdog_setup</application> creates a temporary
-   installation of <productname>Pgpool-II</productname> clusters with watchdog enabled, which
-   includes a <productname>Pgpool-II</productname> installation and
-   specified number of <productname>PostgreSQL</productname>
-   installations under current directory.
-   Current directory must be empty before running <application>watchdog_setup</application>.
+   <application>watchdog_setup</application> 在当前目录下创建一个带有 watchdog 功能的 <productname>Pgpool-II</productname> 集群的临时安装，包括一个 <productname>Pgpool-II</productname> 安装和指定数量的 <productname>PostgreSQL</productname> 安装。
+   运行 <application>watchdog_setup</application> 之前，当前目录必须为空。
   </para>
   <para>
-   <application>watchdog_setup</application> is for testing purpose
-   only and should not be used to create production installations.
+   <application>watchdog_setup</application> 仅用于测试目的，不应被用于创建生产环境安装。
   </para>
 
   <para>
    <application>watchdog_setup</application>
-   uses <xref linkend="pgpool-setup"> as a workhorse.
+   以 <xref linkend="pgpool-setup"> 作为核心工具。
   </para>
 
   <para>
-   Currently <application>watchdog_setup</application> supports streaming replication mode, snapshot isolation mode, native replication mode, logical replication mode and raw mode.
+   目前 <application>watchdog_setup</application> 支持流复制模式、快照隔离模式、原生复制模式、逻辑复制模式和原始模式。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
-   <application>watchdog_setup</application> accepts the following command-line arguments:
+   <application>watchdog_setup</application> 接受以下命令行参数：
 
    <variablelist>
 
@@ -65,8 +60,8 @@ Pgpool-II documentation
      <term><option>-wn <replaceable class="parameter">num_pgpool</replaceable></option></term>
      <listitem>
       <para>
-       Specifies the number of Pgpool-II installations.
-       If this is omitted, <literal>3</literal> is used.
+       指定 Pgpool-II 安装的数量。
+       如果省略此项，则使用 <literal>3</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -75,17 +70,15 @@ Pgpool-II documentation
      <term><option>-wp <replaceable class="parameter">watchdog_base_port</replaceable></option></term>
      <listitem>
       <para>
-       Specify the starting base port number used by Pgpool-II and
-       PostgreSQL.  For the first Pgpool-II, Pgpool-II port is
-       watchdog_base_port. pcp port is watchdog_base_port + 1, watchdog port is
-       watchdog_base_port + 2. wd_heartbeat_port is
-       watchdog_base_port + 3 (though heartbeat is not used).  The
-       first PostgreSQL node's port is watchdog_base_port + 4,
-       second PostgreSQL node's port is watchdog_base_port + 5 and
-       so on.
+       指定 Pgpool-II 和 PostgreSQL 使用的起始基础端口号。对于第一个 Pgpool-II，Pgpool-II 端口为
+       watchdog_base_port，pcp 端口为 watchdog_base_port + 1，watchdog 端口为
+       watchdog_base_port + 2，wd_heartbeat_port 为
+       watchdog_base_port + 3（尽管心跳功能未使用）。
+       第一个 PostgreSQL 节点的端口为 watchdog_base_port + 4，
+       第二个 PostgreSQL 节点的端口为 watchdog_base_port + 5，依此类推。
       </para>
       <para>
-       If this is omitted, <literal>50000</literal> is used.
+       如果省略此项，则使用 <literal>50000</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -94,9 +87,9 @@ Pgpool-II documentation
      <term><option>-m <replaceable class="parameter">mode</replaceable></option></term>
      <listitem>
       <para>
-       Specifies the running mode.  <replaceable>mode</replaceable>
-       can be <literal>r</literal> (native replication mode), <literal>i</literal> (snapshot isolation mode), <literal>s</literal> (streaming replication mode), <literal>l</literal> (logical replication mode) or <literal>n</literal> (raw mode).
-       If this is omitted, <literal>s</literal> is used.
+       指定运行模式。<replaceable>mode</replaceable>
+       可以是 <literal>r</literal>（原生复制模式）、<literal>i</literal>（快照隔离模式）、<literal>s</literal>（流复制模式）、<literal>l</literal>（逻辑复制模式）或 <literal>n</literal>（原始模式）。
+       如果省略此项，则使用 <literal>s</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -105,8 +98,8 @@ Pgpool-II documentation
      <term><option>-n <replaceable class="parameter">num_clusters</replaceable></option></term>
      <listitem>
       <para>
-       Specifies the number of PostgreSQL installations.
-       If this is omitted, <literal>2</literal> is used.
+       指定 PostgreSQL 安装的数量。
+       如果省略此项，则使用 <literal>2</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -115,15 +108,7 @@ Pgpool-II documentation
      <term><option>-vip [<replaceable class="parameter">ip</replaceable>]</option></term>
      <listitem>
       <para>
-       Specify the virtual IP. If ip is omitted, it is assumed that
-       '127.0.0.1' is specified.  The specified virtual IP is set
-       to <xref linkend="guc-delegate-ip"> parameter.  Even if virtual
-       IP is specified, it will not be set to the system: just you
-       could confirm the action trying to set the virtual IP
-       in <xref linkend="PCP-WATCHDOG-INFO">, or the log file, yet
-       this is useful how <productname>Pgpool-II</productname> reacts
-       trying to set the virtual IP. In additioin to delegate_ip,
-       following parameters will be set too.
+       指定虚拟 IP。如果省略 ip，则默认为 '127.0.0.1'。指定的虚拟 IP 将设置到 <xref linkend="guc-delegate-ip"> 参数中。即使指定了虚拟 IP，它也不会被实际绑定到系统上：你只能通过尝试在 <xref linkend="PCP-WATCHDOG-INFO"> 或日志文件中设置虚拟 IP 来确认操作，但这有助于了解 <productname>Pgpool-II</productname> 在尝试设置虚拟 IP 时的响应行为。此外，除了 delegate_ip，以下参数也会被设置。
 	<programlisting>
 	 if_up_cmd = '/usr/bin/echo "if_up_cmd executed"'
 	 if_down_cmd = 'usr/bin/echo "if_down_cmd executed"'
@@ -137,7 +122,7 @@ Pgpool-II documentation
      <term><option>--no-stop</option></term>
      <listitem>
       <para>
-       Do not stop pgpool and PostgreSQL after the work.
+       完成后不停止 pgpool 和 PostgreSQL。
       </para>
      </listitem>
     </varlistentry>
@@ -146,7 +131,7 @@ Pgpool-II documentation
      <term><option>-d</option></term>
      <listitem>
       <para>
-       Start pgpool with debug mode.
+       以调试模式启动 pgpool。
       </para>
      </listitem>
     </varlistentry>
@@ -155,9 +140,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment variables</title>
+  <title>环境变量</title>
   <para>
-   <application>watchdog_setup</application> recognizes following environment variables:
+   <application>watchdog_setup</application> 识别以下环境变量：
 
    <variablelist>
 
@@ -165,9 +150,8 @@ Pgpool-II documentation
      <term><option>PGPOOL_SETUP</option></term>
      <listitem>
       <para>
-       Specifies the path to pgpool_setup command.  The default is
-       "pgpool_setup", thus it is assumed that pgpool_setup is in the
-       command search path.
+       指定 pgpool_setup 命令的路径。默认为
+       "pgpool_setup"，即假设 pgpool_setup 在命令搜索路径中。
       </para>
      </listitem>
     </varlistentry>
@@ -176,10 +160,10 @@ Pgpool-II documentation
      <term><option>PGPOOL_INSTALL_DIR</option></term>
      <listitem>
       <para>
-       Specifies the Pgpool-II installation directory. Pgpool-II
-       binaries is expected to be placed under PGPOOL_INSTALL_DIR/bin
-       and pgpool.conf and pool_hba.conf etc. are expected to be placed under
-       PGPOOL_INSTALL_DIR/etc. The default is /usr/local.
+       指定 Pgpool-II 的安装目录。Pgpool-II
+       的可执行文件预期放置在 PGPOOL_INSTALL_DIR/bin 下，
+       pgpool.conf、pool_hba.conf 等配置文件预期放置在
+       PGPOOL_INSTALL_DIR/etc 下。默认为 /usr/local。
       </para>
      </listitem>
     </varlistentry>
@@ -188,8 +172,8 @@ Pgpool-II documentation
      <term><option>PGPOOLDIR</option></term>
      <listitem>
       <para>
-       Specifies the path to Pgpool-II configuration files.
-       The default is PGPOOL_INSTALL_DIR/etc.
+       指定 Pgpool-II 配置文件的路径。
+       默认为 PGPOOL_INSTALL_DIR/etc。
       </para>
      </listitem>
     </varlistentry>
@@ -198,8 +182,8 @@ Pgpool-II documentation
      <term><option>PGBIN</option></term>
      <listitem>
       <para>
-       Specifies the path to PostgreSQL commands such as initdb, pg_ctl and psql.
-       The default is /usr/local/pgsql/bin.
+       指定 PostgreSQL 命令（如 initdb、pg_ctl 和 psql）的路径。
+       默认为 /usr/local/pgsql/bin。
       </para>
      </listitem>
     </varlistentry>
@@ -208,8 +192,8 @@ Pgpool-II documentation
      <term><option>PGLIB</option></term>
      <listitem>
       <para>
-       Specifies the path to PostgreSQL shared libraries.
-       The default is /usr/local/pgsql/lib.
+       指定 PostgreSQL 共享库的路径。
+       默认为 /usr/local/pgsql/lib。
       </para>
      </listitem>
     </varlistentry>
@@ -218,8 +202,8 @@ Pgpool-II documentation
      <term><option>PGSOCKET_DIR</option></term>
      <listitem>
       <para>
-       Specifies the path to Unix socket directory.
-       The default is /tmp.
+       指定 Unix socket 目录的路径。
+       默认为 /tmp。
       </para>
      </listitem>
     </varlistentry>
@@ -227,8 +211,8 @@ Pgpool-II documentation
      <term><option>INITDBARG</option></term>
      <listitem>
       <para>
-       Specifies the arguments for initdb command.
-       The default is "--no-locale -E UTF_8".
+       指定 initdb 命令的参数。
+       默认为 "--no-locale -E UTF_8"。
       </para>
      </listitem>
     </varlistentry>
@@ -239,7 +223,7 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
    <screen>
     $ watchdog_setup

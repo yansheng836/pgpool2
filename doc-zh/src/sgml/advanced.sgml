@@ -1,251 +1,203 @@
 <!-- doc/src/sgml/advanced.sgml -->
 
 <chapter id="tutorial-watchdog">
- <title>Watchdog</title>
+ <title>Watchdog（监控守护）</title>
 
  <sect1 id="tutorial-watchdog-intro">
-  <title>Introduction</title>
+  <title>简介</title>
 
   <para>
-   <firstterm>Watchdog</firstterm> is a sub process of
-   <productname>Pgpool-II</productname> to add high
-   availability. Watchdog is used to resolve the single point of
-   failure by coordinating multiple
-   <productname>Pgpool-II</productname> nodes. The watchdog was first
-   introduced in <productname>pgpool-II</productname>
-   <emphasis>V3.2</emphasis> and is significantly enhanced in
-   <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>, to
-   ensure the presence of a quorum at all time. This new addition to
-   watchdog makes it more fault tolerant and robust in handling and
-   guarding against the split-brain syndrome and network
-   partitioning. In addition, <emphasis>V3.7</emphasis> introduced
-   quorum failover (see <xref
-    linkend="config-watchdog-failover-behavior">) to reduce the false
-    positives of <productname>PostgreSQL</productname> server
-    failures. <emphasis>To ensure the quorum mechanism properly works, the number
-    of <productname>Pgpool-II</productname> nodes must be odd in number
-    and greater than or equal to 3.</emphasis>
+   <firstterm>Watchdog</firstterm> 是 <productname>Pgpool-II</productname> 的一个子进程，用于提供高可用性。Watchdog 通过协调多个 <productname>Pgpool-II</productname> 节点来解决单点故障问题。Watchdog 首次引入于 <productname>pgpool-II</productname>
+   <emphasis>V3.2</emphasis> 版本，并在 <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 版本中得到显著增强，以确保始终维持法定人数（quorum）。Watchdog 的这一新增强使其在应对脑裂综合征和网络分区方面更加容错和健壮。此外，<emphasis>V3.7</emphasis> 引入了法定人数故障转移（参见 <xref
+    linkend="config-watchdog-failover-behavior">），以减少误判 <productname>PostgreSQL</productname> 服务器故障的情况。<emphasis>为确保法定人数机制正常工作，<productname>Pgpool-II</productname> 节点的数量必须为奇数且大于等于 3。</emphasis>
   </para>
 
   <sect2 id="tutorial-watchdog-coordinating-nodes">
-   <title>Coordinating multiple <productname>Pgpool-II</productname> nodes</title>
+   <title>协调多个 <productname>Pgpool-II</productname> 节点</title>
 
    <indexterm zone="tutorial-watchdog-coordinating-nodes">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    Watchdog coordinates multiple <productname>Pgpool-II</productname> nodes
-    by exchanging information with each other.
+    Watchdog 通过相互交换信息来协调多个 <productname>Pgpool-II</productname> 节点。
    </para>
    <para>
-    At the startup, if the watchdog is enabled, <productname>Pgpool-II</productname> node
-    sync the status of all configured backend nodes from the leader watchdog node.
-    And if the node goes on to become a leader node itself it initializes the backend
-    status locally. When a backend node status changes by failover etc..,
-    watchdog notifies the information to other <productname>Pgpool-II</productname>
-    nodes and synchronizes them. When online recovery occurs, watchdog restricts
-    client connections to other <productname>Pgpool-II</productname>
-    nodes for avoiding inconsistency between backends.
+    在启动时，如果 watchdog 已启用，<productname>Pgpool-II</productname> 节点会从主 watchdog 节点同步所有配置的后端节点状态。如果该节点自身成为主节点，则会在本地初始化后端状态。当后端节点状态因故障转移等发生变化时，watchdog 会将信息通知给其他 <productname>Pgpool-II</productname> 节点并进行同步。当在线恢复发生时，watchdog 会限制其他 <productname>Pgpool-II</productname>
+    节点的客户端连接，以避免后端之间出现不一致。
    </para>
 
    <para>
-    Watchdog also coordinates with all connected <productname>Pgpool-II</productname> nodes to ensure
-    that failback, failover and follow_primary commands must be executed only on one <productname>pgpool-II</productname> node.
+    Watchdog 还与所有已连接的 <productname>Pgpool-II</productname> 节点进行协调，以确保故障恢复、故障转移和 follow_primary 命令只能在某一个 <productname>pgpool-II</productname> 节点上执行。
    </para>
 
   </sect2>
 
   <sect2 id="tutorial-watchdog-lifechecking">
-   <title>Life checking of other <productname>Pgpool-II</productname> nodes</title>
+   <title>对其他 <productname>Pgpool-II</productname> 节点的生命检测</title>
 
    <indexterm zone="tutorial-watchdog-lifechecking">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    Watchdog lifecheck is the sub-component of watchdog to monitor
-    the health of <productname>Pgpool-II</productname> nodes participating
-    in the watchdog cluster to provide the high availability.
-    Traditionally <productname>Pgpool-II</productname> watchdog provides
-    two methods of remote node health checking. <literal>"heartbeat"</literal>
-    and <literal>"query"</literal> mode.
-    The watchdog in <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>
-    adds a new <literal>"external"</literal> to <xref linkend="guc-wd-lifecheck-method">,
-     which enables to hook an external third party health checking
-     system with <productname>Pgpool-II</productname> watchdog.
+    Watchdog 生命检测是 watchdog 的一个子组件，用于监控参与 watchdog 集群的 <productname>Pgpool-II</productname> 节点的健康状况，以提供高可用性。传统的 <productname>Pgpool-II</productname> watchdog 提供两种远程节点健康检查方法：<literal>"heartbeat"</literal>（心跳）和 <literal>"query"</literal>（查询）模式。
+    <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 的 watchdog 新增了一种 <literal>"external"</literal> 模式至 <xref linkend="guc-wd-lifecheck-method">，
+     支持将外部第三方健康检查系统与 <productname>Pgpool-II</productname> watchdog 进行集成。
    </para>
    <para>
-    Apart from remote node health checking watchdog lifecheck can also check
-    the health of node it is installed on by monitoring the connection to upstream servers.
-    If the monitoring fails, watchdog treats it as the local <productname>Pgpool-II</productname>
-    node failure.
+    除了远程节点健康检查外，watchdog 生命检测还可以通过监控到上游服务器的连接来检查其所在节点自身的健康状况。如果监控失败，watchdog 会将其视为本地 <productname>Pgpool-II</productname>
+    节点故障。
    </para>
 
    <para>
-    In <literal>heartbeat</literal> mode, watchdog monitors other <productname>Pgpool-II</productname>
-    processes by using <literal>heartbeat</literal> signal.
-    Watchdog receives heartbeat signals sent by other <productname>Pgpool-II</productname>
-    periodically. If there is no signal for a certain period,
-    watchdog regards this as the failure of the <productname>Pgpool-II</productname>.
-    For redundancy you can use multiple network connections for heartbeat
-    exchange between <productname>Pgpool-II</productname> nodes.
-    This is the default and recommended mode to be used for health checking.
+    在 <literal>heartbeat</literal> 模式下，watchdog 通过使用 <literal>heartbeat</literal> 信号来监控其他 <productname>Pgpool-II</productname>
+    进程。Watchdog 定期接收其他 <productname>Pgpool-II</productname>
+    发送的心跳信号。如果在一定时间内没有收到信号，watchdog 会将其视为 <productname>Pgpool-II</productname> 故障。
+    为了提高冗余性，可以在 <productname>Pgpool-II</productname> 节点之间使用多个网络连接来进行心跳交换。
+    这是默认且推荐的健康检查模式。
    </para>
 
    <para>
-    In <literal>query</literal> mode, watchdog monitors <productname>Pgpool-II</productname>
-    service rather than process. In this mode watchdog sends queries to other
-    <productname>Pgpool-II</productname> and checks the response.
+    在 <literal>query</literal> 模式下，watchdog 监控的是 <productname>Pgpool-II</productname>
+    服务而非进程。在此模式下，watchdog 向其他
+    <productname>Pgpool-II</productname> 发送查询并检查响应。
     <note>
      <para>
-      Note that this method requires connections from other <productname>Pgpool-II</productname>,
-      so it would fail monitoring if the <xref linkend="guc-num-init-children"> parameter isn't large enough.
-       This mode is deprecated and left for backward compatibility.
+      请注意，此方法需要来自其他 <productname>Pgpool-II</productname> 的连接，
+      因此如果 <xref linkend="guc-num-init-children"> 参数不够大，监控将会失败。
+       此模式已废弃，仅保留向后兼容。
      </para>
     </note>
    </para>
 
    <para>
-    <literal>external</literal> mode is introduced by <productname>Pgpool-II</productname>
-    <emphasis>V3.5</emphasis>. This mode basically disables the built in lifecheck
-    of <productname>Pgpool-II</productname> watchdog and expects that the external system
-    will inform the watchdog about health of local and all remote nodes participating in the watchdog cluster.
+    <literal>external</literal> 模式由 <productname>Pgpool-II</productname>
+    <emphasis>V3.5</emphasis> 引入。此模式基本上禁用了 <productname>Pgpool-II</productname> watchdog 的内置生命检测，
+    期望外部系统能够通知 watchdog 关于本地和参与 watchdog 集群的所有远程节点的健康状况。
    </para>
 
   </sect2>
 
   <sect2 id="tutorial-watchdog-consistency-of-config">
-   <title>Consistency of configuration parameters on all <productname>Pgpool-II</productname> nodes</title>
+   <title>所有 <productname>Pgpool-II</productname> 节点上配置参数的一致性</title>
 
    <indexterm zone="tutorial-watchdog-consistency-of-config">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    At startup watchdog verifies the <productname>Pgpool-II</productname>
-    configuration of the local node for	the consistency with the configurations
-    on the leader watchdog node and warns the user of any differences.
-    This eliminates the likelihood of undesired behavior that can happen
-    because of different configuration on different <productname>Pgpool-II</productname> nodes.
+    启动时，watchdog 会验证本地节点的 <productname>Pgpool-II</productname>
+    配置与主 watchdog 节点上的配置是否一致，并警告用户任何差异。
+    这样可以消除因不同 <productname>Pgpool-II</productname> 节点上配置不同而导致的不期望行为的可能性。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-changing-active">
-   <title>Changing leader/standby state when certain fault is detected</title>
+   <title>检测到特定故障时切换主/备状态</title>
 
    <indexterm zone="tutorial-watchdog-changing-active">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    When a fault of <productname>Pgpool-II</productname> is detected,
-    watchdog notifies the other watchdogs of it.
-    If this is the leader <productname>Pgpool-II</productname>,
-    watchdogs decide the new leader <productname>Pgpool-II</productname>
-    by voting and change leader/standby state.
+    当检测到 <productname>Pgpool-II</productname> 故障时，
+    watchdog 会通知其他 watchdog。
+    如果这是主 <productname>Pgpool-II</productname>，
+    watchdog 会通过投票决定新的主 <productname>Pgpool-II</productname>
+    并切换主/备状态。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-automatic-vip">
-   <title>Automatic virtual IP switching</title>
+   <title>自动虚拟 IP 切换</title>
 
    <indexterm zone="tutorial-watchdog-automatic-vip">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    When a standby <productname>Pgpool-II</productname> server promotes to leader,
-    the new leader server brings up virtual IP interface. Meanwhile, the previous
-    leader server brings down the virtual IP interface. This enables the leader
-    <productname>Pgpool-II</productname> to work using the same
-    IP address even when servers are switched.
+    当备 <productname>Pgpool-II</productname> 服务器提升为主节点时，
+    新的主服务器会启用虚拟 IP 接口。同时，之前的主服务器会关闭虚拟 IP 接口。这使得主
+    <productname>Pgpool-II</productname> 在服务器切换后仍可使用相同的
+    IP 地址工作。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-changing-automatic-register-in-recovery">
-   <title>Automatic registration of a server as a standby in recovery</title>
+   <title>在恢复过程中自动将服务器注册为备用节点</title>
 
    <indexterm zone="tutorial-watchdog-changing-automatic-register-in-recovery">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    When the broken server recovers or new server is attached, the watchdog process
-    notifies this to the other watchdogs in the cluster along with the information of the new server,
-    and the watchdog process receives information on the leader server and
-    other servers. Then, the attached server is registered as a standby.
+    当故障服务器恢复或新服务器接入时，watchdog 进程
+    会将此信息通知给集群中的其他 watchdog，并附上新服务器的信息，
+    同时 watchdog 进程会接收主服务器和其他服务器的信息。然后，接入的服务器会被注册为备用节点。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-start-stop">
-   <title>Starting/stopping watchdog</title>
+   <title>启动/停止 watchdog</title>
 
    <indexterm zone="tutorial-watchdog-start-stop">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    The watchdog process starts and stops automatically as sub-processes
-    of the <productname>Pgpool-II</productname>, therefore there is no
-    dedicated command to start and stop watchdog.
+    Watchdog 进程作为 <productname>Pgpool-II</productname> 的子进程自动启动和停止，因此没有专用的启动和停止 watchdog 的命令。
    </para>
    <para>
-    Watchdog controls the virtual IP interface, the commands executed by
-    the watchdog for bringing up and bringing down the VIP require the
-    root privileges. <productname>Pgpool-II</productname> requires the
-    user running <productname>Pgpool-II</productname> to have root
-    privileges when the watchdog is enabled along with virtual IP.
-    This is however not good security practice to run the
-    <productname>Pgpool-II</productname> as root user, the alternative
-    and preferred way is to run the <productname>Pgpool-II</productname>
-    as normal user and use either the custom commands for
-    <xref linkend="guc-if-up-cmd">, <xref linkend="guc-if-down-cmd">,
-      and <xref linkend="guc-arping-cmd"> using <command>sudo</command>
-       or use <command>setuid</command> ("set user ID upon execution")
-       on <literal>if_*</literal> commands
+    Watchdog 控制虚拟 IP 接口，watchdog 用于启用和关闭 VIP 所需的命令需要
+    root 权限。<productname>Pgpool-II</productname> 要求运行 <productname>Pgpool-II</productname> 的用户在启用 watchdog 并结合虚拟 IP 时具有 root
+    权限。
+    然而，以 root 用户身份运行
+    <productname>Pgpool-II</productname> 并不是良好的安全实践，推荐的替代方式是
+    以普通用户身份运行 <productname>Pgpool-II</productname>，
+    并通过 <command>sudo</command> 使用自定义命令来执行
+    <xref linkend="guc-if-up-cmd">、<xref linkend="guc-if-down-cmd">
+      和 <xref linkend="guc-arping-cmd">，
+       或者对 <literal>if_*</literal> 命令使用 <command>setuid</command>（"执行时设置用户 ID"）
    </para>
    <para>
-    Lifecheck process is a sub-component of watchdog, its job is to monitor the
-    health of <productname>Pgpool-II</productname> nodes participating in
-    the watchdog cluster. The Lifecheck process is started automatically
-    when the watchdog is configured to use the built-in life-checking,
-    it starts after the watchdog main process initialization is complete.
-    However lifecheck process only kicks in when all configured watchdog
-    nodes join the cluster and becomes active. If some remote node fails
-    before the Lifecheck become active that failure will not get caught by the lifecheck.
+    生命检测进程是 watchdog 的一个子组件，其职责是监控参与
+    watchdog 集群的 <productname>Pgpool-II</productname> 节点的健康状况。当 watchdog 配置为使用内置生命检测时，
+    生命检测进程会自动启动，它在 watchdog 主进程初始化完成后启动。
+    然而，生命检测进程仅在所有配置的 watchdog
+    节点加入集群并变为活跃状态后才会开始工作。如果在生命检测变为活跃之前某个远程节点发生故障，该故障将不会被生命检测捕获。
    </para>
   </sect2>
  </sect1>
 
  <sect1 id="tutorial-watchdog-integrating-external-lifecheck">
-  <title>Integrating external lifecheck with watchdog</title>
+  <title>将外部生命检测集成到 watchdog</title>
 
   <para>
-   <productname>Pgpool-II</productname> watchdog process uses the
-   <acronym>BSD</acronym> sockets for communicating with
-   all the <productname>Pgpool-II</productname> processes and the
-   same <acronym>BSD</acronym> socket can also be used by any third
-   party system to provide the lifecheck function for local and remote
-   <productname>Pgpool-II</productname> watchdog nodes.
-   The <acronym>BSD</acronym> socket file name for IPC is constructed
-   by appending <productname>Pgpool-II</productname> wd_port after
-   <literal>"s.PGPOOLWD_CMD."</literal> string and the socket file is
-   placed in the <xref linkend="guc-wd-ipc-socket-dir"> directory.
+   <productname>Pgpool-II</productname> watchdog 进程使用
+   <acronym>BSD</acronym> 套接字与所有
+   <productname>Pgpool-II</productname> 进程进行通信，
+   相同的 <acronym>BSD</acronym> 套接字也可由任何第三方
+   系统用于为本地和远程
+   <productname>Pgpool-II</productname> watchdog 节点提供生命检测功能。
+   IPC 的 <acronym>BSD</acronym> 套接字文件名通过在
+   <literal>"s.PGPOOLWD_CMD."</literal> 字符串后附加
+   <productname>Pgpool-II</productname> wd_port 构建，套接字文件放置在
+   <xref linkend="guc-wd-ipc-socket-dir"> 目录中。
   </para>
 
   <sect2 id="tutorial-watchdog-ipc-command-packet">
-   <title>Watchdog IPC command packet format</title>
+   <title>Watchdog IPC 命令数据包格式</title>
 
    <indexterm zone="tutorial-watchdog-ipc-command-packet">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    The watchdog IPC command packet consists of three fields.
-    Below table details the message fields and description.
+    Watchdog IPC 命令数据包由三个字段组成。
+    下表详细说明了消息字段及其描述。
    </para>
 
    <table id="wd-ipc-command-format-table">
-    <title>Watchdog IPC command packet format</title>
+    <title>Watchdog IPC 命令数据包格式</title>
     <tgroup cols="3">
      <thead>
       <row>
-       <entry>Field</entry>
-       <entry>Type</entry>
-       <entry>Description</entry>
+       <entry>字段</entry>
+       <entry>类型</entry>
+       <entry>描述</entry>
       </row>
      </thead>
 
@@ -253,17 +205,17 @@
       <row>
        <entry>TYPE</entry>
        <entry>BYTE1</entry>
-       <entry>Command Type</entry>
+       <entry>命令类型</entry>
       </row>
       <row>
        <entry>LENGTH</entry>
-       <entry>INT32 in network byte order</entry>
-       <entry>The length of data to follow</entry>
+       <entry>网络字节序的 INT32</entry>
+       <entry>后续数据的长度</entry>
       </row>
       <row>
        <entry>DATA</entry>
-       <entry>DATA in <acronym>JSON</acronym> format</entry>
-       <entry>Command data in <acronym>JSON</acronym> format</entry>
+       <entry><acronym>JSON</acronym> 格式的数据</entry>
+       <entry><acronym>JSON</acronym> 格式的命令数据</entry>
       </row>
 
      </tbody>
@@ -272,24 +224,24 @@
   </sect2>
 
   <sect2 id="tutorial-watchdog-ipc-result-packet">
-   <title>Watchdog IPC result packet format</title>
+   <title>Watchdog IPC 结果数据包格式</title>
 
    <indexterm zone="tutorial-watchdog-ipc-result-packet">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    The watchdog IPC command result packet consists of three fields.
-    Below table details the message fields and description.
+    Watchdog IPC 命令结果数据包由三个字段组成。
+    下表详细说明了消息字段及其描述。
    </para>
 
    <table id="wd-ipc-result-format-table">
-    <title>Watchdog IPC result packet format</title>
+    <title>Watchdog IPC 结果数据包格式</title>
     <tgroup cols="3">
      <thead>
       <row>
-       <entry>Field</entry>
-       <entry>Type</entry>
-       <entry>Description</entry>
+       <entry>字段</entry>
+       <entry>类型</entry>
+       <entry>描述</entry>
       </row>
      </thead>
 
@@ -297,17 +249,17 @@
       <row>
        <entry>TYPE</entry>
        <entry>BYTE1</entry>
-       <entry>Command Type</entry>
+       <entry>命令类型</entry>
       </row>
       <row>
        <entry>LENGTH</entry>
-       <entry>INT32 in network byte order</entry>
-       <entry>The length of data to follow</entry>
+       <entry>网络字节序的 INT32</entry>
+       <entry>后续数据的长度</entry>
       </row>
       <row>
        <entry>DATA</entry>
-       <entry>DATA in <acronym>JSON</acronym> format</entry>
-       <entry>Command result data in <acronym>JSON</acronym> format</entry>
+       <entry><acronym>JSON</acronym> 格式的数据</entry>
+       <entry><acronym>JSON</acronym> 格式的命令结果数据</entry>
       </row>
 
      </tbody>
@@ -316,27 +268,26 @@
   </sect2>
 
   <sect2 id="tutorial-watchdog-ipc-command-packet-types">
-   <title>Watchdog IPC command packet types</title>
+   <title>Watchdog IPC 命令数据包类型</title>
 
    <indexterm zone="tutorial-watchdog-ipc-command-packet-types">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    The first byte of the IPC command packet sent to watchdog process
-    and the result returned by watchdog process is identified as the
-    command or command result type.
-    The below table lists all valid types and their meanings
+    发送到 watchdog 进程的 IPC 命令数据包的第一字节，以及 watchdog 进程返回的结果，被标识为
+    命令或命令结果类型。
+    下表列出了所有有效类型及其含义。
    </para>
 
    <table id="wd-ipc-command-packet--types-table">
-    <title>Watchdog IPC command packet types</title>
+    <title>Watchdog IPC 命令数据包类型</title>
     <tgroup cols="4">
      <thead>
       <row>
-       <entry>Name</entry>
-       <entry>Byte Value</entry>
-       <entry>Type</entry>
-       <entry>Description</entry>
+       <entry>名称</entry>
+       <entry>字节值</entry>
+       <entry>类型</entry>
+       <entry>描述</entry>
       </row>
      </thead>
 
@@ -344,44 +295,44 @@
       <row>
        <entry>REGISTER FOR NOTIFICATIONS</entry>
        <entry>'0'</entry>
-       <entry>Command packet</entry>
-       <entry>Command to register the current connection to receive watchdog notifications</entry>
+       <entry>命令数据包</entry>
+       <entry>用于注册当前连接以接收 watchdog 通知的命令</entry>
       </row>
       <row>
        <entry>NODE STATUS CHANGE</entry>
        <entry>'2'</entry>
-       <entry>Command packet</entry>
-       <entry>Command to inform watchdog about node status change of watchdog node</entry>
+       <entry>命令数据包</entry>
+       <entry>用于向 watchdog 通知 watchdog 节点状态变更的命令</entry>
       </row>
       <row>
        <entry>GET NODES LIST</entry>
        <entry>'3'</entry>
-       <entry>Command packet</entry>
-       <entry>Command to get the list of all configured watchdog nodes</entry>
+       <entry>命令数据包</entry>
+       <entry>用于获取所有配置的 watchdog 节点列表的命令</entry>
       </row>
       <row>
        <entry>NODES LIST DATA</entry>
        <entry>'4'</entry>
-       <entry>Result packet</entry>
-       <entry>The <acronym>JSON</acronym> data in packet contains the list of all configured watchdog nodes</entry>
+       <entry>结果数据包</entry>
+       <entry>数据包中的 <acronym>JSON</acronym> 数据包含所有配置的 watchdog 节点列表</entry>
       </row>
       <row>
        <entry>CLUSTER IN TRANSITION</entry>
        <entry>'7'</entry>
-       <entry>Result packet</entry>
-       <entry>Watchdog returns this packet type when it is not possible to process the command because the cluster is transitioning.</entry>
+       <entry>结果数据包</entry>
+       <entry>当集群正在转换导致无法处理命令时，watchdog 返回此数据包类型。</entry>
       </row>
       <row>
        <entry>RESULT BAD</entry>
        <entry>'8'</entry>
-       <entry>Result packet</entry>
-       <entry>Watchdog returns this packet type when the IPC command fails</entry>
+       <entry>结果数据包</entry>
+       <entry>当 IPC 命令失败时，watchdog 返回此数据包类型</entry>
       </row>
       <row>
        <entry>RESULT OK</entry>
        <entry>'9'</entry>
-       <entry>Result packet</entry>
-       <entry>Watchdog returns this packet type when IPC command succeeds</entry>
+       <entry>结果数据包</entry>
+       <entry>当 IPC 命令成功时，watchdog 返回此数据包类型</entry>
       </row>
 
      </tbody>
@@ -390,47 +341,44 @@
   </sect2>
 
   <sect2 id="tutorial-watchdog-external-lifecheck-ipc">
-   <title>External lifecheck IPC packets and data</title>
+   <title>外部生命检测 IPC 数据包和数据</title>
 
    <indexterm zone="tutorial-watchdog-external-lifecheck-ipc">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    "GET NODES LIST" ,"NODES LIST DATA" and "NODE STATUS CHANGE"
-    IPC messages of watchdog can be used to integration an external
-    lifecheck systems. Note that the built-in lifecheck of pgpool
-    also uses the same channel and technique.
+    "GET NODES LIST"、"NODES LIST DATA" 和 "NODE STATUS CHANGE"
+    watchdog IPC 消息可用于集成外部
+    生命检测系统。请注意，pgpool 的内置生命检测也使用相同的通道和技术。
    </para>
 
    <sect3 id="tutorial-watchdog-external-lifecheck-get-nodes">
-    <title>Getting list of configured watchdog nodes</title>
+    <title>获取已配置的 watchdog 节点列表</title>
 
     <indexterm zone="tutorial-watchdog-external-lifecheck-get-nodes">
      <primary>WATCHDOG</primary>
     </indexterm>
     <para>
-     Any third party lifecheck system can send the "GET NODES LIST"
-     packet on watchdog IPC socket with a <acronym>JSON</acronym>
-     data containing the authorization key and value if
-     <xref linkend="guc-wd-authkey"> is set or empty packet data
-      when <xref linkend="guc-wd-authkey"> is not configured to get
-       the "NODES LIST DATA" result packet.
+     任何第三方生命检测系统都可以在 watchdog IPC 套接字上发送 "GET NODES LIST"
+     数据包，并附带包含授权键和值的 <acronym>JSON</acronym>
+     数据（如果已设置 <xref linkend="guc-wd-authkey">），或在 <xref linkend="guc-wd-authkey">
+      未配置时发送空数据包，以获取
+       "NODES LIST DATA" 结果数据包。
     </para>
     <para>
-     The result packet returned by watchdog for the "GET NODES LIST"
-     will contains the list of all configured watchdog nodes to do
-     health check on in the <acronym>JSON</acronym> format.
-     The <acronym>JSON</acronym> of the watchdog nodes contains the
-     <literal>"WatchdogNodes"</literal> Array of all watchdog nodes.
-     Each watchdog <acronym>JSON</acronym> node contains the
-     <literal>"ID"</literal>, <literal>"NodeName"</literal>,
-     <literal>"HostName"</literal>, <literal>"DelegateIP"</literal>,
-     <literal>"WdPort"</literal> and <literal>"PgpoolPort"</literal>
-     for each node.
+     watchdog 返回的 "GET NODES LIST" 的结果数据包中将包含所有已配置的 watchdog 节点列表，
+     用于对其进行健康检查，格式为 <acronym>JSON</acronym>。
+     watchdog 节点的 <acronym>JSON</acronym> 包含
+     <literal>"WatchdogNodes"</literal> 数组，其中包含所有 watchdog 节点。
+     每个 watchdog <acronym>JSON</acronym> 节点包含
+     <literal>"ID"</literal>、<literal>"NodeName"</literal>、
+     <literal>"HostName"</literal>、<literal>"DelegateIP"</literal>、
+     <literal>"WdPort"</literal> 和 <literal>"PgpoolPort"</literal>
+     每个节点的信息。
     </para>
     <para>
      <programlisting>
-      -- The example JSON data contained in "NODES LIST DATA"
+      -- "NODES LIST DATA" 中包含的 JSON 数据示例
 
       {
       "NodeCount":3,
@@ -466,34 +414,29 @@
       ]
       }
 
-      -- Note that ID 0 is always reserved for local watchdog node
+      -- 注意：ID 0 始终保留用于本地 watchdog 节点
 
      </programlisting>
     </para>
     <para>
-     After getting the configured watchdog nodes information from the
-     watchdog the external lifecheck system can proceed with the
-     health checking of watchdog nodes, and when it detects some status
-     change of any node it can inform that to watchdog using the
-     "NODE STATUS CHANGE" IPC messages of watchdog.
-     The data in the message should contain the <acronym>JSON</acronym>
-     with the node ID of the node whose status is changed
-     (The node ID must be same as returned by watchdog for that node
-     in WatchdogNodes list) and the new status of node.
+     从 watchdog 获取已配置的 watchdog 节点信息后，外部生命检测系统可以继续对 watchdog 节点进行
+     健康检查，当检测到任何节点的状态变更时，可以通过
+     watchdog 的 "NODE STATUS CHANGE" IPC 消息将其通知给 watchdog。
+     消息中的数据应包含带有节点 ID 的 <acronym>JSON</acronym>
+     （节点 ID 必须与 watchdog 在 WatchdogNodes 列表中返回的该节点的 ID 相同）以及节点的新状态。
     </para>
     <para>
      <programlisting>
-      -- The example JSON to inform pgpool-II watchdog about health check
-      failed on node with ID 1 will look like
+      -- 用于向 pgpool-II watchdog 通知节点 ID 为 1 的节点健康检查失败的 JSON 示例如下
 
       {
       "NodeID":1,
       "NodeStatus":1,
-      "Message":"optional message string to log by watchdog for this event"
-      "IPCAuthKey":"wd_authkey configuration parameter value"
+      "Message":"可选的消息字符串，watchdog 将记录此事件"
+      "IPCAuthKey":"wd_authkey 配置参数值"
       }
 
-      -- NodeStatus values meanings are as follows
+      -- NodeStatus 值的含义如下
       NODE STATUS DEAD  =  1
       NODE STATUS ALIVE =  2
 
@@ -503,244 +446,214 @@
   </sect2>
  </sect1>
  <sect1 id="tutorial-watchdog-restrictions">
-  <title>Restrictions on watchdog</title>
+  <title>watchdog 的限制</title>
 
   <indexterm zone="tutorial-watchdog-restrictions">
    <primary>WATCHDOG</primary>
   </indexterm>
 
   <sect2 id="tutorial-watchdog-restrictions-query-mode">
-   <title>Watchdog restriction with query mode lifecheck</title>
+   <title>查询模式生命检测下的 watchdog 限制</title>
    <indexterm zone="tutorial-watchdog-restrictions-query-mode">
     <primary>WATCHDOG</primary>
    </indexterm>
 
    <para>
-    In query mode, when all the DB nodes are detached from a
-    <productname>Pgpool-II</productname> due to PostgreSQL server
-    failure or pcp_detach_node issued, watchdog regards that the
-    <productname>Pgpool-II</productname> service is in the down
-    status and brings the virtual IP assigned to watchdog down.
-    Thus clients of <productname>Pgpool-II</productname> cannot
-    connect to <productname>Pgpool-II</productname> using the
-    virtual IP any more. This is necessary to avoid split-brain,
-    that is, situations where there are multiple leader
-    <productname>Pgpool-II</productname>.
+    在查询模式下，当所有数据库节点因 PostgreSQL 服务器故障或发出 pcp_detach_node 命令而从
+    <productname>Pgpool-II</productname> 中分离时，watchdog 认为
+    <productname>Pgpool-II</productname> 服务处于停止状态，并关闭分配给 watchdog 的虚拟 IP。
+    因此，<productname>Pgpool-II</productname> 的客户端无法再使用
+    虚拟 IP 连接到 <productname>Pgpool-II</productname>。这是为了避免脑裂，
+    即出现多个主 <productname>Pgpool-II</productname> 的情况。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-restrictions-down-watchdog-mode">
-   <title>Connecting to <productname>Pgpool-II</productname> whose watchdog status is down</title>
+   <title>连接到 watchdog 状态为停止的 <productname>Pgpool-II</productname></title>
    <indexterm zone="tutorial-watchdog-restrictions-down-watchdog-mode">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    Don't connect to <productname>Pgpool-II</productname> in down
-    status using the real IP. Because a <productname>Pgpool-II</productname>
-    in down status can't receive information from other
-    <productname>Pgpool-II</productname> watchdogs so it's backend status
-    may be different from other the <productname>Pgpool-II</productname>.
+    不要使用真实 IP 连接到处于停止状态的 <productname>Pgpool-II</productname>。因为处于停止状态的 <productname>Pgpool-II</productname>
+    无法接收来自其他
+    <productname>Pgpool-II</productname> watchdog 的信息，所以其后端状态可能与其他 <productname>Pgpool-II</productname> 不同。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-restrictions-down-watchdog-require-restart">
-   <title><productname>Pgpool-II</productname> whose watchdog status is down requires restart</title>
+   <title>watchdog 状态为停止的 <productname>Pgpool-II</productname> 需要重启</title>
    <indexterm zone="tutorial-watchdog-restrictions-down-watchdog-require-restart">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    <productname>Pgpool-II</productname> in down status can't become active
-    nor the standby <productname>Pgpool-II</productname>.
-    Recovery from down status requires the restart of <productname>Pgpool-II</productname>.
+    处于停止状态的 <productname>Pgpool-II</productname> 既不能变为活跃状态，也不能作为备用 <productname>Pgpool-II</productname>。
+    从停止状态恢复需要重启 <productname>Pgpool-II</productname>。
    </para>
   </sect2>
 
   <sect2 id="tutorial-watchdog-restrictions-active-take-time">
-   <title>Watchdog promotion to active takes few seconds</title>
+   <title>watchdog 提升为活跃状态需要几秒钟</title>
    <indexterm zone="tutorial-watchdog-restrictions-active-take-time">
     <primary>WATCHDOG</primary>
    </indexterm>
    <para>
-    After the leader <productname>Pgpool-II</productname> stops,
-    it will take a few seconds until the standby <productname>Pgpool-II</productname>
-    promote to new leader, to make sure that the former virtual IP is
-    brought down before a down notification packet is sent to other
-    <productname>Pgpool-II</productname>.
+    在主 <productname>Pgpool-II</productname> 停止后，
+    备 <productname>Pgpool-II</productname> 提升为新主节点需要几秒钟，
+    以确保在向下状态通知数据包发送到其他
+    <productname>Pgpool-II</productname> 之前，原有的虚拟 IP 已被关闭。
    </para>
   </sect2>
  </sect1>
 
  <sect1 id="tutorial-advanced-arch">
-  <title>Architecture of the watchdog</title>
+  <title>Watchdog 架构</title>
 
   <para>
-   Watchdog is a sub process of <productname>Pgpool-II</productname>,
-   which adds the high availability and resolves the single point of
-   failure by coordinating multiple <productname>Pgpool-II</productname>.
-   The watchdog process automatically starts (if enabled) when the
-   <productname>Pgpool-II</productname> starts up and consists of two
-   main components, Watchdog core and the lifecheck system.
+   Watchdog 是 <productname>Pgpool-II</productname> 的一个子进程，
+   通过协调多个 <productname>Pgpool-II</productname> 来提供高可用性并解决单点故障问题。
+   Watchdog 进程在 <productname>Pgpool-II</productname> 启动时自动启动（如果已启用），
+   由两个主要组件组成：Watchdog 核心和生命检测系统。
   </para>
 
   <sect2 id="tutorial-advanced-arch-wd-core">
-   <title>Watchdog Core</title>
+   <title>Watchdog 核心</title>
    <para>
-    Watchdog core referred as a "watchdog" is a
-    <productname>Pgpool-II</productname> child process that
-    manages all the watchdog related communications with the
-    <productname>Pgpool-II</productname> nodes present in the
-    cluster and also communicates with the <productname>Pgpool-II</productname>
-    parent and lifecheck processes.
+    Watchdog 核心（称为"watchdog"）是一个
+    <productname>Pgpool-II</productname> 子进程，
+    负责管理集群中所有 <productname>Pgpool-II</productname> 节点的 watchdog 相关通信，
+    并与 <productname>Pgpool-II</productname> 父进程和生命检测进程进行通信。
    </para>
    <para>
-    The heart of a watchdog process is a state machine that starts
-    from its initial state (<literal>WD_LOADING</literal>) and transit
-    towards either standby (<literal>WD_STANDBY</literal>) or
-    leader/coordinator (<literal>WD_COORDINATOR</literal>) state.
-    Both standby and leader/coordinator states are stable states of the
-    watchdog state machine and the node stays in standby or
-    leader/coordinator state until some problem in local
-    <productname>Pgpool-II</productname> node is detected or a
-    remote <productname>Pgpool-II</productname> disconnects from the cluster.
+    Watchdog 进程的核心是一个状态机，从初始状态（<literal>WD_LOADING</literal>）开始，
+    转换到备用状态（<literal>WD_STANDBY</literal>）或主/协调状态（<literal>WD_COORDINATOR</literal>）。
+    备用状态和主/协调状态都是 watchdog 状态机的稳定状态，
+    节点保持在备用或主/协调状态，直到检测到本地
+    <productname>Pgpool-II</productname> 节点出现问题或远程
+    <productname>Pgpool-II</productname> 从集群断开连接。
    </para>
    <para>
-    The watchdog process performs the following tasks:
+    Watchdog 进程执行以下任务：
    </para>
    <itemizedlist>
     <listitem>
      <para>
-      Manages and coordinates the local node watchdog state.
+      管理和协调本地节点的 watchdog 状态。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Interacts with built-in or external lifecheck system
-      for the of local and remote <productname>Pgpool-II</productname>
-      node health checking.
+      与内置或外部生命检测系统交互，
+      进行本地和远程 <productname>Pgpool-II</productname>
+      节点的健康检查。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Interacts with <productname>Pgpool-II</productname> main
-      process and provides the mechanism to
-      <productname>Pgpool-II</productname> parent process for
-      executing the cluster commands over the watchdog channel.
+      与 <productname>Pgpool-II</productname> 主进程交互，
+      并提供机制使
+      <productname>Pgpool-II</productname> 父进程能够通过
+      watchdog 通道执行集群命令。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Communicates with all the participating <productname>Pgpool-II
-      </productname> nodes to coordinate the selection of
-      leader/coordinator node and to ensure the quorum in the cluster.
+      与所有参与的 <productname>Pgpool-II
+      </productname> 节点通信，以协调主/协调节点的选择并确保集群中的法定人数。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Manages the Virtual-IP on the leader/coordinator node and
-      allow the users to provide custom scripts for
-      escalation and de-escalation.
+      管理主/协调节点上的虚拟 IP，
+      并允许用户提供自定义脚本来处理升级和降级。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Verifies the consistency of <productname>Pgpool-II</productname>
-      configurations across the participating <productname>Pgpool-II
-      </productname> nodes in the watchdog cluster.
+      验证 <productname>Pgpool-II</productname>
+      配置在 watchdog 集群中参与的所有 <productname>Pgpool-II
+      </productname> 节点上的一致性。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Synchronize the status of all PostgreSQL backends at startup.
+      在启动时同步所有 PostgreSQL 后端的状态。
      </para>
     </listitem>
 
     <listitem>
      <para>
-      Provides the distributed locking facility to
-      <productname>Pgpool-II</productname> main process
-      for synchronizing the different failover commands.
+      为 <productname>Pgpool-II</productname> 主进程
+      提供分布式锁定功能，
+      用于同步不同的故障转移命令。
      </para>
     </listitem>
 
    </itemizedlist>
 
    <sect3 id="tutorial-advanced-arch-wd-core-comm">
-    <title>Communication with other nodes in the Cluster</title>
+    <title>与集群中其他节点的通信</title>
     <para>
-     Watchdog uses TCP/IP sockets for all the communication with other nodes.
-     Each watchdog node can have two sockets opened with each node. One is the
-     outgoing (client) socket which this node creates and initiate the
-     connection to the remote node and the second socket is the one which
-     is listening socket for inbound connection initiated by remote
-     watchdog node. As soon as the socket connection to remote node succeeds
-     watchdog sends the ADD NODE (<literal>WD_ADD_NODE_MESSAGE</literal>)
-     message on that socket. And upon receiving the ADD NODE message the
-     watchdog node verifies the node information encapsulated in the message
-     with the Pgpool-II configurations for that node, and if the node passes
-     the verification test it is added to the cluster otherwise the connection
-     is dropped.
+     Watchdog 使用 TCP/IP 套接字与所有其他节点进行通信。
+     每个 watchdog 节点可以与每个节点建立两个套接字连接。一个是该节点创建并发起连接到远程节点的出站（客户端）套接字，另一个是监听由远程
+     watchdog 节点发起的入站连接的监听套接字。一旦与远程节点的套接字连接成功，
+     watchdog 就会在该套接字上发送添加节点消息（<literal>WD_ADD_NODE_MESSAGE</literal>）。
+     收到添加节点消息后，
+     watchdog 节点会验证消息中封装的节点信息与 Pgpool-II 对该节点的配置是否匹配，
+     如果节点通过验证测试，则将其添加到集群中，否则关闭连接。
     </para>
    </sect3>
 
    <sect3 id="tutorial-advanced-arch-wd-ipc-data">
-    <title>IPC and data format</title>
+    <title>IPC 和数据格式</title>
     <para>
-     Watchdog process exposes a <acronym>UNIX</acronym> domain socket
-     for IPC communications, which accepts and provides the data in
-     <acronym>JSON</acronym> format. All the internal <productname>Pgpool-II
-     </productname> processes, including <productname>Pgpool-II's</productname>
-     built-in lifecheck and <productname>Pgpool-II</productname> main process
-     uses this IPC socket interface to interact with the watchdog.
-     This IPC socket can also be used by any external/3rd party system
-     to interact with watchdog.
+     Watchdog 进程暴露一个 <acronym>UNIX</acronym> 域套接字
+     用于 IPC 通信，该套接字接受和提供
+     <acronym>JSON</acronym> 格式的数据。所有内部的 <productname>Pgpool-II
+     </productname> 进程，包括 <productname>Pgpool-II's</productname>
+     内置生命检测和 <productname>Pgpool-II</productname> 主进程
+     都使用此 IPC 套接字接口与 watchdog 交互。
+     任何外部/第三方系统也可以使用此 IPC 套接字与 watchdog 交互。
     </para>
     <para>
-     See <xref linkend="tutorial-watchdog-integrating-external-lifecheck"> for details
-      on how to use watchdog IPC interface for integrating external/3rd party systems.
+     有关如何使用 watchdog IPC 接口集成外部/第三方系统的详细信息，
+     请参见 <xref linkend="tutorial-watchdog-integrating-external-lifecheck">。
     </para>
    </sect3>
   </sect2>
 
   <sect2 id="tutorial-advanced-arch-wd-lifecheck">
-   <title>Watchdog Lifecheck</title>
+   <title>Watchdog 生命检测</title>
    <para>
-    Watchdog lifecheck is the sub-component of watchdog that monitors the health
-    of <productname>Pgpool-II</productname> nodes participating in the watchdog
-    cluster. <productname>Pgpool-II</productname> watchdog provides three built-in
-    methods of remote node health checking, "heartbeat", "query" and "external" mode.
+    Watchdog 生命检测是 watchdog 的一个子组件，用于监控参与 watchdog
+    集群的 <productname>Pgpool-II</productname> 节点的健康状况。<productname>Pgpool-II</productname> watchdog 提供三种内置的远程节点健康检查方法，即"heartbeat"（心跳）、"query"（查询）和"external"（外部）模式。
    </para>
    <para>
-    In "heartbeat" mode, The lifecheck process sends and receives the data over
-    <acronym>UDP</acronym> socket to check the availability of remote nodes and
-    for each node the parent lifecheck process spawns two child process one for
-    sending the heartbeat signal and another for receiving the heartbeat.
-    While in "query" mode, The lifecheck process uses the PostgreSQL libpq
-    interface for querying the remote <productname>Pgpool-II</productname>.
-    And in this mode the lifecheck process creates a new thread for each health
-    check query which gets destroyed as soon as the query finishes.
-    While in "external" mode, this mode disables the built in lifecheck of
-    <productname>Pgpool-II</productname>, and expects that the external system
-    will monitor local and remote node instead.
+    在"heartbeat"模式下，生命检测进程通过
+    <acronym>UDP</acronym> 套接字发送和接收数据来检查远程节点的可用性，
+    对于每个节点，父生命检测进程会生成两个子进程，一个用于
+    发送心跳信号，另一个用于接收心跳。
+    而在"query"模式下，生命检测进程使用 PostgreSQL libpq
+    接口来查询远程 <productname>Pgpool-II</productname>。
+    在此模式下，生命检测进程为每个健康检查查询创建一个新线程，查询完成后线程即被销毁。
+    而在"external"模式下，此模式会禁用
+    <productname>Pgpool-II</productname> 的内置生命检测，
+    期望外部系统来监控本地和远程节点。
    </para>
    <para>
-    Apart from remote node health checking watchdog lifecheck can also check the
-    health of node it is installed on by monitoring the connection to upstream servers.
-    For monitoring the connectivity to the upstream server <productname>Pgpool-II
-    </productname> lifecheck uses <literal>execv()</literal> function to executes
-    <command>'ping -q -c3 hostname'</command> command.
-    So a new child process gets spawned for executing each ping command.
-    This means for each health check cycle a child process gets created and
-    destroyed for each configured upstream server.
-    For example, if two upstream servers are configured in the lifecheck and it is
-    asked to health check at ten second intervals, then after each ten second
-    lifecheck will spawn two child processes, one for each upstream server,
-    and each process will live until the ping command is finished.
+    除了远程节点健康检查外，watchdog 生命检测还可以通过监控到上游服务器的连接来检查其所在节点自身的健康状况。
+    为了监控到上游服务器的连通性，<productname>Pgpool-II
+    </productname> 生命检测使用 <literal>execv()</literal> 函数来执行
+    <command>'ping -q -c3 hostname'</command> 命令。
+    因此会为执行每个 ping 命令生成一个新的子进程。
+    这意味着在每个健康检查周期内，会为每个配置的上游服务器创建并销毁一个子进程。
+    例如，如果生命检测配置了两个上游服务器，并且以十秒为间隔进行健康检查，那么每次十秒的生命检测都会为每个上游服务器生成一个子进程，
+    每个进程将持续到 ping 命令执行完毕。
    </para>
   </sect2>
 

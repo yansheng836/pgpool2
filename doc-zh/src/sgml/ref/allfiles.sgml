@@ -1,7 +1,7 @@
 <!--
 doc/src/sgml/ref/allfiles.sgml
-Pgpool-II documentation
-Complete list of usable sgml source files in this directory.
+Pgpool-II 文档
+此目录中可用 SGML 源文件的完整列表。
 -->
 
 <!ENTITY pcpCommonOptions    SYSTEM "pcp_common_options.sgml">

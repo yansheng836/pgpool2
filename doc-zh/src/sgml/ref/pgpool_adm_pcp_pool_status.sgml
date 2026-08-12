@@ -1,6 +1,6 @@
 <!--
 doc/src/sgml/ref/pgpool_adm_pcp_pool_status.sgml
-Pgpool-II documentation
+Pgpool-II 文档
 -->
 
 <refentry id="PGPOOL-ADM-PCP-POOL-STATUS">
@@ -11,13 +11,13 @@ Pgpool-II documentation
  <refmeta>
   <refentrytitle>pgpool_adm_pcp_pool_status</refentrytitle>
   <manvolnum>3</manvolnum>
-  <refmiscinfo>pgpool_adm extension</refmiscinfo>
+  <refmiscinfo>pgpool_adm 扩展</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>pgpool_adm_pcp_pool_status</refname>
   <refpurpose>
-   a function to retrieves parameters in pgpool.conf.</refpurpose>
+   用于检索 pgpool.conf 中参数的函数。</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -45,15 +45,14 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R3-PCP-POOL-STATUS-3">
-  <title>Description</title>
+  <title>描述</title>
   <para>
-   <function>pcp_pool_status</function> retrieves parameters in
-   pgpool.conf.
+   <function>pcp_pool_status</function> 检索 pgpool.conf 中的参数。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Arguments</title>
+  <title>参数</title>
   <para>
    <variablelist>
 
@@ -61,16 +60,16 @@ Pgpool-II documentation
      <term><replaceable class="parameter">pcp_server</replaceable></term>
      <listitem>
       <para>
-       The foreign server name for pcp server.
+       pcp 服务器的外部服务器名称。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other arguments </option></term>
+     <term><option>其他参数 </option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       请参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
@@ -79,9 +78,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个输出示例：
    <programlisting>
     test=# SELECT * FROM pcp_pool_status(host => 'localhost', port => 11001, username => 't-ishii', password => 't-ishii') WHERE item ~ 'backend.*0';
     item           |                     value                      |          description

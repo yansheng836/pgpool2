@@ -1,88 +1,84 @@
 <sect1 id="example-replication-mode">
- <title>Replication Mode and Snapshot Isolation Mode Configuration Example</title>
+ <title>复制模式与快照隔离模式配置示例</title>
  <para>
-  This section shows an example of how to configure <productname>Pgpool-II</productname>
-  replication mode and snapshot isolation mode.
+  本节展示了如何配置 <productname>Pgpool-II</productname> 的复制模式与快照隔离模式的示例。
  </para>
  <para>
-  In streaming replication mode described in <xref linkend="EXAMPLE-CLUSTER">,
-  replication is performed by PostgreSQL's streaming replication functionality.
-  However, in native replication mode, <productname>Pgpool-II</productname>
-  performs replication by routing write queries to all
-  <productname>PostgreSQL</productname> servers.
+  在 <xref linkend="EXAMPLE-CLUSTER"> 中描述的流复制模式下，复制由
+  PostgreSQL 的流复制功能完成。然而，在原生复制模式下，
+  <productname>Pgpool-II</productname> 通过将写查询路由到所有
+  <productname>PostgreSQL</productname> 服务器来执行复制。
  </para>
  <para>
-  Snapshot isolation mode is similar to native replication mode except it adds
-  the visibility consistency among nodes.
+  快照隔离模式与原生复制模式类似，不同之处在于它增加了各节点之间的
+  可见性一致性。
  </para>
  <para>
-  <productname>PostgreSQL</productname> 18 is used in this configuration example.
+  本配置示例使用了 <productname>PostgreSQL</productname> 18。
  </para>
 
  <sect2 id="example-replication-mode-structure">
-  <title>Cluster Structure</title>
+  <title>集群结构</title>
   <para>
-   In this example, we use one <productname>Pgpool-II</productname> and
-   three PostgreSQL servers to describe how to configure and use Pgpool-II's
-   replication.
+   在本示例中，我们使用一台 <productname>Pgpool-II</productname> 和三台
+   PostgreSQL 服务器来说明如何配置和使用 Pgpool-II 的复制功能。
   </para>
   <para>
-   In this example we use 3 servers with Rocky Linux 10 installed.
-   Let these servers be <literal>server1</literal>,
-   <literal>server2</literal>, <literal>server3</literal>.
-   We install <productname>PostgreSQL</productname> on all servers and
-   <productname>Pgpool-II</productname> on server1.
+   在本示例中，我们使用 3 台安装了 Rocky Linux 10 的服务器。
+   假设这些服务器分别为 <literal>server1</literal>、
+   <literal>server2</literal>、<literal>server3</literal>。
+   我们在所有服务器上安装 <productname>PostgreSQL</productname>，并在
+   server1 上安装 <productname>Pgpool-II</productname>。
   </para>
   <para>
-   In this example we use the minimum settings to configure replication.
-   In a production environment, it is recommended to enable Watchdog
-   to avoid single points of failure.
-   For more details about Watchdog configurations, please refer to <xref linkend="EXAMPLE-CLUSTER-PGPOOL-CONFIG-WATCHDOG">.
+   在本示例中，我们使用最少的配置来设置复制。
+   在生产环境中，建议启用 Watchdog 以避免单点故障。
+   关于 Watchdog 配置的更多详情，请参阅 <xref linkend="EXAMPLE-CLUSTER-PGPOOL-CONFIG-WATCHDOG">。
   </para>
 
   <table id="example-replication-mode-table-ip">
-   <title>Hostname and IP address</title>
+   <title>主机名和 IP 地址</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Hostname</entry>
-      <entry>IP Address</entry>
-      <entry>Virtual IP</entry>
+      <entry>主机名</entry>
+      <entry>IP 地址</entry>
+      <entry>虚拟 IP</entry>
      </row>
     </thead>
     <tbody>
      <row>
       <entry>server1</entry>
       <entry>192.168.137.101</entry>
-      <entry>PostgreSQL node0, Pgpool-II</entry>
+      <entry>PostgreSQL 节点0、Pgpool-II</entry>
      </row>
      <row>
       <entry>server2</entry>
       <entry>192.168.137.102</entry>
-      <entry>PostgreSQL node1</entry>
+      <entry>PostgreSQL 节点1</entry>
      </row>
      <row>
       <entry>server3</entry>
       <entry>192.168.137.103</entry>
-      <entry>PostgreSQL node2</entry>
+      <entry>PostgreSQL 节点2</entry>
      </row>
     </tbody>
    </tgroup>
   </table>
 
   <table id="example-replication-mode-table-postgresql-config">
-   <title>PostgreSQL version and Configuration</title>
+   <title>PostgreSQL 版本与配置</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Item</entry>
-      <entry>Value</entry>
-      <entry>Detail</entry>
+      <entry>项目</entry>
+      <entry>值</entry>
+      <entry>说明</entry>
      </row>
     </thead>
     <tbody>
      <row>
-      <entry>PostgreSQL Version</entry>
+      <entry>PostgreSQL 版本</entry>
       <entry>18.0</entry>
       <entry>-</entry>
      </row>
@@ -97,7 +93,7 @@
       <entry>-</entry>
      </row>
      <row>
-      <entry>Archive mode</entry>
+      <entry>归档模式</entry>
       <entry>on</entry>
       <entry>/var/lib/pgsql/archivedir</entry>
      </row>
@@ -106,47 +102,47 @@
   </table>
 
   <table id="example-replication-mode-table-pgpool-config">
-   <title>Pgpool-II version and Configuration</title>
+   <title>Pgpool-II 版本与配置</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Item</entry>
-      <entry>Value</entry>
-      <entry>Detail</entry>
+      <entry>项目</entry>
+      <entry>值</entry>
+      <entry>说明</entry>
      </row>
     </thead>
     <tbody>
      <row>
-      <entry>Pgpool-II Version</entry>
+      <entry>Pgpool-II 版本</entry>
       <entry>4.3.0</entry>
       <entry>-</entry>
      </row>
      <row>
       <entry morerows='1'>port</entry>
       <entry>9999</entry>
-      <entry>Pgpool-II accepts connections</entry>
+      <entry>Pgpool-II 接受连接</entry>
      </row>
      <row>
       <entry>9898</entry>
-      <entry>PCP process accepts connections</entry>
+      <entry>PCP 进程接受连接</entry>
      </row>
      <row>
-      <entry>Config file</entry>
+      <entry>配置文件</entry>
       <entry>/etc/pgpool-II/pgpool.conf</entry>
-      <entry>Pgpool-II config file</entry>
+      <entry>Pgpool-II 配置文件</entry>
      </row>
      <row>
-      <entry>Pgpool-II start user</entry>
-      <entry>postgres (Pgpool-II 4.1 or later)</entry>
-      <entry>Pgpool-II 4.0 or before, the default startup user is root</entry>
+      <entry>Pgpool-II 启动用户</entry>
+      <entry>postgres（Pgpool-II 4.1 或更高版本）</entry>
+      <entry>Pgpool-II 4.0 或更早版本，默认启动用户为 root</entry>
      </row>
      <row>
-      <entry morerows='1'>Clustering mode</entry>
-      <entry>native replication mode</entry>
+      <entry morerows='1'>集群模式</entry>
+      <entry>原生复制模式</entry>
       <entry>-</entry>
      </row>
      <row>
-      <entry>snapshot isolation mode</entry>
+      <entry>快照隔离模式</entry>
       <entry>-</entry>
      </row>
     </tbody>
@@ -155,12 +151,12 @@
  </sect2>
 
  <sect2 id="example-replication-mode-installation">
-  <title>Installation</title>
+  <title>安装</title>
   <para>
-   In this example, we install <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname> RPM packages with YUM.
+   在本示例中，我们通过 YUM 安装 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname> RPM 软件包。
   </para>
   <para>
-   Install <productname>PostgreSQL</productname> from <productname>PostgreSQL</productname> YUM repository.
+   从 <productname>PostgreSQL</productname> YUM 仓库安装 <productname>PostgreSQL</productname>。
   </para>
   <programlisting>
 [all servers]# yum install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -168,15 +164,17 @@
   </programlisting>
 
   <para>
-   Since <productname>Pgpool-II</productname> related packages are also included in <productname>PostgreSQL</productname> YUM repository,
-   add the "exclude" settings to <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>
-   so that <productname>Pgpool-II</productname> is not installed from <productname>PostgreSQL</productname> YUM repository. 
+   由于 <productname>PostgreSQL</productname> YUM 仓库中也包含
+   <productname>Pgpool-II</productname> 相关软件包，因此请在
+   <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename> 中添加
+   "exclude" 设置，以避免从 <productname>PostgreSQL</productname> YUM
+   仓库安装 <productname>Pgpool-II</productname>。
   </para>
   <programlisting>
 [all servers]# vi /etc/yum.repos.d/pgdg-redhat-all.repo
   </programlisting>
   <para>
-   The following is a setting example of <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>. 
+   以下是 <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename> 的设置示例。
   </para>
   <programlisting>
 [pgdg-common]
@@ -210,7 +208,7 @@ exclude=pgpool*
 exclude=pgpool*
   </programlisting>
   <para>
-   Install <productname>Pgpool-II</productname> using Pgpool-II YUM repository.
+   使用 Pgpool-II YUM 仓库安装 <productname>Pgpool-II</productname>。
   </para>
   <programlisting>
 [all servers]# yum install -y https://www.pgpool.net/yum/rpms/4.6/redhat/rhel-10-x86_64/pgpool-II-release-4.6-1.noarch.rpm
@@ -219,20 +217,19 @@ exclude=pgpool*
  </sect2>
 
  <sect2 id="example-replication-mode-pre-setup">
-  <title>Before Starting</title>
+  <title>开始之前</title>
   <para>
-   Before you start the configuration process, please check the following prerequisites.
+   在开始配置过程之前，请确认以下前提条件。
   </para>
 
   <sect3 id="example-replication-mode-ssh">
-   <title>Configure passwordless SSH login</title>
+   <title>配置免密码 SSH 登录</title>
    <para>
-    To use the online recovery of <productname>Pgpool-II</productname>,
-    the settings that allow <emphasis>passwordless</emphasis> SSH to all
-    servers are required.
-    Execute the following command on all servers to set up passwordless
-    <literal>SSH</literal>.
-    The generated key file name is <literal>id_rsa_pgpool</literal>.
+    要使用 <productname>Pgpool-II</productname> 的在线恢复功能，
+    需要配置允许对所有服务器进行 <emphasis>免密码</emphasis> SSH 访问
+    的设置。请在所有服务器上执行以下命令来设置免密码
+    <literal>SSH</literal>。
+    生成的密钥文件名称为 <literal>id_rsa_pgpool</literal>。
    </para>
    <programlisting>
 [all servers]# su - postgres
@@ -240,24 +237,22 @@ exclude=pgpool*
 [all servers]$ ssh-keygen -t rsa -f ~/.ssh/id_rsa_pgpool
    </programlisting>
    <para>
-    Then add the public key <filename>id_rsa_pgpool.pub</filename> to
-    <filename>/var/lib/pgsql/.ssh/authorized_keys</filename> file
-    on each server.
+    然后，将公钥 <filename>id_rsa_pgpool.pub</filename> 添加到每台服务器上的
+    <filename>/var/lib/pgsql/.ssh/authorized_keys</filename> 文件中。
    </para>
    <para>
-    After setting SSH, make sure that you can run
-    <command>ssh postgres@serverX -i ~/.ssh/id_rsa_pgpool</command> command
-    as <literal>postgres</literal> user to login to each server
-    without entering a password.
+    设置好 SSH 后，请确认以 <literal>postgres</literal> 用户身份执行
+    <command>ssh postgres@serverX -i ~/.ssh/id_rsa_pgpool</command> 命令
+    能够无需输入密码即可登录到每台服务器。
    </para>
 
    <note>
     <para>
-     If you failed to login using SSH public key authentication, please check the following:
+     如果使用 SSH 公钥认证登录失败，请检查以下各项：
      <itemizedlist>
       <listitem>
        <para>
-        Ensure the public key authentication option <literal>PubkeyAuthentication</literal> are allowed in <filename>/etc/ssh/sshd_config</filename>:
+        确认 <filename>/etc/ssh/sshd_config</filename> 中允许公钥认证选项 <literal>PubkeyAuthentication</literal>：
        </para>
       </listitem>
      </itemizedlist>
@@ -267,8 +262,8 @@ PubkeyAuthentication yes
      <itemizedlist>
       <listitem>
        <para>
-        If SELinux is enabled, SSH public key authentication (passwordless SSH) may fail.
-        You need to run the following command on all servers.
+        如果启用了 SELinux，SSH 公钥认证（免密码 SSH）可能会失败。
+        您需要在所有服务器上执行以下命令。
        </para>
       </listitem>
      </itemizedlist>
@@ -281,12 +276,11 @@ PubkeyAuthentication yes
   </sect3>
 
   <sect3 id="example-replication-mode-pgpass">
-   <title>Create .pgpass</title>
+   <title>创建 .pgpass</title>
    <para>
-    To allow <literal>repl</literal> user to execute online recovery scripts
-    without specifying password, we create the <filename>.pgpass</filename> file
-    in <literal>postgres</literal> user's home directory and change the
-    permission to <literal>600</literal> on each server.
+    为了允许 <literal>repl</literal> 用户在不指定密码的情况下执行在线恢复脚本，
+    我们在每台服务器的 <literal>postgres</literal> 用户主目录下创建
+    <filename>.pgpass</filename> 文件，并将权限更改为 <literal>600</literal>。
    </para>
    <programlisting>
 [all servers]# su - postgres
@@ -302,9 +296,9 @@ server3:5432:postgres:postgres:&lt;postgres user password&gt;
   </sect3>
 
   <sect3 id="example-replication-mode-firewall">
-   <title>Configure firewall</title>
+   <title>配置防火墙</title>
    <para>
-     When connect to <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname> servers, the target port must be accessible by enabling firewall management softwares. Following is an example for <systemitem>Rocky Linux 10</systemitem>.
+    当连接到 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname> 服务器时，必须通过启用防火墙管理软件使目标端口可访问。以下是 <systemitem>Rocky Linux 10</systemitem> 的示例。
    </para>
    <programlisting>
 [all servers]# firewall-cmd --permanent --zone=public --add-service=postgresql
@@ -312,7 +306,7 @@ server3:5432:postgres:postgres:&lt;postgres user password&gt;
 [all servers]# firewall-cmd --reload
    </programlisting>
    <para>
-    If Watchdog is enabled, you also need to open port 9000 and 9694.
+    如果启用了 Watchdog，还需要开放端口 9000 和 9694。
    </para>
    <programlisting>
 [all servers]# firewall-cmd --permanent --zone=public --add-port=9000/tcp  --add-port=9694/udp
@@ -321,33 +315,33 @@ server3:5432:postgres:postgres:&lt;postgres user password&gt;
  </sect2>
 
  <sect2 id="example-replication-mode-postgresql-config">
-  <title><productname>PostgreSQL</productname> Configuration</title>
+  <title><productname>PostgreSQL</productname> 配置</title>
   <para>
-   This section describes how to create and configure a PostgreSQL server.
+   本节介绍如何创建和配置 PostgreSQL 服务器。
   </para>
   <para>
-   In this example, we use WAL archiving.
-   First, we create the directory <filename>/var/lib/pgsql/archivedir</filename>
-   to store <acronym>WAL</acronym> segments on all servers.
+   在本示例中，我们使用 WAL 归档。
+   首先，我们在所有服务器上创建目录 <filename>/var/lib/pgsql/archivedir</filename>
+   来存放 <acronym>WAL</acronym> 段。
   </para>
   <programlisting>
 [all servers]# su - postgres
 [all servers]$ mkdir /var/lib/pgsql/archivedir
   </programlisting>
   <para>
-   Create only one PostgreSQL server on server1.
-   The other two PostgreSQL servers are created by using Pgpool-II's online
-   recovery functionality in <xref linkend="example-replication-mode-create-replicas">.
+   只在 server1 上创建一个 PostgreSQL 服务器。
+   另外两个 PostgreSQL 服务器通过 <xref linkend="example-replication-mode-create-replicas"> 中所述的
+   Pgpool-II 在线恢复功能创建。
   </para>
   <para>
-   Run the following command to create a PostgreSQL database cluster on server1.
+   执行以下命令在 server1 上创建 PostgreSQL 数据库集群。
   </para>
   <programlisting>
 [server1]# su - postgres
 [server1]$ /usr/pgsql-18/bin/initdb -E UTF8 --no-locale
   </programlisting>
   <para>
-   Then edit <filename>$PGDATA/postgresql.conf</filename> on server1.
+   然后编辑 server1 上的 <filename>$PGDATA/postgresql.conf</filename>。
   </para>
   <programlisting>
 [server1]$ vi $PGDATA/postgresql.conf
@@ -357,9 +351,9 @@ archive_command = 'cp "%p" "/var/lib/pgsql/archivedir/%f"'
   </programlisting>
 
   <para>
-   Assuming that all the <productname>Pgpool-II</productname> servers and the
-   <productname>PostgreSQL</productname> servers are in the same subnet and edit <filename>pg_hba.conf</filename> to
-   enable <literal>scram-sha-256</literal> authentication method.
+   假设所有 <productname>Pgpool-II</productname> 服务器和
+   <productname>PostgreSQL</productname> 服务器位于同一子网内，并编辑
+   <filename>pg_hba.conf</filename> 以启用 <literal>scram-sha-256</literal> 认证方法。
   </para>
   <programlisting>
 [server1]$ vi $PGDATA/pg_hba.conf
@@ -368,42 +362,42 @@ host    replication     all             samenet                 scram-sha-256
   </programlisting>
 
   <para>
-   Run the following command to start PostgreSQL server.
+   执行以下命令启动 PostgreSQL 服务器。
   </para>
   <programlisting>
 [server1]$ /usr/pgsql-18/bin/pg_ctl start
   </programlisting>
 
   <para>
-   Create PostgreSQL users.
+   创建 PostgreSQL 用户。
   </para>
   <table id="example-replication-mode-user">
-   <title>PostgreSQL users</title>
+   <title>PostgreSQL 用户</title>
    <tgroup cols="3">
     <thead>
      <row>
-	  <entry>User Name</entry>
-	  <entry>Password</entry>
-	  <entry>Detail</entry>
+	  <entry>用户名</entry>
+	  <entry>密码</entry>
+	  <entry>说明</entry>
      </row>
     </thead>
     <tbody>
      <row>
       <entry>repl</entry>
       <entry>repl</entry>
-	  <entry>PostgreSQL replication user</entry>
+	  <entry>PostgreSQL 复制用户</entry>
      </row>
      <row>
       <entry>pgpool</entry>
       <entry>pgpool</entry>
       <entry>
-       User performing health check (<xref linkend="GUC-HEALTH-CHECK-USER">)
+       执行健康检查的用户（<xref linkend="GUC-HEALTH-CHECK-USER">）
       </entry>
      </row>
      <row>
       <entry>postgres</entry>
       <entry>postgres</entry>
-      <entry>User performing online recovery</entry>
+      <entry>执行在线恢复的用户</entry>
      </row>
     </tbody>
    </tgroup>
@@ -420,38 +414,35 @@ postgres=# \password postgres
   </programlisting>
 
   <sect3 id="example-replication-mode-si-mode">
-   <title>Settings for snapshot isolation mode</title>
+   <title>快照隔离模式的设置</title>
    <para>
-    Snapshot isolation mode is only available when PostgreSQL's transaction isolation
-    level is "<emphasis>repeatable read</emphasis>".
-    If you want to use snapshot isolation mode, set
-    <varname>default_transaction_isolation ='repeatable read'</varname> in
-    <filename>postgresql.conf</filename>.
+    只有在 PostgreSQL 的事务隔离级别为"<emphasis>可重复读</emphasis>"时，
+    快照隔离模式才可用。如果要使用快照隔离模式，请在
+    <filename>postgresql.conf</filename> 中设置
+    <varname>default_transaction_isolation ='repeatable read'</varname>。
    </para>
    <programlisting>
 [server1]$ vi $PGDATA/postgresql.conf
 default_transaction_isolation = 'repeatable read'
    </programlisting>
   </sect3>
- </sect2>
-
- <sect2 id="example-replication-mode-pgpool-config">
-  <title>Configure <productname>Pgpool-II</productname></title>
+ </sect2><sect2 id="example-replication-mode-pgpool-config">
+  <title>配置 <productname>Pgpool-II</productname></title>
   <para>
-   When installing <productname>Pgpool-II</productname> using RPM, the
-   <productname>Pgpool-II</productname> configuration sample files are in
-   <filename>/etc/pgpool-II</filename>.
+   使用 RPM 安装 <productname>Pgpool-II</productname> 时，
+   <productname>Pgpool-II</productname> 的配置示例文件位于
+   <filename>/etc/pgpool-II</filename>。
   </para>
 
   <sect3 id="example-replication-mode-clustering-mode">
-   <title>Clustering mode</title>
+   <title>集群模式</title>
    <para>
-    First, specify <productname>Pgpool-II</productname> clustering mode in <xref linkend="GUC-BACKEND-CLUSTERING-MODE">.
+    首先，在 <xref linkend="GUC-BACKEND-CLUSTERING-MODE"> 中指定 <productname>Pgpool-II</productname> 的集群模式。
    </para>
    <itemizedlist>
     <listitem>
      <para>
-      Native replication mode
+      原生复制模式
      </para>
      <programlisting>
 backend_clustering_mode = native_replication
@@ -459,7 +450,7 @@ backend_clustering_mode = native_replication
     </listitem>
     <listitem>
      <para>
-      Snapshot isolation mode
+      快照隔离模式
      </para>
      <programlisting>
 backend_clustering_mode = snapshot_isolation
@@ -471,7 +462,7 @@ backend_clustering_mode = snapshot_isolation
   <sect3 id="example-replication-mode-listen-addresses">
    <title>listen_addresses</title>
    <para>
-    To allow Pgpool-II to accept all incoming connections, we set <varname>listen_addresses = '*'</varname>.
+    为了让 Pgpool-II 接受所有传入连接，我们设置 <varname>listen_addresses = '*'</varname>。
    </para>
    <programlisting>
 listen_addresses = '*'
@@ -479,19 +470,19 @@ listen_addresses = '*'
   </sect3>
 
   <sect3 id="example-replication-mode--health-check">
-   <title>Health Check</title>
+   <title>健康检查</title>
    <para>
-    Enable health check to allow <productname>Pgpool-II</> to detect PostgreSQL failure.
-    Also, if the network is unstable, the health check fails even though the backend is running
-    properly, failover or degenerate operation may occur.
-    In order to prevent such incorrect detection of health check, we set <varname>health_check_max_retries = 3</varname>.
-    Specify <xref linkend="GUC-HEALTH-CHECK-USER"> and <xref linkend="GUC-HEALTH-CHECK-PASSWORD">.
-    In this example, we leave <xref linkend="GUC-SR-CHECK-PASSWORD"> empty, and create the entry
-    in <xref linkend="GUC-POOL-PASSWD">.
-    See <xref linkend="example-replication-mode-auth"> for how to create the entry in <xref linkend="GUC-POOL-PASSWD">.
-    From <productname>Pgpool-II</productname> 4.0, if these parameters are left blank,
-    <productname>Pgpool-II</productname> will first try to get the password for that
-    specific user from <xref linkend="GUC-POOL-PASSWD"> file before using the empty password.
+    启用健康检查，以便让 <productname>Pgpool-II</> 检测 PostgreSQL 故障。
+    此外，如果网络不稳定，即使后端正常运行，健康检查也可能会失败，
+    从而导致故障切换或降级操作的发生。
+    为了防止这种健康检查的误检，我们设置 <varname>health_check_max_retries = 3</varname>。
+    指定 <xref linkend="GUC-HEALTH-CHECK-USER"> 和 <xref linkend="GUC-HEALTH-CHECK-PASSWORD">。
+    在本示例中，我们将 <xref linkend="GUC-SR-CHECK-PASSWORD"> 留空，并在
+    <xref linkend="GUC-POOL-PASSWD"> 中创建条目。
+    关于如何在 <xref linkend="GUC-POOL-PASSWD"> 中创建条目，请参阅 <xref linkend="example-replication-mode-auth">。
+    从 <productname>Pgpool-II</productname> 4.0 开始，如果这些参数留空，
+    <productname>Pgpool-II</productname> 会先从 <xref linkend="GUC-POOL-PASSWD"> 文件中获取该
+    特定用户的密码，而不是使用空密码。
    </para>
    <programlisting>
 health_check_period = 5
@@ -503,10 +494,10 @@ health_check_max_retries = 3
   </sect3>
 
   <sect3 id="example-replication-mode-backend-settings">
-   <title>Backend Settings</title>
+   <title>后端设置</title>
    <para>
-    Specify the <productname>PostgreSQL</productname> backend information.
-    Multiple backends can be specified by adding a number at the end of the parameter name.
+    指定 <productname>PostgreSQL</productname> 后端信息。
+    可以通过在参数名称末尾添加数字来指定多个后端。
    </para>
    <programlisting>
 # - Backend Connection Settings -
@@ -532,13 +523,13 @@ backend_flag2 = 'ALLOW_TO_FAILOVER'
   </sect3>
 
   <sect3 id="example-replication-mode-online-recovery">
-   <title>Online Recovery</title>
+   <title>在线恢复</title>
    <para>
-    Next, in order to perform online recovery we specify the
-    <productname>PostgreSQL</productname> user name and online recovery command
-    <command>recovery_1st_stage_command</command> and <command>recovery_2nd_stage_command</command>.
-    Because <emphasis>Superuser</emphasis> privilege in <productname>PostgreSQL</productname>
-    is required for performing online recovery, we specify <literal>postgres</literal> user in <xref linkend="GUC-RECOVERY-USER">.
+    接下来，为了执行在线恢复，我们指定 <productname>PostgreSQL</productname>
+    用户名以及在线恢复命令 <command>recovery_1st_stage_command</command> 和
+    <command>recovery_2nd_stage_command</command>。
+    由于执行在线恢复需要 <productname>PostgreSQL</productname> 的
+    <emphasis>超级用户</emphasis> 权限，因此我们在 <xref linkend="GUC-RECOVERY-USER"> 中指定 <literal>postgres</literal> 用户。
    <programlisting>
 recovery_user = 'postgres'
 recovery_password = ''
@@ -546,13 +537,13 @@ recovery_password = ''
 recovery_1st_stage_command = 'recovery_1st_stage'
 recovery_2nd_stage_command = 'recovery_2nd_stage'
    </programlisting>
-    The sample scripts
-    <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/replication_mode_recovery_1st_stage.sample">replication_mode_recovery_1st_stage.sample</ulink>,
+    示例脚本
+    <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/replication_mode_recovery_1st_stage.sample">replication_mode_recovery_1st_stage.sample</ulink>、
     <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/replication_mode_recovery_2nd_stage.sample">replication_mode_recovery_2nd_stage.sample</ulink>
-    and
+    以及
     <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/pgpool_remote_start.sample">pgpool_remote_start.sample</ulink>
-    are installed in <filename>/etc/pgpool-II/</filename>.
-    Create the scripts used by online recovery command from sample scripts and copy these files to the database cluster directory.
+    安装在 <filename>/etc/pgpool-II/</filename> 中。
+    请根据示例脚本创建在线恢复命令所使用的脚本，并将这些文件复制到数据库集群目录中。
    </para>
    <programlisting>
 [server1]# cp -p /etc/pgpool-II/sample_scripts/replication_mode_recovery_1st_stage.sample /var/lib/pgsql/18/data/recovery_1st_stage
@@ -561,7 +552,7 @@ recovery_2nd_stage_command = 'recovery_2nd_stage'
 [server1]# chown postgres:postgres /var/lib/pgsql/18/data/{recovery_1st_stage,recovery_2nd_stage,pgpool_remote_start}
    </programlisting>
    <para>
-    Basically, it should work if you change <emphasis>PGHOME</emphasis> according to PostgreSQL installation directory.
+    基本上，只要根据 PostgreSQL 的安装目录修改 <emphasis>PGHOME</emphasis>，就应该可以正常工作。
    </para>
    <programlisting>
 [server1]# vi /var/lib/pgsql/18/data/recovery_1st_stage
@@ -578,46 +569,23 @@ PGHOME=/usr/pgsql-18
 ...
 PGHOME=/usr/pgsql-18
 ...
-   </programlisting>
-
-   <para>
-    In addition, to perform online recovery, the functions
-    <function>pgpool_recovery</function>, <function>pgpool_remote_start</function>
-    and <function>pgpool_switch_xlog</function> must be created in advance
-    in the database specified by <xref linkend="guc-recovery-database">
-    (the default is <literal>'postgres'</literal>).
-    Execute the following command to create these functions in
-    <literal>postgres</literal> on <literal>server1</literal>.
-    If a value other than the default is configured for
-    <xref linkend="guc-recovery-database">, replace <literal>postgres</literal>
-    with the configured value.
-   </para>
-   <programlisting>
-[server1]# psql -U postgres postgres -c "CREATE EXTENSION pgpool_recovery"
-   </programlisting>
-   <note>
-    <para>
-     The <filename>recovery_1st_stage</filename> script does not support tablespaces.
-     If you are using tablespaces, you need to modify the script to support tablespaces.
-    </para>
-   </note>
-  </sect3>
+   </programlisting>  </sect3>
 
   <sect3 id="example-replication-mode-auth">
-   <title>Client Authentication Configuration</title>
+   <title>客户端认证配置</title>
    <para>
-    Enable client authentication between client and <productname>Pgpool-II</productname>.
-    When installing with RPM, the <productname>Pgpool-II</productname> configuration file
-    <filename>pool_hba.conf</filename> is in <filename>/etc/pgpool-II</filename>.
-    By default, pool_hba authentication is disabled, set <varname>enable_pool_hba = on</varname>
-    to enable it.
+    启用客户端与 <productname>Pgpool-II</productname> 之间的客户端认证。
+    使用 RPM 安装时，<productname>Pgpool-II</productname> 的配置文件
+    <filename>pool_hba.conf</filename> 位于 <filename>/etc/pgpool-II</filename>。
+    默认情况下，pool_hba 认证是禁用的，设置 <varname>enable_pool_hba = on</varname>
+    以启用它。
    </para>
    <programlisting>
 enable_pool_hba = on
    </programlisting>
    <para>
-    The format of <filename>pool_hba.conf</filename> file follows very closely PostgreSQL's
-    <filename>pg_hba.conf</filename> format. Set <literal>pgpool</literal> and <literal>postgres</literal> user's authentication method to <literal>scram-sha-256</literal>.
+    <filename>pool_hba.conf</filename> 文件的格式与 PostgreSQL 的
+    <filename>pg_hba.conf</filename> 格式非常接近。请将 <literal>pgpool</literal> 和 <literal>postgres</literal> 用户的认证方法设置为 <literal>scram-sha-256</literal>。
    </para>
    <programlisting>
 [server1]# vi /etc/pgpool-II/pool_hba.conf
@@ -626,18 +594,21 @@ host    all         postgres         0.0.0.0/0          scram-sha-256
    </programlisting>
    <note>
     <para>
-     Please note that in <productname>Pgpool-II</productname> 4.0 only AES encrypted password or clear text password
-     can be specified in <xref linkend="guc-health-check-password">, <xref linkend="guc-sr-check-password">,
-       <xref linkend="guc-wd-lifecheck-password">, <xref linkend="guc-recovery-password"> in <filename>pgpool.conf</filename>.
+     请注意，在 <productname>Pgpool-II</productname> 4.0 中，
+     <filename>pgpool.conf</filename> 中的 <xref linkend="guc-health-check-password">、
+     <xref linkend="guc-sr-check-password">、
+     <xref linkend="guc-wd-lifecheck-password">、<xref linkend="guc-recovery-password">
+     只能指定 AES 加密密码或明文密码。
     </para>
    </note>
    <para>
-    The default password file name for authentication is <xref linkend="GUC-POOL-PASSWD">.
-     To use <literal>scram-sha-256</literal> authentication, the decryption key to decrypt the passwords
-     is required. We create the <literal>.pgpoolkey</literal> file in <productname>Pgpool-II</productname>
-     start user <literal>postgres</literal>'s (<productname>Pgpool-II</productname> 4.1 or later) home directory.
-     (<productname>Pgpool-II</productname> 4.0 or before, by default <productname>Pgpool-II</productname>
-     is started as <literal>root</literal>)
+    认证所使用的默认密码文件名称为 <xref linkend="GUC-POOL-PASSWD">。
+    要使用 <literal>scram-sha-256</literal> 认证，需要用于解密密码的
+    解密密钥。我们在 <productname>Pgpool-II</productname> 启动用户
+    <literal>postgres</literal>（<productname>Pgpool-II</productname> 4.1 或更高版本）的主目录中创建
+    <literal>.pgpoolkey</literal> 文件。
+    （<productname>Pgpool-II</productname> 4.0 或更早版本，默认情况下
+    <productname>Pgpool-II</productname> 以 <literal>root</literal> 身份启动）
      <programlisting>
 [server1]# su - postgres
 [server1]$ echo 'some string' > ~/.pgpoolkey
@@ -645,10 +616,10 @@ host    all         postgres         0.0.0.0/0          scram-sha-256
      </programlisting>
    </para>
    <para>
-    Execute command <command>pg_enc -m -k /path/to/.pgpoolkey -u username -p</command> to register user
-    name and <literal>AES</literal> encrypted password in file <filename>pool_passwd</filename>.
-    If <filename>pool_passwd</filename> doesn't exist yet, it will be created in the same directory as
-    <filename>pgpool.conf</filename>.
+    执行命令 <command>pg_enc -m -k /path/to/.pgpoolkey -u username -p</command>
+    将用户名和 <literal>AES</literal> 加密密码注册到文件 <filename>pool_passwd</filename> 中。
+    如果 <filename>pool_passwd</filename> 尚不存在，它会在与
+    <filename>pgpool.conf</filename> 相同的目录中创建。
    </para>
    <programlisting>
 [server1]# su - postgres
@@ -664,14 +635,14 @@ postgres:AESHs/pWL5rtXy2IwuzroHfqg==
   </sect3>
 
   <sect3 id="example-replication-mode-pcp-password">
-   <title>PCP password</title>
+   <title>PCP 密码</title>
    <para>
-    Since user authentication is required to use the <literal>PCP</literal> command,
-    we need to specify user name and md5 encrypted password in <filename>pcp.conf</filename>
-    in format "<literal>username:encrypted password</literal>".
+    由于使用 <literal>PCP</literal> 命令需要用户认证，
+    因此我们需要在 <filename>pcp.conf</filename> 中以
+    "<literal>用户名:加密密码</literal>" 的格式指定用户名和 md5 加密密码。
    </para>
    <para>
-    We use <xref linkend="PG-MD5"> to create the encrypted password entry for <literal>pgpool</literal> user as below:
+    我们使用 <xref linkend="PG-MD5"> 为 <literal>pgpool</literal> 用户创建加密密码条目，如下所示：
    </para>
    <programlisting>
 [server1]# echo 'pgpool:'`pg_md5 PCP password` &gt;&gt; /etc/pgpool-II/pcp.conf
@@ -679,10 +650,10 @@ postgres:AESHs/pWL5rtXy2IwuzroHfqg==
   </sect3>
 
   <sect3 id="example-replication-mode-log">
-   <title>Logging</title>
+   <title>日志记录</title>
    <para>
-    Since Pgpool-II 4.2, the logging collector process has been implemented.
-    In the example, we enable logging collector.
+    自 Pgpool-II 4.2 起，实现了日志收集器进程。
+    在本示例中，我们启用日志收集器。
    </para>
    <programlisting>
 log_destination = 'stderr'
@@ -694,28 +665,26 @@ log_rotation_age = 1d
 log_rotation_size = 10MB
    </programlisting>
    <para>
-    Create the log directory on server1.
+    在 server1 上创建日志目录。
    </para>
    <programlisting>
 [server1]# mkdir /var/log/pgpool_log/
 [server1]# chown postgres:postgres /var/log/pgpool_log/
    </programlisting>
   </sect3>
- </sect2>
-
- <sect2 id="example-replication-mode-start-stop">
-  <title>Starting/Stopping Pgpool-II</title>
+ </sect2><sect2 id="example-replication-mode-start-stop">
+  <title>启动/停止 Pgpool-II</title>
   <para>
-   Before starting <productname>Pgpool-II</productname>, please start
-   <productname>PostgreSQL</productname> servers first.
-   Also, when stopping <productname>PostgreSQL</productname>,
-   it is necessary to stop Pgpool-II first.
-   Run the following command to start or stop <productname>Pgpool-II</productname>.
+   在启动 <productname>Pgpool-II</productname> 之前，请先启动
+   <productname>PostgreSQL</productname> 服务器。
+   另外，在停止 <productname>PostgreSQL</productname> 时，
+   需要先停止 Pgpool-II。
+   执行以下命令来启动或停止 <productname>Pgpool-II</productname>。
   </para>
   <itemizedlist>
    <listitem>
     <para>
-     Starting <productname>Pgpool-II</productname>
+     启动 <productname>Pgpool-II</productname>
     </para>
     <programlisting>
 # systemctl start pgpool.service
@@ -723,7 +692,7 @@ log_rotation_size = 10MB
    </listitem>
    <listitem>
     <para>
-     Stopping <productname>Pgpool-II</productname>
+     停止 <productname>Pgpool-II</productname>
     </para>
     <programlisting>
 # systemctl stop pgpool.service
@@ -733,25 +702,25 @@ log_rotation_size = 10MB
  </sect2>
 
  <sect2 id="example-replication-mode-try">
-  <title>How to use</title>
+  <title>使用方法</title>
   <para>
-   Once the configuration is completed, let's start to use <productname>Pgpool-II</productname>.
+   配置完成后，让我们开始使用 <productname>Pgpool-II</productname>。
   </para>
   <para>
-   First, let's start <productname>Pgpool-II</productname>.
+   首先，让我们启动 <productname>Pgpool-II</productname>。
   </para>
   <programlisting>
 [server1]# systemctl start pgpool.service
   </programlisting>
 
   <sect3 id="example-replication-mode-create-replicas">
-   <title>Create PostgreSQL servers using online recovery</title>
+   <title>使用在线恢复创建 PostgreSQL 服务器</title>
    <para>
-    Then, we create PostgreSQL node1 and node2 using online recovery.
-    Ensure that <filename>recovery_1st_stage</filename>,
-    <filename>recovery_2nd_stage</filename> and <filename>pgpool_remote_start</filename>
-    scripts used by <command>pcp_recovery_node</command> command are in the database
-    cluster directory on server1.
+    然后，我们使用在线恢复创建 PostgreSQL 节点1 和节点2。
+    请确保 <command>pcp_recovery_node</command> 命令所使用的
+    <filename>recovery_1st_stage</filename>、
+    <filename>recovery_2nd_stage</filename> 和 <filename>pgpool_remote_start</filename>
+    脚本位于 server1 上的数据库集群目录中。
    </para>
    <programlisting>
 [server1]# pcp_recovery_node -h server1 -p 9898 -U pgpool -n 1
@@ -763,9 +732,9 @@ Password:
 pcp_recovery_node -- Command Successful
    </programlisting>
    <para>
-    If <command>pcp_recovery_node</command> has run successfully,
-    verify that the PostgreSQL node0 is started as the main node,
-    and node1 and node2 are started as replicas.
+    如果 <command>pcp_recovery_node</command> 已成功运行，
+    请确认 PostgreSQL 节点0 以主节点身份启动，
+    节点1 和节点2 以副本节点身份启动。
    </para>
    <programlisting>
 # psql -h server1 -p 9999 -U pgpool postgres -c "show pool_nodes"
@@ -780,17 +749,17 @@ Password for user pgpool:
   </sect3>
 
   <sect3 id="example-replication-mode-verify-replication">
-   <title>Verify replication</title>
+   <title>验证复制</title>
    <para>
-    Next, let's verify the replication functionality using a benchmark tool pgbench.
+    接下来，让我们使用基准测试工具 pgbench 验证复制功能。
    </para>
    <programlisting>
 [server1]# /usr/pgsql-18/bin/createdb test -U postgres -p 9999
 [server1]# /usr/pgsql-18/bin/pgbench -h server1 -U postgres -i -p 9999 test
    </programlisting>
    <para>
-    To check if the replication works correctly, directly connect to each PostgreSQL
-    server to see if they return identical results.
+    为了检查复制是否正常工作，请直接连接到每台 PostgreSQL
+    服务器，查看它们是否返回相同的结果。
    </para>
    <programlisting>
 [server1]# /usr/pgsql-18/bin/psql -h server1 -U postgres -p 5432 test
@@ -827,16 +796,16 @@ test=# \d
 (4 rows)
    </programlisting>
    <para>
-    server1, server2 and server3 return identical results.
+    server1、server2 和 server3 返回相同的结果。
    </para>
    <para>
-    Next, let's run pgbench for a while and check to results.
+    接下来，让我们运行一段时间 pgbench 并检查结果。
    </para>
    <programlisting>
 [server1]# /usr/pgsql-18/bin/pgbench -h server1 -U postgres -p 9999 -T 10 test
    </programlisting>
    <para>
-    All PostgreSQL servers return identical results.
+    所有 PostgreSQL 服务器都返回相同的结果。
    </para>
    <programlisting>
 [server1]# /usr/pgsql-18/bin/psql -h server1 -U postgres -p 5432 test -c "SELECT sum(abalance) FROM pgbench_accounts"
@@ -863,18 +832,18 @@ Password for user postgres:
   </sect3>
 
   <sect3 id="example-replication-mode-verify-node-failure">
-   <title>PostgreSQL failure</title>
+   <title>PostgreSQL 故障</title>
    <para>
-    Next, stop the PostgreSQL main node on server1
-    and verify the switchover of the main node.
+    接下来，停止 server1 上的 PostgreSQL 主节点，
+    并验证主节点的切换。
    </para>
    <programlisting>
 [server1]# su - postgres -c "/usr/pgsql-18/bin/pg_ctl -m i stop"
    </programlisting>
    <para>
-    After stopping <productname>PostgreSQL</productname> on <literal>server1</literal>,
-    switchover occurs and <productname>PostgreSQL</productname> on
-    <literal>server2</literal> becomes the new main node.
+    停止 <literal>server1</literal> 上的 <productname>PostgreSQL</productname> 后，
+    会发生切换，<literal>server2</literal> 上的
+    <productname>PostgreSQL</productname> 将成为新的主节点。
    </para>
    <programlisting>
 [server1]# psql -h server1 -p 9999 -U pgpool postgres -c "show pool_nodes"
@@ -889,10 +858,10 @@ Password for user pgpool:
   </sect3>
 
   <sect3 id="example-replication-mode-try-online-recovery">
-   <title>Online Recovery</title>
+   <title>在线恢复</title>
    <para>
-    Here, we use <productname>Pgpool-II</productname> online recovery functionality to
-    restore the PostgreSQL node0 on <literal>server1</literal>.
+    在这里，我们使用 <productname>Pgpool-II</productname> 的在线恢复功能来
+    恢复 <literal>server1</literal> 上的 PostgreSQL 节点0。
    </para>
    <programlisting>
 # pcp_recovery_node -h server1 -p 9898 -U pgpool -n 0
@@ -900,7 +869,7 @@ Password:
 pcp_recovery_node -- Command Successful
    </programlisting>
    <para>
-    Then verify that <literal>server1</literal> is started as the main node.
+    然后确认 <literal>server1</literal> 以主节点身份启动。
    </para>
    <programlisting>
 # psql -h server1 -p 9999 -U pgpool postgres -c "show pool_nodes"

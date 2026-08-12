@@ -1,16 +1,16 @@
 <!-- doc/src/sgml/examples.sgml -->
 
 <part id="examples">
- <title>Examples</title>
+ <title>示例</title>
 
  <partintro>
   <para>
-   Various examples
+   各种示例
   </para>
  </partintro>
 
  <chapter id="example-configs">
-  <title>Configuration Examples</title>
+  <title>配置示例</title>
   &example-basic;
   &example-cluster;
   &example-replication-si-mode;

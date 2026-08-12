@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pcp_common_options</refname>
   <refpurpose>
-   common options used in PCP commands</refpurpose>
+   PCP 命令中使用的公共选项</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -29,17 +29,15 @@ Pgpool-II documentation
 
  <refsect1 id="R1-PCP-common-options-1">
   <title>
-   Description
+   描述
   </title>
   <para>
-   There are some arguments common to all PCP commands.  Most of
-   these are for authentication and the rest are about verbose
-   mode, debug message, and so on.
+   所有 PCP 命令都有一些公共参数。大多数用于身份认证，其余的涉及详细模式、调试消息等。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
 
   <para>
    <variablelist>
@@ -49,8 +47,7 @@ Pgpool-II documentation
      <term><option>--host=<replaceable class="parameter">hostname</replaceable></option></term>
      <listitem>
       <para>
-       The host name of the machine on which the server is running. If the
-       value begins with a slash, it is used as the directory for the Unix-domain socket.
+       服务器运行所在机器的主机名。如果该值以斜杠开头，则将其用作 Unix 域套接字的目录。
       </para>
      </listitem>
     </varlistentry>
@@ -60,7 +57,7 @@ Pgpool-II documentation
      <term><option>--port=<replaceable class="parameter">port</replaceable></option></term>
      <listitem>
       <para>
-       The PCP port number (default:"9898").
+       PCP 端口号（默认："9898"）。
       </para>
      </listitem>
     </varlistentry>
@@ -70,7 +67,7 @@ Pgpool-II documentation
      <term><option>--username=<replaceable class="parameter">username</replaceable></option></term>
      <listitem>
       <para>
-       The user name for PCP authentication (default: OS user name).
+       用于 PCP 身份认证的用户名（默认：操作系统用户名）。
       </para>
      </listitem>
     </varlistentry>
@@ -80,10 +77,7 @@ Pgpool-II documentation
      <term><option>--no-password</option></term>
      <listitem>
       <para>
-       Never prompt for password (should happen automatically). And if a password is not available
-       by a <filename>.pcppass</filename> file, the connection
-       attempt will fail. This option can be useful in batch jobs
-       and scripts where no user is present to enter a password.
+       从不提示输入密码（应自动发生）。如果无法通过 <filename>.pcppass</filename> 文件获得密码，则连接尝试将失败。此选项对于没有用户来输入密码的批处理任务和脚本非常有用。
       </para>
      </listitem>
     </varlistentry>
@@ -93,7 +87,7 @@ Pgpool-II documentation
      <term><option>--password</option></term>
      <listitem>
       <para>
-       Force password prompt.
+       强制提示输入密码。
       </para>
      </listitem>
     </varlistentry>
@@ -103,7 +97,7 @@ Pgpool-II documentation
      <term><option>--debug</option></term>
      <listitem>
       <para>
-       Enable debug message.
+       启用调试消息。
       </para>
      </listitem>
     </varlistentry>
@@ -113,7 +107,7 @@ Pgpool-II documentation
      <term><option>--verbose</option></term>
      <listitem>
       <para>
-       Enable verbose output.
+       启用详细输出。
       </para>
      </listitem>
     </varlistentry>
@@ -123,7 +117,7 @@ Pgpool-II documentation
      <term><option>--version</option></term>
      <listitem>
       <para>
-       Print the command version, then exit.
+       打印命令版本号，然后退出。
       </para>
      </listitem>
     </varlistentry>
@@ -133,7 +127,7 @@ Pgpool-II documentation
      <term><option>--help</option></term>
      <listitem>
       <para>
-       Shows help for the command line arguments, then exit.
+       显示命令行参数的帮助信息，然后退出。
       </para>
      </listitem>
     </varlistentry>
@@ -144,7 +138,7 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment</title>
+  <title>环境变量</title>
 
   <variablelist>
    <varlistentry>
@@ -152,7 +146,7 @@ Pgpool-II documentation
 
     <listitem>
      <para>
-      Specifies the path to pcp password file.
+      指定 PCP 密码文件的路径。
      </para>
     </listitem>
    </varlistentry>

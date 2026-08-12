@@ -1,50 +1,48 @@
 <!-- doc/src/sgml/info.sgml -->
 
 <sect1 id="resources">
- <title>Further Information</title>
+ <title>其他资料</title>
 
  <para>
-  Besides the documentation, that is, this book, there are other
-  resources about <productname>Pgpool-II</productname>:
+  除本文档（即本书）之外，还有以下关于
+  <productname>Pgpool-II</productname> 的资源：
 
   <variablelist>
 
    <varlistentry>
-    <term>Web Site</term>
+    <term>网站</term>
     <listitem>
      <para>
-      The <productname>Pgpool-II</productname>
-      <ulink url="http://pgpool.net">web site</ulink> is a central place providing official information regarding
-      <productname>Pgpool-II</productname>: downloads, documentation, FAQ, mailing list archives and more.
+      <productname>Pgpool-II</productname>
+      <ulink url="http://pgpool.net">官方网站</ulink>
+      是提供
+      <productname>Pgpool-II</productname>
+      官方信息的中心平台，包括下载、文档、常见问题解答、邮件列表存档等。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Mailing Lists</term>
+    <term>邮件列表</term>
     <listitem>
      <para>
-      The mailing lists are a good place to have your questions
-      answered, to share experiences with other users, and to contact
-      the developers.  Consult the <productname>Pgpool-II</> web site
-      for details.
+      邮件列表是提问、与其他用户分享经验以及与开发者联系的好地方。
+      详情请查阅 <productname>Pgpool-II</productname> 网站。
      </para>
     </listitem>
    </varlistentry>
 
    <varlistentry>
-    <term>Yourself!</term>
+    <term>你自己！</term>
     <listitem>
      <para>
-      <productname>pgpool-II</productname> is an open-source project.
-      As such, it depends on the user community for ongoing support.
-      As you begin to use <productname>Pgpool-II</productname>, you
-      will rely on others for help, either through the documentation
-      or through the mailing lists.  Consider contributing your
-      knowledge back. Read the mailing lists and answer questions.  If
-      you learn something which is not in the documentation, write it
-      up and contribute it.  If you add features to the code,
-      contribute them.
+      <productname>Pgpool-II</productname> 是一个开源项目。
+      因此，它的持续支持依赖于用户社区。
+      当你开始使用 <productname>Pgpool-II</productname> 时，
+      你将依赖他人提供帮助，无论是通过文档还是邮件列表。
+      请考虑将你的知识回馈社区。阅读邮件列表并回答问题。
+      如果你学到了文档中没有的内容，请撰写并贡献出去。
+      如果你对代码添加了新功能，也请贡献它们。
      </para>
     </listitem>
    </varlistentry>

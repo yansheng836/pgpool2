@@ -1,32 +1,31 @@
 <sect1 id="example-cluster">
- <title><productname>Pgpool-II</productname> + Watchdog Setup Example</title>
+ <title><productname>Pgpool-II</productname> + Watchdog 配置示例</title>
  <para>
-  This section shows an example of streaming replication configuration using
-  <productname>Pgpool-II</productname>. In this example, we use 3
-  <productname>Pgpool-II</productname> servers to manage <productname>PostgreSQL</productname>
-  servers to create a robust cluster system and avoid the single point of failure or split brain.
+  本节展示使用 <productname>Pgpool-II</productname> 的流复制配置示例。
+  在本示例中，我们使用 3 台 <productname>Pgpool-II</productname> 服务器来管理
+  <productname>PostgreSQL</productname> 服务器，以创建一个健壮的集群系统，避免单点故障或脑裂问题。
  </para>
  <para>
-  <emphasis><productname>PostgreSQL</productname> 18</emphasis> is used in this configuration example.
+  本配置示例使用的是 <emphasis><productname>PostgreSQL</productname> 18</emphasis>。
  </para>
  <sect2 id="example-cluster-requirement">
-  <title>Requirements</title>
+  <title>要求</title>
   <para>
-   We assume that all the Pgpool-II servers and the <productname>PostgreSQL</productname> servers are in the same subnet.
+   我们假设所有 Pgpool-II 服务器和 <productname>PostgreSQL</productname> 服务器都在同一个子网中。
   </para>
  </sect2>
 
  <sect2 id="example-cluster-structure">
-  <title>Cluster System Configuration</title>
+  <title>集群系统配置</title>
   <para>
-   We use three servers with <emphasis>Rocky Linux 10</emphasis> installed and
-   the hostnames of the three servers are <literal>server1</literal>
-   <literal>server2</literal> and <literal>server3</literal> respectively.
-   We install <productname>PostgreSQL</productname> and <productname>Pgpool-II</productname> on each server.
+   我们使用三台安装了 <emphasis>Rocky Linux 10</emphasis> 的服务器，
+   这三台服务器的主机名分别为 <literal>server1</literal>、
+   <literal>server2</literal> 和 <literal>server3</literal>。
+   我们在每台服务器上都安装 <productname>PostgreSQL</productname> 和 <productname>Pgpool-II</productname>。
   </para>
   <para>
    <figure>
-    <title>Cluster System Configuration</title>
+    <title>集群系统配置</title>
     <mediaobject>
      <imageobject>
       <imagedata fileref="cluster_40.gif">
@@ -36,18 +35,18 @@
   </para>
   <note>
    <para>
-    The roles of <literal>Leader</literal>, <literal>Standby</literal>, <literal>Primary</literal>,
-    <literal>Standby</literal> are not fixed and may be changed by further operations.
+    <literal>Leader</literal>、<literal>Standby</literal>、<literal>Primary</literal>、
+    <literal>Standby</literal> 的角色并非固定不变，可能会因后续操作而改变。
    </para>
   </note>
   <table id="example-cluster-table-ip">
-   <title>Hostname and IP address</title>
+   <title>主机名与 IP 地址</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Hostname</entry>
-      <entry>IP Address</entry>
-      <entry>Virtual IP</entry>
+      <entry>主机名</entry>
+      <entry>IP 地址</entry>
+      <entry>虚拟 IP</entry>
      </row>
     </thead>
     <tbody>
@@ -67,25 +66,24 @@
     </tbody>
    </tgroup>
   </table>
-
   <table id="example-cluster-table-postgresql-config">
-   <title>PostgreSQL version and Configuration</title>
+   <title>PostgreSQL 版本与配置</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Item</entry>
-      <entry>Value</entry>
-      <entry>Detail</entry>
+      <entry>项目</entry>
+      <entry>值</entry>
+      <entry>说明</entry>
      </row>
     </thead>
     <tbody>
      <row>
-      <entry>PostgreSQL Version</entry>
+      <entry>PostgreSQL 版本</entry>
       <entry>18.0</entry>
       <entry>-</entry>
      </row>
      <row>
-      <entry>port</entry>
+      <entry>端口</entry>
       <entry>5432</entry>
       <entry>-</entry>
      </row>
@@ -95,137 +93,128 @@
       <entry>-</entry>
      </row>
      <row>
-      <entry>Archive mode</entry>
-      <entry>off</entry>
+      <entry>归档模式</entry>
+      <entry>关闭</entry>
       <entry>-</entry>
      </row>
      <row>
-      <entry>Replication Slots</entry>
-      <entry>Enabled</entry>
-      <entry>In this configuration example, replication slots are
-       automatically created or deleted in the scripts which are executed
-       during failover or online recovery. 
-       These scripts use the hostname specified in backend_hostnameX as
-       the replication slot name.
-       See <xref linkend="example-cluster-table-sample-scripts"> for
-       more information about the scripts.</entry>
+      <entry>复制槽</entry>
+      <entry>已启用</entry>
+      <entry>在此配置示例中，复制槽会在执行故障切换或在线恢复的脚本中自动创建或删除。这些脚本将 backend_hostnameX 中指定的主机名用作复制槽名称。有关脚本的更多信息，请参见 <xref linkend="example-cluster-table-sample-scripts">。</entry>
      </row>
      <row>
-      <entry>Async/Sync Replication</entry>
-      <entry>Async</entry>
+      <entry>异步/同步复制</entry>
+      <entry>异步</entry>
       <entry>-</entry>
      </row>
     </tbody>
    </tgroup>
   </table>
-
   <table id="example-cluster-table-pgpool-config">
-   <title>Pgpool-II version and Configuration</title>
+   <title>Pgpool-II 版本与配置</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Item</entry>
-      <entry>Value</entry>
-      <entry>Detail</entry>
+      <entry>项目</entry>
+      <entry>值</entry>
+      <entry>说明</entry>
      </row>
     </thead>
     <tbody>
      <row>
-      <entry>Pgpool-II Version</entry>
+      <entry>Pgpool-II 版本</entry>
       <entry>4.6.1</entry>
       <entry>-</entry>
      </row>
      <row>
-      <entry morerows='3'>port</entry>
+      <entry morerows='3'>端口</entry>
       <entry>9999</entry>
-      <entry>Pgpool-II accepts connections</entry>
+      <entry>Pgpool-II 接受连接</entry>
      </row>
      <row>
       <entry>9898</entry>
-      <entry>PCP process accepts connections</entry>
+      <entry>PCP 进程接受连接</entry>
      </row>
      <row>
       <entry>9000</entry>
-      <entry>watchdog accepts connections</entry>
+      <entry>watchdog 接受连接</entry>
      </row>
      <row>
       <entry>9694</entry>
-      <entry>UDP port for receiving Watchdog's heartbeat signal</entry>
+      <entry>用于接收 Watchdog 心跳信号的 UDP 端口</entry>
      </row>
      <row>
-      <entry>Config file</entry>
+      <entry>配置文件</entry>
       <entry>/etc/pgpool-II/pgpool.conf</entry>
-      <entry>Pgpool-II config file</entry>
+      <entry>Pgpool-II 配置文件</entry>
      </row>
      <row>
-      <entry>User running Pgpool-II</entry>
-      <entry>postgres (Pgpool-II 4.1 or later)</entry>
-      <entry>Pgpool-II 4.0 or before, the default user running Pgpool-II is root</entry>
+      <entry>运行 Pgpool-II 的用户</entry>
+      <entry>postgres（Pgpool-II 4.1 或更高版本）</entry>
+      <entry>Pgpool-II 4.0 及之前版本，默认运行 Pgpool-II 的用户是 root</entry>
      </row>
      <row>
-      <entry>Running mode</entry>
-      <entry>streaming replication mode</entry>
+      <entry>运行模式</entry>
+      <entry>流复制模式</entry>
       <entry>-</entry>
      </row>
      <row>
       <entry>Watchdog</entry>
-      <entry>on</entry>
-      <entry>Life check method: heartbeat</entry>
+      <entry>开启</entry>
+      <entry>健康检查方法：心跳</entry>
      </row>
     </tbody>
    </tgroup>
   </table>
-
   <table id="example-cluster-table-sample-scripts">
-   <title>Various sample scripts included in rpm package</title>
+   <title>RPM 包中包含的各种示例脚本</title>
    <tgroup cols="3">
     <thead>
      <row>
-      <entry>Feature</entry>
-      <entry>Script</entry>
-      <entry>Detail</entry>
+      <entry>功能</entry>
+      <entry>脚本</entry>
+      <entry>说明</entry>
      </row>
     </thead>
     <tbody>
      <row>
-      <entry morerows='1'>Failover</entry>
+      <entry morerows='1'>故障切换</entry>
       <entry><ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/failover.sh.sample">/etc/pgpool-II/sample_scripts/failover.sh.sample</ulink></entry>
-      <entry>Run by <xref linkend="GUC-FAILOVER-COMMAND"> to perform failover</entry>
+      <entry>由 <xref linkend="GUC-FAILOVER-COMMAND"> 执行故障切换</entry>
      </row>
      <row>
       <entry><ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/follow_primary.sh.sample">/etc/pgpool-II/sample_scripts/follow_primary.sh.sample</ulink></entry>
-      <entry>Run by <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> to synchronize the Standby with the new Primary after failover.</entry>
+      <entry>由 <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> 在故障切换后将备库与新的主库同步。</entry>
      </row>
      <row>
-      <entry morerows='1'>Online recovery</entry>
+      <entry morerows='1'>在线恢复</entry>
       <entry><ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/recovery_1st_stage.sample">/etc/pgpool-II/sample_scripts/recovery_1st_stage.sample</ulink></entry>
-      <entry>Run by <xref linkend="GUC-RECOVERY-1ST-STAGE-COMMAND"> to recovery a Standby node</entry>
+      <entry>由 <xref linkend="GUC-RECOVERY-1ST-STAGE-COMMAND"> 恢复一个备库节点</entry>
      </row>
      <row>
       <entry><ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/pgpool_remote_start.sample">/etc/pgpool-II/sample_scripts/pgpool_remote_start.sample</ulink></entry>
-      <entry>Run after <xref linkend="GUC-RECOVERY-1ST-STAGE-COMMAND"> to start the Standby node</entry>
+      <entry>在 <xref linkend="GUC-RECOVERY-1ST-STAGE-COMMAND"> 之后启动备库节点</entry>
      </row>
      <row>
       <entry morerows='1'>Watchdog</entry>
       <entry><ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/escalation.sh.sample">/etc/pgpool-II/sample_scripts/escalation.sh.sample</ulink></entry>
-      <entry>Optional Configuration. Run by <xref linkend="guc-wd-escalation-command"> to switch the Leader/Standby Pgpool-II safely</entry>
+      <entry>可选配置。由 <xref linkend="guc-wd-escalation-command"> 安全地切换 Leader/Standby Pgpool-II</entry>
      </row>
     </tbody>
    </tgroup>
   </table>
   <para>
-   The above scripts are included in the RPM package and can be customized as needed.
+   上述脚本包含在 RPM 包中，可根据需要自定义。
   </para>
  </sect2>
 
  <sect2 id="example-cluster-installation">
-  <title>Installation</title>
+  <title>安装</title>
   <para>
-   In this example, we install <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname> RPM packages with YUM.
+   在本示例中，我们使用 YUM 安装 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname> RPM 包。
   </para>
-
   <para>
-   Install <productname>PostgreSQL</productname> from <productname>PostgreSQL</productname> YUM repository.
+   从 <productname>PostgreSQL</productname> YUM 仓库安装 <productname>PostgreSQL</productname>。
   </para>
   <programlisting>
 [all servers]# dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-10-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -233,15 +222,15 @@
 [all servers]# dnf install -y postgresql18-server
   </programlisting>
   <para>
-   Since <productname>Pgpool-II</productname> related packages are also included in <productname>PostgreSQL</productname> YUM repository,
-   add the "exclude" settings to <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>
-   so that <productname>Pgpool-II</productname> is not installed from <productname>PostgreSQL</productname> YUM repository. 
+   由于 <productname>PostgreSQL</productname> YUM 仓库中也包含 <productname>Pgpool-II</productname> 相关的包，
+   请将 "exclude" 设置添加到 <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>，
+   以便 <productname>Pgpool-II</productname> 不会从 <productname>PostgreSQL</productname> YUM 仓库安装。
   </para>
   <programlisting>
 [all servers]# vi /etc/yum.repos.d/pgdg-redhat-all.repo
   </programlisting>
   <para>
-   The following is a setting example of <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename>. 
+   以下是 <filename>/etc/yum.repos.d/pgdg-redhat-all.repo</filename> 的设置示例。
   </para>
   <programlisting>
 [pgdg-common]
@@ -272,15 +261,10 @@ exclude=pgpool*
 ...
 exclude=pgpool*
   </programlisting>
-
   <para>
-   Install <productname>Pgpool-II</productname> from
-   <productname>Pgpool-II</productname> YUM repository.
-   To install the required libmemcached library for Pgpool-II,
-   you need to enable <literal>crb</literal> repository.
-   If you're using <literal>Rocky Linux 8</literal>,
-   use <literal>powertools</literal> repository instead of
-   <literal>crb</literal> repository.
+   从 <productname>Pgpool-II</productname> YUM 仓库安装 <productname>Pgpool-II</productname>。
+   要安装 Pgpool-II 所需的 libmemcached 库，您需要启用 <literal>crb</literal> 仓库。
+   如果您使用的是 <literal>Rocky Linux 8</literal>，请使用 <literal>powertools</literal> 仓库替代 <literal>crb</literal> 仓库。
   </para>
   <programlisting>
 [all servers]# dnf install -y https://www.pgpool.net/yum/rpms/4.6/redhat/rhel-9-x86_64/pgpool-II-release-4.6-1.noarch.rpm
@@ -289,24 +273,20 @@ exclude=pgpool*
  </sect2>
 
  <sect2 id="example-cluster-pre-setup">
-  <title>Before Starting</title>
+  <title>开始之前</title>
   <para>
-   Before you start the configuration process, please check the following prerequisites.
+   在开始配置过程之前，请检查以下前提条件。
   </para>
-
   <sect3 id="example-cluster-before-starting-ssh">
-   <title>Setting up SSH public key authentication</title>
+   <title>设置 SSH 公钥认证</title>
    <para>
-    To use the automated failover and online recovery of <productname>Pgpool-II</productname>, 
-    it is required to configure <emphasis>SSH public key authentication
-    (passwordless SSH login)</emphasis> to all backend servers using
-    <literal>postgres</literal> user (the default user Pgpool-II is running as.
-    Pgpool-II 4.0 or before, the default user is <literal>root</literal>).
+    要使用 <productname>Pgpool-II</productname> 的自动故障切换和在线恢复功能，
+    需要配置 <emphasis>SSH 公钥认证（无密码 SSH 登录）</emphasis>，通过 <literal>postgres</literal> 用户
+    （Pgpool-II 运行的默认用户。Pgpool-II 4.0 及之前版本，默认用户为 <literal>root</literal>）。
    </para>
    <para>
-    Execute the following command on all servers to generate a key pair using
-    the RSA algorithm. In this example, we assume that the generated key file
-    name is <literal>id_rsa_pgpool</literal>.
+    在所有服务器上执行以下命令，使用 RSA 算法生成密钥对。
+    在本示例中，假设生成的密钥文件名为 <literal>id_rsa_pgpool</literal>。
    </para>
    <programlisting>
 [all servers]# su - postgres
@@ -314,24 +294,21 @@ exclude=pgpool*
 [all servers]$ ssh-keygen -t rsa -f ~/.ssh/id_rsa_pgpool
    </programlisting>
    <para>
-    Then add the public key <filename>id_rsa_pgpool.pub</filename> to
-    <filename>/var/lib/pgsql/.ssh/authorized_keys</filename> file
-    on each server.
+    然后将公钥 <filename>id_rsa_pgpool.pub</filename> 添加到
+    每台服务器上的 <filename>/var/lib/pgsql/.ssh/authorized_keys</filename> 文件中。
    </para>
    <para>
-    After setting SSH, make sure that you can run
-    <command>ssh postgres@serverX -i ~/.ssh/id_rsa_pgpool</command> command
-    as <literal>postgres</literal> user to login to each server
-    without entering a password. 
+    设置 SSH 后，请确保可以以 <literal>postgres</literal> 用户身份运行
+    <command>ssh postgres@serverX -i ~/.ssh/id_rsa_pgpool</command> 命令登录到每台服务器，
+    而无需输入密码。
    </para>
-
    <note>
     <para>
-     If you failed to login using SSH public key authentication, please check the following:
+     如果使用 SSH 公钥认证登录失败，请检查以下内容：
      <itemizedlist>
       <listitem>
        <para>
-        Ensure the public key authentication option <literal>PubkeyAuthentication</literal> are allowed in <filename>/etc/ssh/sshd_config</filename>:
+        确保公钥认证选项 <literal>PubkeyAuthentication</literal> 在 <filename>/etc/ssh/sshd_config</filename> 中已启用：
        </para>
       </listitem>
      </itemizedlist>
@@ -341,23 +318,25 @@ PubkeyAuthentication yes
      <itemizedlist>
       <listitem>
        <para>
-        If SELinux is enabled, SSH public key authentication (passwordless SSH) may fail.
-        You need to run the following command on all servers.
+        如果启用了 SELinux，SSH 公钥认证（无密码 SSH）可能会失败。
+        您需要在所有服务器上运行以下命令。
        </para>
       </listitem>
      </itemizedlist>
-    <programlisting>
+     <programlisting>
 [all servers]# su - postgres
 [all servers]$ restorecon -Rv ~/.ssh
-    </programlisting>
+     </programlisting>
     </para>
    </note>
   </sect3>
 
   <sect3 id="example-cluster-before-starting-firewall">
-   <title>Setting up firewall</title>
+   <title>设置防火墙</title>
    <para>
-    When connect to <productname>Pgpool-II</productname> and <productname>PostgreSQL</productname> servers, the target port must be accessible by enabling firewall management softwares. Following is an example for <systemitem>Rocky Linux 10/RHEL 10</systemitem>.
+    当连接到 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname>
+    服务器时，必须通过启用防火墙管理软件使目标端口可访问。以下是适用于
+    <systemitem>Rocky Linux 10/RHEL 10</systemitem> 的示例。
    </para>
    <programlisting>
 [all servers]# firewall-cmd --permanent --zone=public --add-service=postgresql
@@ -367,83 +346,79 @@ PubkeyAuthentication yes
   </sect3>
 
   <sect3 id="example-cluster-before-starting-primary">
-   <title>Setting up PostgreSQL primary</title>
+   <title>设置 PostgreSQL 主库</title>
    <para>
-    Set up the PostgreSQL primary server on <literal>server1</literal>.
-   </para>
-
-   <para>
-    First, initialize the database cluster. 
-    In <productname>PostgreSQL</productname> 18, the default directory
-    for creating the database cluster is <filename>/var/lib/pgsql/18/data</filename>,
-    and this is specified in the environment variable <varname>PGDATA</varname>
-    in the <filename>~/.bash_profile</filename> of the <literal>postgres</literal>
-    user. Modify it if you want to change the default path.
+    在 <literal>server1</literal> 上设置 PostgreSQL 主库服务器。
    </para>
    <para>
-    Run <command>initdb</command> to initialize the database cluster.
-    Specify <ulink url="https://www.postgresql.org/docs/18/app-initdb.html">options</ulink>
-    such as <literal>--encoding</literal> and <literal>--locale</literal>
-    if you need to configure the database encoding and locale settings.
+    首先，初始化数据库集群。
+    在 <productname>PostgreSQL</productname> 18 中，创建数据库集群的默认目录是
+    <filename>/var/lib/pgsql/18/data</filename>，并且该路径在 <literal>postgres</literal> 用户的
+    <filename>~/.bash_profile</filename> 的环境变量 <varname>PGDATA</varname> 中指定。
+    如果您想更改默认路径，请修改该变量。
+   </para>
+   <para>
+    运行 <command>initdb</command> 来初始化数据库集群。
+    根据需要指定 <ulink url="https://www.postgresql.org/docs/18/app-initdb.html">选项</ulink>，
+    例如 <literal>--encoding</literal> 和 <literal>--locale</literal> 来配置数据库编码和区域设置。
    </para>
    <programlisting>
 [root@server1 ~]# su - postgres
 [postgres@server1 ~]$ /usr/pgsql-18/bin/initdb
-    </programlisting>
-
-    <para>
-     Then edit the configuration file <filename>$PGDATA/postgresql.conf</filename>
-     on <literal>server1</literal> as follows. Enable <literal>wal_log_hints</literal>
-     to use <literal>pg_rewind</literal>. 
-    </para>
-    <programlisting>
+   </programlisting>
+   <para>
+    然后编辑 <literal>server1</literal> 上的配置文件
+    <filename>$PGDATA/postgresql.conf</filename> 如下。启用
+    <literal>wal_log_hints</literal> 以使用 <literal>pg_rewind</literal>。
+   </para>
+   <programlisting>
 [postgres@server1 ~]$ vi $PGDATA/postgresql.conf
 listen_addresses = '*'
 wal_log_hints = on
-    </programlisting>
-    <para>
-     Start <productname>PostgreSQL</productname> on <literal>server1</literal>.
-    </para>
+   </programlisting>
+   <para>
+    在 <literal>server1</literal> 上启动 <productname>PostgreSQL</productname>。
+   </para>
    <programlisting>
 [postgres@server1 ~]$ /usr/pgsql-18/bin/pg_ctl start
-    </programlisting>
+   </programlisting>
   </sect3>
 
   <sect3 id="example-cluster-before-starting-standby">
-   <title>Setting up PostgreSQL standby</title>
+   <title>设置 PostgreSQL 备库</title>
    <para>
-    There are multiple methods to setup a standby server, such as:
+    有多种方法可以设置备库服务器，例如：
     <itemizedlist>
      <listitem>
       <para>
-       use <productname>Pgpool-II</productname>'s online recovery feature
-       (<xref linkend="runtime-online-recovery">) to automatically
-       setup a standby server.
+       使用 <productname>Pgpool-II</productname> 的在线恢复功能
+       （<xref linkend="runtime-online-recovery">）自动设置备库服务器。
       </para>
      </listitem>
      <listitem>
       <para>
-       use <command>pg_basebackup</command> to backup the data directory of the primary from the standby.
+       使用 <command>pg_basebackup</command> 从备库备份主库的数据目录。
       </para>
      </listitem>
     </itemizedlist>
    </para>
-
    <note>
     <para>
-     If you manually set up standby without using online recovery, please note the following:
+     如果不使用在线恢复手动设置备库，请注意以下几点：
      <itemizedlist>
       <listitem>
        <para>
-        You must manually create the replication slots.
+        您必须手动创建复制槽。
        </para>
       </listitem>
      </itemizedlist>
      <itemizedlist>
       <listitem>
        <para>
-        Do not specify the -R option when running pg_basebackup.
-        Write <varname>primary_conninfo</varname>, <varname>recovery_target_timeline</varname>, and <varname>primary_slot_name</varname> in <filename>$PGDATA/myrecovery.conf</filename>, not in <filename>postgresql.auto.conf</filename>, and add the following to <filename>postgresql.conf</filename>.
+        运行 pg_basebackup 时不要指定 -R 选项。
+        将 <varname>primary_conninfo</varname>、<varname>recovery_target_timeline</varname> 以及
+        <varname>primary_slot_name</varname> 写入 <filename>$PGDATA/myrecovery.conf</filename>，
+        而不是 <filename>postgresql.auto.conf</filename>，并在 <filename>postgresql.conf</filename> 中添加以下内容。
        </para>
       </listitem>
      </itemizedlist>
@@ -452,68 +427,56 @@ include_if_exists = 'myrecovery.conf'
      </programlisting>
     </para>
    </note>
-
    <para>
-    In this example, we use <productname>Pgpool-II</productname>'s
-    online recovery to setup the standby server 
-    in section <xref linkend="example-cluster-verify-standby">
-    after the configuration of <productname>Pgpool-II</productname>
-    is completed.
+    在本示例中，我们将在完成 <productname>Pgpool-II</productname> 的配置后，
+    使用其在线恢复功能在第 <xref linkend="example-cluster-verify-standby"> 节中设置备库服务器。
    </para>
   </sect3>
 
   <sect3 id="example-cluster-before-starting-users">
-   <title>Setting up PostgreSQL users</title>
+   <title>设置 PostgreSQL 用户</title>
    <para>
-    A PostgreSQL user is required to use <productname>Pgpool-II</productname>'s
-    health check and replication delay check features.
-    Because of the security reasons, we create a dedicated user named
-    <literal>pgpool</literal> for streaming replication delay check and
-    health check.
-    And create a dedicated user named <literal>repl</literal> for replication.
-    Because online recovery feature requires superuser privilege,
-    we use <literal>postgres</literal> user here.
-    </para>
-    <para>
-     Since <productname>Pgpool-II</productname> 4.0,
-     <acronym>scram-sha-256</acronym> authentication is supported. 
-     This configuration example uses <acronym>scram-sha-256</acronym>
-     authentication method. 
-     First, set <literal>password_encryption = 'scram-sha-256'</literal>
-     and then created the users.
-    </para>
-
-    <table id="example-cluster-user">
-     <title>Users</title>
-     <tgroup cols="3">
-      <thead>
-       <row>
-	    <entry>User Name</entry>
-	    <entry>Password</entry>
-	    <entry>Detail</entry>
-       </row>
-      </thead>
-      <tbody>
-       <row>
-	    <entry>repl</entry>
-	    <entry>repl</entry>
-	    <entry>PostgreSQL replication user</entry>
-       </row>
-       <row>
-	    <entry>pgpool</entry>
-	    <entry>pgpool</entry>
-	    <entry>Pgpool-II health check (<xref linkend="GUC-HEALTH-CHECK-USER">) and replication delay check (<xref linkend="GUC-SR-CHECK-USER">) user</entry>
-       </row>
-       <row>
-	<entry>postgres</entry>
-	<entry>postgres</entry>
-	<entry>User running online recovery</entry>
-       </row>
-      </tbody>
-     </tgroup>
-    </table>
-
-    <programlisting>
+    需要使用 PostgreSQL 用户来使用 <productname>Pgpool-II</productname>
+    的健康检查和复制延迟检查功能。出于安全原因，我们创建一个名为
+    <literal>pgpool</literal> 的专用用户，用于流复制延迟检查和健康检查。
+    并创建一个名为 <literal>repl</literal> 的专用用户用于复制。
+    由于在线恢复功能需要超级用户权限，我们在此使用 <literal>postgres</literal> 用户。
+   </para>
+   <para>
+    自 <productname>Pgpool-II</productname> 4.0 起，<acronym>scram-sha-256</acronym>
+    认证已受支持。本配置示例使用 <acronym>scram-sha-256</acronym> 认证方式。
+    首先，设置 <literal>password_encryption = 'scram-sha-256'</literal>，然后创建用户。
+   </para>
+   <table id="example-cluster-user">
+    <title>用户</title>
+    <tgroup cols="3">
+     <thead>
+      <row>
+       <entry>用户名</entry>
+       <entry>密码</entry>
+       <entry>说明</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>repl</entry>
+       <entry>repl</entry>
+       <entry>PostgreSQL 复制用户</entry>
+      </row>
+      <row>
+       <entry>pgpool</entry>
+       <entry>pgpool</entry>
+       <entry>Pgpool-II 健康检查（<xref linkend="GUC-HEALTH-CHECK-USER">）和复制延迟检查（<xref linkend="GUC-SR-CHECK-USER">）用户</entry>
+      </row>
+      <row>
+       <entry>postgres</entry>
+       <entry>postgres</entry>
+       <entry>运行在线恢复的用户</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <programlisting>
 [postgres@server1 ~]$ psql
 postgres=# SET password_encryption = 'scram-sha-256';
 postgres=# CREATE ROLE pgpool WITH LOGIN;
@@ -521,68 +484,63 @@ postgres=# CREATE ROLE repl WITH REPLICATION LOGIN;
 postgres=# \password pgpool
 postgres=# \password repl
 postgres=# \password postgres
-    </programlisting>
-
-    <para>
-     To show <literal>replication_state</literal> and
-     <literal>replication_sync_state</literal> column in
-     <xref linkend="SQL-SHOW-POOL-NODES"> command result, role
-     <literal>pgpool</literal> needs to be PostgreSQL superuser or in
-     <literal>pg_monitor</literal> group (<productname>Pgpool-II</productname> 4.1 or later).
-     Grant <literal>pg_monitor</literal>
-     to <literal>pgpool</literal>:
-    </para>
-    <programlisting>
+   </programlisting>
+   <para>
+    要在 <xref linkend="SQL-SHOW-POOL-NODES"> 命令结果中显示
+    <literal>replication_state</literal> 和 <literal>replication_sync_state</literal> 列，
+    角色 <literal>pgpool</literal> 需要是 PostgreSQL 超级用户或属于
+    <literal>pg_monitor</literal> 组（<productname>Pgpool-II</productname> 4.1 或更高版本）。
+    授予 <literal>pg_monitor</literal> 给 <literal>pgpool</literal>：
+   </para>
+   <programlisting>
 postgres=# GRANT pg_monitor TO pgpool;
 postgres=# \q
-    </programlisting>
-    <note>
-     <para>
-      If you plan to use <xref linkend="guc-detach-false-primary">(<productname>Pgpool-II</productname> 4.0 or later),
-      role "pgpool" needs to be <productname>PostgreSQL</productname> superuser
-      or in <literal>pg_monitor</literal> group to use this feature.
-     </para>
-    </note>
+   </programlisting>
+   <note>
     <para>
-     In this example, assuming that all the <productname>Pgpool-II</productname> servers and the 
-     <productname>PostgreSQL</productname> servers are in the same subnet and edit <filename>pg_hba.conf</filename> to 
-     enable <literal>scram-sha-256</literal> authentication method.
+     如果您计划使用 <xref linkend="guc-detach-false-primary">（<productname>Pgpool-II</productname> 4.0 或更高版本），
+     角色 "pgpool" 需要是 <productname>PostgreSQL</productname> 超级用户或属于
+     <literal>pg_monitor</literal> 组才能使用此功能。
     </para>
-    <programlisting>
+   </note>
+   <para>
+    在本示例中，假设所有 <productname>Pgpool-II</productname> 服务器和
+    <productname>PostgreSQL</productname> 服务器都在同一子网中，编辑
+    <filename>pg_hba.conf</filename> 以启用 <literal>scram-sha-256</literal> 认证方式。
+   </para>
+   <programlisting>
 [postgres@server1 ~]$ vi $PGDATA/pg_hba.conf
-(Add the following entries)
+（添加以下条目）
 host    all             pgpool             samenet                 scram-sha-256
 host    all             postgres           samenet                 scram-sha-256
 host    replication     repl               samenet                 scram-sha-256
-    </programlisting>
+   </programlisting>
   </sect3>
 
   <sect3 id="example-cluster-before-starting-pgpass">
-   <title>Creating .pgpass</title>
+   <title>创建 .pgpass</title>
    <para>
-    To allow <literal>repl</literal> user without specifying password for streaming 
-    replication and online recovery, and execute <application>pg_rewind</application>
-    using <literal>postgres</literal>, we
-    Create the <filename>.pgpass</filename> file in <literal>postgres</literal>
-    user's home directory and change the permission to <literal>600</literal>
-    on each <productname>PostgreSQL</productname> server.
-    This file allows <literal>repl</literal> user and <literal>postgres</literal>
-    user without providing a password for streaming replication and failover.
+    为了允许 <literal>repl</literal> 用户无需指定密码即可进行流复制
+    和在线恢复，并执行使用 <literal>postgres</literal> 用户的 <application>pg_rewind</application>，
+    我们在每台 <productname>PostgreSQL</productname> 服务器上的 <literal>postgres</literal>
+    用户主目录中创建 <filename>.pgpass</filename> 文件，并将权限更改为 <literal>600</literal>。
+    该文件允许 <literal>repl</literal> 用户和 <literal>postgres</literal>
+    用户无需提供密码即可进行流复制和故障切换。
    </para>
    <programlisting>
 [postgres@server1 ~]$ vi ~/.pgpass
-server1:5432:replication:repl:&lt;repl user password&gt;
-server2:5432:replication:repl:&lt;repl user password&gt;
-server3:5432:replication:repl:&lt;repl user password&gt;
-server1:5432:postgres:postgres:&lt;postgres user password&gt;
-server2:5432:postgres:postgres:&lt;postgres user password&gt;
-server3:5432:postgres:postgres:&lt;postgres user password&gt;
+server1:5432:replication:repl:&lt;repl 用户密码&gt;
+server2:5432:replication:repl:&lt;repl 用户密码&gt;
+server3:5432:replication:repl:&lt;repl 用户密码&gt;
+server1:5432:postgres:postgres:&lt;postgres 用户密码&gt;
+server2:5432:postgres:postgres:&lt;postgres 用户密码&gt;
+server3:5432:postgres:postgres:&lt;postgres 用户密码&gt;
 
 [postgres@server1 ~]$ chmod 600 ~/.pgpass
    </programlisting>
    <para>
-    Copy it to the home directory of <literal>postgres</literal> user
-    on <literal>server2</literal> and <literal>server3</literal>.
+    将其复制到 <literal>server2</literal> 和 <literal>server3</literal> 上
+    <literal>postgres</literal> 用户的主目录。
    </para>
    <programlisting>
 [postgres@server1 ~]$ scp -i ~/.ssh/id_rsa_pgpool -p ~/.pgpass postgres@server2:
@@ -592,17 +550,15 @@ server3:5432:postgres:postgres:&lt;postgres user password&gt;
  </sect2>
 
  <sect2 id="pcp-authentication">
-  <title>PCP connection authentication</title>
+  <title>PCP 连接认证</title>
   <para>
-   To use PCP commands PCP user names and md5 encrypted passwords must be
-   declared in <filename>pcp.conf</filename> in format
-   "<literal>username:encrypted password</literal>".
+   要使用 PCP 命令，必须在 <filename>pcp.conf</filename> 中以
+   "<literal>用户名:加密密码</literal>" 格式声明 PCP 用户名和 md5 加密密码。
   </para>
   <para>
-   In this example, we set PCP username to "<literal>pgpool</literal>"
-   and password to "<literal>pgpool_password</literal>".
-   Use <xref linkend="PG-MD5"> to create the encrypted password entry for
-   <literal>pgpool</literal> user as below:
+   在本示例中，我们将 PCP 用户名设置为 "<literal>pgpool</literal>"，
+   密码设置为 "<literal>pgpool_password</literal>"。
+   使用 <xref linkend="PG-MD5"> 为 <literal>pgpool</literal> 用户创建加密密码条目，如下所示：
   </para>
   <programlisting>
 [postgres@server1 ~]$ echo 'pgpool:'`pg_md5 pgpool_password` &gt;&gt; /etc/pgpool-II/pcp.conf
@@ -612,24 +568,21 @@ server3:5432:postgres:postgres:&lt;postgres user password&gt;
 pgpool:4aa0cb9673e84b06d4c8a848c80eb5d0
   </programlisting>
   <para>
-   Since <filename>follow_primary.sh</filename> script mentioned
-   later must execute PCP command without entering a password,
-   create <filename>.pcppass</filename> in
-   <literal>postgres</literal> user's home directory
-   (the home directory of the user Pgpool-II is running as).
-   The format of <filename>.pcppass</filename> is
-   "<literal>hostname:port:username:password</literal>".
+   由于下面将提到的 <filename>follow_primary.sh</filename> 脚本必须执行 PCP 命令而无需输入密码，
+   请在 <literal>postgres</literal> 用户的主目录中创建
+   <filename>.pcppass</filename>（Pgpool-II 运行所用的用户的主目录）。
+   <filename>.pcppass</filename> 的格式为
+   "<literal>主机名:端口:用户名:密码</literal>"。
   </para>
   <para>
-   In this example, we assume that the PCP user is <literal>pgpool</literal>
-   and the password is <literal>pgpool_password</literal>.
+   在本示例中，假设 PCP 用户为 <literal>pgpool</literal>，密码为 <literal>pgpool_password</literal>。
   </para>
   <programlisting>
 [postgres@server1 ~]$ echo 'localhost:9898:pgpool:pgpool_password' &gt; ~/.pcppass
 [postgres@server1 ~]$ chmod 600 ~/.pcppass
   </programlisting>
   <para>
-   Copy to <literal>server2</literal> and <literal>server3</literal>.
+   将其复制到 <literal>server2</literal> 和 <literal>server3</literal>。
   </para>
   <programlisting>
 [postgres@server1 ~]$ scp -i ~/.ssh/id_rsa_pgpool -p ~/.pcppass postgres@server2:
@@ -639,13 +592,13 @@ pgpool:4aa0cb9673e84b06d4c8a848c80eb5d0
  </sect2>
 
  <sect2 id="example-cluster-pgpool-node-id">
-  <title>Create pgpool_node_id</title>
+  <title>创建 pgpool_node_id</title>
   <para>
-    From <productname>Pgpool-II</productname> 4.2, now all configuration parameters are identical on all hosts.
-    If <literal>watchdog</literal> feature is enabled, to distinguish which host is which,
-    a <filename>pgpool_node_id</filename> file is required.
-    You need to create a <filename>pgpool_node_id</filename> file and specify the pgpool (watchdog) node number
-    (e.g. 0, 1, 2 ...) to identify pgpool (watchdog) host.
+   自 <productname>Pgpool-II</productname> 4.2 起，所有配置参数在所有主机上都相同。
+   如果启用了 <literal>watchdog</literal> 功能，为区分不同主机，
+   需要一个 <filename>pgpool_node_id</filename> 文件。
+   您需要创建一个 <filename>pgpool_node_id</filename> 文件并指定 pgpool (watchdog) 节点编号
+   （例如 0、1、2...）来标识 pgpool (watchdog) 主机。
   </para>
   <itemizedlist>
    <listitem>
@@ -682,27 +635,27 @@ pgpool:4aa0cb9673e84b06d4c8a848c80eb5d0
  </sect2>
 
  <sect2 id="example-cluster-pgpool-config">
-  <title><productname>Pgpool-II</productname> Configuration</title>
+  <title><productname>Pgpool-II</productname> 配置</title>
   <para>
-   When installing <productname>Pgpool-II</productname> using YUM, the
-   <productname>Pgpool-II</productname> configuration file <filename>pgpool.conf</filename>
-   is installed in <filename>/etc/pgpool-II</filename>.
+   使用 YUM 安装 <productname>Pgpool-II</productname> 时，
+   <productname>Pgpool-II</productname> 配置文件 <filename>pgpool.conf</filename>
+   安装到 <filename>/etc/pgpool-II</filename>。
   </para>
   <para>
-   Since from <productname>Pgpool-II</productname> 4.2, all configuration parameters are
-   identical on all hosts, you can edit <filename>pgpool.conf</filename> on any pgpool node
-   and copy the edited <filename>pgpool.conf</filename> file to the other pgpool nodes.
+   自 <productname>Pgpool-II</productname> 4.2 起，所有配置参数在所有主机上都相同，
+   您可以在任意 pgpool 节点上编辑 <filename>pgpool.conf</filename>，
+   然后将编辑后的 <filename>pgpool.conf</filename> 文件复制到其他 pgpool 节点。
   </para>
 
   <sect3 id="example-cluster-pgpool-config-config-file">
-   <title>Clustering mode</title>
+   <title>集群模式</title>
    <para>
-    <productname>Pgpool-II</productname> has several clustering modes. To set the clustering
-    mode, <xref linkend="GUC-BACKEND-CLUSTERING-MODE"> can be used. In this configuration
-    example, streaming replication mode is used.
+    <productname>Pgpool-II</productname> 有几种集群模式。要设置集群
+    模式，可以使用 <xref linkend="GUC-BACKEND-CLUSTERING-MODE">。在此配置
+    示例中，使用流复制模式。
    </para>
    <programlisting>
-[root@server1 ~]# vi /etc/pgpool-II/pgpool.conf 
+[root@server1 ~]# vi /etc/pgpool-II/pgpool.conf
 backend_clustering_mode = streaming_replication
    </programlisting>
   </sect3>
@@ -710,8 +663,8 @@ backend_clustering_mode = streaming_replication
   <sect3 id="example-cluster-pgpool-config-listen-addresses">
    <title>listen_addresses</title>
    <para>
-    To allow Pgpool-II and PCP to accept all incoming connections, set the following
-    parameters to <literal>'*'</literal>.
+    要允许 Pgpool-II 和 PCP 接受所有传入连接，将以下
+    参数设置为 <literal>'*'</literal>。
    </para>
    <programlisting>
 listen_addresses = '*'
@@ -722,7 +675,7 @@ pcp_listen_addresses = '*'
   <sect3 id="example-cluster-pgpool-config-port">
    <title>port</title>
    <para>
-    Specify the port number Pgpool-II listen on.
+    指定 Pgpool-II 监听的端口号。
    </para>
    <programlisting>
 port = 9999
@@ -730,16 +683,16 @@ port = 9999
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-sr-check">
-   <title>Streaming Replication Check</title>
+   <title>流复制检查</title>
    <para>
-    Specify replication delay check user and password in <xref linkend="GUC-SR-CHECK-USER">
-    and <xref linkend="GUC-SR-CHECK-PASSWORD">. In this example, we leave
-    <xref linkend="GUC-SR-CHECK-PASSWORD"> empty, and create the entry in
-    <xref linkend="GUC-POOL-PASSWD">. See <xref linkend="example-cluster-pgpool-config-auth">
-    for how to create the entry in <xref linkend="GUC-POOL-PASSWD">.
-    From <productname>Pgpool-II</productname> 4.0, if these parameters are left blank,
-    <productname>Pgpool-II</productname> will first try to get the password for that
-    specific user from <xref linkend="GUC-POOL-PASSWD"> file before using the empty password.
+    在 <xref linkend="GUC-SR-CHECK-USER">
+    和 <xref linkend="GUC-SR-CHECK-PASSWORD"> 中指定复制延迟检查用户名和密码。
+    在本示例中，我们留空 <xref linkend="GUC-SR-CHECK-PASSWORD">，并在
+    <xref linkend="GUC-POOL-PASSWD"> 中创建条目。有关如何在
+    <xref linkend="GUC-POOL-PASSWD"> 中创建条目的说明，请参见 <xref linkend="example-cluster-pgpool-config-auth">。
+    自 <productname>Pgpool-II</productname> 4.0 起，如果这些参数留空，
+    <productname>Pgpool-II</productname> 将首先尝试从 <xref linkend="GUC-POOL-PASSWD">
+    文件获取该用户的密码，然后才使用空密码。
    </para>
    <programlisting>
 sr_check_user = 'pgpool'
@@ -748,13 +701,14 @@ sr_check_password = ''
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-health-check">
-   <title>Health Check</title>
+   <title>健康检查</title>
    <para>
-    Enable health check so that <productname>Pgpool-II</> performs failover. Also, if the network is unstable,
-    the health check fails even though the backend is running properly, failover or degenerate operation may occur.
-    In order to prevent such incorrect detection of health check, we set <varname>health_check_max_retries = 3</varname>.
-    Specify <xref linkend="GUC-HEALTH-CHECK-USER"> and <xref linkend="GUC-HEALTH-CHECK-PASSWORD"> in
-      the same way like <xref linkend="GUC-SR-CHECK-USER"> and <xref linkend="GUC-SR-CHECK-PASSWORD">.
+    启用健康检查，以便 <productname>Pgpool-II</> 执行故障切换。另外，如果网络不稳定，
+    即使后端正常运行，健康检查也可能失败，从而可能发生故障切换或降级操作。
+    为防止此类健康检查误判，我们设置 <varname>health_check_max_retries = 3</varname>。
+    以与 <xref linkend="GUC-SR-CHECK-USER"> 和
+    <xref linkend="GUC-SR-CHECK-PASSWORD"> 相同的方式指定
+    <xref linkend="GUC-HEALTH-CHECK-USER"> 和 <xref linkend="GUC-HEALTH-CHECK-PASSWORD">。
    </para>
    <programlisting>
 health_check_period = 5
@@ -766,10 +720,10 @@ health_check_max_retries = 3
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-backend-settings">
-   <title>Backend Settings</title>
+   <title>后端设置</title>
    <para>
-    Specify the <productname>PostgreSQL</productname> backend information.
-    Multiple backends can be specified by adding a number at the end of the parameter name.
+    指定 <productname>PostgreSQL</productname> 后端信息。
+    通过在参数名末尾添加数字来指定多个后端。
    </para>
    <programlisting>
 backend_hostname0 = 'server1'
@@ -791,15 +745,14 @@ backend_data_directory2 = '/var/lib/pgsql/18/data'
 backend_flag2 = 'ALLOW_TO_FAILOVER'
    </programlisting>
    <para>
-    To show <literal>replication_state</literal> and
-    <literal>replication_sync_state</literal> column in
-    <xref linkend="SQL-SHOW-POOL-NODES"> command result,
-    <xref linkend="GUC-BACKEND-APPLICATION-NAME"> parameter is required.
-    Here we specify each backend's hostname in these parameters
-    (<productname>Pgpool-II</productname> 4.1 or later).
-    Make sure that the value set in <varname>backend_application_nameX</varname>
-    matches the value set in <varname>application_name</varname>
-    of <varname>primary_conninfo</varname>.
+    要在 <xref linkend="SQL-SHOW-POOL-NODES"> 命令结果中显示
+    <literal>replication_state</literal> 和
+    <literal>replication_sync_state</literal> 列，需要
+    <xref linkend="GUC-BACKEND-APPLICATION-NAME"> 参数。
+    我们在此参数中指定每个后端的主机名
+    （<productname>Pgpool-II</productname> 4.1 或更高版本）。
+    请确保 <varname>backend_application_nameX</varname> 中设置的值与
+    <varname>primary_conninfo</varname> 中 <varname>application_name</varname> 的值匹配。
    </para>
    <programlisting>
 backend_application_name0 = 'server1'
@@ -809,28 +762,26 @@ backend_application_name2 = 'server3'
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-failover">
-   <title>Failover configuration</title>
+   <title>故障切换配置</title>
    <para>
-    Specify the script that will be executed when failover occurs in
-    <xref linkend="GUC-FAILOVER-COMMAND">. When using three or more
-    PostgreSQL servers, it's required to specify
-    <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> to synchronize the standby
-    with the new primary. In case of two PostgreSQL servers, the setting of
-    <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> is not required.
+    在 <xref linkend="GUC-FAILOVER-COMMAND"> 中指定故障切换发生时要执行的脚本。
+    当使用三台或更多 PostgreSQL 服务器时，需要指定
+    <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> 以将备库与新主库同步。
+    对于两台 PostgreSQL 服务器的情况，不需要设置
+    <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND">。
    </para>
    <note>
     <para>
-     When performing a switchover using <xref linkend="PCP-PROMOTE-NODE">
-     with <option>switchover</option> option added in <productname>Pgpool-II</productname> 4.3,
-     if you want to turn the former primary into standby automatically,
-     <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> is required to be set
-     even if there are two PostgreSQL servers.
+     当使用 <xref linkend="PCP-PROMOTE-NODE"> 执行切换时
+     （<productname>Pgpool-II</productname> 4.3 中新增的 <option>switchover</option> 选项），
+     如果您希望将原主库自动转为备库，则需要设置
+     <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND">，即使只有两台 PostgreSQL 服务器。
     </para>
    </note>
    <para>
-    <productname>Pgpool-II</productname> replaces the following special characters with the backend specific
-    information while executing the scripts. 
-    See <xref linkend="GUC-FAILOVER-COMMAND"> and <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND"> for more details about each character.
+    <productname>Pgpool-II</productname> 在执行脚本时，会用后端特定信息替换以下特殊字符。
+    有关每个字符的更多详细信息，请参见 <xref linkend="GUC-FAILOVER-COMMAND"> 和
+    <xref linkend="GUC-FOLLOW-PRIMARY-COMMAND">。
    </para>
    <programlisting>
 failover_command = '/etc/pgpool-II/failover.sh %d %h %p %D %m %H %M %P %r %R %N %S'
@@ -838,14 +789,14 @@ follow_primary_command = '/etc/pgpool-II/follow_primary.sh %d %h %p %D %m %H %M 
    </programlisting>
    <note>
     <para>
-     <emphasis>%N</emphasis> and <emphasis>%S</emphasis> are added in <productname>Pgpool-II</productname> 4.1.
-     Please note that these characters cannot be specified if using Pgpool-II 4.0 or earlier.
+     <emphasis>%N</emphasis> 和 <emphasis>%S</emphasis> 在 <productname>Pgpool-II</productname> 4.1 中新增。
+     请注意，如果使用 Pgpool-II 4.0 或更早版本，则不能指定这些字符。
     </para>
    </note>
    <para>
-    Sample scripts <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/failover.sh.sample">failover.sh</ulink>
-    and <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/follow_primary.sh.sample">follow_primary.sh</ulink>
-    are installed in <filename>/etc/pgpool-II/</filename>. Create failover scripts using these sample files.
+    示例脚本 <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/failover.sh.sample">failover.sh</ulink>
+    和 <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/follow_primary.sh.sample">follow_primary.sh</ulink>
+    已安装到 <filename>/etc/pgpool-II/</filename>。请使用这些示例文件创建故障切换脚本。
    </para>
    <programlisting>
 [root@server1 ~]# cp -p /etc/pgpool-II/sample_scripts/failover.sh.sample /etc/pgpool-II/failover.sh
@@ -853,8 +804,7 @@ follow_primary_command = '/etc/pgpool-II/follow_primary.sh %d %h %p %D %m %H %M 
 [root@server1 ~]# chown postgres:postgres /etc/pgpool-II/{failover.sh,follow_primary.sh}
    </programlisting>
    <para>
-    Basically, it should work if you change <emphasis>PGHOME</emphasis> according to
-    PostgreSQL installation directory.
+    基本上，只要根据 PostgreSQL 安装目录更改 <emphasis>PGHOME</emphasis> 即可正常运行。
    </para>
    <programlisting>
 [root@server1 ~]# vi /etc/pgpool-II/failover.sh
@@ -869,9 +819,9 @@ PGHOME=/usr/pgsql-18
    </programlisting>
 
    <para>
-    Make sure the entry of the PCP user specified in <varname>PCP_USER</varname> in
-    <filename>follow_primary.sh</filename> is created in <filename>pcp.conf</filename>.
-    In this example, we have created in <xref linkend="PCP-AUTHENTICATION">
+    请确保 <filename>follow_primary.sh</filename> 中 <varname>PCP_USER</varname>
+    指定的 PCP 用户条目已在 <filename>pcp.conf</filename> 中创建。
+    在本示例中，我们已在 <xref linkend="PCP-AUTHENTICATION"> 中创建。
    </para>
    <programlisting>
 [root@server1 ~]# cat /etc/pgpool-II/follow_primary.sh
@@ -881,23 +831,23 @@ PCP_USER=pgpool
    </programlisting>
    <note>
     <para>
-     The <filename>follow_primary.sh</filename> script does not support tablespaces.
-     If you are using tablespaces, you need to modify the script to support tablespaces.
+     <filename>follow_primary.sh</filename> 脚本不支持表空间。
+     如果您正在使用表空间，则需要修改脚本以支持表空间。
     </para>
    </note>
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-online-recovery">
-   <title>Pgpool-II Online Recovery Configurations</title>
+   <title>Pgpool-II 在线恢复配置</title>
    <para>
-    Next, configure the required parameters to perform online recovery
-    (<xref linkend="runtime-online-recovery">).
-    Because <emphasis>Superuser</emphasis> privilege in <productname>PostgreSQL</productname>
-    is required for performing online recovery, we specify <literal>postgres</literal>
-    user in <xref linkend="GUC-RECOVERY-USER">. In this example, we leave
-    <xref linkend="GUC-RECOVERY-PASSWORD"> empty, and create the entry in
-    <xref linkend="GUC-POOL-PASSWD">. See <xref linkend="example-cluster-pgpool-config-auth">
-    for how to create the entry in <xref linkend="GUC-POOL-PASSWD">.
+    接下来，配置执行在线恢复所需的参数
+    （<xref linkend="runtime-online-recovery">）。
+    由于执行在线恢复需要 <productname>PostgreSQL</productname> 的
+    <emphasis>超级用户</emphasis> 权限，我们在 <xref linkend="GUC-RECOVERY-USER"> 中指定
+    <literal>postgres</literal> 用户。在本示例中，我们留空
+    <xref linkend="GUC-RECOVERY-PASSWORD">，并在 <xref linkend="GUC-POOL-PASSWD"> 中创建条目。
+    有关如何在 <xref linkend="GUC-POOL-PASSWD"> 中创建条目的说明，请参见
+    <xref linkend="example-cluster-pgpool-config-auth">。
    </para>
    <programlisting>
 recovery_user = 'postgres'
@@ -905,21 +855,22 @@ recovery_password = ''
 recovery_1st_stage_command = 'recovery_1st_stage'
    </programlisting>
    <para>
-    Then, we create <filename>recovery_1st_stage</filename> and <filename>pgpool_remote_start</filename>
-    in database cluster directory of <productname>PostgreSQL</productname>
-    primary server (server1).
+    然后，我们在 <productname>PostgreSQL</productname> 主库服务器（server1）
+    的数据库集群目录中创建 <filename>recovery_1st_stage</filename> 和
+    <filename>pgpool_remote_start</filename>。
    </para>
    <para>
-    The sample scripts of online recovery <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/pgpool_remote_start.sample">recovery_1st_stage</ulink>
-    and <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/pgpool_remote_start.sample">pgpool_remote_start</ulink>
-    are installed in <filename>/etc/pgpool-II/</filename>. Copy these files to the data directory of the primary server (server1).
+    在线恢复的示例脚本
+    <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/recovery_1st_stage.sample">recovery_1st_stage</ulink>
+    和 <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/pgpool_remote_start.sample">pgpool_remote_start</ulink>
+    已安装到 <filename>/etc/pgpool-II/</filename>。请将这些文件复制到主库服务器（server1）的数据目录。
    </para>
    <programlisting>
 [root@server1 ~]# su - postgres -c "cp -p /etc/pgpool-II/sample_scripts/recovery_1st_stage.sample \$PGDATA/recovery_1st_stage"
 [root@server1 ~]# su - postgres -c "cp -p /etc/pgpool-II/sample_scripts/pgpool_remote_start.sample \$PGDATA/pgpool_remote_start"
    </programlisting>
    <para>
-    Basically, it should work if you change <emphasis>PGHOME</emphasis> according to PostgreSQL installation directory.
+    基本上，只要根据 PostgreSQL 安装目录更改 <emphasis>PGHOME</emphasis> 即可正常运行。
    </para>
    <programlisting>
 [root@server1 ~]# vi /var/lib/pgsql/18/data/recovery_1st_stage
@@ -934,71 +885,67 @@ PGHOME=/usr/pgsql-18
    </programlisting>
 
    <para>
-    In addition, to perform online recovery, the functions
-    <function>pgpool_recovery</function>, <function>pgpool_remote_start</function>
-    and <function>pgpool_switch_xlog</function> must be created in advance
-    in the database specified by <xref linkend="guc-recovery-database">
-    (the default is <literal>'postgres'</literal>).
-    Execute the following command to create these functions in
-    <literal>postgres</literal> on <literal>server1</literal>.
-    If a value other than the default is configured for
-    <xref linkend="guc-recovery-database">, replace <literal>postgres</literal>
-    with the configured value.
+    此外，为执行在线恢复，函数 <function>pgpool_recovery</function>、
+    <function>pgpool_remote_start</function> 和 <function>pgpool_switch_xlog</function>
+    必须提前创建在 <xref linkend="guc-recovery-database"> 所指定的数据库中
+    （默认是 <literal>'postgres'</literal>）。
+    在 <literal>server1</literal> 的 <literal>postgres</literal> 数据库上
+    执行以下命令来创建这些函数。
+    如果为 <xref linkend="guc-recovery-database"> 配置了非默认值，请将
+    <literal>postgres</literal> 替换为配置的值。
    </para>
    <programlisting>
 [root@server1 ~]# psql -U postgres postgres -c "CREATE EXTENSION pgpool_recovery"
    </programlisting>
    <note>
     <para>
-     The <filename>recovery_1st_stage</filename> script does not support tablespaces.
-     If you are using tablespaces, you need to modify the script to support tablespaces.
+     <filename>recovery_1st_stage</filename> 脚本不支持表空间。
+     如果您正在使用表空间，则需要修改脚本以支持表空间。
     </para>
    </note>
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-auth">
-   <title>Client Authentication Configuration</title>
+   <title>客户端认证配置</title>
    <para>
-    Because in the section <link linkend="EXAMPLE-CLUSTER-PRE-SETUP">Before Starting</link>,
-    we already set <productname>PostgreSQL</productname> authentication method to
-    <acronym>scram-sha-256</acronym>, it is necessary to set a client authentication by
-    <productname>Pgpool-II</productname> to connect to backend nodes.
-    When installing with RPM, the <productname>Pgpool-II</productname> configuration file
-    <filename>pool_hba.conf</filename> is in <filename>/etc/pgpool-II</filename>.
-    By default, pool_hba authentication is disabled, set <varname>enable_pool_hba = on</varname>
-    to enable it.
+    由于在 <link linkend="EXAMPLE-CLUSTER-PRE-SETUP">开始之前</link> 一节中，我们已经将
+    <productname>PostgreSQL</productname> 的认证方法设置为
+    <acronym>scram-sha-256</acronym>，因此需要设置
+    <productname>Pgpool-II</productname> 的客户端认证以连接到后端节点。
+    使用 RPM 安装时，<productname>Pgpool-II</productname> 配置文件
+    <filename>pool_hba.conf</filename> 位于 <filename>/etc/pgpool-II</filename>。
+    默认情况下，pool_hba 认证已禁用，设置 <varname>enable_pool_hba = on</varname> 以启用它。
    </para>
    <programlisting>
 enable_pool_hba = on
    </programlisting>
    <para>
-    The format of <filename>pool_hba.conf</filename> file follows
-    PostgreSQL's <filename>pg_hba.conf</filename> format very closely.
-    Set <literal>pgpool</literal> and <literal>postgres</literal> user's
-    authentication method to <literal>scram-sha-256</literal>. In this example,
-    it is assumed that the application connecting to <productname>Pgpool-II</productname>
-    is in the same subnet.
+    <filename>pool_hba.conf</filename> 的文件格式与
+    PostgreSQL 的 <filename>pg_hba.conf</filename> 格式非常接近。
+    将 <literal>pgpool</literal> 和 <literal>postgres</literal> 用户的
+    认证方式设置为 <literal>scram-sha-256</literal>。在本示例中，
+    假设连接到 <productname>Pgpool-II</productname> 的应用程序在同一子网中。
    </para>
    <programlisting>
 [root@server1 ~]# vi /etc/pgpool-II/pool_hba.conf
-(Add the following entries)
+（添加以下条目）
 host    all         pgpool           samenet          scram-sha-256
 host    all         postgres         samenet          scram-sha-256
    </programlisting>
    <note>
     <para>
-     Please note that in <productname>Pgpool-II</productname> 4.0 only AES encrypted password or clear text password
-     can be specified in <xref linkend="guc-health-check-password">, <xref linkend="guc-sr-check-password">, 
-       <xref linkend="guc-wd-lifecheck-password">, <xref linkend="guc-recovery-password"> in <filename>pgpool.conf</filename>.
+     请注意，在 <productname>Pgpool-II</productname> 4.0 中，只能在 <filename>pgpool.conf</filename> 的
+     <xref linkend="guc-health-check-password">、<xref linkend="guc-sr-check-password">、
+     <xref linkend="guc-wd-lifecheck-password">、<xref linkend="guc-recovery-password"> 中
+     指定 AES 加密密码或明文密码。
     </para>
    </note>
    <para>
-    The default password file name for authentication is <xref linkend="GUC-POOL-PASSWD">.
-     To use <literal>scram-sha-256</literal> authentication, the decryption key to
-     decrypt the passwords is required. We create the <literal>.pgpoolkey</literal>
-     file in <literal>postgres</literal> user's home directory
-     (the user Pgpool-II is running as. <productname>Pgpool-II</productname> 4.0 or before,
-     <productname>Pgpool-II</productname> is running as <literal>root</literal> by default)
+    认证的默认密码文件名为 <xref linkend="GUC-POOL-PASSWD">。
+    要使用 <literal>scram-sha-256</literal> 认证，需要用于解密密码的解密密钥。
+    我们在 <literal>postgres</literal> 用户的主目录中创建 <literal>.pgpoolkey</literal> 文件
+    （Pgpool-II 运行所用的用户。 <productname>Pgpool-II</productname> 4.0 及之前版本，
+    <productname>Pgpool-II</productname> 默认以 <literal>root</literal> 身份运行）。
      <programlisting>
 [root@server1 ~]# su - postgres -c "echo 'some string' > ~/.pgpoolkey"
 [root@server1 ~]# su - postgres -c "chmod 600 ~/.pgpoolkey"
@@ -1007,65 +954,64 @@ host    all         postgres         samenet          scram-sha-256
      </programlisting>
    </para>
    <para>
-    Execute command <command>pg_enc -m -k /path/to/.pgpoolkey -u username -p</command> to register user
-    name and <literal>AES</literal> encrypted password in file <filename>pool_passwd</filename>.
-    If <filename>pool_passwd</filename> doesn't exist yet, it will be created in the same directory as
-    <filename>pgpool.conf</filename>.
+    执行命令 <command>pg_enc -m -k /path/to/.pgpoolkey -u username -p</command>
+    以注册用户名和 <literal>AES</literal> 加密密码到文件 <filename>pool_passwd</filename>。
+    如果 <filename>pool_passwd</filename> 尚不存在，它将在与
+    <filename>pgpool.conf</filename> 相同的目录中创建。
    </para>
    <programlisting>
 [root@server1 ~]# pg_enc -m -k /var/lib/pgsql/.pgpoolkey -u pgpool -p
-db password: (Enter the password for pgpool user)
-trying to read key from file /var/lib/pgsql/.pgpoolkey
+数据库密码：（输入 pgpool 用户的密码）
+正在尝试从文件 /var/lib/pgsql/.pgpoolkey 读取密钥
 
 [root@server1 ~]# pg_enc -m -k /var/lib/pgsql/.pgpoolkey -u postgres -p
-db password: (Enter the password for postgres user)
-trying to read key from file /var/lib/pgsql/.pgpoolkey
+数据库密码：（输入 postgres 用户的密码）
+正在尝试从文件 /var/lib/pgsql/.pgpoolkey 读取密钥
 
-[root@server1 ~]# cat /etc/pgpool-II/pool_passwd 
+[root@server1 ~]# cat /etc/pgpool-II/pool_passwd
 pgpool:AESheq2ZMZjynddMWk5sKP/Rw==
 postgres:AESHs/pWL5rtXy2IwuzroHfqg==
    </programlisting>
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-watchdog">
-   <title>Watchdog Configuration</title>
+   <title>Watchdog 配置</title>
    <para>
-    Enable watchdog functionality on <literal>server1</literal>, <literal>server2</literal>, <literal>server3</literal>.
+    在 <literal>server1</literal>、<literal>server2</literal>、<literal>server3</literal> 上启用 watchdog 功能。
    </para>
    <programlisting>
 use_watchdog = on
    </programlisting>
    <para>
-    Set virtual IP address to <xref linkend="GUC-DELEGATE-IP">.
-    Ensure that the IP address isn't used yet.
+    将虚拟 IP 地址设置为 <xref linkend="GUC-DELEGATE-IP">。
+    请确保该 IP 地址尚未被使用。
    </para>
    <programlisting>
 delegate_ip = '192.168.100.50'
    </programlisting>
 
    <para>
-    To bring up/down the virtual IP and send the ARP requests,
-    we set <xref linkend="GUC-IF-UP-CMD">, <xref linkend="GUC-IF-DOWN-CMD"> and <xref linkend="GUC-ARPING-CMD">.  
-    Set the netmask and network interface name according to your network environment.
-    The network interface used in this example is <literal>enp0s8</literal>.
-    Since root privilege is required to execute <varname>if_up/down_cmd</varname> or
-    <varname>arping_cmd</varname> command, use setuid on these command or allow
-    <literal>postgres</literal> user (the user Pgpool-II is running as) to run
-    <command>sudo</command> command without a password.
+    为了启动/关闭虚拟 IP 并发送 ARP 请求，
+    我们设置 <xref linkend="GUC-IF-UP-CMD">、<xref linkend="GUC-IF-DOWN-CMD"> 和
+    <xref linkend="GUC-ARPING-CMD">。
+    请根据您的网络环境设置子网掩码和网络接口名称。
+    本示例中使用的网络接口是 <literal>enp0s8</literal>。
+    由于执行 <varname>if_up/down_cmd</varname> 或 <varname>arping_cmd</varname>
+    命令需要 root 权限，请对这些命令使用 setuid，或允许 <literal>postgres</literal>
+    用户（Pgpool-II 运行的用户）无需密码即可运行 <command>sudo</command> 命令。
    </para>
    <note>
     <para>
-    If <productname>Pgpool-II</productname> is installed using RPM, the <literal>postgres</literal>
-    user has been configured to run <command>ip/arping</command> via <command>sudo</command> without
-    a password.
-    <programlisting>
+     如果使用 RPM 安装 <productname>Pgpool-II</productname>，<literal>postgres</literal>
+     用户已配置为通过 <command>sudo</command> 无需密码运行 <command>ip/arping</command> 命令。
+     <programlisting>
 postgres ALL=NOPASSWD: /sbin/ip
 postgres ALL=NOPASSWD: /usr/sbin/arping
-    </programlisting>
+     </programlisting>
     </para>
    </note>
    <para>
-    Here we configure the following parameters to run <varname>if_up/down_cmd</varname> or <varname>arping_cmd</varname> with sudo.
+    此处我们配置以下参数，以使用 sudo 运行 <varname>if_up/down_cmd</varname> 或 <varname>arping_cmd</varname>。
    </para>
    <programlisting>
 if_up_cmd = '/usr/bin/sudo /sbin/ip addr add $_IP_$/24 dev enp0s8 label enp0s8:0'
@@ -1074,23 +1020,25 @@ arping_cmd = '/usr/bin/sudo /usr/sbin/arping -U $_IP_$ -w 1 -I enp0s8'
    </programlisting>
    <note>
     <para>
-     If "Defaults requiretty" is set in the <filename>/etc/sudoers</filename>,
-     please ensure that the user that <productname>Pgpool-II</productname> is running as can execute the <command>if_up_cmd</command>, <command>if_down_cmd</command> and <command>arping_cmd</command> command without a tty.
+     如果在 <filename>/etc/sudoers</filename> 中设置了 "Defaults requiretty"，
+     请确保 <productname>Pgpool-II</productname> 运行所用的用户可以无需 tty 即可执行
+     <command>if_up_cmd</command>、<command>if_down_cmd</command> 和
+     <command>arping_cmd</command> 命令。
     </para>
    </note>
    <para>
-    Set <xref linkend="GUC-IF-CMD-PATH"> and <xref linkend="GUC-ARPING-PATH"> according to the
-    command path.
-    If <varname>if_up/down_cmd</varname> or <varname>arping_cmd</varname> starts with "/", these parameters will be ignored. 
+    根据命令路径设置 <xref linkend="GUC-IF-CMD-PATH"> 和 <xref linkend="GUC-ARPING-PATH">。
+    如果 <varname>if_up/down_cmd</varname> 或 <varname>arping_cmd</varname> 以 "/" 开头，
+    这些参数将被忽略。
    </para>
    <programlisting>
 if_cmd_path = '/sbin'
 arping_path = '/usr/sbin'
    </programlisting>
    <para>
-    Specify all <productname>Pgpool-II</productname> nodes information for configuring watchdog.
-    Specify <varname>pgpool_portX</varname> using the port number specified in <varname>port</varname> in
-    <xref linkend="example-cluster-pgpool-config-port">.
+    指定所有 <productname>Pgpool-II</productname> 节点信息以配置 watchdog。
+    使用 <xref linkend="example-cluster-pgpool-config-port"> 中 <varname>port</varname>
+    指定的端口号来指定 <varname>pgpool_portX</varname>。
    </para>
    <programlisting>
 hostname0 = 'server1'
@@ -1106,16 +1054,16 @@ wd_port2 = 9000
 pgpool_port2 = 9999
    </programlisting>
    <para>
-    Configure the method of lifecheck <xref linkend="guc-wd-lifecheck-method">
-    and the lifecheck interval <xref linkend="guc-wd-interval">.
-    Here, we use <literal>heartbeat</literal> method to perform watchdog lifecheck.
+    配置健康检查方法 <xref linkend="guc-wd-lifecheck-method">
+    和健康检查间隔 <xref linkend="guc-wd-interval">。
+    此处，我们使用 <literal>heartbeat</literal> 方法执行 watchdog 健康检查。
    </para>
    <programlisting>
 wd_lifecheck_method = 'heartbeat'
 wd_interval = 10
    </programlisting>
    <para>
-    Specify all <productname>Pgpool-II</productname> nodes information for sending and receiving heartbeat signal.
+    指定所有 <productname>Pgpool-II</productname> 节点信息以发送和接收心跳信号。
    </para>
    <programlisting>
 heartbeat_hostname0 = 'server1'
@@ -1129,9 +1077,9 @@ heartbeat_port2 = 9694
 heartbeat_device2 = ''
    </programlisting>
    <para>
-    If <xref linkend="guc-wd-lifecheck-method"> is set to <literal>heartbeat</literal>,
-    specify the time to detect a fault <xref linkend="guc-wd-heartbeat-deadtime"> and
-    the interval to send heartbeat signals <xref linkend="guc-wd-heartbeat-deadtime">.
+    如果 <xref linkend="guc-wd-lifecheck-method"> 设置为 <literal>heartbeat</literal>，
+    请指定检测故障的时间 <xref linkend="guc-wd-heartbeat-deadtime">
+    和发送心跳信号的时间间隔 <xref linkend="guc-wd-heartbeat-deadtime">。
    </para>
    <programlisting>
 wd_heartbeat_keepalive = 2
@@ -1139,18 +1087,19 @@ wd_heartbeat_deadtime = 30
    </programlisting>
 
    <para>
-     This setting is optional.
-     When <literal>Watchdog</literal> process is abnormally terminated,
-     the virtual IP may be "up" on both of the old and new active pgpool nodes.
-     To prevent this, configure <xref linkend="guc-wd-escalation-command">
-     to bring down the virtual IP on other Pgpool-II nodes before
-     bringing up the virtual IP on the new leader Pgpool-II node.
+    此设置为可选。当 <literal>Watchdog</literal> 进程异常终止时，
+    虚拟 IP 可能在旧的和新的活动 pgpool 节点上都处于 "up" 状态。
+    为防止此情况，配置 <xref linkend="guc-wd-escalation-command">
+    以在新 Leader Pgpool-II 节点上启动虚拟 IP 之前，
+    先将其他 Pgpool-II 节点上的虚拟 IP 关闭。
    </para>
     <programlisting>
 wd_escalation_command = '/etc/pgpool-II/escalation.sh'
     </programlisting>
    <para>
-    The sample script <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/escalation.sh.sample">escalation.sh</ulink> is installed in <filename>/etc/pgpool-II/</filename>.
+    示例脚本
+    <ulink url="https://raw.githubusercontent.com/pgpool/pgpool2/refs/heads/master/src/sample/scripts/escalation.sh.sample">escalation.sh</ulink>
+    已安装到 <filename>/etc/pgpool-II/</filename>。
    </para>
     <programlisting>
 [root@server1 ~]# cp -p /etc/pgpool-II/sample_scripts/escalation.sh.sample /etc/pgpool-II/escalation.sh
@@ -1158,10 +1107,10 @@ wd_escalation_command = '/etc/pgpool-II/escalation.sh'
     </programlisting>
 
    <para>
-    Basically, it should work if you change the following variables according to your environment.
-    PGPOOLS is a list of hostnames where Pgpool-II is running.
-    VIP is the virtual IP address that is set to <xref linkend="guc-delegate-ip">.
-    DEVICE is the network interface for the virtual IP.
+    基本上，根据您的环境更改以下变量即可正常运行。
+    PGPOOLS 是运行 Pgpool-II 的主机名列表。
+    VIP 是设置为 <xref linkend="guc-delegate-ip"> 的虚拟 IP 地址。
+    DEVICE 是虚拟 IP 的网络接口。
    </para>
     <programlisting>
 [root@server1 ~]# vi /etc/pgpool-II/escalation.sh
@@ -1175,29 +1124,25 @@ CIDR_NETMASK=24
 
    <note>
     <para>
-     If you have even number of watchdog nodes, you need to turn on <xref linkend="guc-enable-consensus-with-half-votes"> parameter.
+     如果您有偶数个 watchdog 节点，则需要启用
+     <xref linkend="guc-enable-consensus-with-half-votes"> 参数。
     </para>
    </note>
    <note>
     <para>
-     If <varname>use_watchdog = on</varname>, please make sure the pgpool
-     node number is specified in <filename>pgpool_node_id</filename> file.
-     See <xref linkend="example-cluster-pgpool-node-id"> for details.
+     如果 <varname>use_watchdog = on</varname>，请确保在 <filename>pgpool_node_id</filename>
+     文件中指定了 pgpool 节点编号。详情请参见 <xref linkend="example-cluster-pgpool-node-id">。
     </para>
    </note>
   </sect3>
 
   <sect3 id="example-cluster-pgpool-config-log">
-   <title>Logging</title>
+   <title>日志记录</title>
    <para>
-    Since <productname>Pgpool-II</productname> 4.2,
-    the logging collector process has been implemented.
-    When installed using the RPM packages, the logging
-    collector process (<xref linkend="guc-logging-collector">)
-    is enabled by default. Log files are output to
-    <filename>/var/log/pgpool_log</filename> by default.
-    Configure the logging related configuration parameters
-    as needed to meet your requirements.
+    自 <productname>Pgpool-II</productname> 4.2 起，已实现日志收集器进程。
+    使用 RPM 包安装时，日志收集器进程（<xref linkend="guc-logging-collector">）
+    默认启用。日志文件默认输出到 <filename>/var/log/pgpool_log</filename>。
+    根据需要配置日志相关的配置参数以满足您的需求。
    </para>
    <programlisting>
 log_destination = 'stderr'
@@ -1209,9 +1154,8 @@ log_rotation_age = 1d
    </programlisting>
 
   <para>
-   The configurations of Pgpool-II on <literal>server1</literal> are completed.
-   Finally, copy the configuration files to <literal>server2</literal>
-   and <literal>server3</literal>.
+   server1 上的 Pgpool-II 配置已完成。最后，将配置文件复制到
+   <literal>server2</literal> 和 <literal>server3</literal>。
   </para>
   <programlisting>
 [root@server1 ~]# scp -p /etc/pgpool-II/{*.conf,*.sh,pool_passwd} server2:/etc/pgpool-II/
@@ -1223,32 +1167,31 @@ log_rotation_age = 1d
  </sect2>
 
  <sect2 id="example-cluster-verify">
-  <title>How to use</title>
+  <title>使用方法</title>
   <para>
-   Let's start to use <productname>Pgpool-II</productname>.
+   让我们开始使用 <productname>Pgpool-II</productname>。
   </para>
   <sect3 id="example-cluster-verify-starting-stopping">
-   <title>Starting/Stopping Pgpool-II</title>
+   <title>启动/停止 Pgpool-II</title>
    <itemizedlist>
     <listitem>
      <para>
-      Starting <productname>Pgpool-II</productname>
+      启动 <productname>Pgpool-II</productname>
      </para>
      <para>
-      First, let's start <productname>Pgpool-II</productname>.
+      首先，让我们启动 <productname>Pgpool-II</productname>。
      </para>
      <para>
-      Before starting <productname>Pgpool-II</productname>,
-      the PostgreSQL primary server must be already running.
-      If PostgreSQL primary server is not running, start it first
-      using the following command.
+      在启动 <productname>Pgpool-II</productname> 之前，
+      PostgreSQL 主库服务器必须已运行。
+      如果 PostgreSQL 主库服务器未运行，请先使用以下命令启动它。
      </para>
      <programlisting>
 [root@server1 ~]# su - postgres -c "/usr/pgsql-18/bin/pg_ctl start"
      </programlisting>
      <para>
-      Start <productname>Pgpool-II</productname> on <literal>server1</literal>,
-      <literal>server2</literal>, <literal>server3</literal> by using the following command.
+      使用以下命令在 <literal>server1</literal>、<literal>server2</literal>、
+      <literal>server3</literal> 上启动 <productname>Pgpool-II</productname>。
      </para>
      <programlisting>
 [all servers]# systemctl start pgpool.service
@@ -1256,11 +1199,11 @@ log_rotation_age = 1d
     </listitem>
     <listitem>
      <para>
-      Stopping <productname>Pgpool-II</productname>
+      停止 <productname>Pgpool-II</productname>
      </para>
      <para>
-      When stopping <productname>PostgreSQL</productname>,
-      <productname>Pgpool-II</productname> must be stopped first.
+      当停止 <productname>PostgreSQL</productname> 时，必须先停止
+      <productname>Pgpool-II</productname>。
      </para>
      <programlisting>
 [all servers]# systemctl stop pgpool.service
@@ -1270,21 +1213,21 @@ log_rotation_age = 1d
   </sect3>
 
   <sect3 id="example-cluster-verify-standby">
-   <title>Setting up PostgreSQL standby server</title>
+   <title>设置 PostgreSQL 备库服务器</title>
    <para>
-    First, we should set up <productname>PostgreSQL</productname> standby server by
-    using <productname>Pgpool-II</productname> online recovery functionality.
+    首先，我们应该使用 <productname>Pgpool-II</productname> 的在线恢复功能
+    来设置 <productname>PostgreSQL</productname> 备库服务器。
    </para>
    <para>
-    Connect to Pgpool-II via virtual IP to check the status of backend nodes.
-    As shown in the result, primary server is running on <literal>server1</literal>,
-    standby servers on <literal>server2</literal> and <literal>server3</literal>
-    are in "down" status.
+    通过虚拟 IP 连接到 Pgpool-II，检查后端节点状态。
+    如结果所示，主库服务器运行在 <literal>server1</literal> 上，
+    <literal>server2</literal> 和 <literal>server3</literal> 上的备库服务器
+    处于 "down" 状态。
    </para>
    <programlisting>
 [any server]# psql -h 192.168.100.50 -p 9999 -U pgpool postgres -c "show pool_nodes"
-Password for user pgpool: 
- node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+Password for user pgpool:
+ node_id | hostname | port | status | pg_status | lb_weight |  role   | pg_role | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change
 ---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
  0       | server1  | 5432 | up     | up        | 0.333333  | primary | primary | 0          | true              | 0                 |                   |                        | 2023-11-10 15:30:14
  1       | server2  | 5432 | down   | down      | 0.333333  | standby | unknown | 0          | false             | 0                 |                   |                        | 2023-11-10 15:30:14
@@ -1292,11 +1235,10 @@ Password for user pgpool:
 (3 rows)
    </programlisting>
    <para>
-    Before running <xref linkend="pcp-recovery-node"> command,
-    ensure that <filename>recovery_1st_stage</filename> and
-    <filename>pgpool_remote_start</filename> scripts exist in the
-    data directory of <productname>PostgreSQL</productname>
-    primary server (<literal>server1</literal>).
+    在运行 <xref linkend="pcp-recovery-node"> 命令之前，
+    请确保 <filename>recovery_1st_stage</filename> 和
+    <filename>pgpool_remote_start</filename> 脚本存在于
+    <productname>PostgreSQL</productname> 主库服务器（<literal>server1</literal>）的数据目录中。
    </para>
    <programlisting>
 [any server]# pcp_recovery_node -h 192.168.100.50 -p 9898 -U pgpool -n 1 -W
@@ -1308,9 +1250,9 @@ Password:
 pcp_recovery_node -- Command Successful
    </programlisting>
    <para>
-    After executing <command>pcp_recovery_node</command> command,
-    verify that <productname>PostgreSQL</productname> standby servers
-    are running on <literal>server2</literal> and <literal>server3</literal>.
+    执行 <command>pcp_recovery_node</command> 命令后，
+    验证 <productname>PostgreSQL</productname> 备库服务器
+    是否正在 <literal>server2</literal> 和 <literal>server3</literal> 上运行。
    </para>
    <programlisting>
 [any server]# psql -h 192.168.100.50 -p 9999 -U pgpool postgres -c "show pool_nodes"
@@ -1325,9 +1267,10 @@ Password for user pgpool
   </sect3>
 
   <sect3 id="example-cluster-verify-watchdog">
-   <title>Switching leader/standby watchdog</title>
+   <title>切换 Leader/Standby Watchdog</title>
    <para>
-    Confirm the watchdog status by using <command>pcp_watchdog_info</command>. The <command>Pgpool-II</command> server which is started first runs as <literal>LEADER</literal>.
+    使用 <command>pcp_watchdog_info</command> 确认 watchdog 状态。
+    首先启动的 <command>Pgpool-II</command> 服务器将作为 <literal>LEADER</literal> 运行。
    </para>
    <programlisting>
 [any server]# pcp_watchdog_info -h 192.168.100.50 -p 9898 -U pgpool -W
@@ -1339,15 +1282,14 @@ server2:9999 Linux server2 server2 9999 9000 7 STANDBY 0 MEMBER # running as STA
 server3:9999 Linux server3 server3 9999 9000 7 STANDBY 0 MEMBER # running as STANDBY
    </programlisting>
    <para>
-    If the <literal>LEADER</literal> <productname>Pgpool-II</productname>
-    on <literal>server1</literal> goes down, standby
-    <productname>Pgpool-II</productname> on <literal>server2</literal> or 
-    <literal>server3</literal> will become the new <literal>LEADER</literal>.
+    如果 <literal>server1</literal> 上的 <literal>LEADER</literal>
+    <productname>Pgpool-II</productname> 发生故障，
+    <literal>server2</literal> 或 <literal>server3</literal> 上的备库
+    <productname>Pgpool-II</productname> 将成为新的 <literal>LEADER</literal>。
    </para>
    <para>
-    To verify this behavior, you may stop <productname>Pgpool-II</productname> 
-    service or shutdown the whole system. Here, we stop
-    <productname>Pgpool-II</productname> service.
+    为验证此行为，您可以停止 <productname>Pgpool-II</productname> 服务
+    或关闭整个系统。此处，我们停止 <productname>Pgpool-II</productname> 服务。
    </para>
    <programlisting>
 [root@server1 ~]# systemctl stop pgpool.service
@@ -1361,15 +1303,14 @@ server1:9999 Linux server1 server1 9999 9000 10 SHUTDOWN 0 MEMBER # server1 is s
 server3:9999 Linux server3 server3 9999 9000 7 STANDBY 0 MEMBER   # server3 is running as a STANDBY
    </programlisting>
    <para>
-    Restart the stopped <productname>Pgpool-II</productname>
-    on <literal>server1</literal> and verify that it is running
-    as a <literal>STANDBY</literal>.
+    重新启动 <literal>server1</literal> 上已停止的 <productname>Pgpool-II</productname>
+    并验证其是否以 <literal>STANDBY</literal> 身份运行。
    </para>
    <programlisting>
 [root@server1 ~]# systemctl start pgpool.service
 
 [root@server1 ~]# pcp_watchdog_info -p 9898 -h 192.168.100.50 -U pgpool -W
-Password: 
+Password:
 3 3 YES server2:9999 Linux server2 server2
 
 server2:9999 Linux server2 server2 9999 9000 4 LEADER 0 MEMBER
@@ -1379,11 +1320,10 @@ server3:9999 Linux server3 server3 9999 9000 7 STANDBY 0 MEMBER
   </sect3>
 
   <sect3 id="example-cluster-verify-failover">
-   <title>Failover</title>
+   <title>故障切换</title>
    <para>
-    First, use <command>psql</command> to connect to
-    <productname>PostgreSQL</productname> via virtual IP,
-    and verify the backend information.
+    首先，使用 <command>psql</command> 通过虚拟 IP 连接
+    <productname>PostgreSQL</productname>，并验证后端信息。
    </para>
    <programlisting>
 [any server]# psql -h 192.168.100.50 -p 9999 -U pgpool postgres -c "show pool_nodes"
@@ -1396,20 +1336,17 @@ Password for user pgpool:
 (3 rows)
    </programlisting>
    <para>
-    Next, stop the primary <productname>PostgreSQL</productname> server 
-    on <literal>server1</literal> and verify that failover is performed
-    automatically.
+    接下来，停止 <literal>server1</literal> 上的主库
+    <productname>PostgreSQL</productname> 服务器，并验证故障切换是否自动执行。
    </para>
    <programlisting>
 [root@server1 ~]# su - postgres -c "/usr/pgsql-18/bin/pg_ctl -m immediate stop"
    </programlisting>
    <para>
-    After stopping <productname>PostgreSQL</productname> on
-    <literal>server1</literal>, failover occurs.
-    <productname>PostgreSQL</productname> on 
-    <literal>server2</literal> becomes the new primary and
-    the standby server on <literal>server3</literal>
-    is configured as a standby of the new primary.
+    在 <literal>server1</literal> 上停止 <productname>PostgreSQL</productname> 后，
+    故障切换发生。<literal>server2</literal> 上的 <productname>PostgreSQL</productname>
+    成为新的主库，<literal>server3</literal> 上的备库服务器
+    被配置为新主库的备库。
    </para>
    <programlisting>
 [any server]# psql -h 192.168.100.50 -p 9999 -U pgpool postgres -c "show pool_nodes"
@@ -1422,17 +1359,17 @@ Password for user pgpool:
 (3 rows)
    </programlisting>
    <para>
-    <literal>server3</literal> is running as a standby of new primary <literal>server2</literal>.
+    <literal>server3</literal> 正作为新主库 <literal>server2</literal> 的备库运行。
    </para>
 
    <programlisting>
 [any server]# psql -h server3 -p 5432 -U pgpool postgres -c "select pg_is_in_recovery()"
-pg_is_in_recovery 
+pg_is_in_recovery
 -------------------
 t
 
 [any server]# psql -h server2 -p 5432 -U pgpool postgres -c "select pg_is_in_recovery()"
-pg_is_in_recovery 
+pg_is_in_recovery
 -------------------
 f
 
@@ -1462,25 +1399,23 @@ reply_time       | 2023-11-10 17:17:23.886477+00
   </sect3>
 
   <sect3 id="example-cluster-verify-online-recovery">
-   <title>Online Recovery</title>
+   <title>在线恢复</title>
    <para>
-    Here, we use <productname>Pgpool-II</productname> online recovery
-    feature to restore the former primary on <literal>server1</literal>
-    as a standby.
+    此处，我们使用 <productname>Pgpool-II</productname> 在线恢复
+    功能来将 <literal>server1</literal> 上的原主库恢复为备库。
    </para>
    <programlisting>
 [any server]# pcp_recovery_node -h 192.168.100.50 -p 9898 -U pgpool -n 0 -W
-Password: 
+Password:
 pcp_recovery_node -- Command Successful
    </programlisting>
    <para>
-    Then verify that PostgreSQL on <literal>server1</literal> is
-    running as a standby.
+    然后验证 <literal>server1</literal> 上的 PostgreSQL 是否以备库身份运行。
    </para>
    <programlisting>
 [any server]# psql -h 192.168.100.50 -p 9999 -U pgpool postgres -c "show pool_nodes"
 Password for user pgpool:
-node_id | hostname | port | status | lb_weight |  role   | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change  
+node_id | hostname | port | status | lb_weight |  role   | select_cnt | load_balance_node | replication_delay | replication_state | replication_sync_state | last_status_change
 ---------+----------+------+--------+-----------+-----------+---------+---------+------------+-------------------+-------------------+-------------------+------------------------+---------------------
  0       | server1  | 5432 | up     | up        | 0.333333  | standby | standby | 0          | true              | 0                 | streaming         | async                  | 2023-11-10 17:22:03
  1       | server2  | 5432 | up     | up        | 0.333333  | primary | primary | 0          | false             | 0                 |                   |                        | 2023-11-10 17:05:40

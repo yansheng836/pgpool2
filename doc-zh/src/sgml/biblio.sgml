@@ -1,17 +1,15 @@
 <!-- doc/src/sgml/biblio.sgml -->
 
  <bibliography id="biblio">
-  <title>Bibliography</title>
+  <title>参考文献</title>
 
   <bibliodiv>
-   <title>Proceedings and Articles</title>
+   <title>会议论文集与文章</title>
 
    <biblioentry id="mishima2009">
    <biblioset relation="article">
     <title><ulink
-    url="http://www.vldb.org/pvldb/vol2/vldb09-694.pdf">Pangea: An
-    Eager Database Replication Middleware guaranteeing Snapshot
-    Isolation without modification of Database Servers</ulink></title>
+    url="http://www.vldb.org/pvldb/vol2/vldb09-694.pdf">Pangea: 无需修改数据库服务器即可保证快照隔离的积极数据库复制中间件</ulink></title>
     <authorgroup>
      <author>
       <firstname>Takeshi</firstname>
@@ -24,9 +22,9 @@
     </authorgroup>
     </biblioset>
     <confgroup>
-     <conftitle>VLDB Conference</conftitle>
-     <confdates>Aug. 2009</confdates>
-     <address>Lyon, France</address>
+     <conftitle>VLDB 会议</conftitle>
+     <confdates>2009年8月</confdates>
+     <address>法国里昂</address>
     </confgroup>
    </biblioentry>
 

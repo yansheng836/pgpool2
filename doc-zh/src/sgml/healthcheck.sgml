@@ -1,51 +1,46 @@
 <!-- doc/src/sgml/healthcheck.sgml -->
 
 <sect1 id="runtime-config-health-check">
- <title>Health Check</title>
+ <title>健康检查</title>
 
  <para>
-  <productname>Pgpool-II</productname> periodically connects to the configured
-  PostgreSQL backends to detect any error on the servers or networks.
-  This error check procedure is called "health check".
+  <productname>Pgpool-II</productname> 定期连接到已配置的
+  PostgreSQL 后端，以检测服务器或网络上是否出现任何错误。
+  此错误检查过程称为"健康检查"。
  </para>
  <para>
-  If <link linkend="runtime-ssl">SSL</link> is enabled, health check
-  process may use SSL connection.
+  如果启用了 <link linkend="runtime-ssl">SSL</link>，健康检查
+  进程可能会使用 SSL 连接。
  </para> 
  <para>
-  If an error is detected, <productname>Pgpool-II</productname> performs failover
-  or degeneration depending on the configurations.
+  如果检测到错误，<productname>Pgpool-II</productname> 会根据配置执行故障转移
+  或降级。
   <caution>
    <para>
-    Health check requires one extra connection to each backend node,
-    so <literal>max_connections</literal> in the <filename>postgresql.conf</filename>
-    needs to be adjusted accordingly.
+    健康检查需要为每个后端节点额外建立一个连接，
+    因此需要相应地调整 <filename>postgresql.conf</filename> 中的
+    <literal>max_connections</literal> 参数。
    </para>
   </caution>
  </para>
 
  <para>
-  The health check process collects various statistics data such as
-  number of health check count in total. To inspect the statistics
-  data, use <xref linkend="SQL-SHOW-POOL-HEALTH-CHECK-STATS">
-  command. Please note that the data is stored in the shared memory
-  area and it will be initialized upon
-  <productname>Pgpool-II</productname> starting up.
+  健康检查进程会收集各种统计数据，例如健康检查的总次数。要查看统计数据，
+  请使用 <xref linkend="SQL-SHOW-POOL-HEALTH-CHECK-STATS">
+  命令。请注意，数据存储在共享内存区域中，并且会在
+  <productname>Pgpool-II</productname> 启动时被初始化。
  </para>
 
  <para>
-  Following parameter names can also have numeric suffix at the end
-  of each name.  The suffix corresponds to backend id, which is
-  defined in backend information, such
-  as <xref linkend="guc-backend-hostname">.
-  For example, <varname>health_check_timeout0</varname> is applied to
-  backend 0's <varname>health_check_timeout</varname> value.
+  以下参数名称也可以在末尾带有数字后缀。
+  后缀对应于后端 ID，该 ID 在后端信息中定义，例如
+  <xref linkend="guc-backend-hostname">。
+  例如，<varname>health_check_timeout0</varname> 应用于
+  后端 0 的 <varname>health_check_timeout</varname> 值。
  </para>
  <para>
-  If there's no parameter with suffix, the value for the backend
-  is taken from the parameter name which does not have a suffix. In
-  this sense, parameter names without suffix work like "global
-  variables".
+  如果没有带后缀的参数，则后端值取自不带后缀的参数名。
+  从这个意义上说，不带后缀的参数名就像一个"全局变量"。
  </para>
 
  <variablelist>
@@ -58,16 +53,15 @@
    </term>
    <listitem>
     <para>
-     Specifies the timeout in seconds to give up connecting to the backend
-     <productname>PostgreSQL</> if the TCP connect does not succeed within this time.
+     指定在 TCP 连接未能在此时间内成功时，放弃连接到后端
+     <productname>PostgreSQL</> 的超时时间（秒）。
     </para>
     <para>
-     This parameter serves to prevent the health check from waiting for a
-     long time when the network cable is unplugged.
-     Default value is 20. Setting it to 0, disables the timeout (waits until TCP/IP timeout).
+     此参数用于防止健康检查在网络电缆被拔掉时等待过长时间。
+     默认值为 20。设置为 0 表示禁用超时（等待直到 TCP/IP 超时）。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -80,11 +74,11 @@
    </term>
    <listitem>
     <para>
-     Specifies the interval between the health checks in seconds.
-     Default is 0, which means health check is disabled.
+     指定健康检查之间的间隔（秒）。
+     默认为 0，表示禁用健康检查。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -97,13 +91,13 @@
    </term>
    <listitem>
     <para>
-     Specifies the <productname>PostgreSQL</> user name to perform health check.
-     Default is <literal>''</literal>(empty).
-     The same user must exist in all the <productname>PostgreSQL</> backends.
-     Otherwise, health check causes an error.
+     指定执行健康检查的 <productname>PostgreSQL</> 用户名。
+     默认为 <literal>''</literal>（空）。
+     所有 <productname>PostgreSQL</> 后端都必须存在相同的用户。
+     否则，健康检查会产生错误。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -116,67 +110,59 @@
    </term>
    <listitem>
     <para>
-     Specifies the password for the <productname>PostgreSQL</> user name configured in
-     <xref linkend="guc-health-check-user"> to perform health check.
-      The user and password must be same in all the <productname>PostgreSQL</> backends.
-      Otherwise, health check results in an error.
+     指定为在 <xref linkend="guc-health-check-user"> 中配置的
+     <productname>PostgreSQL</> 用户名执行健康检查而使用的密码。
+     用户和密码在所有 <productname>PostgreSQL</> 后端中必须相同。
+     否则，健康检查会产生错误。
     </para>
     <para>
-     If <varname>health_check_password</varname> is left blank <productname>Pgpool-II</productname>
-     will first try to get the password for <xref linkend="guc-health-check-user"> from
-      <xref linkend="guc-pool-passwd"> file before using the empty password.
+     如果 <varname>health_check_password</varname> 留空，<productname>Pgpool-II</productname>
+     将首先尝试从 <xref linkend="guc-pool-passwd"> 文件中获取
+     <xref linkend="guc-health-check-user"> 的密码，然后才使用空密码。
     </para>
     <para>
-     <productname>Pgpool-II</productname> accepts following forms
-     of password in either <varname>health_check_password</varname>
-     or <xref linkend="guc-pool-passwd"> file:
+     <productname>Pgpool-II</productname> 接受以下形式的
+     密码，无论是在 <varname>health_check_password</varname>
+     还是在 <xref linkend="guc-pool-passwd"> 文件中：
       <variablelist>
 
        <varlistentry>
-	<term>AES256-CBC encrypted password</term>
+	<term>AES256-CBC 加密密码</term>
 	<listitem>
 	 <para>
-	  Most secure and recommended way to store password. The
-	  password string must be prefixed
-	  with <literal>AES</literal>.
-	  You can use <xref linkend="PG-ENC"> utility to create the correctly formatted
-	   <literal>AES</literal> encrypted password strings.
-	   <productname>Pgpool-II</productname> will require a valid decryption key at the
-	   startup to use the encrypted passwords.
-	   see <xref linkend="auth-aes-decryption-key"> for more details on providing the
-	    decryption key to <productname>Pgpool-II</productname>
+	  最安全且推荐的方式存储密码。密码字符串必须以
+	  <literal>AES</literal> 为前缀。
+	  您可以使用 <xref linkend="PG-ENC"> 实用程序来创建格式正确的
+	   <literal>AES</literal> 加密密码字符串。
+	   <productname>Pgpool-II</productname> 在启动时需要有效的解密密钥才能使用加密密码。
+	   有关向 <productname>Pgpool-II</productname> 提供解密密钥的详细信息，
+	   请参阅 <xref linkend="auth-aes-decryption-key">。
 	 </para>
 	</listitem>
        </varlistentry>
 
        <varlistentry>
-	<term>MD5 hashed password</term>
+	<term>MD5 哈希密码</term>
 	<listitem>
 	 <para>
-	  Not so secure as AES256, but still better than clear
-	  text password. The password string must be prefixed
-	  with <literal>MD5</literal>. Note that the backend
-	  must set up MD5 authentication as well.  You can
-	  use <xref linkend="PG-MD5"> utility to create the
-	   correctly formatted
-	   <literal>MD5</literal> hashed password strings.
+	  安全性不如 AES256，但仍然比明文密码更好。密码字符串必须以
+	  <literal>MD5</literal> 为前缀。请注意后端也必须配置
+	  MD5 认证。您可以使用 <xref linkend="PG-MD5"> 实用程序来创建
+	   格式正确的
+	   <literal>MD5</literal> 哈希密码字符串。
 	 </para>
 	</listitem>
        </varlistentry>
 
        <varlistentry>
-	<term>Plain text password</term>
+	<term>明文密码</term>
 	<listitem>
 	 <para>
-	  Not encrypted, clear text password. You should avoid
-	  to use this if possible. The password string must be
-	  prefixed with <literal>TEXT</literal>. For example if
-	  you want to set <literal>mypass</literal> as a
-	  password, you should
-	  specify <literal>TEXTmypass</literal> in the password
-	  field.  In the absence of a valid
-	  prefix, <productname>Pgpool-II</productname> will
-	  considered the string as a plain text password.
+	  未加密的明文密码。如果可能的话，应避免使用此方式。
+	  密码字符串必须以 <literal>TEXT</literal> 为前缀。
+	  例如，如果您要将 <literal>mypass</literal> 设置为密码，
+	  则应在密码字段中指定 <literal>TEXTmypass</literal>。
+	  在没有有效前缀的情况下，<productname>Pgpool-II</productname> 会将字符串视为明文密码。
 	 </para>
 	</listitem>
        </varlistentry>
@@ -185,7 +171,7 @@
     </para>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -198,16 +184,16 @@
    </term>
    <listitem>
     <para>
-     Specifies the PostgreSQL database name to perform health check.
-     The default is <literal>''</literal>(empty), which tries <literal>"postgres"</literal>
-     database first, then <literal>"template1"</literal> database until it succeeds
+     指定执行健康检查的 PostgreSQL 数据库名称。
+     默认为 <literal>''</literal>（空），此时优先尝试 <literal>"postgres"</literal>
+     数据库，然后是 <literal>"template1"</literal> 数据库，直到成功为止。
     </para>
     <para>
-     <varname>health_check_database</varname> was introduced in
-     <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis>.
+     <varname>health_check_database</varname> 在
+     <productname>Pgpool-II</productname> <emphasis>V3.5</emphasis> 中引入。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -220,24 +206,23 @@
    </term>
    <listitem>
     <para>
-     Specifies the maximum number of retries to do before giving up and
-     initiating failover when health check fails.
+     指定在放弃并触发故障转移之前，健康检查失败时的最大重试次数。
      <tip>
       <para>
-       This setting can be useful in spotty networks, when it is expected that
-       health checks will fail occasionally even when the primary node is fine.
+       在不稳定的网络环境中，此设置很有用，因为即使主节点正常，
+       健康检查偶尔也会失败。
       </para>
      </tip>
      <tip>
       <para>
-       It is advised that <xref linkend="guc-failover-on-backend-error"> must be disabled,
-	if you want to enable <varname>health_check_max_retries</>.
+       如果您想启用 <varname>health_check_max_retries</>，
+       建议禁用 <xref linkend="guc-failover-on-backend-error">。
       </para>
      </tip>
-     Default is 0, which means do not retry.
+     默认为 0，表示不重试。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -250,12 +235,11 @@
    </term>
    <listitem>
     <para>
-     Specifies the amount of time in seconds to sleep between failed
-     health check retries (not used unless <xref linkend="guc-health-check-max-retries"> is > 0).
-      If 0, then retries are immediate without delay.
+     指定在失败的健康检查重试之间休眠的秒数（除非 <xref linkend="guc-health-check-max-retries"> 大于 0，否则不使用）。
+     如果为 0，则立即重试，无延迟。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -268,19 +252,18 @@
    </term>
    <listitem>
     <para>
-     Specifies the amount of time in milliseconds before giving up connecting
-     to backend using <function>connect()</> system call.
-     Default is 10000 ms (10 second). The flaky network user may want to increase the value.
-     0 means no timeout.
+     指定在使用 <function>connect()</> 系统调用连接到后端时，放弃连接前的毫秒数。
+     默认值为 10000 毫秒（10 秒）。网络不稳定时可能需要增加此值。
+     0 表示无超时。
      <note>
       <para>
-       <varname>connect_timeout</varname> value is not only used for a health check,
-       but also for creating ordinary connection pools.
+       <varname>connect_timeout</varname> 的值不仅用于健康检查，
+       还用于创建普通连接池。
       </para>
      </note>
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     通过重新加载 <productname>Pgpool-II</> 配置可以更改此参数。
     </para>
    </listitem>
   </varlistentry>

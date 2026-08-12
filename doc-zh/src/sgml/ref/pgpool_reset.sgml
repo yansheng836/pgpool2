@@ -5,59 +5,57 @@ PostgreSQL documentation
 
 <refentry id="SQL-PGPOOL-RESET">
  <indexterm zone="sql-pgpool-reset">
-  <primary>RESET</primary>
+  <primary>重置</primary>
  </indexterm>
 
  <refmeta>
   <refentrytitle>PGPOOL RESET</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo>SQL - Language Statements</refmiscinfo>
+  <refmiscinfo>SQL - 语言语句</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>PGPOOL RESET</refname>
-  <refpurpose>restore the value of a configuration parameter to the default value</refpurpose>
+  <refpurpose>将配置参数的值恢复为默认值</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
   <synopsis>
-   PGPOOL RESET <replaceable class="PARAMETER">configuration_parameter</replaceable>
+   PGPOOL RESET <replaceable class="PARAMETER">配置参数</replaceable>
    PGPOOL RESET ALL
   </synopsis>
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>描述</title>
 
   <para>
-   <command>PGPOOL RESET</command> command restores the value of
-   <productname>Pgpool-II</productname> configuration parameters to
-   the default value.
-   The default value is defined as the value that the parameter would have had,
-   if no <command>PGPOOL SET</command> had ever been issued for it in the
-   current session.
+   <command>PGPOOL RESET</command> 命令将
+   <productname>Pgpool-II</productname> 配置参数的值恢复为
+   默认值。
+   默认值定义为在当前会话中从未对该参数发出过
+   <command>PGPOOL SET</command> 时该参数应具有的值。
 
-   This command is similar to the
+   此命令类似于 PostgreSQL 中的
    <ulink url="https://www.postgresql.org/docs/current/static/sql-reset.html">
-    <command>RESET</command></ulink> command in PostgreSQL with an addition
-   of <acronym>PGPOOL</acronym> keyword to distinguish it from the
-   PostgreSQL RESET command.
+    <command>RESET</command></ulink> 命令，
+   只是增加了 <acronym>PGPOOL</acronym> 关键字，以区别于
+   PostgreSQL 的 RESET 命令。
 
   </para>
 
  </refsect1>
 
  <refsect1>
-  <title>Parameters</title>
+  <title>参数</title>
 
   <variablelist>
    <varlistentry>
-    <term><replaceable class="PARAMETER">configuration_parameter</replaceable></term>
+    <term><replaceable class="PARAMETER">配置参数</replaceable></term>
     <listitem>
      <para>
-      Name of a settable <productname>Pgpool-II</productname> configuration parameter.
-      Available parameters are
-      documented in <xref linkend="runtime-config">.
+      可设置的 <productname>Pgpool-II</productname> 配置参数名称。
+      可用参数见 <xref linkend="runtime-config"> 文档。
      </para>
     </listitem>
    </varlistentry>
@@ -66,7 +64,7 @@ PostgreSQL documentation
     <term><literal>ALL</literal></term>
     <listitem>
      <para>
-      Resets all settable <productname>Pgpool-II</productname> configuration parameters to default values.
+      将所有可设置的 <productname>Pgpool-II</productname> 配置参数重置为默认值。
      </para>
     </listitem>
    </varlistentry>
@@ -74,16 +72,16 @@ PostgreSQL documentation
  </refsect1>
 
  <refsect1>
-  <title>Examples</title>
+  <title>示例</title>
 
   <para>
-   Reset the value of <xref linkend="guc-client-idle-limit"> parameter:
+   重置 <xref linkend="guc-client-idle-limit"> 参数的值：
     <screen>
      PGPOOL RESET client_idle_limit;
     </screen></para>
 
   <para>
-   Reset the value of all parameter to default:
+   将所有参数重置为默认值：
    <screen>
     PGPOOL RESET ALL;
    </screen></para>
@@ -91,7 +89,7 @@ PostgreSQL documentation
 
 
  <refsect1>
-  <title>See Also</title>
+  <title>参见</title>
 
   <simplelist type="inline">
    <member><xref linkend="SQL-PGPOOL-SET"></member>

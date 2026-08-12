@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pgpool_adm_pcp_detach_node</refname>
   <refpurpose>
-   a function to detach given node ID</refpurpose>
+   用于分离指定节点 ID 的函数</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -45,15 +45,14 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R3-PCP-DETACH-NODE-3">
-  <title>Description</title>
+  <title>描述</title>
   <para>
-   <function>pcp_detach_node</function> detaches a node
-   from <productname>Pgpool-II</productname>.
+   <function>pcp_detach_node</function> 从 <productname>Pgpool-II</productname> 中分离一个节点。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Arguments</title>
+  <title>参数</title>
   <para>
    <variablelist>
 
@@ -61,7 +60,7 @@ Pgpool-II documentation
      <term><replaceable class="parameter">node_id</replaceable></term>
      <listitem>
       <para>
-       The index of backend node to detach.
+       要分离的后端节点的索引。
       </para>
      </listitem>
     </varlistentry>
@@ -70,8 +69,7 @@ Pgpool-II documentation
      <term><replaceable class="parameter">gracefully</replaceable></term>
      <listitem>
       <para>
-       If true, wait for all session
-       of <productname>pgpool-II</productname> terminates.
+       如果为 true，则等待所有 <productname>pgpool-II</productname> 的会话终止。
       </para>
      </listitem>
     </varlistentry>
@@ -80,16 +78,16 @@ Pgpool-II documentation
      <term><replaceable class="parameter">pcp_server</replaceable></term>
      <listitem>
       <para>
-       The foreign server name for pcp server.
+       pcp 服务器的外部服务器名称。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other arguments </option></term>
+     <term><option>其他参数 </option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
@@ -98,9 +96,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个示例输出：
    <programlisting>
     test=# SELECT * FROM pcp_detach_node(node_id => 1, gracefully => 'false', host => 'localhost', port => 11001, username => 't-ishii', password => 't-ishii');
     node_detached

@@ -17,8 +17,8 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pgpool_adm_pcp_node_info</refname>
   <refpurpose>
-   a function to display the information on the given node
-   ID</refpurpose>
+   显示指定节点 ID 信息的函数
+  </refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -60,15 +60,15 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R3-PCP-NODE-INFO-3">
-  <title>Description</title>
+  <title>描述</title>
   <para>
    <function>pcp_node_info</function>
-   displays the information on the given node ID.
+   显示指定节点 ID 的信息。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Arguments</title>
+  <title>参数</title>
   <para>
    <variablelist>
 
@@ -76,7 +76,7 @@ Pgpool-II documentation
      <term><replaceable class="parameter">node_id</replaceable></term>
      <listitem>
       <para>
-       The index of backend node to get information of.
+       要获取信息的后端节点索引。
       </para>
      </listitem>
     </varlistentry>
@@ -85,16 +85,16 @@ Pgpool-II documentation
      <term><replaceable class="parameter">pcp_server</replaceable></term>
      <listitem>
       <para>
-       The foreign server name for pcp server.
+       PCP 服务器的外部服务器名称。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other arguments </option></term>
+     <term><option>其他参数</option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
@@ -103,9 +103,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个示例输出：
    <programlisting>
 test=# SELECT * FROM pcp_node_info(node_id => 1, host => '', port => 11001, username => 't-ishii', password => 't-ishii');
  host | port  |      status       | pg_status | weight |  role   | pg_role | replication_delay | replication_state | replication_sync_state | last_status_change  
@@ -117,11 +117,10 @@ test=# SELECT * FROM pcp_node_info(node_id => 1, host => '', port => 11001, user
 
   <note>
    <para>
-    <parameter>role</parameter>, <parameter>replication_delay</parameter>, <parameter>last_status_change</parameter>
-    out parameters are new
-    from <productname>Pgpool-II</productname> 4.0. If you have
-    already installed pre-4.0 pgpool_adm extension, you can upgrade
-    to the new one by using ALTER EXTENSION SQL command.
+    <parameter>role</parameter>、<parameter>replication_delay</parameter>、<parameter>last_status_change</parameter>
+    输出参数是 <productname>Pgpool-II</productname> 4.0 新增的。如果您已
+    安装 4.0 之前的 pgpool_adm 扩展，可以通过使用 ALTER EXTENSION SQL 命令
+    升级到新版本。
     <programlisting>
      ALTER EXTENSION pgpool_adm UPDATE;
     </programlisting>
@@ -130,9 +129,9 @@ test=# SELECT * FROM pcp_node_info(node_id => 1, host => '', port => 11001, user
 
   <note>
    <para>
-    <parameter>replication_state</parameter> and <parameter>replication_sync_state</parameter> out parameters are new from <productname>Pgpool-II</productname> 4.1. If you have
-    already installed pre-4.1 pgpool_adm extension, you can upgrade
-    to the new one by using ALTER EXTENSION SQL command.
+    <parameter>replication_state</parameter> 和 <parameter>replication_sync_state</parameter> 输出参数是 <productname>Pgpool-II</productname> 4.1 新增的。如果您已
+    安装 4.1 之前的 pgpool_adm 扩展，可以通过使用 ALTER EXTENSION SQL 命令
+    升级到新版本。
     <programlisting>
      ALTER EXTENSION pgpool_adm UPDATE;
     </programlisting>
@@ -141,11 +140,10 @@ test=# SELECT * FROM pcp_node_info(node_id => 1, host => '', port => 11001, user
 
   <note>
    <para>
-    <parameter>pg_status</parameter>, <parameter>pg_role</parameter>
-    out parameters are new from <productname>Pgpool-II</productname>
-    4.3. If you have already installed pre-4.2 pgpool_adm extension,
-    you can upgrade to the new one by using ALTER EXTENSION SQL
-    command.
+    <parameter>pg_status</parameter>、<parameter>pg_role</parameter>
+    输出参数是 <productname>Pgpool-II</productname>
+    4.3 新增的。如果您已安装 4.2 之前的 pgpool_adm 扩展，
+    可以通过使用 ALTER EXTENSION SQL 命令升级到新版本。
     <programlisting>
      ALTER EXTENSION pgpool_adm UPDATE;
     </programlisting>

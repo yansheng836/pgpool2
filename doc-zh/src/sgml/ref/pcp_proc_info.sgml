@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pcp_proc_info</refname>
   <refpurpose>
-   displays the information on the given Pgpool-II child process ID</refpurpose>
+   显示给定 Pgpool-II 子进程 ID 的相关信息</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -29,15 +29,15 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R1-PCP-PROC-INFO-1">
-  <title>Description</title>
+  <title>说明</title>
   <para>
    <command>pcp_proc_info</command>
-   displays the information on the given Pgpool-II child process ID.
+   用于显示给定 Pgpool-II 子进程 ID 的相关信息。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
    <variablelist>
 
@@ -46,7 +46,7 @@ Pgpool-II documentation
      <term><option>--all</option></term>
      <listitem>
       <para>
-       Display all child processes and their available connection slots.
+       显示所有子进程及其可用连接槽位。
       </para>
      </listitem>
     </varlistentry>
@@ -56,34 +56,32 @@ Pgpool-II documentation
      <term><option>--process-id=<replaceable class="parameter">PID</replaceable></option></term>
      <listitem>
       <para>
-       PID of <productname>Pgpool-II</productname> child process.
+       <productname>Pgpool-II</productname> 子进程的 PID。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other options </option></term>
+     <term><option>其他选项</option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
    </variablelist>
 
-   If -a nor -P is not specified, process information of all
-   connected <productname>Pgpool-II</productname> child process will
-   be printed. In this case if there's no
-   connected <productname>Pgpool-II</productname> child process,
-   nothing but "No process information available" message will be
-   printed.
+   如果未指定 -a 或 -P，将打印所有已连接的
+   <productname>Pgpool-II</productname> 子进程信息。此时如果没有任何
+   已连接的 <productname>Pgpool-II</productname> 子进程，
+   将仅输出"No process information available"消息。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下为示例输出：
    <programlisting>
 $ pcp_proc_info -p 11001
 test t-ishii 2025-06-24 10:53:35 0 3 0 2025-06-24 10:55:58 2025-06-24 10:55:59 0  1 1336703 1 1336537 0 Idle 0 192.168.10.11 39216
@@ -93,38 +91,37 @@ test t-ishii 2025-06-24 10:53:35 (4:03 before process restarting) 1 3 0 2025-06-
    </programlisting>
   </para>
   <para>
-   The result is in the following order:
+   结果字段按以下顺序排列：
    <literallayout class="monospaced">
-    1. connected database name
-    2. connected user name
-    3. process start-up timestamp (If <xref linkend="guc-child-life-time"> is set not 0, the time before process restarting is displayed.)
-    4. process-reuse counter for <xref linkend="guc-child-max-connections">
-    5. protocol major version
-    6. protocol minor version
-    7. connection created timestamp
-    8. last client connected timestamp
-    9. client idle duration (sec) (If <xref linkend="guc-client-idle-limit"> is set not 0, the time before client disconnected is displayed.)
-    10. last client disconnected timestamp
-    11. connection-reuse counter
-    12. PostgreSQL backend process id
-    13. 1 if frontend connected 0 if not
-    14. pgpool child process id
-    15. PostgreSQL backend id
-    16. process status
-    17. 1 if backend is load balance node and frontend connected, 0 otherwise
-    18. client's host name
-    19. client's port number (not shown if Unix domain socket or localhost)
-    20. SQL statement last executed
+    1. 已连接的数据库名称
+    2. 已连接的用户名
+    3. 进程启动时间戳（如果 <xref linkend="guc-child-life-time"> 设置为非 0，则显示进程重启前的时间）
+    4. <xref linkend="guc-child-max-connections"> 的进程复用计数
+    5. 协议主版本号
+    6. 协议次版本号
+    7. 连接创建时间戳
+    8. 最后一次客户端连接时间戳
+    9. 客户端空闲时长（秒）（如果 <xref linkend="guc-client-idle-limit"> 设置为非 0，则显示客户端断开前的时间）
+    10. 最后一次客户端断开时间戳
+    11. 连接复用计数
+    12. PostgreSQL 后端进程 ID
+    13. 前端已连接则为 1，否则为 0
+    14. pgpool 子进程 ID
+    15. PostgreSQL 后端 ID
+    16. 进程状态
+    17. 后端为负载均衡节点且前端已连接则为 1，否则为 0
+    18. 客户端主机名
+    19. 客户端端口号（Unix 域套接字或 localhost 时不显示）
+    20. 最后执行的 SQL 语句
    </literallayout>
   </para>
   <para>
-   If <literal>-a</literal> or <literal>--all</literal> option is not specified and
-   there is no connection to the backends, nothing will be displayed. If there are
-   multiple connections, one connection's information will be displayed on each
-   line multiple times. Timestamps are displayed in EPOCH format.
+   如果未指定 <literal>-a</literal> 或 <literal>--all</literal> 选项，且
+   没有到后端的连接，则不会显示任何内容。如果存在多个连接，
+   每个连接的信息将逐行重复显示。时间戳以 EPOCH 格式显示。
   </para>
   <para>
-   The <option>--verbose</option> option can help understand the output. For example:
+   <option>--verbose</option> 选项有助于理解输出内容。例如：
   </para>
   <programlisting>
 $ pcp_proc_info -p 11001 --verbose

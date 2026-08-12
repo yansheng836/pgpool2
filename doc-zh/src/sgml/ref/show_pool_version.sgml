@@ -1,6 +1,6 @@
 <!--
     doc/src/sgml/ref/show_pool_version.sgml
-    Pgpool-II documentation
+    Pgpool-II 文档
   -->
 
 <refentry id="SQL-SHOW-POOL-VERSION">
@@ -11,14 +11,15 @@
  <refmeta>
   <refentrytitle>SHOW POOL_VERSION</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo>SQL - Language Statements</refmiscinfo>
+  <refmiscinfo>SQL - 语言语句</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>SHOW POOL_VERSION</refname>
   <refpurpose>
-   displays a string containing
-   the <productname>Pgpool-II</productname> release number.
+   显示包含
+   <productname>Pgpool-II</productname> 发布版本号
+   的字符串。
   </refpurpose>
  </refnamediv>
 
@@ -29,12 +30,12 @@
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>说明</title>
 
   <para>
-   <command>SHOW POOL_VERSION</command> displays a string
-   containing the <productname>Pgpool-II</productname> release
-   number. Here is an example session:
+   <command>SHOW POOL_VERSION</command> 显示包含
+   <productname>Pgpool-II</productname> 发布版本号
+   的字符串。以下是一个示例会话：
    <programlisting>
     test=# show pool_version;
     pool_version

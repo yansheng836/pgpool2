@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pcp_pool_status</refname>
   <refpurpose>
-   displays the parameter values as defined in <filename>pgpool.conf</filename></refpurpose>
+   显示在 <filename>pgpool.conf</filename> 中定义的各种参数值</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -28,24 +28,24 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R1-PCP-POOL-STATUS-1">
-  <title>Description</title>
+  <title>描述</title>
   <para>
    <command>pcp_pool_status</command>
-   displays the parameter values as defined in <filename>pgpool.conf</filename>.
+   显示在 <filename>pgpool.conf</filename> 中定义的各种参数值。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
-   See <xref linkend="pcp-common-options">.
+   参见 <xref linkend="pcp-common-options">。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个示例输出：
    <programlisting>
     $ pcp_pool_status -h localhost -U postgres
     name : listen_addresses

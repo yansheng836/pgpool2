@@ -1,4 +1,4 @@
-<!--
+ <!--
 doc/src/sgml/ref/pg_enc.sgml
 Pgpool-II documentation
 -->
@@ -11,13 +11,13 @@ Pgpool-II documentation
  <refmeta>
   <refentrytitle>pg_enc</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo>Other Commands</refmiscinfo>
+  <refmiscinfo>其他命令</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>pg_enc</refname>
   <refpurpose>
-   AES256 password encryption utility
+   AES256 密码加密工具
   </refpurpose>
  </refnamediv>
 
@@ -35,15 +35,15 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R1-PG-ENC-1">
-  <title>Description</title>
+  <title>描述</title>
   <para>
    <command>pg_enc</command>
-   AES256 password encryption utility.
+   AES256 密码加密工具。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
    <variablelist>
 
@@ -52,8 +52,8 @@ Pgpool-II documentation
      <term><option>--key-file=<replaceable class="parameter">KEY_FILE</replaceable></option></term>
      <listitem>
       <para>
-       Set the path to the encryption key file. Default is the <literal>.pgpoolkey</literal> file
-       located in the users home directory, which can be overridden by the environment variable <varname>PGPOOLKEYFILE</varname>.
+       设置加密密钥文件的路径。默认为用户主目录下的 <literal>.pgpoolkey</literal> 文件，
+       可以通过环境变量 <varname>PGPOOLKEYFILE</varname> 覆盖。
       </para>
      </listitem>
     </varlistentry>
@@ -63,7 +63,7 @@ Pgpool-II documentation
      <term><option>--enc-key=<replaceable class="parameter">ENCRYPTION_KEY</replaceable></option></term>
      <listitem>
       <para>
-       Encryption key to be used for encrypting database passwords.
+       用于加密数据库密码的加密密钥。
       </para>
      </listitem>
     </varlistentry>
@@ -73,7 +73,7 @@ Pgpool-II documentation
      <term><option>--config-file=<replaceable class="parameter">CONFIG_FILE</replaceable></option></term>
      <listitem>
       <para>
-       Specifies the <literal>pgpool.conf</literal> file.
+       指定 <literal>pgpool.conf</literal> 文件。
       </para>
      </listitem>
     </varlistentry>
@@ -83,7 +83,7 @@ Pgpool-II documentation
      <term><option>--input-file=<replaceable class="parameter">INPUT_FILE</replaceable></option></term>
      <listitem>
       <para>
-       Specifies file containing username and password pairs.
+       指定包含用户名和密码配对的文件。
       </para>
      </listitem>
     </varlistentry>
@@ -93,7 +93,7 @@ Pgpool-II documentation
      <term><option>--prompt</option></term>
      <listitem>
       <para>
-       Prompt for database password using standard input.
+       通过标准输入提示输入数据库密码。
       </para>
      </listitem>
     </varlistentry>
@@ -103,7 +103,7 @@ Pgpool-II documentation
      <term><option>--prompt-for-key</option></term>
      <listitem>
       <para>
-       Prompt for encryption key using standard input.
+       通过标准输入提示输入加密密钥。
       </para>
      </listitem>
     </varlistentry>
@@ -113,7 +113,7 @@ Pgpool-II documentation
      <term><option>--update-pass</option></term>
      <listitem>
       <para>
-       Create encrypted password entry in the pool_passwd file.
+       在 <literal>pool_passwd</literal> 文件中创建加密密码条目。
       </para>
      </listitem>
     </varlistentry>
@@ -123,8 +123,8 @@ Pgpool-II documentation
      <term><option>--username=<replaceable class="parameter">your_username</replaceable></option></term>
      <listitem>
       <para>
-       Creates the <literal>pool_passwd</literal> entry for the database user called
-       <literal>your_username</literal>.
+       为名为 <literal>your_username</literal> 的数据库用户创建
+       <literal>pool_passwd</literal> 条目。
       </para>
      </listitem>
     </varlistentry>
@@ -134,7 +134,7 @@ Pgpool-II documentation
      <term><option>--help</option></term>
      <listitem>
       <para>
-       Prints the help for <literal>pg_enc</literal>.
+       打印 <literal>pg_enc</literal> 的帮助信息。
       </para>
      </listitem>
     </varlistentry>
@@ -142,11 +142,11 @@ Pgpool-II documentation
 
     <note>
      <para>
-      If you are providing the password as an argument to pg_enc and the password contains a "$" character,
-      you must escape it.
+      如果将密码作为参数提供给 pg_enc 且密码中包含 "$" 字符，
+      则必须对其进行转义。
      </para>
      <para>
-      For example, if you want to use "ABC$123" as password,
+      例如，如果你想使用 "ABC$123" 作为密码，
       <programlisting>
 pg_enc -m -f /path/to/pgpool.conf -u username ABC\$123
       </programlisting>
@@ -156,16 +156,16 @@ pg_enc -m -f /path/to/pgpool.conf -u username ABC\$123
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个示例输出：
    <programlisting>
     pg_enc -p
     db password: [your password]
    </programlisting>
   </para>
   <para>
-   or
+   或
   </para>
   <programlisting>
    ./pg_enc foo
@@ -175,18 +175,18 @@ pg_enc -m -f /path/to/pgpool.conf -u username ABC\$123
    pool_passwd string: AESjglid1QRgiCl/vfhHUDyVA==
   </programlisting>
   <para>
-   <literal>pg_enc</literal> can be used for <literal>pool_passwd</literal> passwords with:
+   <literal>pg_enc</literal> 可用于 <literal>pool_passwd</literal> 密码，用法如下：
    <programlisting>
     pg_enc -m -f /path/to/pgpool.conf -u username -p
     db password: [your password]
    </programlisting>
-   which will add an entry for <literal>username</literal> with the password given.
+   带有给定密码的用户名 <literal>username</literal> 条目将被添加。
   </para>
   <para>
-   To avoid password prompt or password in command parameter,
-   <literal>pg_enc</literal> can read user name:password pairs from file.
-   It will add all user names and encrypted password to
-   <xref linkend="guc-pool-passwd"> authentication file.
+   如果不使用参数提示或命令行参数提供密码，
+   <literal>pg_enc</literal> 可以从文件中读取用户名:密码配对。
+   它会将所有用户名和加密后的密码添加到
+   <xref linkend="guc-pool-passwd"> 认证文件中。
    <programlisting>
     $ cat users.txt
     username1:secretpassword1

@@ -1,184 +1,151 @@
 <!-- doc/src/sgml/config.sgml -->
 
 <sect1 id="runtime-in-memory-query-cache">
- <title>In Memory Query Cache</title>
+ <title>内存查询缓存</title>
 
  <para>
-  In memory query cache can be used with all modes of
-  <productname>Pgpool-II</productname>.
-  The in memory query cache keeps the SELECT results and the results are reused.
-  When the underlying table gets updated, corresponding cache entries are deleted (in case <xref linkend="guc-memqcache-auto-cache-invalidation"> is on. This parameter is on by default), thus restarting <productname>Pgpool-II</productname> is not necessary.
+  内存查询缓存可与<productname>Pgpool-II</productname>的所有模式一起使用。
+  内存查询缓存会保存 SELECT 结果并重复使用该结果。
+  当底层表被更新时，相应的缓存条目会被删除（如果 <xref linkend="guc-memqcache-auto-cache-invalidation"> 开启。该参数默认为开启状态），因此不需要重启<productname>Pgpool-II</productname>。
  </para>
  <para>
-  In memory cache saves the pair of user name, database name, SELECT statement
-  and its result
-  (along with the Bind parameters, if the SELECT is an
-  extended query). If the same user name, database name and SELECTs comes in,
-  <productname>Pgpool-II</productname> returns the value from
-  cache. Since no <acronym>SQL</acronym> parsing nor access
-  to <productname>PostgreSQL</productname> are involved, the serving
-  of results from the in memory cache is extremely fast.
+  内存缓存保存用户名、数据库名、SELECT 语句及其结果（以及 Bind 参数，如果 SELECT 是扩展查询）的配对。
+  如果相同的用户名、数据库名和 SELECT 语句再次到来，
+  <productname>Pgpool-II</productname> 会从缓存中返回该值。由于不涉及 <acronym>SQL</acronym> 解析，也不访问
+  <productname>PostgreSQL</productname>，因此从内存缓存提供服务的速度极快。
  </para>
 
  <note>
   <para>
-   First of all if the query starts with SQL comment:
+   首先，如果查询以 SQL 注释开头：
    <programlisting>
     /*FORCE QUERY CACHE*/
    </programlisting>
-   is checked (case insensitive).  If so, the result of the query is
-   cached unconditionally as long as it is not SELECT or WITH + SELECT.
-   However you must be very careful to use this feature. For example,
+   则会被检查（不区分大小写）。如果是这样，只要该查询不是 SELECT 或 WITH + SELECT，其结果将被无条件缓存。
+   但是，您必须非常谨慎地使用此功能。例如，
    <programlisting>
     /*FORCE QUERY CACHE*/SELECT now();
    </programlisting>
-   will return the same timestamp until pgpool restarts, once the
-   query is cached. The query cache will not be discarded even with a
-   query:
+   一旦查询被缓存，直到 pgpool 重启前都会返回相同的时间戳。即使使用以下查询，查询缓存也不会被清除：
    <programlisting>
     /*NO QUERY CACHE*/SELECT now();
    </programlisting>
-   Because it just prevents to create a cache entry for the query, and
-   does not affect the query using the FORCE QUERY CACHE comment.  You
-   can delete such a query cache by
-   using <xref linkend="SQL-PGPOOL-SET-CACHE"> command,
-   or <xref linkend="PCP-INVALIDATE-QUERY-CACHE"> command.
+   因为这只是阻止为该查询创建缓存条目，而不会影响使用 FORCE QUERY CACHE 注释的查询。
+   您可以使用 <xref linkend="SQL-PGPOOL-SET-CACHE"> 命令，
+   或 <xref linkend="PCP-INVALIDATE-QUERY-CACHE"> 命令来删除此类查询缓存。
   </para>
   <para>
-   Note that for following query:
+   请注意，对于以下查询：
    <programlisting>
     /*FORCE QUERY CACHE*/SELECT * FROM t1;
    </programlisting>
-   usual cache validation due to an update to the table (in this case
-   t1) works.
+   由于对表（此处为 t1）的更新而进行的常规缓存验证仍然有效。
   </para>
   <para>
-   If the query does not start with FORCE QUERY CACHE comment,
-   following checks are performed.  If one of followings is satisfied,
-   SELECT will not be cached.
+   如果查询不以 FORCE QUERY CACHE 注释开头，则执行以下检查。如果满足以下任一条件，
+   SELECT 将不会被缓存。
    <programlisting>
-    SELECT including non immutable functions
-    SELECT including temp tables, unlogged tables
-    SELECT including TIMESTAMP WITH TIMEZONE or TIME WITH TIMEZONE
-    SELECT including CAST to TIMESTAMP WITH TIMEZONE or TIME WITH TIMEZONE
-    SELECT including SQLValueFunction (CURRENT_TIME, CURRENT_USER etc.)
-    SELECT result is too large (memqcache_maxcache)
+    包含非不可变函数的 SELECT
+    包含临时表、未登录表的 SELECT
+    包含 TIMESTAMP WITH TIMEZONE 或 TIME WITH TIMEZONE 的 SELECT
+    包含 CAST 到 TIMESTAMP WITH TIMEZONE 或 TIME WITH TIMEZONE 的 SELECT
+    包含 SQLValueFunction (CURRENT_TIME、CURRENT_USER 等) 的 SELECT
+    查询结果过大 (memqcache_maxcache)
     SELECT FOR SHARE/UPDATE
-    SELECT starting with "/*NO QUERY CACHE*/" comment (case insensitive)
-    SELECT including system catalogs
-    SELECT using TABLESAMPLE
-    SELECT uses row security enabled tables
+    以 "/*NO QUERY CACHE*/" 注释开头的 SELECT（不区分大小写）
+    包含系统目录的 SELECT
+    使用 TABLESAMPLE 的 SELECT
+    使用启用行安全策略表的 SELECT
    </programlisting>
-   However, VIEWs and SELECTs accessing unlogged tables can be
-   cached by specifying in
-   the <xref linkend="guc-cache-safe-memqcache-table-list">.
+   但是，通过在 <xref linkend="guc-cache-safe-memqcache-table-list"> 中指定，
+   VIEW 和访问未登录表的 SELECT 也可以被缓存。
   </para>
  </note>
 
  <note>
   <para>
-   Since consistency between the query cache and database content can
-   be lost by following commands, the query cache is all deleted if
-   they are executed:
+   由于以下命令可能导致查询缓存与数据库内容之间的不一致，因此如果执行了这些命令，查询缓存将全部被删除：
    <programlisting>
     ALTER DATABASE
-    ALTER ROLE or USER (except WITH CONNECTION LIMIT and WITH [ENCRYPTED] PASSWORD)
+    ALTER ROLE 或 USER（WITH CONNECTION LIMIT 和 WITH [ENCRYPTED] PASSWORD 除外）
     ALTER TABLE
     REVOKE
    </programlisting>
-   Moreover, if SET ROLE or SET SESSION AUTHORIZATION are executed,
-   the query cache will not be used and new cache will not be created
-   in the session.
-   <productname>Pgpool-II</productname> assumes that two query cache
-   are different if their session users are different. On the other
-   hand, <productname>PostgreSQL</productname> manages access control
-   depending on current user. Thus these commands may break the
-   consistency between these two access controls.  However, cache
-   invalidation by update commands are performed in the same way in
-   that these commands are not used.
+   此外，如果执行了 SET ROLE 或 SET SESSION AUTHORIZATION，
+   查询缓存将不会被使用，会话中也不会创建新的缓存。
+   <productname>Pgpool-II</productname> 假定如果它们的会话用户不同，则两个查询缓存也不同。
+   另一方面，<productname>PostgreSQL</productname> 根据当前用户管理访问控制。
+   因此，这些命令可能会破坏这两种访问控制之间的一致性。
+   然而，通过更新命令进行的缓存无效化操作是在不使用这些命令的情况下以相同方式执行的。
   </para>
  </note>
 
  <note>
   <para>
-   If multiple functions having the same name are registered and one
-   of them returns TIMESTAMP WITH TIMEZONE or TIME WITH
-   TIMEZONE, <productname>Pgpool-II</productname> thinks that the
-   query cannot be cached even if it uses a version of function which
-   does not return TIMESTAMP WITH TIMEZONE or TIME WITH TIMEZONE. In
-   this case you can create a wrapper function returning TIMESTAMP
-   WITHOUT TIMEZONE or TIME WITHOUT TIMEZONE, or use /*FORCE QUERY
-   CACHE*/ comment so that you can use the query cache.
+   如果注册了多个同名函数，并且其中一个函数返回 TIMESTAMP WITH TIMEZONE 或 TIME WITH
+   TIMEZONE，即使它使用的是不返回 TIMESTAMP WITH TIMEZONE 或 TIME WITH TIMEZONE 的函数版本，
+   <productname>Pgpool-II</productname> 也认为该查询无法被缓存。
+   在这种情况下，您可以创建一个返回 TIMESTAMP WITHOUT TIMEZONE 或 TIME WITHOUT TIMEZONE 的包装函数，
+   或使用 /*FORCE QUERY CACHE*/ 注释，以便能够使用查询缓存。
   </para>
  </note>
 
  <para>
-  On the other hand, it might be slower than the normal path
-  in some cases, because it adds some overhead to store cache.
-  Moreover when a table is updated, <productname>Pgpool-II
-  </productname> automatically deletes all the caches related to the
-  table. Therefore, the performance will be degraded by a system with
-  a lot of updates.  If the query cache hit ratio (it can be checked
-  by using <xref linkend="SQL-SHOW-POOL-CACHE">) is lower than 70%,
-   you might want to disable in memory cache.
+  另一方面，在某些情况下它可能比正常路径更慢，因为它增加了存储缓存的一些开销。
+  此外，当表被更新时，<productname>Pgpool-II
+  </productname> 会自动删除与该表相关的所有缓存。因此，对于有大量更新操作的系统，性能会下降。
+  如果查询缓存命中率（可以使用 <xref linkend="SQL-SHOW-POOL-CACHE"> 检查）低于 70%，
+  您可能希望禁用内存缓存。
  </para>
 
  <para>
-  A <literal>SELECT</literal> result is basically registered when
-  SELECT normally finishes.  If an explicit transaction is executing,
-  <literal>SELECT</literal> result is not registered until the
-  transaction is committed.  Also in extended query mode, the timing
-  of cache registration varies depending on <link
-  linkend="guc-backend-clustering-mode">clustering mode</link>.  In
-  <link linkend="runtime-config-streaming-replication-mode">streaming
-  replication mode</link> and <link
-  linkend="runtime-config-logical-replication-mode">logical
-  replication mode</link>, cache is registered when
-  <literal>Sync</literal> message is sent from frontend, and the
-  response (<literal>Ready for query</literal> message) is returned
-  from backend.  Thus even if commands are sent from frontend, the
-  second Execute (SELECT 1) will not use query cache.
-  <programlisting>
-   Parse (SELECT 1)
-   Bind (SELECT 1)
-   Execute (SELECT 1)
-   Parse (SELECT 1)
-   Bind (SELECT 1)
-   Execute (SELECT 1)
-   Sync
-  </programlisting>
+  <literal>SELECT</literal> 结果在 SELECT 正常完成时基本会被注册。
+  如果正在执行显式事务，则 <literal>SELECT</literal> 结果会等到事务提交后才注册。
+  此外，在扩展查询模式下，缓存注册的时机因 <link
+  linkend="guc-backend-clustering-mode">集群模式</link> 而异。
+  在 <link linkend="runtime-config-streaming-replication-mode">流复制模式</link> 和 <link
+  linkend="runtime-config-logical-replication-mode">逻辑复制模式</link> 中，
+  当从前端发送 <literal>Sync</literal> 消息时注册缓存，并从后端返回响应（<literal>Ready for query</literal> 消息）。
+  因此，即使从前端发送命令，第二次 Execute（SELECT 1）也不会使用查询缓存。
+   <programlisting>
+    Parse (SELECT 1)
+    Bind (SELECT 1)
+    Execute (SELECT 1)
+    Parse (SELECT 1)
+    Bind (SELECT 1)
+    Execute (SELECT 1)
+    Sync
+   </programlisting>
 
-  On the other hand, in other clustering mode, since the result of
-  first Execute (SELECT 1) is registered, the second Execute (SELECT
-  1) will use the query cache.
+   另一方面，在其他集群模式中，由于第一次 Execute（SELECT 1）的结果已被注册，
+   因此第二次 Execute（SELECT 1）会使用查询缓存。
  </para>
 
  <sect2 id="runtime-in-memory-query-cache-enabling">
-  <title>Enabling in memory query cache</title>
+  <title>启用内存查询缓存</title>
 
   <variablelist>
 
    <varlistentry id="guc-memory-cache-enabled" xreflabel="memory_cache_enabled">
     <term><varname>memory_cache_enabled</varname> (<type>boolean</type>)
      <indexterm>
-      <primary><varname>memory_cache_enabled</varname> configuration parameter</primary>
+      <primary><varname>memory_cache_enabled</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Setting to on enables the memory cache.
-      Default is off.
+      设置为 on 启用内存缓存。
+      默认为 off。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
 
      <note>
       <para>
-       The query cache will also be used by shared relation cache if
-       <xref linkend="guc-enable-shared-relcache"> is set to on. Moreover the
-       query cache is used even if <xref linkend="guc-memory-cache-enabled">
-       parameter is set to off. See <xref linkend="runtime-misc"> for more details to relation cache.
+       如果 <xref linkend="guc-enable-shared-relcache"> 设置为 on，则共享关系缓存也会使用查询缓存。
+       此外，即使 <xref linkend="guc-memory-cache-enabled">
+       参数设置为 off，查询缓存仍会被使用。有关关系缓存的更多详细信息，请参阅 <xref linkend="runtime-misc">。
       </para>
      </note>
     </listitem>
@@ -187,41 +154,41 @@
  </sect2>
 
  <sect2 id="runtime-in-memory-query-cache-choose-storage">
-  <title>Choosing cache storage</title>
+  <title>选择缓存存储</title>
 
   <variablelist>
 
    <varlistentry id="guc-memqcache-method" xreflabel="memqcache_method">
     <term><varname>memqcache_method</varname> (<type>enum</type>)
      <indexterm>
-      <primary><varname>memqcache_method</varname> configuration parameter</primary>
+      <primary><varname>memqcache_method</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the storage type to be used for the cache.
-      Below table contains the list of all valid values for the parameter.
+      指定用于缓存的存储类型。
+      下表包含该参数的所有有效值列表。
      </para>
 
      <table id="memqcache-method-table">
-      <title>Memqcache method options</title>
+      <title>Memqcache 方法选项</title>
       <tgroup cols="2">
        <thead>
 	<row>
-	 <entry>Value</entry>
-	 <entry>Description</entry>
+	 <entry>值</entry>
+	 <entry>说明</entry>
 	</row>
        </thead>
 
        <tbody>
 	<row>
 	 <entry><literal>shmem</literal></entry>
-	 <entry>Use shared memory</entry>
+	 <entry>使用共享内存</entry>
 	</row>
 
 	<row>
 	 <entry><literal>memcached</literal></entry>
-	 <entry>Use <ulink url="http://memcached.org/">memcached</ulink></entry>
+	 <entry>使用 <ulink url="http://memcached.org/">memcached</ulink></entry>
 	</row>
 
        </tbody>
@@ -229,27 +196,22 @@
      </table>
 
      <para>
-      In general <varname>shmem</varname> is faster
-      than <varname>memcached</varname> because the former does not
-      involve any network access. However, the upper limit size of
-      <varname>memqcache_total_size</varname> is limited by the total
-      shared memory size defined by the system. The size is large
-      enough in modern Linux systems, but in other systems there maybe
-      smaller upper limit. In this case you need to change the system
-      settings regarding the maximum shared memory size. There's a
-      good explanation about shared memory
-      in <ulink url="https://www.postgresql.org/docs/current/kernel-resources.html#SYSVIPC"><productname>PostgreSQL</productname>
-      documentation</ulink>.
+      一般而言，<varname>shmem</varname> 比 <varname>memcached</varname> 更快，
+      因为前者不涉及任何网络访问。但是，<varname>memqcache_total_size</varname> 的上限受系统定义的总共享内存大小的限制。
+      在现代 Linux 系统中该大小足够大，但在其他系统中可能存在较小的上限。
+      在这种情况下，您需要更改关于最大共享内存大小的系统设置。
+      <ulink url="https://www.postgresql.org/docs/current/kernel-resources.html#SYSVIPC"><productname>PostgreSQL</productname>
+      文档</ulink>中有关于共享内存的良好说明。
      </para>
      <para>
-      If you are not sure which memqcache_method to be used, start with <varname>shmem</varname>.
+      如果您不确定使用哪个 memqcache_method，请从 <varname>shmem</varname> 开始。
      </para>
      <para>
-      Default is <literal>shmem</literal>.
+      默认为 <literal>shmem</literal>。
      </para>
 
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -257,33 +219,31 @@
  </sect2>
 
  <sect2 id="runtime-in-memory-query-cache-config">
-  <title>Common configurations</title>
+  <title>通用配置</title>
   <para>
-   These below parameter are valid for both <literal>shmem</literal>
-   and <literal>memcached</literal> type query cache.
+   以下参数对 <literal>shmem</literal> 和 <literal>memcached</literal> 类型的查询缓存均有效。
   </para>
   <variablelist>
 
    <varlistentry id="guc-memqcacheexpire" xreflabel="memqcache_expire">
     <term><varname>memqcache_expire</varname> (<type>integer</type>)
      <indexterm>
-      <primary><varname>memqcache_expire</varname> configuration parameter</primary>
+      <primary><varname>memqcache_expire</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the life time of query cache in seconds.
-      Default is 0. which means no cache expiration and cache remains
-      valid until the table is updated.
+      指定查询缓存的生存时间（以秒为单位）。
+      默认为 0，表示不缓存过期，缓存保持有效直到表被更新。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
 
      <note>
       <para>
-       <varname>memqcache_expire</varname> and
-       <xref linkend="guc-memqcache-auto-cache-invalidation"> are orthogonal to each other.
+       <varname>memqcache_expire</varname> 和
+       <xref linkend="guc-memqcache-auto-cache-invalidation"> 两者相互独立。
       </para>
      </note>
 
@@ -293,25 +253,25 @@
    <varlistentry id="guc-memqcache-auto-cache-invalidation" xreflabel="memqcache_auto_cache_invalidation">
     <term><varname>memqcache_auto_cache_invalidation</varname> (<type>boolean</type>)
      <indexterm>
-      <primary><varname>memqcache_auto_cache_invalidation</varname> configuration parameter</primary>
+      <primary><varname>memqcache_auto_cache_invalidation</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Setting to on, automatically deletes the cache related to the updated tables.
-      When off, cache is not deleted.
+      设置为 on 时，自动删除与已更新表相关的缓存。
+      设置为 off 时，不删除缓存。
      </para>
      <para>
-      Default is on.
+      默认为 on。
      </para>
      <note>
       <para>
-       This parameters <xref linkend="guc-memqcache-auto-cache-invalidation">
-	and <xref linkend="guc-memqcacheexpire"> are orthogonal to each other.
+       此参数 <xref linkend="guc-memqcache-auto-cache-invalidation">
+       和 <xref linkend="guc-memqcacheexpire"> 两者相互独立。
       </para>
      </note>
      <para>
-      This parameter can be changed by reloading the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置进行更改。
      </para>
     </listitem>
    </varlistentry>
@@ -319,30 +279,29 @@
    <varlistentry id="guc-memqcache-maxcache" xreflabel="memqcache_maxcache">
     <term><varname>memqcache_maxcache</varname> (<type>integer</type>)
      <indexterm>
-      <primary><varname>memqcache_maxcache</varname> configuration parameter</primary>
+      <primary><varname>memqcache_maxcache</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the maximum size in bytes of the SELECT query result to be cached.
-      The result with data size larger than this value will not be cached by
-      <productname>Pgpool-II</productname>.
-      When the caching of data is rejected because of the size constraint the following
-      message is shown.
+      指定要缓存的 SELECT 查询结果的最大字节数。
+      数据大小大于此值的查询结果不会被
+      <productname>Pgpool-II</productname> 缓存。
+      当由于大小约束而拒绝缓存数据时，会显示以下消息。
       <programlisting>
        LOG:   pid 13756: pool_add_temp_query_cache: data size exceeds memqcache_maxcache. current:4095 requested:111 memq_maxcache:4096
       </programlisting>
      </para>
      <note>
       <para>
-       For the shared memory query(<literal>'shmem'</literal>) cache the
-       <varname>memqcache_maxcache</varname> must be set lower than
-       <xref linkend="guc-memqcache-cache-block-size"> and for <literal>'memcached'</literal>
-	it must be lower than the size of slab (default is 1 MB).
+       对于共享内存查询(<literal>'shmem'</literal>)缓存，
+       <varname>memqcache_maxcache</varname> 必须设置为低于
+       <xref linkend="guc-memqcache-cache-block-size">，而对于 <literal>'memcached'</literal>
+       必须低于 slab 的大小（默认为 1 MB）。
       </para>
      </note>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -350,44 +309,41 @@
    <varlistentry id="guc-cache-safe-memqcache-table-list" xreflabel="cache_safe_memqcache_table_list">
     <term><varname>cache_safe_memqcache_table_list</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>cache_safe_memqcache_table_list</varname> configuration parameter</primary>
+      <primary><varname>cache_safe_memqcache_table_list</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
 
      <para>
-      Specifies a comma separated list of table names whose
-      SELECT results should be cached by
-      <productname>Pgpool-II</productname>.  This parameter only
-      applies to VIEWs and SELECTs accessing unlogged tables.
-      Regular tables can be cached unless specified
-      by <xref linkend="guc-cache-unsafe-memqcache-table-list">.
+      指定一个逗号分隔的表名列表，其 SELECT 结果应被
+      <productname>Pgpool-II</productname> 缓存。此参数仅
+      适用于 VIEW 和访问未登录表的 SELECT。
+      除非由 <xref linkend="guc-cache-unsafe-memqcache-table-list"> 指定，否则常规表可以被缓存。
      </para>
 
      <para>
-      You can use regular expression into the list to match table name
-      (to which ^ and $ are automatically added).
+      您可以在列表中使用正则表达式来匹配表名
+      （^ 和 $ 会自动添加到表名两端）。
      </para>
 
      <note>
       <para>
-       If the queries can refer the table with and without the schema
-       qualification then you must add both entries(with and without
-       schema name) in the list.
+       如果查询可以使用带模式限定符和不带模式限定符的方式引用该表，
+       则您必须在列表中同时添加两个条目（带模式名和不带模式名）。
        <programlisting>
-	#For example:
-	#If the queries sometime use "table1" and other times "public.table1"
-	#to refer the table1 then the cache_safe_memqcache_table_list
-	#would be configured as follows.
+        #例如：
+        #如果查询有时使用 "table1"，有时使用 "public.table1"
+        #来引用 table1，则 cache_safe_memqcache_table_list
+        #应配置如下。
 
-	cache_safe_memqcache_table_list = "table1,public.table1"
+        cache_safe_memqcache_table_list = "table1,public.table1"
 
        </programlisting>
 
       </para>
      </note>
      <para>
-      This parameter can be changed by reloading the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置进行更改。
      </para>
     </listitem>
    </varlistentry>
@@ -395,45 +351,44 @@
    <varlistentry id="guc-cache-unsafe-memqcache-table-list" xreflabel="cache_unsafe_memqcache_table_list">
     <term><varname>cache_unsafe_memqcache_table_list</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>cache_unsafe_memqcache_table_list</varname> configuration parameter</primary>
+      <primary><varname>cache_unsafe_memqcache_table_list</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies a comma separated list of table names whose SELECT
-      results should <emphasis>NOT</emphasis> be cached by the <productname>
-       Pgpool-II</productname>.
+      指定一个逗号分隔的表名列表，其 SELECT
+      结果<emphasis>不应</emphasis>被 <productname>
+       Pgpool-II</productname> 缓存。
      </para>
 
      <para>
-      You can use regular expression into the list to match table name
-      (to which ^ and $ are automatically added),
+      您可以在列表中使用正则表达式来匹配表名
+      （^ 和 $ 会自动添加到表名两端），
      </para>
 
      <note>
       <para>
-       If the queries can refer the table with and without the schema
-       qualification then you must add both entries(with and without
-       schema name) in the list.
+       如果查询可以使用带模式限定符和不带模式限定符的方式引用该表，
+       则您必须在列表中同时添加两个条目（带模式名和不带模式名）。
        <programlisting>
-	#For example:
-	#If the queries sometime use "table1" and other times "public.table1"
-	#to refer the table1 then the cache_unsafe_memqcache_table_list
-	#would be configured as follows.
+        #例如：
+        #如果查询有时使用 "table1"，有时使用 "public.table1"
+        #来引用 table1，则 cache_unsafe_memqcache_table_list
+        #应配置如下。
 
-	cache_unsafe_memqcache_table_list = "table1,public.table1"
+        cache_unsafe_memqcache_table_list = "table1,public.table1"
 
        </programlisting>
 
       </para>
      </note>
      <para>
-      This parameter can be changed by reloading the <productname>Pgpool-II</productname> configurations.
+      此参数可以通过重新加载 <productname>Pgpool-II</productname> 配置进行更改。
      </para>
      <note>
       <para>
        <varname>cache_unsafe_memqcache_table_list</varname>
-       precedence over <xref linkend="guc-cache-safe-memqcache-table-list">
+       优先级高于 <xref linkend="guc-cache-safe-memqcache-table-list">
       </para>
      </note>
 
@@ -443,30 +398,27 @@
    <varlistentry id="guc-memqcache-oiddir" xreflabel="memqcache_oiddir">
     <term><varname>memqcache_oiddir</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>memqcache_oiddir</varname> configuration parameter</primary>
+      <primary><varname>memqcache_oiddir</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the full path to the directory for storing the
-      <literal>oids</literal> of tables used by SELECT queries.
+      指定用于存储 SELECT 查询所用表的 <literal>oids</literal> 的完整目录路径。
      </para>
      <para>
-      <varname>memqcache_oiddir</varname> directory contains the sub directories
-      for the databases. The directory name is the OID of the database. In addition, each
-      database directory contains the files for each table used by SELECT statement.
-      Again the name of the file is the OID of the table.
-      These files contains the pointers to query cache which are used as key for
-      deleting the caches.
+      <varname>memqcache_oiddir</varname> 目录包含数据库的子目录。目录名称是数据库的 OID。
+      此外，每个数据库目录包含 SELECT 语句所用表的文件。
+      同样，文件名是表的 OID。
+      这些文件包含指向查询缓存的指针，用于作为删除缓存的键。
      </para>
      <note>
       <para>
-       Normal restart of <productname>Pgpool-II</productname> does not clear the
-       contents of <varname>memqcache_oiddir</varname>.
+       <productname>Pgpool-II</productname> 的正常重启不会清除
+       <varname>memqcache_oiddir</varname> 的内容。
       </para>
      </note>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -475,10 +427,10 @@
  </sect2>
 
  <sect2 id="runtime-in-memory-query-cache-shmem-config">
-  <title>Configurations to use shared memory</title>
+  <title>使用共享内存的配置</title>
 
   <para>
-   These are the parameters used with shared memory as the cache storage.
+   这些是将以共享内存作为缓存存储的参数。
   </para>
 
   <variablelist>
@@ -486,43 +438,33 @@
    <varlistentry id="guc-memqcache-total-size" xreflabel="memqcache_total_size">
     <term><varname>memqcache_total_size</varname> (<type>integer</type>)
      <indexterm>
-      <primary><varname>memqcache_total_size</varname> configuration parameter</primary>
+      <primary><varname>memqcache_total_size</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the shared memory cache size.
-      The default is 64MB.
+      指定共享内存缓存大小。
+      默认为 64MB。
      </para>
      <para>
-      Each cache is stored in fixed-size blocks specified
-      by <xref linkend="guc-memqcache-cache-block-size">.  The number
-      of blocks can be calculated
-      by <xref linkend="guc-memqcache-total-size">
-      / <xref linkend="guc-memqcache-cache-block-size">. Any decimal
-      places are truncated so that the number of blocks is an
-      integer. If the number becomes 0, an error is raised. That
-      is, <varname>memqcache_total_size</varname> must be greater
-      than <xref linkend="guc-memqcache-cache-block-size">.  Query
-      results and their management data are not stored across multiple
-      blocks, so if the query result data length + 64 bytes is greater
-      than <xref linkend="guc-memqcache-cache-block-size">, it cannot
-      be stored in a block and will not be cached.
+      每个缓存存储在由 <xref linkend="guc-memqcache-cache-block-size"> 指定的固定大小块中。
+      块的数量可以通过 <xref linkend="guc-memqcache-total-size">
+      / <xref linkend="guc-memqcache-cache-block-size"> 计算。任何小数部分都会被截断，以使块数为整数。
+      如果结果为 0，则会引发错误。即，<varname>memqcache_total_size</varname> 必须大于
+      <xref linkend="guc-memqcache-cache-block-size">。
+      查询结果及其管理数据不能跨多个块存储，因此如果查询结果数据长度 + 64 字节大于
+      <xref linkend="guc-memqcache-cache-block-size">，则无法存储在块中，也不会被缓存。
      </para>
      <para>
-      When one block is filled with cache, the next block is used.
-      When all blocks are full, the oldest block is flushed and reused
-      (Note that the oldest block does not necessarily holds the
-      oldest cache data because new cache data is registered whenever
-      the first fitting space is found). While
-      smaller <varname>memqcache_total_size</varname> does not raise
-      an error, performance decreases because the cache hit ratio
-      decreases. The cache hit ratio can be checked by
-      consulting <structname>cache_hit_ratio</structname>
-      of <xref linkend="SQL-SHOW-POOL-CACHE">.
+      当一个块被缓存填满后，使用下一个块。
+      当所有块都满了，最旧的块会被刷新并重用
+      （请注意，最旧的块不一定包含最旧的缓存数据，因为每次找到第一个合适的空间时就会注册新的缓存数据）。
+      虽然较小的 <varname>memqcache_total_size</varname> 不会引发错误，但由于缓存命中率降低，性能会下降。
+      缓存命中率可以通过查阅 <xref linkend="SQL-SHOW-POOL-CACHE"> 的
+      <structname>cache_hit_ratio</structname> 来检查。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -530,42 +472,36 @@
    <varlistentry id="guc-memqcache-max-num-cache" xreflabel="memqcache_max_num_cache">
     <term><varname>memqcache_max_num_cache</varname> (<type>integer</type>)
      <indexterm>
-      <primary><varname>memqcache_max_num_cache</varname> configuration parameter</primary>
+      <primary><varname>memqcache_max_num_cache</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the number of cache entries. The default is 1,000,000.
+      指定缓存条目的数量。默认为 1,000,000。
      </para>
      <para>
-      If you attempt to register more
-      than <varname>memqcache_max_num_cache</varname> caches, a block
-      containing cached data is flushed and reused.  While
-      smaller <varname>memqcache_max_num_cache</varname> does not
-      raise an error, performance decreases because the cache hit
-      ratio decreases. The cache hit ratio can be checked by
-      consulting <structname>cache_hit_ratio</structname>
-      of <xref linkend="SQL-SHOW-POOL-CACHE">.
+      如果您尝试注册超过 <varname>memqcache_max_num_cache</varname> 个缓存，
+      包含缓存数据的块会被刷新并重用。
+      虽然较小的 <varname>memqcache_max_num_cache</varname> 不会引发错误，但由于缓存命中率降低，性能会下降。
+      缓存命中率可以通过查阅 <xref linkend="SQL-SHOW-POOL-CACHE"> 的
+      <structname>cache_hit_ratio</structname> 来检查。
      </para>
      <note>
       <para>
-       The cache is managed by a hash table in shared memory for fast
-       access.  The hash table space size can be calculated by:
-       <varname>memqcache_max_num_cache</varname> * 64 bytes.  Number
-       of hash entries can be found
-       in <structname>used_hash_entries</structname>
-       of <xref linkend="SQL-SHOW-POOL-CACHE">.  Number of the hash
-       table entries usually
-       matches <varname>memqcache_max_num_cache</varname>, but may not
-       match if <varname>memqcache_max_num_cache</varname> is not a
-       power of 2. In this case it is rounded to a power of 2 greater
-       than <varname>memqcache_max_num_cache</varname>.  Number of
-       hash entries in use can be found
-       at <structname>used_hash_entries</structname>.
+       缓存通过共享内存中的哈希表进行管理以实现快速访问。
+       哈希表空间大小可以计算为：
+       <varname>memqcache_max_num_cache</varname> * 64 字节。
+       哈希条目数量可以在 <xref linkend="SQL-SHOW-POOL-CACHE"> 的
+       <structname>used_hash_entries</structname> 中找到。
+       哈希表条目数量通常与 <varname>memqcache_max_num_cache</varname> 匹配，
+       但如果 <varname>memqcache_max_num_cache</varname> 不是 2 的幂，则可能不匹配。
+       在这种情况下，会向上舍入到大于 <varname>memqcache_max_num_cache</varname> 的 2 的幂。
+       正在使用的哈希条目数量可以在
+       <structname>used_hash_entries</structname> 中查找。
       </para>
      </note>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -573,25 +509,24 @@
    <varlistentry id="guc-memqcache-cache-block-size" xreflabel="memqcache_cache_block_size">
     <term><varname>memqcache_cache_block_size</varname> (<type>integer</type>)
      <indexterm>
-      <primary><varname>memqcache_cache_block_size</varname> configuration parameter</primary>
+      <primary><varname>memqcache_cache_block_size</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the cache block size.
-      The default is 1MB.
+      指定缓存块大小。
+      默认为 1MB。
      </para>
      <para>
-      Query results and their management data are not stored across
-      multiple blocks, so if the query result data length + 64 bytes
-      is greater than <xref linkend="guc-memqcache-cache-block-size">,
-      it cannot be stored in a block and will not be cached.
+      查询结果及其管理数据不能跨多个块存储，因此如果查询结果数据长度 + 64 字节
+      大于 <xref linkend="guc-memqcache-cache-block-size">，
+      则无法存储在块中，也不会被缓存。
      </para>
      <para>
-      <varname>memqcache_cache_block_size</varname> must be set to at least 512.
+      <varname>memqcache_cache_block_size</varname> 必须设置为至少 512。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -600,10 +535,10 @@
  </sect2>
 
  <sect2 id="runtime-in-memory-query-cache-memcached-config">
-  <title>Configurations to use memcached</title>
+  <title>使用 memcached 的配置</title>
 
   <para>
-   These are the parameters used with memcached as the cache storage.
+   这些是将以 memcached 作为缓存存储的参数。
   </para>
 
   <variablelist>
@@ -611,17 +546,17 @@
    <varlistentry id="guc-memqcache-memcached-host" xreflabel="memqcache_memcached_host">
     <term><varname>memqcache_memcached_host</varname> (<type>string</type>)
      <indexterm>
-      <primary><varname>memqcache_memcached_host</varname> configuration parameter</primary>
+      <primary><varname>memqcache_memcached_host</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the host name or the IP address on which <literal>memcached</literal>
-      works. You can use <literal>'localhost'</literal> if <literal>memcached</literal>
-      and <productname>Pgpool-II</productname> resides on same server.
+      指定 <literal>memcached</literal> 运行的主机名或 IP 地址。
+      如果 <literal>memcached</literal> 和 <productname>Pgpool-II</productname> 位于同一台服务器上，
+      可以使用 <literal>'localhost'</literal>。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>
@@ -629,16 +564,16 @@
    <varlistentry id="guc-memqcache-memcached-port" xreflabel="memqcache_memcached_port">
     <term><varname>memqcache_memcached_port</varname> (<type>integer</type>)
      <indexterm>
-      <primary><varname>memqcache_memcached_port</varname> configuration parameter</primary>
+      <primary><varname>memqcache_memcached_port</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      Specifies the port number of <acronym>memcached</acronym>.
-      Default is 11211.
+      指定 <acronym>memcached</acronym> 的端口号。
+      默认为 11211。
      </para>
      <para>
-      This parameter can only be set at server start.
+      此参数只能在服务器启动时设置。
      </para>
     </listitem>
    </varlistentry>

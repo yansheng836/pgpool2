@@ -1,6 +1,6 @@
 <!--
 doc/src/sgml/ref/pgpool_adm_pcp_attach_node.sgml
-Pgpool-II documentation
+Pgpool-II 文档
 -->
 
 <refentry id="PGPOOL-ADM-PCP-ATTACH-NODE">
@@ -11,13 +11,13 @@ Pgpool-II documentation
  <refmeta>
   <refentrytitle>pgpool_adm_pcp_attach_node</refentrytitle>
   <manvolnum>3</manvolnum>
-  <refmiscinfo>pgpool_adm extension</refmiscinfo>
+  <refmiscinfo>pgpool_adm 扩展</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>pgpool_adm_pcp_attach_node</refname>
   <refpurpose>
-   a function to attach given node	ID</refpurpose>
+   用于附加指定节点 ID 的函数</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -43,15 +43,15 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R3-PCP-ATTACH-NODE-3">
-  <title>Description</title>
+  <title>描述</title>
   <para>
-   <function>pcp_attach_node</function> attaches a node
-   to <productname>Pgpool-II</productname>.
+   <function>pcp_attach_node</function> 将节点附加
+   到 <productname>Pgpool-II</productname>。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Arguments</title>
+  <title>参数</title>
   <para>
    <variablelist>
 
@@ -59,7 +59,7 @@ Pgpool-II documentation
      <term><replaceable class="parameter">node_id</replaceable></term>
      <listitem>
       <para>
-       The index of backend node to attach.
+       要附加的后端节点的索引。
       </para>
      </listitem>
     </varlistentry>
@@ -68,16 +68,16 @@ Pgpool-II documentation
      <term><replaceable class="parameter">pcp_server</replaceable></term>
      <listitem>
       <para>
-       The foreign server name for pcp server.
+       pcp 服务器的外部服务器名称。
       </para>
      </listitem>
     </varlistentry>
 
     <varlistentry>
-     <term><option>Other arguments </option></term>
+     <term><option>其他参数</option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
@@ -86,9 +86,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个输出示例：
    <programlisting>
     test=# SELECT * FROM pcp_attach_node(node_id => 1, host => 'localhost', port => 11001, username => 't-ishii', password => 't-ishii');
     node_attached

@@ -1,16 +1,16 @@
 <!-- doc/src/sgml/release-3.2.sgml -->
-<!-- See header comment in release.sgml about typical markup -->
+<!-- 关于典型标记的说明，请参见 release.sgml 的文件头注释 -->
 
 <sect1 id="release-3-2-22">
- <title>Release 3.2.22</title>
+ <title>版本 3.2.22</title>
 
  <note>
-  <title>Release Date</title>
+  <title>发布日期</title>
   <simpara>2017-09-05</simpara>
  </note>
 
  <sect2>
-  <title>Bug fixes</title>
+  <title>Bug 修复</title>
   <itemizedlist>
 
    <listitem>
@@ -18,7 +18,7 @@
     2017-08-24 [cb4d863]
     -->
     <para>
-     Doc: Fix documentation about load-balancing. (Yugo Nagata)
+     文档: 修复关于负载均衡的文档。(Yugo Nagata)
     </para>
     <para>
 
@@ -30,15 +30,14 @@
     2017-08-15 [2cd5bd3]
     -->
     <para>
-     Fix ancient bug of <function>pool_unread()</function>. (Tatsuo Ishii)
+     修复 <function>pool_unread()</function> 的古老 bug。(Tatsuo Ishii)
     </para>
     <para>
-     When <function>realloc()</function> is called in <function>pool_unread()</function>, it did not update the
-     buffer size.  This could cause variety of memory corruption and
-     unexpected data reading from backend. The reason why we did not found
-     that is, probably recently <productname>Pgpool-II</productname> starts extensively to use
-     <function>pool_unread()</function>.
-
+     当在 <function>pool_unread()</function> 中调用 <function>realloc()</function> 时，它没有更新
+     缓冲区大小。这可能导致各种内存损坏和
+     从后端读取意外数据。我们之前没有发现这个问题的
+     原因可能是最近 <productname>Pgpool-II</productname> 开始大量使用
+     <function>pool_unread()</function>。
     </para>
    </listitem>
 
@@ -47,10 +46,10 @@
     2017-08-03 [3f9806b]
     -->
     <para>
-     Fix for when failover is triggered by worker process, it is possible that wrong DB node could failover. (<ulink url="http://www.pgpool.net/mantisbt/view.php?id=303">bug 303</ulink>) (Tatsuo Ishii)
+     修复当由工作进程触发故障转移时，可能错误地对错误的 DB 节点进行故障转移的问题。(<ulink url="http://www.pgpool.net/mantisbt/view.php?id=303">bug 303</ulink>) (Tatsuo Ishii)
     </para>
     <para>
-     This is due to the db_node_id member in the <varname>POLL_CONNECTION</varname> structure is not initialized in the process (in child process the member is properly initialized). To solve the problem, add new function <function>pool_set_db_node_id()</function> to set the structure member variable and call it inside <function>make_persistent_db_connection()</function>.
+     这是由于 <varname>POLL_CONNECTION</varname> 结构中的 db_node_id 成员在进程中没有被初始化（在子进程中该成员被正确初始化）。为了解决这个问题，新增了 <function>pool_set_db_node_id()</function> 函数来设置结构体成员变量，并在 <function>make_persistent_db_connection()</function> 内部调用它。
     </para>
    </listitem>
 
@@ -59,7 +58,7 @@
     2017-07-31 [ea6ea69]
     -->
     <para>
-     Fix starting unnecessary transaction when <command>SET</command> command is issued. (Tatsuo Ishii)
+     修复发出 <command>SET</command> 命令时启动不必要事务的问题。(Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -68,7 +67,7 @@
     2017-07-27 [576312c]
     -->
     <para>
-     Fix for <ulink url="http://www.pgpool.net/pipermail/pgpool-general/2017-July/005679.html">[pgpool-general: 5621]</ulink> <function>Failover()</function> function should be executed with health check alarm disabled. (Muhammad Usama)
+     修复 <ulink url="http://www.pgpool.net/pipermail/pgpool-general/2017-July/005679.html">[pgpool-general: 5621]</ulink> 中描述的问题：<function>Failover()</function> 函数应在禁用健康检查警报的情况下执行。(Muhammad Usama)
     </para>
    </listitem>
 
@@ -77,15 +76,15 @@
 </sect1>
 
 <sect1 id="release-3-2-21">
- <title>Release 3.2.21</title>
+ <title>版本 3.2.21</title>
 
  <note>
-  <title>Release Date</title>
+  <title>发布日期</title>
   <simpara>2017-07-11</simpara>
  </note>
 
  <sect2>
-  <title>Bug fixes</title>
+  <title>Bug 修复</title>
 
   <itemizedlist>
    <listitem>
@@ -93,7 +92,7 @@
     2017-06-24 [242e87a]
     -->
     <para>
-     Fixing  <ulink url="http://www.sraoss.jp/pipermail/pgpool-hackers/2017-June/002390.html">[pgpool-hackers: 2390]</ulink>Problems with the relative paths in daemon mode (Muhammad Usama)
+     修复 <ulink url="http://www.sraoss.jp/pipermail/pgpool-hackers/2017-June/002390.html">[pgpool-hackers: 2390]</ulink> 中描述的守护进程模式下相对路径的问题 (Muhammad Usama)
     </para>
    </listitem>
 
@@ -102,7 +101,7 @@
     2017-06-19 [11b0808]
     -->
     <para>
-     Adjust function name change in <productname>PostgreSQL</productname> 10 dev head. (Tatsuo Ishii)
+     调整 <productname>PostgreSQL</productname> 10 开发版中的函数名称变更。(Tatsuo Ishii)
     </para>
     <programlisting>
      pg_current_wal_location     -> pg_current_wal_lsn
@@ -115,10 +114,10 @@
     2017-05-31 [69f486f]
     -->
     <para>
-     Fix query cache hang when used by node.js. (Tatsuo Ishii)
+     修复由 node.js 使用时查询缓存挂起的问题。(Tatsuo Ishii)
     </para>
     <para>
-     See <ulink url="http://www.pgpool.net/pipermail/pgpool-general/2017-May/005569.html">[pgpool-general: 5511]</ulink> for more details.
+     更多详情请参见 <ulink url="http://www.pgpool.net/pipermail/pgpool-general/2017-May/005569.html">[pgpool-general: 5511]</ulink>。
     </para>
    </listitem>
 
@@ -127,7 +126,7 @@
     2017-05-29 [487bf5e]
     -->
     <para>
-     Deal with <productname>PostgreSQL</productname> 10 in streaming replication delay checking. (Tatsuo Ishii)
+     处理流复制延迟检查中的 <productname>PostgreSQL</productname> 10 兼容性问题。(Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -136,12 +135,12 @@
     2017-05-27 [378f61d]
     -->
     <para>
-     Fix query cache memory leak. (Tatsuo Ishii)
+     修复查询缓存内存泄漏。(Tatsuo Ishii)
     </para>
     <para>
-     Clearing cache buffers in case of no oid queries (like <command>BEGIN</command>,
-     <command>CHECKPOINT</command>, <command>VACUUM</command>, etc) should have been done, but it did not.
-     Fix query cache memory leak. (Tatsuo Ishii)
+     清理无 oid 查询（如 <command>BEGIN</command>、
+     <command>CHECKPOINT</command>、<command>VACUUM</command> 等）的缓存缓冲区本应完成，但实际没有完成。
+     修复查询缓存内存泄漏。(Tatsuo Ishii)
     </para>
    </listitem>
   </itemizedlist>
@@ -149,15 +148,15 @@
 </sect1>
 
 <sect1 id="release-3-2-20">
- <title>Release 3.2.20</title>
+ <title>版本 3.2.20</title>
 
  <note>
-  <title>Release Date</title>
+  <title>发布日期</title>
   <simpara>2017-04-28</simpara>
  </note>
 
  <sect2>
-  <title>Bug fixes</title>
+  <title>Bug 修复</title>
 
   <itemizedlist>
    <listitem>
@@ -166,7 +165,7 @@
     -->
     <para>
 
-     Fix for 0000299: Errors on the reloading of configuration.
+     修复 0000299: 重新加载配置时的错误。
      <ulink url="http://www.pgpool.net/mantisbt/view.php?id=299">(Bug 299)</ulink> (Muhammad Usama)
     </para>
    </listitem>
@@ -178,15 +177,15 @@
 </sect1>
 
 <sect1 id="release-3-2-19">
- <title>Release 3.2.19</title>
+ <title>版本 3.2.19</title>
 
  <note>
-  <title>Release Date</title>
+  <title>发布日期</title>
   <simpara>2017-03-17</simpara>
  </note>
 
  <sect2>
-  <title>Bug fixes</title>
+  <title>Bug 修复</title>
 
   <itemizedlist>
 
@@ -195,11 +194,10 @@
     2017-03-09 [1ddb7f1]
     -->
     <para>
-     Fix  <link linkend="PCP-PROMOTE-NODE">pcp_promote_node</link> bug that fails promoting node 0. (Yugo Nagata)
+     修复 <link linkend="PCP-PROMOTE-NODE">pcp_promote_node</link> 的 bug，该 bug 导致无法提升节点 0。(Yugo Nagata)
     </para>
     <para>
-     The master node could not be promoted by pcp_promote_node with
-     the following error;
+     主节点无法通过 pcp_promote_node 提升，并出现以下错误：
     </para>
 
     <programlisting>
@@ -208,33 +206,24 @@
     </programlisting>
 
     <para>
-     In streaming replication mode, there is a case that Pgpool-II
-     regards the status of primary node as "standby" for some reasons,
-     for example, when pg_ctl promote is executed manually during
-     Pgpool-II is running, in which case, it seems to Pgpool-II
-     that the primary node doesn't exist.
+     在流复制模式下，存在某些情况导致 Pgpool-II
+     将主节点的状态视为"备用"节点，例如，
+     在 Pgpool-II 运行期间手动执行 pg_ctl promote 时，
+     对 Pgpool-II 而言，主节点似乎不存在。
     </para>
 
     <para>
-     This status mismatch should be fixed by pcp_promote_node, but when the node
-     is the master node (the first alive node), it fails as mentioned above.
+     这种状态不匹配本应通过 pcp_promote_node 修复，但当节点
+     是主节点（第一个存活节点）时，如上所述会失败。
     </para>
 
     <para>
-     The reason is as following. before changing the status, pcp_promote_node
-     checks if the specified node is already primary or not by comparing the
-     node id with PRIMARY_NODE_ID. However, if the primary doesn't exist from
-     Pgpool-II's view, PRIMARY_NODE_ID is set to 0, which is same as MASTER_NODE_ID.
-     Hence, when the master node is specified to be promoted, pcp_promote_node
-     is confused that this node is already primary and doesn't have to be
-     promoted, and it exits with the error.
+     原因如下：在更改状态之前，pcp_promote_node
+     通过比较节点 ID 与 PRIMARY_NODE_ID 来检查指定节点是否已经是主节点。然而，如果从 Pgpool-II 的视角来看主节点不存在，PRIMARY_NODE_ID 被设置为 0，这与 MASTER_NODE_ID 相同。因此，当指定要提升主节点时，pcp_promote_node 会误认为该节点已经是主节点而不需要提升，并以错误退出。
     </para>
 
     <para>
-     To fix this, pcp_promote_node should check the node id by using
-     REAL_PRIMARY_NODE_ID, which is set -1 when the primary doesn't exist,
-     rather than PRIMARY_NODE_ID.
-
+     为了解决这个问题，pcp_promote_node 应使用 REAL_PRIMARY_NODE_ID 来检查节点 ID，而不是 PRIMARY_NODE_ID。当主节点不存在时，REAL_PRIMARY_NODE_ID 被设置为 -1。
     </para>
    </listitem>
 
@@ -244,7 +233,7 @@
     2017-02-28 [5b4f78c]
     -->
     <para>
-     Add the latest release note link to README file.(Bo Peng)
+     将最新的发布说明链接添加到 README 文件中。(Bo Peng)
     </para>
    </listitem>
 
@@ -253,7 +242,7 @@
     2017-02-23 [7ed400b]
     -->
     <para>
-     Fix to release shared memory segments when <productname>Pgpool-II</productname>exits.
+     修复 <productname>Pgpool-II</productname> 退出时释放共享内存段的问题。
      (<ulink url="http://www.pgpool.net/mantisbt/view.php?id=272">bug 272</ulink>) (Tatsuo Ishii)
     </para>
    </listitem>
@@ -263,10 +252,10 @@
     2017-01-11 [29b61eb]
     -->
     <para>
-     Remove pool_log/pool_error calls from signal handlers. (Tatsuo Ishii)
+     从信号处理程序中移除 pool_log/pool_error 调用。(Tatsuo Ishii)
     </para>
     <para>
-     See  <ulink url="http://www.pgpool.net/pipermail/pgpool-hackers/2016-December/001950.html">[pgpool-hackers: 1950]</ulink> for details.
+     详情请参见 <ulink url="http://www.pgpool.net/pipermail/pgpool-hackers/2016-December/001950.html">[pgpool-hackers: 1950]</ulink>。
     </para>
    </listitem>
 
@@ -275,13 +264,12 @@
     2017-01-04 [8598d5a]
     -->
     <para>
-     Fix for 0000249: watchdog sometimes fails de-escalation.
+     修复 0000249: watchdog 有时无法降级的问题。
      (<ulink url="http://www.pgpool.net/mantisbt/view.php?id=249">bug 249</ulink>) (Muhammad Usama)
     </para>
 
     <para>
-     The solution is to use the <function>waitpid()</function> system call without WNOHANG option.
-
+     解决方案是使用不带 WNOHANG 选项的 <function>waitpid()</function> 系统调用。
     </para>
    </listitem>
 
@@ -290,7 +278,7 @@
     2017-01-04 [bd92a11]
     -->
     <para>
-     Fix connection_life_time broken by authentication_timeout. (Yugo Nagata)
+     修复因 authentication_timeout 导致 connection_life_time 失效的问题。(Yugo Nagata)
     </para>
    </listitem>
 
@@ -299,7 +287,7 @@
     2016-12-28 [afebadf]
     -->
     <para>
-     Fix authentication timeout that can occur right after client connections. (Yugo Nagata)
+     修复可能在客户端连接后立即发生的认证超时问题。(Yugo Nagata)
     </para>
    </listitem>
 
@@ -309,15 +297,15 @@
 
 </sect1>
 <sect1 id="release-3-2-18">
- <title>Release 3.2.18</title>
+ <title>版本 3.2.18</title>
 
  <note>
-  <title>Release Date</title>
+  <title>发布日期</title>
   <simpara>2016-12-26</simpara>
  </note>
 
  <sect2>
-  <title>Bug fixes</title>
+  <title>Bug 修复</title>
 
   <itemizedlist>
 
@@ -326,10 +314,10 @@
     2016-12-20 [888ac16]
     -->
     <para>
-     Fix occasional segfault when query cache is enabled. (Tatsuo Ishii)
+     修复启用查询缓存时偶尔出现的段错误。(Tatsuo Ishii)
     </para>
     <para>
-     Per bug 263.
+     根据 bug 263 修复。
     </para>
    </listitem>
 
@@ -338,11 +326,10 @@
     2016-10-27 [f37c592]
     -->
     <para>
-     Do not cancel a query when the query resulted in an error other than in native replication mode. (Tatsuo Ishii)
+     当查询导致错误时，不在原生复制模式之外取消查询。(Tatsuo Ishii)
     </para>
     <para>
-     It was intended to keep the consistency, but there's no point in other
-     than native replication mode.
+     本意是保持一致性，但除了原生复制模式之外，这样做没有意义。
     </para>
    </listitem>
 
@@ -351,13 +338,12 @@
     2016-09-09 [8231f65]
     -->
     <para>
-     Do not use <function>random()</function> while generating MD5 salt. (Tatsuo Ishii)
+     生成 MD5 盐值时不要使用 <function>random()</function>。(Tatsuo Ishii)
     </para>
     <para>
-     <function>random()</function> should not be used in security related applications.  To
-     replace <function>random()</function>, import <function>PostmasterRandom()</function> from PostgreSQL.  Also
-     store current time at the start up of <productname>Pgpool-II</productname> main process for later
-     use.
+     <function>random()</function> 不应在安全相关应用中使用。为了
+     替代 <function>random()</function>，从 PostgreSQL 引入了 <function>PostmasterRandom()</function>。同时
+     在 <productname>Pgpool-II</productname> 主进程启动时存储当前时间以供后续使用。
     </para>
    </listitem>
 
@@ -366,7 +352,7 @@
     2016-09-06 [891ce0f]
     -->
     <para>
-     Don't ignore sync message from frontend when query cache is enabled. (Tatsuo Ishii)
+     启用查询缓存时不要忽略来自前端的同步消息。(Tatsuo Ishii)
     </para>
    </listitem>
 
@@ -375,4 +361,3 @@
  </sect2>
 
 </sect1>
-

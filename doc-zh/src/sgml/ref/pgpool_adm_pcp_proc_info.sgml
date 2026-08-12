@@ -82,18 +82,17 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R3-PCP-PROC-INFO-3">
-  <title>Description</title>
+  <title>描述</title>
   <para>
    <function>pcp_proc_info</function>
-   displays the information
-   on <productname>Pgpool-II</productname> child process.
-   All the information is same as <xref linkend="pcp-proc-info">.
-   All the data types are "text".
+   显示 <productname>Pgpool-II</productname> 子进程的信息。
+   所有信息与 <xref linkend="pcp-proc-info"> 相同。
+   所有数据类型均为 "text"。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Arguments</title>
+  <title>参数</title>
   <para>
    <variablelist>
 
@@ -101,7 +100,7 @@ Pgpool-II documentation
      <term><replaceable class="parameter">pcp_server</replaceable></term>
      <listitem>
       <para>
-       The foreign server name for pcp server.
+       PCP 服务器的外部服务器名称。
       </para>
      </listitem>
     </varlistentry>
@@ -110,7 +109,7 @@ Pgpool-II documentation
      <term><option>Other arguments </option></term>
      <listitem>
       <para>
-       See <xref linkend="pcp-common-options">.
+       参见 <xref linkend="pcp-common-options">。
       </para>
      </listitem>
     </varlistentry>
@@ -119,23 +118,12 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   In the example below a search condition "connected" column = '1' is
-   specified, and only the information on the process connected from
-   clients. In this psql session pcp_proc_info is called in the from
-   clause, and the information is shown on row 1 and 2. The select
-   statement is sent to only backend_id = '0' (which is probably the
-   primary), and the "status" column of the row 1 is "Execute
-   command", the "statement" column shows the select statement which
-   was executed. On the other hand the "statement" column of the row 2
-   is empty, since the select statement is was not sent to backend_id
-   = '1'.
+   在下面的示例中，指定搜索条件 "connected" 列 = '1'，仅显示从客户端连接的进程信息。 在此 psql 会话中，pcp_proc_info 在 from 子句中被调用，信息显示在第 1 行和第 2 行。 SELECT 语句仅发送到 backend_id = '0'（大概为主节点），第 1 行的 "status" 列为 "Execute command"，"statement" 列显示所执行的 SELECT 语句。 另一方面，第 2 行的 "statement" 列为空，因为 SELECT 语句未发送到 backend_id = '1'。
   </para>
   <para>
-   The information on the other psql session is shown on the row 2 and
-   3.  In this example "select 1" was sent to "backend_id" = '1'
-   (probably standby).
+   其他 psql 会话的信息显示在第 2 行和第 3 行。  在本示例中，"select 1" 发送到了 "backend_id" = '1'（大概为备节点）。
    <programlisting>
 test=# select * from pcp_proc_info(host => '', port => 11001, username => 't-ishii', password => 't-ishii') where connected = '1';
 -[ RECORD 1 ]-------------+----------------------------------------------------------------------------------------------------------------------------
@@ -225,13 +213,7 @@ statement                 | select 1;
    </programlisting>
   </para>
   <para>
-   In the example below we define a function called
-   "pgpool_query_info" which shows last executed query in each pgpool
-   child process along with associated information: usernae, database,
-   client host, client port, pgpool host, pgpool port, pgpool pid,
-   backend host, backend port, backend pid, backend role and SQL
-   statement, by joining pgpool_adm_pcp_proc_info,
-   pgpool_adm_pcp_node_info and pgpool_adm_pcp_pool_status.
+   在下面的示例中，我们定义了一个名为 "pgpool_query_info" 的函数，该函数通过连接 pgpool_adm_pcp_proc_info、pgpool_adm_pcp_node_info 和 pgpool_adm_pcp_pool_status，显示每个 pgpool 子进程中最后执行的查询及其相关信息：用户名、数据库、客户端主机、客户端端口、pgpool 主机、pgpool 端口、pgpool PID、后端主机、后端端口、后端PID、后端角色和 SQL 语句。
    <programlisting>
 create function pgpool_query_info(pcp_host text, pcp_port int, pgpool_username text, password text)
 returns table (username text, database text, client_host text, client_port text,
@@ -262,8 +244,7 @@ select * from pgpool_query_info('192.168.10.11', 11001, 't-ishii', 't-ishii');
    </programlisting>
   </para>
   <para>
-   See <xref linkend="pcp-proc-info"> for more information on each
-   shown data.
+   更多关于各显示数据的信息，请参见 <xref linkend="pcp-proc-info">。
   </para>
 
  </refsect1>

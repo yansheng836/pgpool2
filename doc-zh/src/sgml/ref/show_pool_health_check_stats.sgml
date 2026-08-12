@@ -17,7 +17,7 @@
  <refnamediv>
   <refname>SHOW POOL_HEALTH_CHECK_STATS</refname>
   <refpurpose>
-   show health check statistics data
+   显示健康检查统计数据
   </refpurpose>
  </refnamediv>
 
@@ -28,32 +28,30 @@
  </refsynopsisdiv>
 
  <refsect1>
-  <title>Description</title>
+  <title>描述</title>
 
   <para>
-   <command>SHOW POOL_HEALTH_CHECK_STATS</command> displays health
-   check (see <xref linkend="runtime-config-health-check">) statistic
-   data mostly collected by health check process. This command helps
-   <productname>Pgpool-II</productname> admin to study events related
-   to health check. For example, admin can easily locate the failover
-   event in the log file by looking at "last_failed_health_check"
-   column. Another example is finding unstable connection to backend
-   by evaluating "average_retry_count" column. If particular node
-   shows higher retry count than other node, there may be problem to
-   the connection to the backend.
+   <command>SHOW POOL_HEALTH_CHECK_STATS</command> 显示健康检查
+   （参见 <xref linkend="runtime-config-health-check">）的统计数据，
+   这些数据大多由健康检查进程收集。该命令可帮助
+   <productname>Pgpool-II</productname> 管理员研究与健康检查相关的事件。
+   例如，管理员可以通过查看 "last_failed_health_check" 列轻松地在日志文件中
+   定位故障转移（failover）事件。另一个例子是通过评估 "average_retry_count"
+   列来发现与后端之间不稳定的连接。如果某个节点显示的
+   重试次数高于其他节点，则可能与后端的连接存在问题。
   </para>
 
   <para>
-   <xref linkend="health-check-stats-data-table"> shows each column name and its description.
+   <xref linkend="health-check-stats-data-table"> 显示了每个列名及其描述。
   </para>
 
   <table id="health-check-stats-data-table">
-   <title>Statistics data shown by pool_health_check_stats command</title>
+   <title>pool_health_check_stats 命令显示的统计数据</title>
    <tgroup cols="2">
     <thead>
      <row>
-      <entry>Column Name</entry>
-      <entry>Description</entry>
+      <entry>列名</entry>
+      <entry>描述</entry>
      </row>
     </thead>
 
@@ -62,158 +60,153 @@
      <row>
       <entry>node_id</entry>
       <entry>
-       Backend node id.
+       后端节点 ID。
       </entry>
      </row>
 
      <row>
       <entry>hostname</entry>
       <entry>
-       Backend hostname or UNIX domain socket path.
+       后端主机名或 UNIX 域套接字路径。
       </entry>
      </row>
 
      <row>
       <entry>port</entry>
       <entry>
-       Backend port number.
+       后端端口号。
       </entry>
      </row>
 
      <row>
       <entry>status</entry>
       <entry>
-       Backend status. One of up, down, waiting, unused or quarantine.
+       后端状态。取值为 up、down、waiting、unused 或 quarantine 之一。
       </entry>
      </row>
 
      <row>
       <entry>role</entry>
       <entry>
-       Role of the node. Either primary or standby in streaming
-       replication mode. Either main or replica in other mode.
+       节点的角色。在流复制模式下为 primary 或 standby。
+       在其他模式下为 main 或 replica。
       </entry>
      </row>
 
      <row>
       <entry>last_status_change</entry>
       <entry>
-       Timestamp of last backend status changed.
+       上次后端状态变更的时间戳。
       </entry>
      </row>
 
      <row>
       <entry>total_count</entry>
       <entry>
-       Number of health check count in total.
+       健康检查的总次数。
       </entry>
      </row>
 
      <row>
       <entry>success_count</entry>
       <entry>
-       Number of successful health check count in total.
+       健康检查成功的总次数。
       </entry>
      </row>
 
      <row>
       <entry>fail_count</entry>
       <entry>
-       Number of failed health check count in total.
+       健康检查失败的总次数。
       </entry>
      </row>
 
      <row>
       <entry>skip_count</entry>
       <entry>
-       Number of skipped health check count in total. If the node is
-       already down, health check skips the node.
+       被跳过的健康检查总次数。如果节点已经宕机，
+       健康检查会跳过该节点。
       </entry>
      </row>
 
      <row>
       <entry>retry_count</entry>
       <entry>
-       Number of retried health check count in total.
+       健康检查发生重试的总次数。
       </entry>
      </row>
 
      <row>
       <entry>average_retry_count</entry>
       <entry>
-       Number of average retried health check count in a health check
-       session.
+       在一次健康检查会话中，健康检查平均重试的次数。
       </entry>
      </row>
 
      <row>
       <entry>max_retry_count</entry>
       <entry>
-       Number of maximum retried health check count in a health check
-       session.
+       在一次健康检查会话中，健康检查最大重试的次数。
       </entry>
      </row>
 
      <row>
       <entry>max_duration</entry>
       <entry>
-       Maximum health check duration in Millie seconds. If a health
-       check session retries, the health check duration is sum of each
-       retried health check.
+       健康检查的最大时长（毫秒）。如果一次健康检查
+       会话发生重试，则健康检查时长为每次重试的健康检查时长之和。
       </entry>
      </row>
 
      <row>
       <entry>min_duration</entry>
       <entry>
-       Minimum health check duration in Millie seconds. If a health
-       check session retries, the health check duration is sum of each
-       retried health check.
+       健康检查的最小时长（毫秒）。如果一次健康检查
+       会话发生重试，则健康检查时长为每次重试的健康检查时长之和。
       </entry>
      </row>
 
      <row>
       <entry>average_duration</entry>
       <entry>
-       Average health check duration in Millie seconds. If a health
-       check session retries, the health check duration is sum of each
-       retried health check.
+       健康检查的平均时长（毫秒）。如果一次健康检查
+       会话发生重试，则健康检查时长为每次重试的健康检查时长之和。
       </entry>
      </row>
 
      <row>
       <entry>last_health_check</entry>
       <entry>
-       Timestamp of last health check.  If heath check does not
-       performed yet, empty string.
+       上次健康检查的时间戳。如果尚未执行健康检查，
+       则为空字符串。
       </entry>
      </row>
 
      <row>
       <entry>last_successful_health_check</entry>
       <entry>
-       Timestamp of last successful health check. If heath check does
-       not succeeds yet, empty string.
+       上次成功健康检查的时间戳。如果健康检查尚未成功过，
+       则为空字符串。
       </entry>
      </row>
 
      <row>
       <entry>last_skip_health_check</entry>
       <entry>
-       Timestamp of last skipped health check. If heath check is not
-       skipped yet, empty string. Note that it is possible that this
-       field is an empty string even if the status is down. In this
-       case failover was triggered by other than health check process.
+       上次被跳过健康检查的时间戳。如果健康检查尚未被跳过，
+       则为空字符串。请注意，即使状态为 down，该字段也可能
+       是空字符串。在这种情况下，故障转移是由健康检查进程以外的
+       其他机制触发的。
       </entry>
      </row>
 
      <row>
       <entry>last_failed_health_check</entry>
       <entry>
-       Timestamp of last failed health check. If heath check does not
-       fail yet, empty string. Note that it is possible that this
-       field is an empty string even if the status is down. In this
-       case failover was triggered by other than health check process.
+       上次失败健康检查的时间戳。如果健康检查尚未失败过，
+       则为空字符串。请注意，即使状态为 down，该字段也可能
+       是空字符串。在这种情况下，故障转移是由健康检查进程以外的
+       其他机制触发的。
       </entry>
      </row>
 
@@ -222,9 +215,9 @@
    </table>
 
   <para>
-   Here is an example session:
+   以下是一个示例会话：
    <programlisting>
-test=# show pool_health_check_stats;
+	test=# show pool_health_check_stats;
 -[ RECORD 1 ]----------------+--------------------
 node_id                      | 0
 hostname                     | /tmp
@@ -244,8 +237,8 @@ min_duration                 | 2
 average_duration             | 6.296296
 last_health_check            | 2020-01-26 19:12:45
 last_successful_health_check | 2020-01-26 19:12:45
-last_skip_health_check       | 
-last_failed_health_check     | 
+last_skip_health_check       |
+last_failed_health_check     |
 -[ RECORD 2 ]----------------+--------------------
 node_id                      | 1
 hostname                     | /tmp

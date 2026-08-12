@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pcp_invalidate_query_cache</refname>
   <refpurpose>
-   invalidate query cache contents</refpurpose>
+   使查询缓存内容失效</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -28,38 +28,26 @@ Pgpool-II documentation
  </refsynopsisdiv>
 
  <refsect1 id="R1-PCP-INVALIDATE-QUERY-CACHE-1">
-  <title>Description</title>
+  <title>描述</title>
   <para>
-   <command>pcp_invalidate_query_cache</command> places a query cache
-   invalidation request on the shared memory area. The request is
-   processed by one of <productname>Pgpool-II</productname> child
-   process, which corresponds to each pgpool client session, when a
-   message from the client is processed. This means that if there's no
-   client connecting to <productname>Pgpool-II</productname>, or
-   all clients are sitting idle, the request will not be
-   processed until next message arrives.
+   <command>pcp_invalidate_query_cache</command> 将查询缓存失效请求写入共享内存区域。该请求由对应的
+   <productname>Pgpool-II</productname> 子进程处理（每个子进程对应一个 pgpool 客户端会话），在处理来自客户端的消息时执行。这意味着，如果没有客户端连接到 <productname>Pgpool-II</productname>，或者所有客户端都处于空闲状态，则该请求将不会得到处理，直到收到下一条消息为止。
   </para>
   <para>
-   Although this command does not modifies the statistics data shown by
-   <xref linkend="SQL-SHOW-POOL-CACHE">, part of the statistics data
-   is affected since this command invalidate the contents of query
-   cache. <varname>num_cache_hits</varname>
-   and <varname>num_selects</varname> continue to increase after the
-   query cache
-   invalidated. <varname>used_hash_entries</varname>, <varname>num_cache_entries</varname>
-   and <varname>used_cache_entries_size</varname> starts off with
-   0. <varname>free_cache_entries_size</varname> will increase.
+   虽然此命令不会修改 <xref linkend="SQL-SHOW-POOL-CACHE"> 中显示的统计数据，但部分统计数据会受到影响，因为此命令会使查询缓存内容失效。<varname>num_cache_hits</varname>
+   和 <varname>num_selects</varname> 在查询缓存失效后将继续递增。<varname>used_hash_entries</varname>、<varname>num_cache_entries</varname>
+   和 <varname>used_cache_entries_size</varname> 将从 0 开始。<varname>free_cache_entries_size</varname> 将会增加。
   </para>
   <para>
-   If <xref linkend="guc-memory-cache-enabled">
-   is <literal>false</literal>, this command emits an error and exits.
+   如果 <xref linkend="guc-memory-cache-enabled">
+   为 <literal>false</literal>，此命令将报错并退出。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
-   See <xref linkend="pcp-common-options">.
+   参见 <xref linkend="pcp-common-options">。
   </para>
  </refsect1>
 

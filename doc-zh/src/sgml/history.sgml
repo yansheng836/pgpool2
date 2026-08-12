@@ -1,38 +1,31 @@
 <!-- doc/src/sgml/history.sgml -->
 
 <sect1 id="history">
- <title>A Brief History of <productname>Pgpool-II</productname></title>
+ <title><productname>Pgpool-II</productname> 简史</title>
 
  <indexterm zone="history">
   <primary>history</primary>
   <secondary>of Pgpool-II</secondary>
  </indexterm>
  <para>
-  <productname>Pgpool-II</productname> started its life as a personal
-  project by Tatsuo Ishii.  In the project it was just a simple
-  connection pooling software. So the
-  name <productname>Pgpool</productname> came from the fact.  The
-  first version was in public in 2003.
+  <productname>Pgpool-II</productname> 最初是 Tatsuo Ishii 的一个个人项目。
+  在项目中它只是简单的连接池软件。因此名字
+  <productname>Pgpool</productname> 就来源于这一事实。第一个公开版本发布于
+  2003 年。
  </para>
  <para>
-  In 2004, <productname>Pgpool</productname> 1.0 was released with
-  the native replication feature (SQL statement based
-  replication). In the same year 2.0 was released with load
-  balancing, and support for version 3 frontend/backend protocol. In
-  2005, automated fail over and master slave mode support were added.
+  2004 年，<productname>Pgpool</productname> 1.0 发布了，带有本地复制功能
+  （基于 SQL 语句的复制）。同年还发布了 2.0，带有负载均衡，并支持版本 3
+  的前端/后端协议。2005 年，添加了自动故障转移和主从模式支持。
  </para>
  <para>
-  In 2006, <productname>Pgpool</productname>
-  became <productname>Pgpool-II</productname>. The first release 1.0
-  eliminated many of restrictions
-  in <productname>Pgpool</productname>, for example the number
-  of <productname>PostgreSQL</productname> servers was up to 2 in
-  <productname>Pgpool</productname>. Also many new features such as
-  parallel query mode and PCP commands (PCP stands for "Pgpool
-  Control Protocol") were added. Probably the most important change
-  made between <productname>Pgpool</productname>
-  and <productname>Pgpool-II</productname> was that the project was
-  changed from a personal project to a group project owned by the
-  Pgpool Development Group.
+  2006 年，<productname>Pgpool</productname>
+  变成了 <productname>Pgpool-II</productname>。第一个发布版本 1.0
+  消除了 <productname>Pgpool</productname> 中的许多限制，例如，
+  在 <productname>Pgpool</productname> 中 <productname>PostgreSQL</productname>
+  服务器的数量最多只能有 2 台。还添加了许多新功能，例如并行查询模式和 PCP
+  命令（PCP 是 "Pgpool Control Protocol" 的缩写）。也许
+  在 <productname>Pgpool</productname> 和 <productname>Pgpool-II</productname>
+  之间最重要的变化是项目从个人项目变成了由 Pgpool 开发组拥有的团队项目。
  </para>
 </sect1>

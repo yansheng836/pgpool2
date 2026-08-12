@@ -1,19 +1,16 @@
 <!-- doc/src/sgml/config.sgml -->
 
 <sect1 id="runtime-streaming-replication-check">
- <title>Streaming Replication Check</title>
+ <title>流复制检查</title>
 
  <para>
-  <productname>Pgpool-II</productname> can work with <productname>PostgreSQL</> native
-  Streaming Replication, that is available since <productname>PostgreSQL</> 9.0.
-  To configure <productname>Pgpool-II</productname> with streaming
-  replication, set
-   <xref linkend="guc-backend-clustering-mode"> to <literal>'streaming-replication'</literal>.
+  <productname>Pgpool-II</productname> 可以与 <productname>PostgreSQL</> 自 <productname>PostgreSQL</> 9.0 起提供的原生流复制（Streaming Replication）配合工作。
+  要将 <productname>Pgpool-II</productname> 配置为使用流复制，请将
+   <xref linkend="guc-backend-clustering-mode"> 设置为 <literal>'streaming-replication'</literal>。
  </para>
  <para>
-  <productname>Pgpool-II</productname> assumes that Streaming Replication
-  is configured with Hot Standby on PostgreSQL, which means that the
-  standby database can handle read-only queries.
+  <productname>Pgpool-II</productname> 假定流复制是在 PostgreSQL 上配合热备（Hot Standby）配置的，这意味着
+  备库可以处理只读查询。
  </para>
 
  <variablelist>
@@ -21,19 +18,18 @@
   <varlistentry id="guc-sr-check-period" xreflabel="sr_check_period">
    <term><varname>sr_check_period</varname> (<type>integer</type>)
     <indexterm>
-     <primary><varname>sr_check_period</varname> configuration parameter</primary>
+     <primary><varname>sr_check_period</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies the time interval in seconds to check the streaming
-     replication delay.
-     The default is 10.
+     指定检查流复制延迟的时间间隔，单位为秒。
+     默认值为 10。
     </para>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
 
    </listitem>
@@ -42,49 +38,48 @@
   <varlistentry id="guc-sr-check-user" xreflabel="sr_check_user">
    <term><varname>sr_check_user</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>sr_check_user</varname> configuration parameter</primary>
+     <primary><varname>sr_check_user</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies the <productname>PostgreSQL</> user name to perform streaming replication check.
-     Default is <literal>''</literal>(empty).
-     The user must have LOGIN privilege and exist on all the
-     <productname>PostgreSQL</> backends.
-     Moreover the user must be a <productname>PostgreSQL</productname>
-     super user or in "pg_monitor" group.
+     指定用于执行流复制检查的 <productname>PostgreSQL</> 用户名。
+     默认为 <literal>''</literal>（空）。
+     该用户必须具有 LOGIN 权限，并且存在于所有
+     <productname>PostgreSQL</> 后端上。
+     此外，该用户必须是 <productname>PostgreSQL</productname>
+     超级用户或属于 "pg_monitor" 组。
    <note>
     <para>
-     To make <xref linkend="guc-sr-check-user"> in pg_monitor
-     group, execute following SQL command
-     by <productname>PostgreSQL</productname> super user (replace
-     "sr_check_user" with the setting of <xref linkend="guc-sr-check-user">):
+     要使 <xref linkend="guc-sr-check-user"> 加入 pg_monitor
+     组，请由 <productname>PostgreSQL</productname> 超级用户执行以下 SQL 命令（将
+     "sr_check_user" 替换为 <xref linkend="guc-sr-check-user"> 的设置值）：
      <programlisting>
 GRANT pg_monitor TO sr_check_user;
      </programlisting>
-     For <productname>PostgreSQL</productname> 9.6, there's no
-     pg_monitor group and <xref linkend="guc-sr-check-user"> must
-     be <productname>PostgreSQL</productname> super user.
+     对于 <productname>PostgreSQL</productname> 9.6，没有
+     pg_monitor 组，<xref linkend="guc-sr-check-user"> 必须
+     是 <productname>PostgreSQL</productname> 超级用户。
     </para>
    </note>
 
     </para>
     <para>
-     If <link linkend="runtime-ssl">SSL</link> is enabled, the
-     streaming replication check process may use SSL connection.
-    </para> 
+     如果启用了 <link linkend="runtime-ssl">SSL</link>，则
+     流复制检查进程可能会使用 SSL 连接。
+    </para>
     <note>
      <para>
-      <xref linkend="guc-sr-check-user"> and <xref
-      linkend="guc-sr-check-password"> are used even when <xref
-      linkend="guc-sr-check-period"> is set to 0 (disabled) for the
-      identification of the primary server.
+      <xref linkend="guc-sr-check-user"> 和 <xref
+      linkend="guc-sr-check-password"> 即使当 <xref
+      linkend="guc-sr-check-period"> 设置为 0（禁用）时也会用于
+     主服务器的识别。
      </para>
     </note>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
 
    </listitem>
@@ -93,73 +88,64 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-sr-check-password" xreflabel="sr_check_password">
    <term><varname>sr_check_password</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>sr_check_password</varname> configuration parameter</primary>
+     <primary><varname>sr_check_password</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies the password of the <xref linkend="guc-sr-check-user"> <productname>PostgreSQL</> user
-      to perform the streaming replication checks.
-      Use <literal>''</literal> (empty string) if the user does not requires a password.
+     指定用于执行流复制检查的 <xref linkend="guc-sr-check-user"> <productname>PostgreSQL</> 用户的密码。
+     如果该用户不需要密码，请使用 <literal>''</literal>（空字符串）。
     </para>
     <para>
-     If <varname>sr_check_password</varname> is left blank <productname>Pgpool-II</productname>
-     will first try to get the password for <xref linkend="guc-sr-check-user"> from
-      <xref linkend="guc-pool-passwd"> file before using the empty password.
+     如果 <varname>sr_check_password</varname> 留空，<productname>Pgpool-II</productname>
+     会先尝试从 <xref linkend="guc-pool-passwd"> 文件中获取 <xref linkend="guc-sr-check-user"> 的密码，然后再使用空密码。
     </para>
 
     <para>
-     <productname>Pgpool-II</productname> accepts following forms
-     of password in either <varname>sr_check_password</varname>
-     or <xref linkend="guc-pool-passwd"> file:
+     <productname>Pgpool-II</productname> 接受以下形式的密码，
+     可写在 <varname>sr_check_password</varname>
+     或 <xref linkend="guc-pool-passwd"> 文件中：
       <variablelist>
 
        <varlistentry>
-	<term>AES256-CBC encrypted password</term>
+	<term>AES256-CBC 加密密码</term>
 	<listitem>
 	 <para>
-	  Most secure and recommended way to store password. The
-	  password string must be prefixed
-	  with <literal>AES</literal>.
-	  You can use <xref linkend="PG-ENC"> utility to create the correctly formatted
-	   <literal>AES</literal> encrypted password strings.
-	   <productname>Pgpool-II</productname> will require a valid decryption key at the
-	   startup to use the encrypted passwords.
-	   see <xref linkend="auth-aes-decryption-key"> for more details on providing the
-	    decryption key to <productname>Pgpool-II</productname>
+	  存储密码最安全且推荐的方式。密码字符串必须以
+	  <literal>AES</literal> 为前缀。
+	  您可以使用 <xref linkend="PG-ENC"> 工具创建格式正确的
+	  <literal>AES</literal> 加密密码字符串。
+	  <productname>Pgpool-II</productname> 在启动时需要有效的解密密钥才能使用加密密码。
+	  有关向 <productname>Pgpool-II</productname> 提供解密密钥的更多详细信息，请参阅
+	  <xref linkend="auth-aes-decryption-key">。
 	 </para>
 	</listitem>
        </varlistentry>
 
        <varlistentry>
-	<term>MD5 hashed password</term>
+	<term>MD5 哈希密码</term>
 	<listitem>
 	 <para>
-	  Not so secure as AES256, but still better than clear
-	  text password. The password string must be prefixed
-	  with <literal>MD5</literal>. Note that the backend
-	  must set up MD5 authentication as well.  You can
-	  use <xref linkend="PG-MD5"> utility to create the
-	   correctly formatted
-	   <literal>MD5</literal> hashed password strings.
+	  安全性不如 AES256，但仍优于明文密码。密码字符串必须以
+	  <literal>MD5</literal> 为前缀。请注意，后端
+	  也必须启用 MD5 认证。您可以使用
+	  <xref linkend="PG-MD5"> 工具创建格式正确的
+	  <literal>MD5</literal> 哈希密码字符串。
 	 </para>
 	</listitem>
        </varlistentry>
 
        <varlistentry>
-	<term>Plain text password</term>
+	<term>明文密码</term>
 	<listitem>
 	 <para>
-	  Not encrypted, clear text password. You should avoid
-	  to use this if possible. The password string must be
-	  prefixed with <literal>TEXT</literal>. For example if
-	  you want to set <literal>mypass</literal> as a
-	  password, you should
-	  specify <literal>TEXTmypass</literal> in the password
-	  field.  In the absence of a valid
-	  prefix, <productname>Pgpool-II</productname> will
-	  considered the string as a plain text password.
+	  未加密的明文密码。如有可能，应避免使用。
+	  密码字符串必须以 <literal>TEXT</literal> 为前缀。例如，如果您
+	  想将 <literal>mypass</literal> 设置为密码，应在密码字段中
+	  指定 <literal>TEXTmypass</literal>。
+	  在没有有效前缀的情况下，<productname>Pgpool-II</productname> 会
+	  将字符串视为明文密码。
 	 </para>
 	</listitem>
        </varlistentry>
@@ -168,7 +154,7 @@ GRANT pg_monitor TO sr_check_user;
     </para>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
 
    </listitem>
@@ -177,17 +163,17 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-sr-check-database" xreflabel="sr_check_database">
    <term><varname>sr_check_database</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>sr_check_database</varname> configuration parameter</primary>
+     <primary><varname>sr_check_database</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies the database to perform streaming replication delay checks.
-     The default is <literal>"postgres"</literal>.
+     指定用于执行流复制延迟检查的数据库。
+     默认为 <literal>"postgres"</literal>。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
 
    </listitem>
@@ -196,26 +182,24 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-delay-threshold" xreflabel="delay_threshold">
    <term><varname>delay_threshold</varname> (<type>integer</type>)
     <indexterm>
-     <primary><varname>delay_threshold</varname> configuration parameter</primary>
+     <primary><varname>delay_threshold</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies the maximum tolerance level of replication delay in
-     <acronym>WAL</acronym> bytes on the standby server against the
-     primary server. If the delay exceeds this configured level,
-     <productname>Pgpool-II</productname> stops sending the <acronym>
-      SELECT</acronym> queries to the standby server and starts routing
-     everything to the primary server even if <xref linkend="guc-load-balance-mode">
-      is enabled, until the standby catches-up with the primary.
-      Setting this parameter to 0 disables the delay checking.
-      This delay threshold check is performed every <xref linkend="guc-sr-check-period">.
-       Default is 0.
+     以 <acronym>WAL</acronym> 字节数指定备服务器相对于主服务器的复制延迟的最大容许值。
+     如果延迟超过此配置值，
+     即使启用了 <xref linkend="guc-load-balance-mode">，<productname>Pgpool-II</productname>
+     也会停止向备服务器发送 <acronym>SELECT</acronym> 查询，并将所有查询路由到主服务器，
+     直到备服务器追赶上主服务器为止。
+     将此参数设置为 0 将禁用延迟检查。
+     此延迟阈值检查在每个 <xref linkend="guc-sr-check-period"> 执行一次。
+     默认值为 0。
     </para>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
 
    </listitem>
@@ -224,56 +208,48 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-delay-threshold-by-time" xreflabel="delay_threshold_by_time">
    <term><varname>delay_threshold_by_time</varname> (<type>integer</type>)
     <indexterm>
-     <primary><varname>delay_threshold_by_time</varname> configuration parameter</primary>
+     <primary><varname>delay_threshold_by_time</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies the maximum tolerance level of replication delay 
-     on the standby server against the primary server.
-     If this value is specified without units, it is taken as milliseconds.
-     If the specified value is greater than
-     0, <xref linkend="guc-delay-threshold"> is ignored.  If the delay
-     exceeds this configured level,
-     <productname>Pgpool-II</productname> stops sending the <acronym>
-      SELECT</acronym> queries to the standby server and starts routing
-     everything to the primary server even if <xref linkend="guc-load-balance-mode">
-      is enabled, until the standby catches-up with the primary.
-      Setting this parameter to 0 disables the delay checking.
-      This delay threshold check is performed every <xref linkend="guc-sr-check-period">.
-       Default is 0.
+     以时间指定备服务器相对于主服务器的复制延迟的最大容许值。
+     如果此值未指定单位，则视为毫秒。
+     如果指定值大于
+     0，则忽略 <xref linkend="guc-delay-threshold">。如果延迟
+     超过此配置值，
+     即使启用了 <xref linkend="guc-load-balance-mode">，<productname>Pgpool-II</productname>
+     也会停止向备服务器发送 <acronym>SELECT</acronym> 查询，并将所有查询路由到主服务器，
+     直到备服务器追赶上主服务器为止。
+     将此参数设置为 0 将禁用延迟检查。
+     此延迟阈值检查在每个 <xref linkend="guc-sr-check-period"> 执行一次。
+     默认值为 0。
     </para>
 
     <para>
-      Replication delay is taken
-      from <productname>PostgreSQL</productname>'s system
-      view <structname>pg_stat_replication</structname>.<structfield>replay_lag</structfield>. The
-      view is available <productname>PostgreSQL</productname> 10 or
-      later. If earlier version
-      of <productname>PostgreSQL</productname> is
-      used, <productname>Pgpool-II</productname> automatically falls
-      back to <xref linkend="guc-delay-threshold">
-      and <xref linkend="guc-delay-threshold-by-time"> is ignored.
+     复制延迟取自 <productname>PostgreSQL</productname> 的系统
+     视图 <structname>pg_stat_replication</structname>.<structfield>replay_lag</structfield>。该
+     视图在 <productname>PostgreSQL</productname> 10 或
+     更高版本中可用。如果使用较早版本
+     的 <productname>PostgreSQL</productname>，<productname>Pgpool-II</productname> 会自动回退
+     到 <xref linkend="guc-delay-threshold">
+     并忽略 <xref linkend="guc-delay-threshold-by-time">。
     </para>
 
     <para>
-     This parameter relies
-     on <xref linkend="guc-backend-application-name"> being correctly
-     set and matching <varname>application_name</varname> in
-     your <productname>PostgreSQL</productname> standby's
-     primary_conninfo.
+     此参数依赖于 <xref linkend="guc-backend-application-name"> 被正确
+     设置并与 <productname>PostgreSQL</productname> 备库的
+     primary_conninfo 中的 <varname>application_name</varname> 匹配。
     </para>
 
     <para>
-      If this parameter is
-      enabled, <xref linkend="sql-show-pool-nodes">
-      and <xref linkend="pcp-node-info"> show replication delay in
-      seconds, rather than bytes.
+     如果启用此参数，<xref linkend="sql-show-pool-nodes">
+     和 <xref linkend="pcp-node-info"> 将以秒为单位（而不是以字节为单位）显示复制延迟。
     </para>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
 
    </listitem>
@@ -282,29 +258,24 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-prefer-lower-delay-standby" xreflabel="prefer_lower_delay_standby">
     <term><varname>prefer_lower_delay_standby</varname> (<type>boolean</type>)
      <indexterm>
-      <primary><varname>prefer_lower_delay_standby</varname> configuration parameter</primary>
+      <primary><varname>prefer_lower_delay_standby</varname> 配置参数</primary>
      </indexterm>
     </term>
     <listitem>
      <para>
-      This parameter is valid only
-      when <xref linkend="guc-delay-threshold">
-      or <xref linkend="guc-delay-threshold-by-time"> is set to
-      greater than 0.  When set to on, if the delay of the load
-      balancing node is greater
-      than <xref linkend="guc-delay-threshold">
-      or <xref linkend="guc-delay-threshold-by-time">,
-      <productname>Pgpool-II</productname> does not send read queries
-      to the primary node but the least delay standby with
-      backend_weight to greater than 0. If delay of all standby nodes
-      are greater than <xref linkend="guc-delay-threshold">
-      or <xref linkend="guc-delay-threshold-by-time"> the primary
-      selected as the load balancing node
-      first, <productname>Pgpool-II</productname> sends to the
-      primary.  Default is off.
+      此参数仅在 <xref linkend="guc-delay-threshold">
+      或 <xref linkend="guc-delay-threshold-by-time"> 设置为
+      大于 0 时有效。当设置为 on 时，如果负载均衡节点的延迟
+      大于 <xref linkend="guc-delay-threshold">
+      或 <xref linkend="guc-delay-threshold-by-time">，
+      <productname>Pgpool-II</productname> 不会向主节点发送读查询，
+      而是发送到延迟最小且 backend_weight 大于 0 的备节点。
+      如果所有备节点的延迟都大于 <xref linkend="guc-delay-threshold">
+      或 <xref linkend="guc-delay-threshold-by-time">，则首先选择主节点作为负载均衡节点，
+      <productname>Pgpool-II</productname> 将查询发送到主节点。默认值为 off。
      </para>
      <para>
-      This parameter can be changed by reloading the <productname>Pgpool-II</productname> configurations.
+      可以通过重新加载 <productname>Pgpool-II</productname> 配置来更改此参数。
      </para>
     </listitem>
   </varlistentry>
@@ -312,47 +283,46 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-log-standby-delay" xreflabel="log_standby_delay">
    <term><varname>log_standby_delay</varname> (<type>enum</type>)
     <indexterm>
-     <primary><varname>log_standby_delay</varname> configuration parameter</primary>
+     <primary><varname>log_standby_delay</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
 
     <para>
-     Specifies when to log the replication delay. Below table contains the list
-     of all valid values for the parameter.
+     指定何时记录复制延迟。下表列出了该参数的所有有效值。
     </para>
 
     <table id="log-standby-delay-table">
-     <title>Log standby delay options</title>
+     <title>记录备库延迟的选项</title>
      <tgroup cols="2">
       <thead>
        <row>
-	<entry>Value</entry>
-	<entry>Description</entry>
+	<entry>值</entry>
+	<entry>描述</entry>
        </row>
       </thead>
 
       <tbody>
        <row>
 	<entry><literal>none</literal></entry>
-	<entry>Never log the standby delay</entry>
+	<entry>从不记录备库延迟</entry>
        </row>
 
        <row>
 	<entry><literal>always</literal></entry>
-	<entry>Log the standby delay if it's greater than 0, every time the replication delay is checked</entry>
+	<entry>每当检查复制延迟时，如果备库延迟大于 0，则记录备库延迟</entry>
        </row>
 
        <row>
 	<entry><literal>if_over_threshold</literal></entry>
-	<entry>Only log the standby delay, when it exceeds <xref linkend="guc-delay-threshold"> or <xref linkend="guc-delay-threshold-by-time"> value (the default)</entry>
+	<entry>仅当备库延迟超过 <xref linkend="guc-delay-threshold"> 或 <xref linkend="guc-delay-threshold-by-time"> 的值时才记录（默认值）</entry>
        </row>
       </tbody>
      </tgroup>
     </table>
 
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</> configurations.
+     可以通过重新加载 <productname>Pgpool-II</> 配置来更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -360,55 +330,45 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-replication-delay-source-cmd" xreflabel="replication_delay_source_cmd">
    <term><varname>replication_delay_source_cmd</varname> (<type>string</type>)
     <indexterm>
-     <primary><varname>replication_delay_source_cmd</varname> configuration parameter</primary>
+     <primary><varname>replication_delay_source_cmd</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies an external command to retrieve replication delay information
-     for replica nodes.  When this parameter is set and not
-     empty, <productname>Pgpool-II</productname> uses the external command
-     instead of built-in database queries to obtain replication delays.  The
-     command is executed as the <productname>Pgpool-II</productname> process
-     user.
+     指定用于获取副本节点复制延迟信息的外部命令。
+     当设置了此参数且其不为空时，<productname>Pgpool-II</productname> 使用外部命令
+     而不是内置的数据库查询来获取复制延迟。该命令以 <productname>Pgpool-II</productname> 进程
+     用户身份执行。
     </para>
     <para>
-     The command receives replica node identifiers as positional arguments,
-     with the primary node omitted. Each identifier is in the
-     format <literal>&lt;hostname&gt;:&lt;port&gt;</literal>, for
-     example <literal>server1:5432 server2:5432</literal>. The order matches
-     <productname>Pgpool-II</productname>'s backend order (excluding the
-     primary), allowing the script to correlate external metrics (such as from
-     AWS CloudWatch for Aurora) to the correct nodes.
+     该命令以位置参数的形式接收副本节点标识符，
+     主节点除外。每个标识符的格式为
+     <literal>&lt;hostname&gt;:&lt;port&gt;</literal>，例如
+     <literal>server1:5432 server2:5432</literal>。顺序与
+     <productname>Pgpool-II</productname> 的后端顺序（不包括主节点）一致，使脚本能够将外部指标（例如来自
+     Aurora 的 AWS CloudWatch 指标）关联到正确的节点。
     </para>
     <para>
-     The command must write a single line to stdout containing one
-     whitespace-separated delay value per replica, in milliseconds, in the
-     same order as the arguments. The line can be terminated with or without a
-     new line character. The primary node's delay is implicitly zero and
-     should not be included in the output. Delay values can be integers or
-     floating-point numbers.
+     该命令必须向标准输出写入一行，其中包含每个副本的延迟值，以空格分隔，单位为毫秒，顺序与参数一致。
+     该行结尾可以带或不带换行符。主节点的延迟隐式为零，不应包含在输出中。延迟值可以是整数或
+     浮点数。
     </para>
     <para>
-     Special value: <literal>-1</literal> indicates a replica that is down but
-     not yet detected by <productname>Pgpool-II</productname>'s health
-     checks. <productname>Pgpool-II</productname> will log this condition but
-     rely on its own health-check logic to decide whether to trigger failover;
-     no failover is triggered solely by receiving <literal>-1</literal>.
+     特殊值：<literal>-1</literal> 表示副本已宕机但尚未被 <productname>Pgpool-II</productname> 的健康检查检测到。
+     <productname>Pgpool-II</productname> 会记录此状况，但依靠自身的健康检查逻辑来决定是否触发故障转移；
+     仅收到 <literal>-1</literal> 不会触发故障转移。
     </para>
     <para>
-     Example for a 3-node cluster (1 primary + 2 replicas): if the command
-     receives arguments
-     <literal>server1:5432 server2:5432</literal>, it should
-     output <literal>"25.5 100"</literal> to indicate the first replica has
-     25.5ms delay and the second has 100ms delay.
+     3 节点集群（1 个主节点 + 2 个副本）的示例：如果命令收到参数
+     <literal>server1:5432 server2:5432</literal>，则应输出
+     <literal>"25.5 100"</literal>，表示第一个副本有 25.5 毫秒的延迟，第二个副本有 100 毫秒的延迟。
     </para>
     <para>
-     Default is empty (use built-in replication delay queries).
+     默认为空（使用内置的复制延迟查询）。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</>
-     configurations.
+     可以通过重新加载 <productname>Pgpool-II</>
+     配置来更改此参数。
     </para>
    </listitem>
   </varlistentry>
@@ -416,22 +376,20 @@ GRANT pg_monitor TO sr_check_user;
   <varlistentry id="guc-replication-delay-source-timeout" xreflabel="replication_delay_source_timeout">
    <term><varname>replication_delay_source_timeout</varname> (<type>integer</type>)
     <indexterm>
-     <primary><varname>replication_delay_source_timeout</varname> configuration parameter</primary>
+     <primary><varname>replication_delay_source_timeout</varname> 配置参数</primary>
     </indexterm>
    </term>
    <listitem>
     <para>
-     Specifies the timeout in seconds for the external command specified by
-     <xref linkend="guc-replication-delay-source-cmd">.  If the command does
-      not finish within the timeout, <productname>Pgpool-II</productname> logs
-      an error.
+     指定由 <xref linkend="guc-replication-delay-source-cmd"> 指定的外部命令的超时时间，单位为秒。
+     如果命令未在超时时间内完成，<productname>Pgpool-II</productname> 将记录错误。
     </para>
     <para>
-     Default is 10 seconds. Valid range is 1-3600 seconds.
+     默认值为 10 秒。有效范围为 1-3600 秒。
     </para>
     <para>
-     This parameter can be changed by reloading the <productname>Pgpool-II</>
-     configurations.
+     可以通过重新加载 <productname>Pgpool-II</>
+     配置来更改此参数。
     </para>
    </listitem>
   </varlistentry>

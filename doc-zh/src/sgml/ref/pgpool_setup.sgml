@@ -1,6 +1,6 @@
 <!--
 doc/src/sgml/ref/pgpool_setup.sgml
-Pgpool-II documentation
+Pgpool-II 文档
 -->
 
 <refentry id="PGPOOL-SETUP">
@@ -11,13 +11,13 @@ Pgpool-II documentation
  <refmeta>
   <refentrytitle>pgpool_setup</refentrytitle>
   <manvolnum>1</manvolnum>
-  <refmiscinfo>Other Commands</refmiscinfo>
+  <refmiscinfo>其他命令</refmiscinfo>
  </refmeta>
 
  <refnamediv>
   <refname>pgpool_setup</refname>
   <refpurpose>
-   Create a temporary installation of Pgpool-II cluster</refpurpose>
+   创建 Pgpool-II 集群的临时安装</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -29,40 +29,37 @@ Pgpool-II documentation
 
  <refsect1 id="R1-PGPOOL-SETUP-1">
   <title>
-   Description
+   描述
   </title>
   <para>
-   <application>pgpool_setup</application> creates a temporary
-   installation of <productname>Pgpool-II</productname> cluster, which
-   includes a <productname>Pgpool-II</productname> installation and
-   specified number of <productname>PostgreSQL</productname>
-   installations under current directory.
-   Current directory must be empty before running <application>pgpool_setup</application>.
+   <application>pgpool_setup</application> 在当前目录下创建
+   <productname>Pgpool-II</productname> 集群的临时安装，包括
+   <productname>Pgpool-II</productname> 安装和指定数量的
+   <productname>PostgreSQL</productname> 安装。
+   运行 <application>pgpool_setup</application> 之前当前目录必须为空。
   </para>
   <para>
-   <application>pgpool_setup</application> is for testing purpose
-   only and should not be used to create production installations.
-  </para>
-
-  <para>
-   <application>pgpool_setup</application> executes
-   <application>ssh</application> against localhost.  You need to
-   configure <application>ssh</application> so that it can login to
-   localhost without password.
+   <application>pgpool_setup</application> 仅供测试使用，
+   不应用于创建生产安装。
   </para>
 
   <para>
-   Currently <application>pgpool_setup</application> supports
-   streaming replication mode, native replication mode, raw mode,
-   logical replication mode and snapshot isolation mode.  To support watchdog,
-   see <xref linkend="WATCHDOG-SETUP"> for details.
+   <application>pgpool_setup</application> 会对 localhost 执行
+   <application>ssh</application>。您需要配置
+   <application>ssh</application> 以便无需密码即可登录 localhost。
+  </para>
+
+  <para>
+   目前 <application>pgpool_setup</application> 支持流复制模式、原生复制模式、原始模式、
+   逻辑复制模式和快照隔离模式。要支持 watchdog，
+   请参阅 <xref linkend="WATCHDOG-SETUP"> 了解详情。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
-   <application>pgpool_setup</application> accepts the following command-line arguments:
+   <application>pgpool_setup</application> 接受以下命令行参数：
 
    <variablelist>
 
@@ -70,11 +67,11 @@ Pgpool-II documentation
      <term><option>-m <replaceable class="parameter">mode</replaceable></option></term>
      <listitem>
       <para>
-       Specifies the running mode.  <replaceable>mode</replaceable>
-       can be <literal>r</literal> (native replication mode), <literal>s</literal> (streaming replication mode),
-       <literal>n</literal> (raw mode), <literal>l</literal>
-       (logical replication mode), or <literal>i</literal> (snapshot isolation mode).  If this is
-       omitted, <literal>s</literal> is assumed.
+       指定运行模式。<replaceable>mode</replaceable> 可以是
+       <literal>r</literal>（原生复制模式）、<literal>s</literal>（流复制模式）、
+       <literal>n</literal>（原始模式）、<literal>l</literal>
+       （逻辑复制模式）或 <literal>i</literal>（快照隔离模式）。如果省略此项，
+       默认使用 <literal>s</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -83,8 +80,8 @@ Pgpool-II documentation
      <term><option>-n <replaceable class="parameter">num_clusters</replaceable></option></term>
      <listitem>
       <para>
-       Specifies the number of PostgreSQL installations.
-       If this is omitted, <literal>2</literal> is used.
+       指定 PostgreSQL 安装的数量。
+       如果省略此项，默认使用 <literal>2</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -93,18 +90,18 @@ Pgpool-II documentation
      <term><option>-p <replaceable class="parameter">base_port</replaceable></option></term>
      <listitem>
       <para>
-       Specify the base port number used by Pgpool-II and PostgreSQL.
-       Pgpool-II port is base_port. pcp port is base_port + 1. The
-       first PostgreSQL node's port is base_port + 2, second
-       PostgreSQL node's port is base_port + 3 and so on.
+       指定 Pgpool-II 和 PostgreSQL 使用的基准端口号。
+       Pgpool-II 端口为 base_port，pcp 端口为 base_port + 1。
+       第一个 PostgreSQL 节点的端口为 base_port + 2，第二个
+       PostgreSQL 节点的端口为 base_port + 3，以此类推。
       </para>
       <para>
-       If -pg option is specified, the first PostgreSQL node's port is
-       assigned to pg_base_port, the second PostgreSQL node's port is
-       pg_base_port + 1 and so on.
+       如果指定了 -pg 选项，则第一个 PostgreSQL 节点的端口为
+       pg_base_port，第二个 PostgreSQL 节点的端口为
+       pg_base_port + 1，以此类推。
       </para>
       <para>
-       If this is omitted, <literal>11000</literal> is used.
+       如果省略此项，默认使用 <literal>11000</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -113,12 +110,12 @@ Pgpool-II documentation
      <term><option>-pg <replaceable class="parameter">pg_base_port</replaceable></option></term>
      <listitem>
       <para>
-       Specify the base port number used by PostgreSQL.
-       The first PostgreSQL node's port is base_port + 2, second
-       PostgreSQL node's port is base_port + 3 and so on.
+       指定 PostgreSQL 使用的基准端口号。
+       第一个 PostgreSQL 节点的端口为 base_port + 2，第二个
+       PostgreSQL 节点的端口为 base_port + 3，以此类推。
       </para>
       <para>
-       If this is omitted, <literal>base_port</literal>+2 is used.
+       如果省略此项，默认使用 <literal>base_port</literal>+2。
       </para>
 
      </listitem>
@@ -128,7 +125,7 @@ Pgpool-II documentation
      <term><option>--no-stop</option></term>
      <listitem>
       <para>
-       Do not stop pgpool and PostgreSQL after the work.
+       完成后不停止 pgpool 和 PostgreSQL。
       </para>
      </listitem>
     </varlistentry>
@@ -137,7 +134,7 @@ Pgpool-II documentation
      <term><option>-d</option></term>
      <listitem>
       <para>
-       Start pgpool with debug mode.
+       以调试模式启动 pgpool。
       </para>
      </listitem>
     </varlistentry>
@@ -146,17 +143,13 @@ Pgpool-II documentation
      <term><option>-s</option></term>
      <listitem>
       <para>
-       In streaming replication mode, use replication slot instead
-       of archive.  Since the archive directory is shared by all
-       <productname>PostgreSQL</productname> clusters, if a standby
-       is promoted, the time line in the archive directory will be
-       changed and other standby servers will be stopped. Using a
-       replication slot does not have this problem and is always
-       preferable if you can
-       use <productname>PostgreSQL</productname> 9.4 or later, which
-       supports replication slot. The replication slot name used
-       by <application>pgpool_setup</application>
-       is <literal>pgpool_setup_slot</literal>.
+       在流复制模式下，使用复制槽（replication slot）而非归档目录。
+       由于归档目录被所有 <productname>PostgreSQL</productname> 集群共享，
+       如果一个备用节点晋升为主节点，归档目录中的时间线将发生变化，
+       其他备用节点将会停止。使用复制槽可以避免此问题，
+       如果您可以使用支持复制槽的 <productname>PostgreSQL</productname> 9.4 或更高版本，
+       则应始终使用复制槽。<application>pgpool_setup</application>
+       使用的复制槽名称为 <literal>pgpool_setup_slot</literal>。
       </para>
      </listitem>
     </varlistentry>
@@ -165,11 +158,10 @@ Pgpool-II documentation
      <term><option>-r</option></term>
      <listitem>
       <para>
-       Use <command>pg_rewind</command> command in recovery script
-       (basebackup.sh).  If the command fails, switch to use ordinal
-       rsync command.  In certain cases recovery
-       using <command>pg_rewind</command> is much faster than rsync
-       since it does not copy whole database cluster.
+       在恢复脚本（basebackup.sh）中使用 <command>pg_rewind</command> 命令。
+       如果该命令失败，则切换为使用普通 rsync 命令。在某些情况下，
+       使用 <command>pg_rewind</command> 进行恢复比 rsync 快得多，
+       因为它不会复制整个数据库集群。
       </para>
      </listitem>
     </varlistentry>
@@ -178,10 +170,9 @@ Pgpool-II documentation
      <term><option>-e</option></term>
      <listitem>
       <para>
-       Omit to create <productname>PostgreSQL</productname> database
-       This option is intended to be used by
-       <command>watchdog_setup</command> and probably useless for
-       other purposes.
+       不创建 <productname>PostgreSQL</productname> 数据库。
+       此选项供 <command>watchdog_setup</command> 使用，
+       对其他用途可能没有实际意义。
       </para>
      </listitem>
     </varlistentry>
@@ -190,10 +181,9 @@ Pgpool-II documentation
      <term><option>-t</option></term>
      <listitem>
       <para>
-       Set some additional parameters to pgpool.conf so that the
-       regression test can performs tests against existing
-       installation.  Currently the parameter is
-       <xref linkend="guc-health-check-test">.
+       设置一些额外的参数到 pgpool.conf 中，以便回归测试
+       能够针对现有安装执行测试。目前设置的参数是
+       <xref linkend="guc-health-check-test">。
       </para>
      </listitem>
     </varlistentry>
@@ -202,14 +192,12 @@ Pgpool-II documentation
      <term><option>-c</option></term>
      <listitem>
       <para>
-       Use the sample scripts and configuration files installed in
-       <filename>/etc/pgpool-II/</filename> directory.
+       使用安装在 <filename>/etc/pgpool-II/</filename> 目录中的示例脚本和配置文件。
       </para>
       <para>
-       This option was added for the purpose of testing the sample scripts and
-       configuration files contained in <productname>Pgpool-II</productname> RPM packages.
-       Make sure you have installed the sample scripts and configuration files in
-       <filename>/etc/pgpool-II/</filename> directory before you specify this option.
+       此选项是为了测试 <productname>Pgpool-II</productname> RPM 包中包含的
+       示例脚本和配置文件而添加的。在指定此选项之前，请确保已将
+       示例脚本和配置文件安装到 <filename>/etc/pgpool-II/</filename> 目录中。
       </para>
      </listitem>
     </varlistentry>
@@ -219,9 +207,9 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Environment variables</title>
+  <title>环境变量</title>
   <para>
-   <application>pgpool_setup</application> recognizes following environment variables:
+   <application>pgpool_setup</application> 识别以下环境变量：
 
    <variablelist>
 
@@ -229,10 +217,9 @@ Pgpool-II documentation
      <term><option>PGPOOL_INSTALL_DIR</option></term>
      <listitem>
       <para>
-       Specifies the Pgpool-II installation directory. Pgpool-II
-       binaries is expected to be placed under PGPOOL_INSTALL_DIR/bin
-       and pgpool.conf and pool_hba.conf etc. are expected to be placed under
-       PGPOOL_INSTALL_DIR/etc. The default is /usr/local.
+       指定 Pgpool-II 的安装目录。Pgpool-II 二进制文件应位于
+       PGPOOL_INSTALL_DIR/bin 下，pgpool.conf 和 pool_hba.conf 等配置文件
+       应位于 PGPOOL_INSTALL_DIR/etc 下。默认值为 /usr/local。
       </para>
      </listitem>
     </varlistentry>
@@ -241,8 +228,8 @@ Pgpool-II documentation
      <term><option>PGPOOLDIR</option></term>
      <listitem>
       <para>
-       Specifies the path to Pgpool-II configuration files.
-       The default is PGPOOL_INSTALL_DIR/etc.
+       指定 Pgpool-II 配置文件的路径。
+       默认值为 PGPOOL_INSTALL_DIR/etc。
       </para>
      </listitem>
     </varlistentry>
@@ -251,8 +238,8 @@ Pgpool-II documentation
      <term><option>PGBIN</option></term>
      <listitem>
       <para>
-       Specifies the path to PostgreSQL commands such as initdb, pg_ctl and psql.
-       The default is /usr/local/pgsql/bin.
+       指定 PostgreSQL 命令（如 initdb、pg_ctl 和 psql）的路径。
+       默认值为 /usr/local/pgsql/bin。
       </para>
      </listitem>
     </varlistentry>
@@ -261,8 +248,8 @@ Pgpool-II documentation
      <term><option>PGLIB</option></term>
      <listitem>
       <para>
-       Specifies the path to PostgreSQL shared libraries.
-       The default is /usr/local/pgsql/lib.
+       指定 PostgreSQL 共享库的路径。
+       默认值为 /usr/local/pgsql/lib。
       </para>
      </listitem>
     </varlistentry>
@@ -271,8 +258,8 @@ Pgpool-II documentation
      <term><option>PGSOCKET_DIR</option></term>
      <listitem>
       <para>
-       Specifies the path to Unix socket directory.
-       The default is /tmp.
+       指定 Unix socket 目录的路径。
+       默认值为 /tmp。
       </para>
      </listitem>
     </varlistentry>
@@ -281,8 +268,8 @@ Pgpool-II documentation
      <term><option>INITDBARG</option></term>
      <listitem>
       <para>
-       Specifies the arguments for initdb command.
-       The default is "--no-locale -E UTF_8".
+       指定 initdb 命令的参数。
+       默认值为 "--no-locale -E UTF_8"。
       </para>
      </listitem>
     </varlistentry>
@@ -291,8 +278,8 @@ Pgpool-II documentation
      <term><option>USE_REPLICATION_SLOT</option></term>
      <listitem>
       <para>
-       If "true", in streaming replication mode, use replication slot instead
-       of archive. This brings the same effect as "-s" option is specified.
+       如果为 "true"，则在流复制模式下使用复制槽而非归档目录。
+       这与指定了 "-s" 选项具有相同的效果。
       </para>
      </listitem>
     </varlistentry>
@@ -301,8 +288,8 @@ Pgpool-II documentation
      <term><option>USE_PG_REWIND</option></term>
      <listitem>
       <para>
-       If "true", in streaming replication mode, use <command>pg_rewind</command> in basebackup.sh script.
-       This brings the same effect as "-r" option is specified.
+       如果为 "true"，则在流复制模式下在 basebackup.sh 脚本中使用
+       <command>pg_rewind</command>。这与指定了 "-r" 选项具有相同的效果。
       </para>
      </listitem>
     </varlistentry>
@@ -311,7 +298,7 @@ Pgpool-II documentation
      <term><option>ENABLE_TEST</option></term>
      <listitem>
       <para>
-       If "true", act as if "-t" option is specified.
+       如果为 "true"，则相当于指定了 "-t" 选项。
       </para>
      </listitem>
     </varlistentry>
@@ -320,7 +307,7 @@ Pgpool-II documentation
      <term><option>TEST_SAMPLES</option></term>
      <listitem>
       <para>
-       If "true", act as if "-c" option is specified.
+       如果为 "true"，则相当于指定了 "-c" 选项。
       </para>
      </listitem>
     </varlistentry>
@@ -330,7 +317,7 @@ Pgpool-II documentation
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
    <screen>
 $ pgpool_setup 

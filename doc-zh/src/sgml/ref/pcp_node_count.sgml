@@ -17,7 +17,7 @@ Pgpool-II documentation
  <refnamediv>
   <refname>pcp_node_count</refname>
   <refpurpose>
-   displays the total number of database nodes</refpurpose>
+   显示数据库节点的总数</refpurpose>
  </refnamediv>
 
  <refsynopsisdiv>
@@ -29,26 +29,25 @@ Pgpool-II documentation
 
  <refsect1 id="R1-PCP-NODE-COUNT-1">
   <title>
-   Description
+   说明
   </title>
   <para>
    <command>pcp_node_count</command>
-   displays the total number of database nodes defined in <filename>pgpool.conf</filename>. It does
-   not distinguish between nodes status, ie attached/detached. ALL nodes are counted.
+   显示在 <filename>pgpool.conf</filename> 中定义的数据库节点总数。它不区分节点状态（即附加/分离），所有节点均被计数。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Options</title>
+  <title>选项</title>
   <para>
-   See <xref linkend="pcp-common-options">.
+   参见 <xref linkend="pcp-common-options">。
   </para>
  </refsect1>
 
  <refsect1>
-  <title>Example</title>
+  <title>示例</title>
   <para>
-   Here is an example output:
+   以下是一个输出示例：
    <programlisting>
     $ pcp_node_count -p 11001
     Password:

@@ -1,178 +1,134 @@
 <!-- doc/src/sgml/runtime.sgml -->
 
 <chapter id="runtime">
- <title>Server Setup and Operation</title>
+ <title>服务器配置与运行</title>
 
  <para>
-  This chapter discusses how to set up and run the <productname>Pgpool-II</> server
-  and its interactions with the operating system.
+  本章讨论如何配置和运行 <productname>Pgpool-II</> 服务器，以及它与操作系统的交互。
  </para>
 
  <sect1 id="kernel-resource">
-  <title>Managing kernel resouces</title>
+  <title>管理内核资源</title>
 
   <indexterm>
-   <primary>kernel resouces</primary>
+   <primary>内核资源</primary>
   </indexterm>
 
   <para>
-   To run <productname>Pgpool-II</productname> System V shared memory
-   and System V semaphore are necessary. Although on linux enough
-   amount of both resources are provided, other platforms may need to
-   configure the kernel parameters.
+   要运行 <productname>Pgpool-II</productname>，需要使用 System V 共享内存和 System V 信号量。虽然 Linux 上通常提供了足够的这两种资源，但其他平台可能需要配置内核参数。
   </para>
   <para>
-   The minimum requirement of System V shared memory is around 140 MB.
-   If you plan to use more than default 64MB
-   of <link linkend="runtime-in-memory-query-cache">query
-   cache</link>, you may need more shared memory.  Number of necessary
-   shared memory segments is 3.  Usually the kernel provides enough
-   shared memory segments.
+   System V 共享内存的最小需求约为 140 MB。如果您计划使用超过默认 64MB 的<link linkend="runtime-in-memory-query-cache">查询缓存</link>，您可能需要更多的共享内存。需要的共享内存段数量为 3。通常内核会提供足够多的共享内存段。
   </para>
-  
+
   <para>
-   The minimum requirement of System V semaphore is around 10.  Number
-   of necessary semaphore sets is 3.  Usually the kernel provides
-   enough semaphore sets.
+   System V 信号量的最小需求约为 10。需要的信号量集数量为 3。通常内核会提供足够多的信号量集。
   </para>
  </sect1>
 
  <sect1 id="pgpool-II-user">
-  <title>The <productname>Pgpool-II</productname> User Account</title>
+  <title><productname>Pgpool-II</productname> 用户账户</title>
 
   <indexterm>
-   <primary>Pgpool-II user</primary>
+   <primary>Pgpool-II 用户</primary>
   </indexterm>
 
   <para>
-   As with any server daemon that is accessible to the outside world,
-   it is advisable to run <productname>Pgpool-II</productname> under a
-   separate user account. This user account should only own the data
-   that is managed by the server, and should not be shared with other
-   daemons. (For example, using the user <literal>nobody</literal> is a bad
-   idea.) It is not advisable to install executables owned by this
-   user because compromised systems could then modify their own
-   binaries.
+   与任何可被外部访问的服务器守护进程一样，建议为 <productname>Pgpool-II</productname> 运行创建一个独立的用户账户。该用户账户应该只拥有服务器管理的数据，并且不应与其他守护进程共享。（例如，使用 <literal>nobody</literal> 用户是一个糟糕的想法。）不建议以该用户身份安装可执行文件，因为一旦系统被攻破，攻击者可能会修改自身的二进制文件。
   </para>
 
   <para>
-   To add a Unix user account to your system, look for a command
-   <command>useradd</command> or <command>adduser</command>. The user
-   name <systemitem>pgpool</systemitem> is often used, and is assumed
-   throughout this book, but you can use another name if you like.
+   要在您的系统中添加 Unix 用户账户，请查找 <command>useradd</command> 或 <command>adduser</command> 命令。用户名通常使用 <systemitem>pgpool</systemitem>，本书中也是以此假设为准，但您也可以使用其他名称。
   </para>
  </sect1>
 
  <sect1 id="configuring-pcp-conf">
-  <title>Configuring pcp.conf</title>
+  <title>配置 pcp.conf</title>
 
   <indexterm>
-   <primary>pcp configuration</primary>
+   <primary>pcp 配置</primary>
   </indexterm>
 
   <para>
-   <productname>Pgpool-II</productname> provides a interface
-   for administrators to perform management operation, such as
-   getting <productname>Pgpool-II</productname> status or terminating
-   <productname>Pgpool-II</productname> processes
-   remotely. <filename>pcp.conf</filename> is the user/password file
-   used for authentication by this interface. All operation modes
-   require the <filename>pcp.conf</filename> file to be set. A
-   <filename>$prefix/etc/pcp.conf.sample</filename> file is created
-   during the installation
-   of <productname>Pgpool-II</productname>. Copy the file as 
-   <filename>$prefix/etc/pcp.conf</filename> and add your user name and password
-   to it.
+   <productname>Pgpool-II</productname> 为管理员提供了一个接口，用于执行管理操作，如获取 <productname>Pgpool-II</productname> 状态或远程终止 <productname>Pgpool-II</productname> 进程。<filename>pcp.conf</filename> 是该接口用于认证的密码文件。所有运行模式都需要设置 <filename>pcp.conf</filename> 文件。在安装 <productname>Pgpool-II</productname> 期间会创建一个 <filename>$prefix/etc/pcp.conf.sample</filename> 文件。将该文件复制为 <filename>$prefix/etc/pcp.conf</filename> 并添加您的用户名和密码。
 
    <screen>
     <prompt>$</> <userinput>cp $prefix/etc/pcp.conf.sample $prefix/etc/pcp.conf</userinput>
    </screen>
 
-   An empty line or a line starting with <literal>#</literal> is treated as a
-   comment and will be ignored. A user name and its associated
-   password must be written as one line using the following format:
+   空行或以 <literal>#</literal> 开头的行被视为注释，将被忽略。用户名及其关联的密码必须按照以下格式写在一行中：
 
    <synopsis>
-    <replaceable>username</>:<replaceable>[md5 encrypted password]</>
+    <replaceable>用户名</>:<replaceable>[md5 加密密码]</>
    </synopsis>
 
-   <replaceable>[md5 encrypted password]</> can be produced with the <filename>$prefix/bin/pg_md5</> command.
+   <replaceable>[md5 加密密码]</> 可以通过 <filename>$prefix/bin/pg_md5</> 命令生成。
 
    <screen>
     <prompt>$</> <userinput>pg_md5 your_password</userinput>
     1060b7b46a3bd36b3a0d66e0127d0517
    </screen>
 
-   If you don't want pass the password as the argument, execute <command>pg_md5 -p</command>.
+   如果不想将密码作为参数传递，请执行 <command>pg_md5 -p</command>。
 
    <screen>
     <prompt>$</> <userinput>pg_md5 -p</userinput>
     password: <userinput>your_password</userinput>
    </screen>
 
-   The <filename>pcp.conf</filename> file must be readable by the
-   user who executes <productname>Pgpool-II</productname>.
+   <filename>pcp.conf</filename> 文件必须对执行 <productname>Pgpool-II</productname> 的用户可读。
   </para>
 
  </sect1>
 
  <sect1 id="configuring-pgpool">
-  <title>Configuring Pgpool-II</title>
+  <title>配置 Pgpool-II</title>
 
   <indexterm>
-   <primary>Pgpool-II configuration</primary>
+   <primary>Pgpool-II 配置</primary>
   </indexterm>
 
   <sect2 id="configuring-pgpool-conf">
-   <title>Configuring pgpool.conf</title>
+   <title>配置 pgpool.conf</title>
 
    <para>
-    <filename>pgpool.conf</filename> is the main configuration file
-    of <productname>Pgpool-II</productname>. You need to specify the
-    path to the file when
-    starting <productname>Pgpool-II</productname>
-    using <option>-f</option> option.
-    <filename>pgpool.conf</filename> is located
-    at <filename>$prefix/etc/pgpool.conf</filename> by default,
-    if it installed from source code.
+    <filename>pgpool.conf</filename> 是 <productname>Pgpool-II</productname> 的主配置文件。启动 <productname>Pgpool-II</productname> 时，您需要使用 <option>-f</option> 选项指定文件路径。<filename>pgpool.conf</filename> 默认位于 <filename>$prefix/etc/pgpool.conf</filename>（从源代码安装时）。
    </para>
 
    <para>
-    To specify the <productname>Pgpool-II</productname> clustering
-    mode, set <xref linkend="guc-backend-clustering-mode"> parameter
-    to the value explained below.
+    要指定 <productname>Pgpool-II</productname> 的集群模式，请将 <xref linkend="guc-backend-clustering-mode"> 参数设置为下面解释的值。
    </para>
 
    <table id="backend-clustering-mode-table">
-    <title><xref linkend="guc-backend-clustering-mode"> value in pgpool.conf</title>
+    <title><xref linkend="guc-backend-clustering-mode"> 在 pgpool.conf 中的值</title>
 
     <tgroup cols="2">
      <thead>
       <row>
-       <entry>Clustering mode</entry>
-       <entry>value</entry>
+       <entry>集群模式</entry>
+       <entry>值</entry>
       </row>
      </thead>
 
      <tbody>
       <row>
-       <entry>Streaming replication mode</entry>
+       <entry>流复制模式</entry>
        <entry><literal>streaming_replication</literal></entry>
       </row>
       <row>
-       <entry>Replication mode</entry>
+       <entry>原生复制模式</entry>
        <entry><literal>native_replication</literal></entry>
       </row>
       <row>
-       <entry>Logical replication mode</entry>
+       <entry>逻辑复制模式</entry>
        <entry><literal>logical_replication</literal> </entry>
       </row>
       <row>
-       <entry>Snapshot isolation mode</entry>
+       <entry>快照隔离模式</entry>
        <entry><literal>snapshot_isolation</literal></entry>
       </row>
       <row>
-       <entry>Raw mode</entry>
+       <entry>原始模式</entry>
        <entry><literal>raw</literal> </entry>
       </row>
      </tbody>
@@ -180,10 +136,7 @@
    </table>
 
    <para>
-    These configuration files are located at /usr/local/etc with
-    default installation from source code.
-    You can copy one of them as <filename>pgpool.conf</filename>.
-    (probably you need root privilege for this)
+    如果使用源代码进行默认安装，这些配置文件位于 /usr/local/etc。您可以将其中的一个复制为 <filename>pgpool.conf</filename>。（这可能需要 root 权限）
     <programlisting>
 # cd /usr/local/etc
 # cp pgpool.conf.sample pgpool.conf
@@ -192,152 +145,78 @@
   </sect2>
 
   <sect2 id="running-mode">
-   <title>Clustering mode of Pgpool-II</title>
+   <title>Pgpool-II 的集群模式</title>
 
    <indexterm zone="running-mode">
-    <primary>streaming replication mode</primary>
+    <primary>流复制模式</primary>
    </indexterm>
 
    <indexterm zone="running-mode">
-    <primary>native replication mode</primary>
+    <primary>原生复制模式</primary>
    </indexterm>
 
    <indexterm zone="running-mode">
-    <primary>main replica mode</primary>
+    <primary>主副本模式</primary>
    </indexterm>
 
    <indexterm zone="running-mode">
-    <primary>logical replication mode</primary>
+    <primary>逻辑复制模式</primary>
    </indexterm>
 
    <indexterm zone="running-mode">
-    <primary>snapshot isolation mode</primary>
+    <primary>快照隔离模式</primary>
    </indexterm>
 
    <para>
-    There are six different <link linkend="guc-backend-clustering-mode">clustering modes</link> in
-    <productname>Pgpool-II</>: streaming replication mode, logical
-    replication mode, native
-    replication mode, raw mode and snapshot isolation mode. In any
-    mode, <productname>Pgpool-II</> provides connection pooling, and
-    automatic fail over.  Online recovery can be used only with
-    streaming replication mode, snapshot isolation mode and native
-    replication mode.  See <xref linkend="runtime-online-recovery">
-    for more details of online recovery.
+    <productname>Pgpool-II</>: 中有六种不同的<link linkend="guc-backend-clustering-mode">集群模式</link>：流复制模式、逻辑复制模式、原生复制模式、原始模式和快照隔离模式。在任何模式下，<productname>Pgpool-II</> 都提供连接池和自动故障切换。在线恢复仅可与流复制模式、快照隔离模式和原生复制模式一起使用。有关在线恢复的更多详细信息，请参阅 <xref linkend="runtime-online-recovery">。
    </para>
 
    <para>
-    Those modes are exclusive each other and cannot be changed after
-    starting the server. You should make a decision which to use in
-    the early stage of designing the system. If you are not sure, it
-    is recommended to use the streaming replication mode or the
-    snapshot isolation mode.
+    这些模式互相排斥，启动服务器后无法更改。您应该在系统设计初期就决定使用哪种模式。如果您不确定，建议使用流复制模式或快照隔离模式。
    </para>
 
    <para>
-    The <firstterm>streaming replication mode</firstterm> can be used
-    with <productname>PostgreSQL</> servers operating streaming
-    replication. In this mode, <productname>PostgreSQL</> is
-    responsible for synchronizing databases. This mode is widely used
-    and most recommended way to use <productname>Pgpool-II</>. Load
-    balancing is possible in the mode. visibility consistency among
-    nodes is not guaranteed.
+    <firstterm>流复制模式</firstterm> 可与运行流复制的 <productname>PostgreSQL</> 服务器配合使用。在此模式下，<productname>PostgreSQL</> 负责同步数据库。这是一种广泛使用且最推荐的 <productname>Pgpool-II</> 使用方式。此模式支持负载均衡，但不保证节点间的可见性一致性。
    </para>
 
    <para>
-    In the <firstterm>snapshot isolation mode</firstterm>
-    <productname>Pgpool-II</> is responsible for synchronizing
-    databases. The advantage for the mode is the synchronization is
-    done in synchronous way: writing to the database does not return
-    until all of <productname>PostgreSQL</> servers finish the write
-    operation. Also it guarantees the visibility consistency among
-    nodes. To put it simply, it means that the visibility rule of
-    transactions on single server is applied to a cluster consisting
-    of multiple servers as well.  This is a remarkable feature of the
-    snapshot isolation mode in
-    <productname>Pgpool-II</productname>. In fact, the snapshot
-    isolation mode in <productname>Pgpool-II</productname> is the only
-    system which guarantees the visibility consistency among nodes
-    without modifications to <productname>PostgreSQL</> at the moment.
-    Because of this, applications do not need to recognize that they
-    are using a cluster consisting of
-    <productname>PostgreSQL</productname> servers, rather than a
-    single <productname>PostgreSQL</productname> system.  However in
-    this mode the transaction isolation level <emphasis>must be
-    REPEATABLE READ</emphasis>.  You need to set
-    <filename>postgresql.conf</filename> like this:
+    在<firstterm>快照隔离模式</firstterm>下，<productname>Pgpool-II</> 负责同步数据库。该模式的优势在于同步是以同步方式进行的：向数据库写入数据时，直到所有 <productname>PostgreSQL</> 服务器完成写入操作后才会返回。它还保证节点间的可见性一致性。简而言之，这意味着单服务器上的事务可见性规则同样适用于由多个服务器组成的集群。这是 <productname>Pgpool-II</productname> 中快照隔离模式的一个显著特性。事实上，<productname>Pgpool-II</productname> 中的快照隔离模式是目前唯一在不修改 <productname>PostgreSQL</> 的情况下保证节点间可见性一致性的系统。因此，应用程序无需感知它们使用的是由 <productname>PostgreSQL</productname> 服务器组成的集群，而非单个 <productname>PostgreSQL</productname> 系统。然而，在此模式下，事务隔离级别<emphasis>必须为 REPEATABLE READ</emphasis>。您需要这样设置 <filename>postgresql.conf</filename>：
     <programlisting>
 default_transaction_isolation = 'repeatable read'
     </programlisting>
    </para>
    <para>
-    Also you need to aware that performance in the mode may be worse
-    than the streaming replication mode and native replication mode
-    due to the overhead to keep the consistency in transactions.
-   </para>
-   
-   <para>
-    In the <firstterm>native replication mode</firstterm>,
-    <productname>Pgpool-II</> is responsible for synchronizing
-    databases. The advantage for the mode is the synchronization is
-    done in synchronous way: writing to the database does not return
-    until all of <productname>PostgreSQL</> servers finish the write
-    operation. As visibility consistency among nodes is not
-    guaranteed, it is recommended to use the snapshot isolation mode
-    except you want to use other than REPEATABLE READ isolation mode.
-    Load balancing is possible in the mode.
+    还需要注意，由于保持事务一致性的开销，此模式下的性能可能不如流复制模式和原生复制模式。
    </para>
 
    <para>
-    The <firstterm>logical replication mode</firstterm> can be used
-    with <productname>PostgreSQL</> servers operating logical
-    replication. In this mode, <productname>PostgreSQL</> is
-    responsible for synchronizing tables. Load balancing is possible
-    in the mode. Since logical replication does not replicate all
-    tables, it's user's responsibility to replicate the table which
-    could be load balanced. <productname>Pgpool-II</> load balances
-    all tables. This means that if a table is not
-    replicated, <productname>Pgpool-II</> may lookup outdated tables
-    in the subscriber side.
+    在<firstterm>原生复制模式</firstterm>下，<productname>Pgpool-II</> 负责同步数据库。该模式的优势在于同步是以同步方式进行的：向数据库写入数据时，直到所有 <productname>PostgreSQL</> 服务器完成写入操作后才会返回。由于不保证节点间的可见性一致性，除非您需要使用除 REPEATABLE READ 之外的隔离模式，否则建议使用快照隔离模式。此模式支持负载均衡。
    </para>
 
    <para>
-    In the <firstterm>raw
-     mode</firstterm>, <productname>Pgpool-II</> does not care about
-    the database synchronization. It's user's responsibility to make
-    the whole system does a meaningful thing. Load balancing
-    is <emphasis>not</emphasis> possible in the mode.
+    <firstterm>逻辑复制模式</firstterm> 可与运行逻辑复制的 <productname>PostgreSQL</> 服务器配合使用。在此模式下，<productname>PostgreSQL</> 负责同步表。此模式支持负载均衡。由于逻辑复制不会复制所有表，用户有责任确保需要负载均衡的表已被复制。<productname>Pgpool-II</> 会对所有表进行负载均衡。这意味着如果某个表未被复制，<productname>Pgpool-II</> 可能会在订阅方侧查询到过时的表数据。
+   </para>
+
+   <para>
+    在<firstterm>原始模式</firstterm>下，<productname>Pgpool-II</> 不关心数据库同步。使整个系统有意义地工作是用户的责任。此模式<emphasis>不支持</emphasis>负载均衡。
    </para>
   </sect2>
 
   <sect2 id="process-management-mode">
-   <title>Process management modes</title>
+   <title>进程管理模式</title>
 
    <indexterm zone="running-mode">
-    <primary>dynamic process management</primary>
+    <primary>动态进程管理</primary>
    </indexterm>
 
    <indexterm zone="running-mode">
-    <primary>static process management</primary>
+    <primary>静态进程管理</primary>
    </indexterm>
      <para>
-          <productname>Pgpool-II</> implements a multi-process architecture where
-          each child process can handle exactly one client connection at any time.
-          The total number of concurrent client connections <productname>Pgpool-II</>
-          can handle is configured by the
-           <link linkend="guc-num-init-children">num_init_children</link> config parameter.
-          <productname>Pgpool-II</> supports two child process management modes.
-          <firstterm>Dynamic</firstterm> and <firstterm>Static</firstterm>.
-          In static process management mode, <productname>Pgpool-II</> pre-forks the
-          num_init_children number of child
-          process at startup, and each child process keeps listening for incoming
-          client connection. While with dynamic process management mode,
-          <productname>Pgpool-II</> keeps track of idle processes and forks or kills
-          processes to keep this number within the specified boundaries.
+          <productname>Pgpool-II</> 实现了多进程架构，其中每个子进程在任何时候只能处理一个客户端连接。<productname>Pgpool-II</> 能够处理的并发客户端连接总数由<link linkend="guc-num-init-children">num_init_children</link> 配置参数配置。<productname>Pgpool-II</> 支持两种子进程管理模式：<firstterm>动态</firstterm> 和 <firstterm>静态</firstterm>。在静态进程管理模式下，<productname>Pgpool-II</> 在启动时预派生 num_init_children 数量的子进程，每个子进程持续监听传入的客户端连接。而在动态进程管理模式下，<productname>Pgpool-II</> 持续跟踪空闲进程，并通过派生或终止进程来将该数量保持在指定范围内。
      </para>
      <para>
-       <xref linkend="guc-process-management-mode"> is not available prior to
-       <productname>Pgpool-II </productname><emphasis>V4.4</emphasis>.
+       <xref linkend="guc-process-management-mode"> 在 <productname>Pgpool-II </productname><emphasis>V4.4</emphasis> 之前不可用。
       </para>
   </sect2>
 
@@ -345,23 +224,17 @@ default_transaction_isolation = 'repeatable read'
  </sect1>
 
  <sect1 id="configuring-backend-info">
-  <title>Configuring backend information</title>
+  <title>配置后端信息</title>
 
   <para>
-   For <productname>Pgpool-II</productname> to recognize <productname>PostgreSQL</>
-   backend servers, you need to configure <varname>backend*</varname>
-   in <filename>pgpool.conf</filename>.  For starters, at
-   least <xref linkend="guc-backend-hostname">
-    and <xref linkend="guc-backend-port"> parameters are required to
-     be set up to start <productname>Pgpool-II</> server.
+   要使 <productname>Pgpool-II</productname> 识别 <productname>PostgreSQL</> 后端服务器，您需要在 <filename>pgpool.conf</filename> 中配置 <varname>backend*</varname>。刚开始使用时，至少需要设置 <xref linkend="guc-backend-hostname"> 和 <xref linkend="guc-backend-port"> 参数才能启动 <productname>Pgpool-II</> 服务器。
   </para>
 
   <sect2 id="backend-settings">
-   <title>Backend Settings</title>
+   <title>后端设置</title>
 
    <para>
-    Backend <productname>PostgreSQL</> used by <productname>Pgpool-II</> must be specified in <filename>pgpool.conf</filename>.
-    See <xref linkend="runtime-config-backend-settings">
+    <productname>Pgpool-II</> 使用的后端 <productname>PostgreSQL</> 必须在 <filename>pgpool.conf</filename> 中指定。请参阅 <xref linkend="runtime-config-backend-settings">。
    </para>
 
    <!--
@@ -537,216 +410,119 @@ default_transaction_isolation = 'repeatable read'
  </sect1>
 
  <sect1 id="server-start">
-  <title>Starting Pgpool-II and PostgreSQL</title>
+  <title>启动 Pgpool-II 和 PostgreSQL</title>
 
   <para>
-   To start <productname>Pgpool-II</productname>, execute:
+   要启动 <productname>Pgpool-II</productname>，请执行：
 <screen>
 $ <userinput>pgpool -f /usr/local/etc/pgpool.conf -F /usr/local/etc/pcp.conf</userinput>
 </screen>
-   which will start the server running in the background. "-f"
-   specifies the path to the main pgpool configuration file and "-F"
-   specifies the path to the configuration file of pcp server, which
-   is the control server for <productname>Pgpool-II</productname>. For
-   other options of the command please take a look at <xref
-   linkend="pgpool"> manual.
+   这将在后台启动服务器。"-f" 指定主 pgpool 配置文件的路径，"-F" 指定 pcp 服务器配置文件的路径，pcp 服务器是 <productname>Pgpool-II</productname> 的控制服务器。有关该命令的其他选项，请参阅 <xref
+   linkend="pgpool"> 手册。
   </para>
 
   <para>
-   Before starting <productname>Pgpool-II</productname>, you must
-   start <productname>PostgreSQL</productname> because if
-   <productname>PostgreSQL</productname> has not started yet,
-   <productname>Pgpool-II</productname> triggers failover process and
-   makes <productname>PostgreSQL</productname> is in down status.
+   在启动 <productname>Pgpool-II</productname> 之前，您必须先启动 <productname>PostgreSQL</productname>，因为如果 <productname>PostgreSQL</productname> 尚未启动，<productname>Pgpool-II</productname> 会触发故障切换流程，并将 <productname>PostgreSQL</productname> 标记为宕机状态。
   </para>
 
   <para>
-   If you have difficulty in controlling the startup sequence of
-   <productname>PostgreSQL</productname>, for example
-   <productname>Pgpool-II</productname> and
-   <productname>PostgreSQL</productname> are installed on different
-   servers, you can make <xref
-   linkend="guc-search-primary-node-timeout"> longer (the default is 5
-   minutes) so that <productname>Pgpool-II</productname> waits for
-   <productname>PostgreSQL</productname> starts up until <xref
-   linkend="guc-search-primary-node-timeout"> expires. If
-   <productname>PostgreSQL</productname> starts up before <xref
-   linkend="guc-search-primary-node-timeout"> expires,
-   <productname>Pgpool-II</productname> should start up without
-   problem. If <xref linkend="guc-search-primary-node-timeout">
-   expires before <productname>PostgreSQL</productname> starts up, no
-   primary node will be detected, which means you cannot execute
-   DML/DDL. You need to restart <productname>Pgpool-II</productname>
-   in this case. To confirm that the primary node exists you can use
-   <xref linkend="sql-show-pool-nodes"> command.
+   如果您在控制 <productname>PostgreSQL</productname> 启动顺序方面遇到困难，例如 <productname>Pgpool-II</productname> 和 <productname>PostgreSQL</productname> 安装在不同的服务器上，您可以将 <xref
+   linkend="guc-search-primary-node-timeout"> 设置得更长（默认为 5 分钟），以便 <productname>Pgpool-II</productname> 等待 <productname>PostgreSQL</productname> 启动，直到 <xref
+   linkend="guc-search-primary-node-timeout"> 超时。如果 <productname>PostgreSQL</productname> 在 <xref
+   linkend="guc-search-primary-node-timeout"> 超时前启动，<productname>Pgpool-II</productname> 应该能正常启动。如果 <productname>PostgreSQL</productname> 在 <xref linkend="guc-search-primary-node-timeout"> 超时后才启动，将无法检测到主节点，这意味着您无法执行 DML/DDL 操作。在这种情况下，您需要重新启动 <productname>Pgpool-II</productname>。要确认主节点是否存在，可以使用 <xref linkend="sql-show-pool-nodes"> 命令。
   </para>
 
   <para>
-   Please note <xref linkend="guc-search-primary-node-timeout"> can
-   only be used in the streaming replication mode because the
-   parameter is only valid in the mode. See <xref
-   linkend="running-mode"> for more details about streaming
-   replication mode. For other mode, tweak the health check (see <xref
-   linkend="runtime-config-health-check">) parameters so that there's
-   enough time before <productname>PostgreSQL</productname> becomes
-   available.
+   请注意，<xref linkend="guc-search-primary-node-timeout"> 只能在流复制模式下使用，因为该参数仅在此模式下有效。有关流复制模式的更多详细信息，请参阅 <xref
+   linkend="running-mode">。对于其他模式，请调整健康检查（请参阅 <xref
+   linkend="runtime-config-health-check">）参数，以便在 <productname>PostgreSQL</productname> 可用之前有足够的时间。
   </para>
 
   <para>
-   If health check detects that <productname>PostgreSQL</productname>
-   is not available before <productname>Pgpool-II</productname> starts
-   up, some or all <productname>PostgreSQL</productname> are
-   recognized in "down" status. In this case you need to manually put
-   the <productname>PostgreSQL</productname> server in "up" state by
-   using <xref linkend="pcp-attach-node"> command.  If a client tries
-   to connect to <productname>Pgpool-II</productname> before
-   <productname>PostgreSQL</productname> is available, failover could
-   be triggered. In this case you also need to execute <xref
-   linkend="pcp-attach-node"> command to put the
-   <productname>PostgreSQL</productname> server in "up" state.
+   如果健康检查在 <productname>Pgpool-II</productname> 启动之前就检测到 <productname>PostgreSQL</productname> 不可用，某些或全部 <productname>PostgreSQL</productname> 会被识别为"宕机"状态。在这种情况下，您需要使用 <xref linkend="pcp-attach-node"> 命令手动将 <productname>PostgreSQL</productname> 服务器设置为"运行中"状态。如果在 <productname>PostgreSQL</productname> 可用之前客户端尝试连接到 <productname>Pgpool-II</productname>，可能会触发故障切换。在这种情况下，您也需要执行 <xref
+   linkend="pcp-attach-node"> 命令将 <productname>PostgreSQL</productname> 服务器设置为"运行中"状态。
   </para>
  </sect1>
 
  <sect1 id="server-stop">
-  <title>Stopping Pgpool-II and PostgreSQL</title>
+  <title>停止 Pgpool-II 和 PostgreSQL</title>
 
   <indexterm zone="server-stop">
-   <primary>shutdown</primary>
+   <primary>关闭</primary>
   </indexterm>
 
   <para>
-   To stop <productname>Pgpool-II</productname>, execute:
+   要停止 <productname>Pgpool-II</productname>，请执行：
 <screen>
 $ <userinput>pgpool -f /usr/local/etc/pgpool.conf -F /usr/local/etc/pcp.conf -m fast stop</userinput>
 </screen>
-   "-m" option specifies how gently stops
-   <productname>Pgpool-II</productname>. "fast" means shutdown
-   <productname>Pgpool-II</productname> immediately even if there are
-   existing connections from clients. You can specify "smart" to the
-   option, which force <productname>Pgpool-II</productname> to wait
-   until all clients are disconnected from
-   <productname>Pgpool-II</productname>. But this could make
-   <productname>Pgpool-II</productname> wait forever and this may
-   result in sending SIGKILL signal from the operating system and
-   leaving garbage, which will bring troubles next time when you start
-   <productname>Pgpool-II</productname>.
+   "-m" 选项指定 <productname>Pgpool-II</productname> 的停止方式。"fast" 表示即使仍有来自客户端的现有连接，也立即关闭 <productname>Pgpool-II</productname>。您可以将此选项指定为 "smart"，这将强制 <productname>Pgpool-II</productname> 等待直到所有客户端都与 <productname>Pgpool-II</productname> 断开连接。但这可能导致 <productname>Pgpool-II</productname> 无限等待，可能会引发操作系统发送 SIGKILL 信号并留下垃圾数据，从而在下次启动 <productname>Pgpool-II</productname> 时带来麻烦。
   </para>
 
   <para>
-   After shutting down <productname>Pgpool-II</productname>, you can
-   shutdown <productname>PostgreSQL</productname>.
+   关闭 <productname>Pgpool-II</productname> 后，您可以关闭 <productname>PostgreSQL</productname>。
   </para>
  </sect1>
 
  <sect1 id="server-temporarily-shutdown">
-  <title>Temporarily Shutting Down PostgreSQL</title>
+  <title>临时关闭 PostgreSQL</title>
 
   <indexterm zone="server-temporarily-shutdown">
-   <primary>shutdown</primary>
+   <primary>关闭</primary>
   </indexterm>
 
   <para>
-   Sometimes you want to temporarily stop or restart
-   <productname>PostgreSQL</productname> to maintain or version up
-   it. In this section how to perform the task with minimum downtime.
+   有时您需要临时停止或重启 <productname>PostgreSQL</productname> 以进行维护或版本升级。本节将介绍如何以最小停机时间完成此任务。
   </para>
 
   <sect2 id="using-pcp-detach-node">
-   <title>Using pcp_detach_node command</title>
+   <title>使用 pcp_detach_node 命令</title>
    <para>
-    If you stop <productname>PostgreSQL</productname> by using
-    <command>pg_ctl</command>, failover will not happen until
-    <productname>Pgpool-II</productname> detects it by the health
-    check depending on the health check settings and it will take
-    sometime to detach <productname>PostgreSQL</productname>.
-    Especially if <link linkend="tutorial-watchdog">Watchdog</link> is
-    enabled and <xref linkend="guc-failover-require-consensus"> is on,
-    <productname>Pgpool-II</productname> will not start failover until
-    more than half of watchdog nodes agree that
-    <productname>PostgreSQL</productname> is stopped. If you detach
-    the node by using <xref linkend="pcp-detach-node">, failover will
-    immediately start regardless the settings of health check. Please
-    note that the detached <productname>PostgreSQL</productname> node
-    is not actually stopped and if necessary, you need to manually
-    stop it.
+    如果使用 <command>pg_ctl</command> 停止 <productname>PostgreSQL</productname>，则不会发生故障切换，直到 <productname>Pgpool-II</productname> 通过健康检查检测到它，这取决于健康检查设置，并且断开 <productname>PostgreSQL</productname> 连接需要一些时间。特别是如果启用了<link linkend="tutorial-watchdog">Watchdog</link>且 <xref linkend="guc-failover-require-consensus"> 处于开启状态，<productname>Pgpool-II</productname> 将在超过半数 watchdog 节点同意 <productname>PostgreSQL</productname> 已停止之前不会开始故障切换。如果您使用 <xref linkend="pcp-detach-node"> 断开节点连接，无论健康检查设置如何，故障切换将立即开始。请注意，被断开的 <productname>PostgreSQL</productname> 节点实际上并未停止，如果需要，您需要手动停止它。
    </para>
   </sect2>
 
   <sect2 id="using-backend-flag">
-   <title>Using backend_flag</title>
+   <title>使用 backend_flag</title>
    <para>
-    Stopping or restarting <productname>PostgreSQL</productname>
-    causes failover. If the running mode is not streaming replication
-    mode, or the server is a standby server in streaming replication
-    mode, probably that's not a big deal because clients can always
-    use other servers in the cluster. However if the server is primary
-    server, it will cause change of primary server by promoting one of
-    the standby servers. Moreover if there's only one server remains
-    in the cluster, there are no alternative server or standby server
-    which can be promoted.
+    停止或重启 <productname>PostgreSQL</productname> 会导致故障切换。如果运行模式不是流复制模式，或者服务器是流复制模式中的备用服务器，这可能没什么大碍，因为客户端始终可以使用集群中的其他服务器。但是，如果服务器是主服务器，它将导致通过提升其中一个备用服务器来更改主服务器。此外，如果集群中只剩下一个服务器，则没有可提升的备用服务器或替代服务器。
    </para>
 
    <para>
-    In this case you can use <xref linkend="guc-backend-flag"> to avoid
-     failover.  By setting below in pgpool.conf will avoid failover of
-     backend0.
+    在这种情况下，您可以使用 <xref linkend="guc-backend-flag"> 来避免故障切换。在 pgpool.conf 中设置以下内容可以避免 backend0 的故障切换。
      <programlisting>
 backend_flag0 = DISALLOW_TO_FAILOVER
      </programlisting>
-     This will take effect by reloading or restarting
-     <productname>Pgpool-II</productname>. If this flag is set, failover
-     will not happen if the backend is not available. While the backend
-     is not available, clients will get error message:
+     通过重新加载或重启 <productname>Pgpool-II</productname> 生效。如果设置了此标志，当后端不可用时，不会发生故障切换。在后端不可用期间，客户端将收到错误消息：
      <programlisting>
 psql: error: could not connect to server: FATAL:  failed to create a backend connection
 DETAIL:  executing failover on backend
      </programlisting>
-     After restarting the backend, clients can connect as usual.
-     To allow failover on the backend again, you can set:
+     重启后端后，客户端可以正常连接。要再次允许在后端上故障切换，您可以设置：
      <programlisting>
 backend_flag0 = ALLOW_TO_FAILOVER
      </programlisting>
-     and reload or restart <productname>Pgpool-II</productname>.
+     然后重新加载或重启 <productname>Pgpool-II</productname>。
    </para>
   </sect2>
 
  </sect1>
 
  <sect1 id="backup">
-  <title>Backing up PostgreSQL database</title>
+  <title>备份 PostgreSQL 数据库</title>
 
   <indexterm zone="backup">
-   <primary>backup</primary>
+   <primary>备份</primary>
   </indexterm>
 
   <para>
-   If you plan to backup <productname>PostgreSQL</productname>
-   database
-   using <command>pg_dump</command>, <command>pg_basebackup</command>
-   or any other tools, we strongly recommend to run the commands
-   against <productname>PostgreSQL</productname>
-   directly. As <productname>Pgpool-II</productname> is a proxy
-   software, it gives an overhead for relaying message packets. Since
-   obtaining a backup tends to produce lots of packets, performing
-   backup through <productname>Pgpool-II</productname> will be slow
-   compared with directly
-   connecting <productname>PostgreSQL</productname> unless the
-   database is very small.
+   如果您计划使用 <command>pg_dump</command>、<command>pg_basebackup</command> 或其他任何工具备份 <productname>PostgreSQL</productname> 数据库，我们强烈建议直接针对 <productname>PostgreSQL</productname> 运行这些命令。由于 <productname>Pgpool-II</productname> 是一个代理软件，它在转发消息包时会产生额外的开销。由于获取备份往往会产生大量数据包，除非数据库非常小，否则通过 <productname>Pgpool-II</productname> 执行备份的速度会比直接连接 <productname>PostgreSQL</productname> 慢。
   </para>
   <para>
-   Moreover, parallel <command>pg_dump</command> raises error if it is
-   executed through <productname>Pgpool-II</productname> because the
-   command handles snapshot id, which is a database depending object.
+   此外，并行 <command>pg_dump</command> 如果通过 <productname>Pgpool-II</productname> 执行会报错，因为该命令会处理快照 ID，而快照 ID 是依赖于数据库的对象。
   </para>
   <para>
-   In most cases you want to choose primary server as the backup
-   target.  If you want backup standby server, you have to be very
-   careful in choosing the right <productname>PostgreSQL</productname>
-   server to obtain a backup because if the data is outdated, you are
-   likely to have outdated database backup. You can
-   use <xref linkend="SQL-SHOW-POOL-NODES">
-   or <xref linkend="PCP-NODE-INFO"> to know how the standby server
-   catches up the primary server.
+   在大多数情况下，您应该选择主服务器作为备份目标。如果您想备份备用服务器，则在选择正确的 <productname>PostgreSQL</productname> 服务器获取备份时必须非常小心，因为如果数据已过时，您很可能得到的是过时的数据库备份。您可以使用 <xref linkend="SQL-SHOW-POOL-NODES"> 或 <xref linkend="PCP-NODE-INFO"> 来了解备用服务器与主服务器的同步情况。
   </para>
  </sect1>
 
