@@ -1,0 +1,480 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+> What is Pgpool-II?</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Preface"
+HREF="preface.html"><LINK
+REL="PREVIOUS"
+TITLE="Preface"
+HREF="preface.html"><LINK
+REL="NEXT"
+TITLE="A Brief History of Pgpool-II"
+HREF="history.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Preface"
+HREF="preface.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="preface.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Preface</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="A Brief History of Pgpool-II"
+HREF="history.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INTRO-WHATIS"
+>What is <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>?</A
+></H1
+><P
+>   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> manages a
+   <I
+CLASS="FIRSTTERM"
+>pool</I
+> of
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers to achieve some
+   features that are not available with single
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> installation. The features
+   include:
+
+   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>High Availability</DT
+><DD
+><P
+>       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> provides a high
+       availability (HA) feature by using multiple
+       <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers so that it
+       automatically removes broken server from the server pool to
+       continue the database task. This is called <I
+CLASS="FIRSTTERM"
+>automatic
+       failover</I
+>. Also <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+       offers an HA feature for <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+       itself, called <I
+CLASS="FIRSTTERM"
+>Watchdog</I
+> (see <A
+HREF="tutorial-watchdog.html"
+>Chapter 4</A
+> for more details). Moreover
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> hires sophisticated
+       <I
+CLASS="FIRSTTERM"
+>quorum</I
+> algorithm to avoid false positive
+       errors and split brain problem to make the whole HA system
+       highly reliable. See <A
+HREF="runtime-watchdog-config.html#CONFIG-WATCHDOG-FAILOVER-BEHAVIOR"
+>Section 5.15.6</A
+> for more details.
+      </P
+></DD
+><DT
+>Load balancing</DT
+><DD
+><P
+>       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> distributes read queries
+       over multiple <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers to
+       gain higher performance. This feature is called <I
+CLASS="FIRSTTERM"
+>load
+       balancing</I
+>. Write queries are sent to either the
+       primary server (in streaming replication mode) or all servers
+       (in native replication mode and snapshot isolation mode). See
+       <A
+HREF="configuring-pgpool.html#RUNNING-MODE"
+>Section 3.4.2</A
+> for more details about these
+       mode. In any case, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+       automatically distinguish the read queries from the write
+       queries.
+      </P
+></DD
+></DL
+></DIV
+><P>
+  </P
+><P
+>   Besides these essential features, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> also provides useful
+   features such as:
+  </P
+><P
+>   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Connection Pooling</DT
+><DD
+><P
+>       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> maintains established
+       connections to the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       servers, and reuses them whenever a new connection with the
+       same properties (i.e. user name, database, protocol version, and other connection parameters if any)
+       comes in. It reduces the connection overhead, and improves
+       system's overall throughput.
+      </P
+></DD
+><DT
+>Online Recovery</DT
+><DD
+><P
+>       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> can perform online recovery of database
+       node by executing one command. When the online recovery is used with the
+       automated fail over, a detached node by fail over is possible to attach as
+       standby node automatically. It is possible to synchronize and attach new
+       <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server too.
+      </P
+></DD
+><DT
+>Limiting Exceeding Connections</DT
+><DD
+><P
+>       There is a limit on the maximum number of concurrent
+       connections with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, and
+       new connections are rejected when this number is
+       reached. Raising this maximum number of connections, however,
+       increases resource consumption and has a negative impact on
+       overall system
+       performance. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> also has a
+       limit on the maximum number of connections, but extra
+       connections will be queued instead of returning an error
+       immediately. However, you can configure to return an error
+       when the connection limit is exceeded (4.1 or later).
+      </P
+></DD
+><DT
+>Watchdog</DT
+><DD
+><P
+>       Watchdog can coordinate multiple <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>,
+       create a robust cluster system and avoid the single point of failure or split brain.
+       To avoid the split brain, you need at least 3 <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> nodes.
+       Watchdog can perform lifecheck against other <SPAN
+CLASS="PRODUCTNAME"
+>pgpool-II</SPAN
+> nodes,
+       to detect a fault of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+       If active <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> goes down, standby
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> can be promoted to active, and take over Virtual IP.
+      </P
+></DD
+><DT
+>In Memory Query Cache</DT
+><DD
+><P
+>       In memory query cache allows to save a pair of SELECT statement and its result.
+       If an identical SELECTs comes in, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> returns the
+       value from cache. Since no SQL parsing nor access to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       are involved, using in memory cache is extremely fast. On the other hand, it might
+       be slower than the normal path in some cases, because it adds some overhead of storing cache data.
+      </P
+></DD
+></DL
+></DIV
+><P>
+
+  </P
+><P
+>   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> speaks PostgreSQL's backend
+   and frontend protocol, and relays messages between a backend and a
+   frontend. Therefore, a database application (frontend) thinks
+   that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is the
+   actual <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server, and the
+   server (backend) sees <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> as one
+   of its clients. Because
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is transparent to both the server and the client, an
+   existing database application can be used with <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> almost
+   without a change to its source code.
+  </P
+><P
+>   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> works on Linux, FreeBSD, and
+   most of the UNIX-like architectures. Windows is not
+   supported. Supported PostgreSQL server's versions are 7.4 and
+   higher (some of the features may not work with older versions of
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>). You must also make sure
+   that all of your <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers are
+   using the same major version. In addition to this, we do not
+   recommend mixing different <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+   installation with different build options: including supporting SSL
+   or not, to use --disable-integer-datetimes or not, different block
+   size. These might affect part of functionality of
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. The difference of
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> minor versions is not usually
+   a problem. However we do not test every occurrence of minor
+   versions and we recommend to use exact same minor version of
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+  </P
+><P
+>   There are some restrictions to using SQL via <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+   See <A
+HREF="restrictions.html"
+>Restrictions</A
+> for more details.
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="preface.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="history.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Preface</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="preface.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>A Brief History of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

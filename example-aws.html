@@ -1,0 +1,1083 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>AWS Configuration Example</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuration Examples"
+HREF="example-configs.html"><LINK
+REL="PREVIOUS"
+TITLE="Replication Mode and Snapshot Isolation Mode Configuration Example"
+HREF="example-replication-mode.html"><LINK
+REL="NEXT"
+TITLE="Aurora Configuration Example"
+HREF="example-aurora.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Replication Mode and Snapshot Isolation Mode Configuration Example"
+HREF="example-replication-mode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="example-configs.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Configuration Examples</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Aurora Configuration Example"
+HREF="example-aurora.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="EXAMPLE-AWS"
+>8.4. AWS Configuration Example</A
+></H1
+><P
+>  This tutorial shows an example of setting a virtual IP
+  when using watchdog on <A
+HREF="https://aws.amazon.com/"
+TARGET="_top"
+>AWS</A
+>.
+ </P
+><P
+>  There are several methods to set up a virtual IP on AWS. This example describes the following methods:
+ </P
+><P
+></P
+><UL
+><LI
+><P
+>    <A
+HREF="example-aws.html#EXAMPLE-AWS-EIP"
+>Section 8.4.1</A
+> Assigning Elastic IP
+   </P
+></LI
+><LI
+><P
+>    <A
+HREF="example-aws.html#EXAMPLE-AWS-RTB"
+>Section 8.4.2</A
+> Updating route table
+   </P
+></LI
+></UL
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="EXAMPLE-AWS-EIP"
+>8.4.1. Assigning Elastic IP</A
+></H2
+><P
+>   This section explains how to use an Elastic IP address as a virtual IP and associate it with the leader Pgpool-II (watchdog) instance.
+  </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-EIP-SETUP"
+>8.4.1.1. AWS Setup</A
+></H3
+><P
+>    When using this method, it is assumed that the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    EC2 instance is placed in a public subnet and clients connect to
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> via Internet.
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>This method supports multiple availability zones.</I
+></SPAN
+>
+   </P
+><P
+>    In this example, we will use three nodes <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    (watchdog) cluster. So we will create three EC2 instances and one Elastic IP address.
+   </P
+><P
+>    Complete the following steps to setup AWS:
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>      Launch three EC2 instances.
+     </P
+></LI
+><LI
+><P
+>      Configure the security group for the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instances.
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>        Allow inbound traffic on ports used by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and watchdog.
+       </P
+></LI
+><LI
+><P
+>        Since <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> (watchdog) will ping the virtual IP to check connectivity,
+        allow inbound ICMP traffic from the Elastic IP (Source).
+       </P
+></LI
+></UL
+></LI
+><LI
+><P
+>      Install <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> on each instance.
+     </P
+></LI
+><LI
+><P
+>      <A
+HREF="https://docs.aws.amazon.com/cli/index.html"
+TARGET="_top"
+>AWS CLI</A
+> is
+      a tool to manage your AWS services on EC2 instances.
+      Install <A
+HREF="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html"
+TARGET="_top"
+>AWS CLI</A
+> on each <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instance.
+     </P
+><P
+>      Furthermore, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>run aws configure as Pgpool-II startup user</I
+></SPAN
+>
+      to create the config and credentials files so that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      startup user can run AWS CLI.
+      If <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is installed using RPM packages,
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is running as <TT
+CLASS="LITERAL"
+>postgres</TT
+>
+      user by default.
+     </P
+></LI
+><LI
+><P
+>      Allocate an Elastic IP address.
+      In this example, we will use "35.163.178.3".
+     </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-EIP-PGPOOL-CONFIG"
+>8.4.1.2. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations</A
+></H3
+><P
+>    This section explains how to configure <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+    Mostly the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations for this
+    example will be same as in the <A
+HREF="example-cluster.html"
+>Section 8.2</A
+>, except
+    using <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+>/<A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+>
+    to assign/remove an Elastic IP address to/from the leader
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instance.
+   </P
+><P
+>    Specify the Elastic IP address to <A
+HREF="runtime-watchdog-config.html#GUC-DELEGATE-IP"
+>delegate_ip</A
+>.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>use_watchdog = on
+delegate_ip = '35.163.178.3'
+   </PRE
+><P
+>    Specify the script used to assign/remove Elastic IP address to
+    <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+> and <A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+>.
+    <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+> is the script executed by the watchdog to
+    assign the Elastic IP to the instance when watchdog becomes the leader node.
+    <A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+> is the script executed by watchdog to
+    remove the Elastic IP from the instance when watchdog resign from the leader node.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>if_up_cmd = '&lt;path to script&gt; up $_IP_$ &lt;path to awscli&gt;'
+if_down_cmd = '&lt;path to script&gt; down $_IP_$ &lt;path to awscli&gt;'
+   </PRE
+><P
+></P
+><UL
+><LI
+><P
+>      &lt;path to script&gt;: Specify the path to the script used to assign or remove Elastic IP address.
+     </P
+></LI
+><LI
+><P
+>      &lt;path to awscli&gt;: Specify the path to AWS CLI command.
+     </P
+></LI
+></UL
+><P
+>    In this example, we use the following settings. Replace them with your own settings.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>if_up_cmd = '/etc/pgpool-II/aws_eip_if_cmd.sh up $_IP_$ /usr/local/bin/aws'
+if_down_cmd = '/etc/pgpool-II/aws_eip_if_cmd.sh down $_IP_$ /usr/local/bin/aws'
+   </PRE
+><P
+>    Because <TT
+CLASS="COMMAND"
+>arping</TT
+> isn't required on AWS, set it to 'true' to always return a successful exit status.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>arping_cmd = 'true'
+   </PRE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-EIP-SCRIPT"
+>8.4.1.3. Elastic IP assigning/removing script</A
+></H3
+><P
+>    Create the script executed by if_up_cmd/if_down_cmd on each Pgpool-II instance.
+   </P
+><P
+>    In this example, we use the sample script <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/aws_eip_if_cmd.sh.sample;hb=refs/heads/V4_4_STABLE"
+TARGET="_top"
+>aws_eip_if_cmd.sh</A
+>. Modify it if necessary.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>(run the following command on each Pgpool-II instance)
+# cp -p /etc/pgpool-II/sample_scripts/aws_eip_if_cmd.sh.sample /etc/pgpool-II/aws_eip_if_cmd.sh
+   </PRE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-EIP-TRY"
+>8.4.1.4. Try it out</A
+></H3
+><P
+>    Start <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> on each <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    instance.
+    Try to connect to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> using the Elastic IP address.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>[user@someserver]$ psql -h 35.163.178.3 -p 9999 -U postgres -c "show pool_nodes"
+   </PRE
+><P
+>    Stop the leader <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+    Then the Elastic IP address is reassigned to the new leader <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+    Verify that you can connect to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    using Elastic IP address even if the leader <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    has switched over.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>[user@someserver]$ psql -h 35.163.178.3 -p 9999 -U postgres -c "show pool_nodes"
+   </PRE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="EXAMPLE-AWS-RTB"
+>8.4.2. Updating Route Table</A
+></H2
+><P
+>   This section describes how to control routing for the leader Pgpool-II (watchdog)
+   by updating the route table entry.
+  </P
+><P
+>   In this method, a private IP address is used as a virtual IP and assigned to the
+   leader Pgpool-II instance. If a failover occurs, reassign the virtual IP,
+   and route traffic with a destination address of the virtual IP to the new leader
+   Pgpool-II instance by updating route tables.
+  </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-RTB-SETUP"
+>8.4.2.1. AWS Setup</A
+></H3
+><P
+>    When using this method, it is assumed that the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    EC2 instance is placed in a private subnet and the client application connects to
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> within the same VPC.
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>This method supports multiple Availability Zones.</I
+></SPAN
+>
+   </P
+><P
+>    In this example, we will use three nodes <SPAN
+CLASS="PRODUCTNAME"
+>    Pgpool-II</SPAN
+> (watchdog) cluster. So we will create three
+    EC2 instances across multiple Availability Zones.
+   </P
+><P
+>    Complete the following steps to setup AWS:
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>      Create a VPC with one public subnet and three private subnets,
+      and each private subnet is in a different Availability Zone.
+      For detailed information, please refer to the
+      <A
+HREF="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html"
+TARGET="_top"
+>documentation</A
+>.
+     </P
+></LI
+><LI
+><P
+>      create two route tables associated with the public subnet and the private subnet
+      respectively. Please refer to this <A
+HREF="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html#VPC_Scenario2_Routing"
+TARGET="_top"
+>documentation</A
+>
+      for detailed information.
+     </P
+></LI
+><LI
+><P
+>      Launch one application EC2 instance in the public subnet and
+      three Pgpool-II EC2 instances in different private subnets.
+     </P
+></LI
+><LI
+><P
+>      Configure a security group allowing traffic from the VPC CIDR block range
+      on the ports used by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and watchdog.
+     </P
+></LI
+><LI
+><P
+>      Install <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> on each Pgpool-II EC2 instance.
+     </P
+></LI
+><LI
+><P
+>      <A
+HREF="https://docs.aws.amazon.com/cli/index.html"
+TARGET="_top"
+>AWS CLI</A
+> is
+      a tool to manage your AWS services on EC2 instances.
+      Install <A
+HREF="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html"
+TARGET="_top"
+>AWS CLI</A
+> on each <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instance.
+     </P
+><P
+>      Furthermore, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>run aws configure as Pgpool-II startup user</I
+></SPAN
+>
+      to create the config and credentials files so that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      startup user can run AWS CLI.
+      If <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is installed using RPM packages,
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is running as <TT
+CLASS="LITERAL"
+>postgres</TT
+>
+      user by default.
+     </P
+></LI
+><LI
+><P
+>      Assigning or removing a virtual IP address requires root privileges.
+      If you start <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> as a non-root user,
+      configure the sudoers file and allow this user to run sudo without being
+      asked for the password.
+      If <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is installed using RPM packages,
+      the settings for <TT
+CLASS="LITERAL"
+>postgres</TT
+> user are automatically added to sudoers.
+     </P
+></LI
+><LI
+><P
+>      Choose an IPv4 address to be used as the virtual IP.
+      Because the secondary IP address cannot be reassigned across multiple subnets,
+      you need to choose a private IP address which should not belong to
+      the IP addresses range for VPC.
+      In this example, we use "20.0.0.50".
+     </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-RTB-PGPOOL-CONFIG"
+>8.4.2.2. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations</A
+></H3
+><P
+>    This section explains how to configure <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+    Mostly the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations for this
+    example will be same as in the <A
+HREF="example-cluster.html"
+>Section 8.2</A
+>, except
+    using <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+> and <A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+>
+    to assign the virtual IP and update route tables.
+   </P
+><P
+>    Specify the virtual IP to <A
+HREF="runtime-watchdog-config.html#GUC-DELEGATE-IP"
+>delegate_ip</A
+>.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>use_watchdog = on
+delegate_ip = '20.0.0.50'
+   </PRE
+><P
+>    Specify the script used to update route table to
+    <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+> and <A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+>.
+    <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+> is the script executed by watchdog to
+    assign the virtual IP and update route tables when watchdog becomes the leader node.
+    <A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+> is the script executed by watchdog to
+    remove the virtual IP and update route tables when watchdog resign from the leader node.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>if_up_cmd = '&lt;path to script&gt; up $_IP_$ &lt;interface&gt; &lt;route table ID&gt; &lt;path to awscli&gt;'
+if_down_cmd = '&lt;path to script&gt; down $_IP_$ &lt;interface&gt; &lt;route table ID&gt; &lt;path to awscli&gt;'
+   </PRE
+><P
+></P
+><UL
+><LI
+><P
+>      &lt;path to script&gt;: Specify the path to the script used to assign the virtual IP and update route tables.
+     </P
+></LI
+><LI
+><P
+>      &lt;interface&gt;: Specify the network interface to assign the virtual IP.
+     </P
+></LI
+><LI
+><P
+>      &lt;route table ID&gt;: Specify the route table IDs (e.g. client application or
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instance) to be updated.
+      You can specify multiple comma separated route table IDs.
+     </P
+></LI
+><LI
+><P
+>      &lt;path to awscli&gt;: Specify the path to AWS CLI command.
+     </P
+></LI
+></UL
+><P
+>    In this example, we use the following settings. Replace them with your own settings.
+    Specify the route table IDs associated with the public subnet where the application
+    EC2 instance is located and the private subnet where the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    EC2 instances are located.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>if_up_cmd = '/etc/pgpool-II/aws_rtb_if_cmd.sh up $_IP_$ eth0 rtb-012345abcd,rtb-67890abcd /usr/local/bin/aws'
+if_down_cmd = '/etc/pgpool-II/aws_rtb_if_cmd.sh down $_IP_$ eth0 rtb-012345abcd,rtb-67890abcd /usr/local/bin/aws'
+   </PRE
+><P
+>    Because <TT
+CLASS="COMMAND"
+>arping</TT
+> isn't required on AWS, set it to 'true' to always return a successful exit status.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>arping_cmd = 'true'
+   </PRE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-RTB-SCRIPT"
+>8.4.2.3. Route table updating script</A
+></H3
+><P
+>    Create the script executed by <TT
+CLASS="VARNAME"
+>if_up_cmd/if_down_cmd</TT
+> on each
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instance.
+   </P
+><P
+>    In this example, we use the sample script <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=blob_plain;f=src/sample/scripts/aws_rtb_if_cmd.sh.sample;hb=refs/heads/V4_4_STABLE"
+TARGET="_top"
+>aws_rtb_if_cmd.sh</A
+>. Modify it if necessary.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>(run the following command on each Pgpool-II instance)
+# cp -p /etc/pgpool-II/sample_scripts/aws_rtb_if_cmd.sh.sample /etc/pgpool-II/aws_rtb_if_cmd.sh
+   </PRE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-RTB-ENI"
+>8.4.2.4. Disabling source/destination check</A
+></H3
+><P
+>    AWS EC2 instance checks the source or the destination of any received
+    traffics by default. You <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must disable source/destination check</I
+></SPAN
+> on each
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instance to route the traffic for virtual IP
+    to the target instance.
+   </P
+><P
+>    Disable "source/destination check" in the network interface settings of all
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> instances.
+    It can be configured through the AWS Management Console
+    or using AWS CLI. When using the AWS CLI, execute the following command.
+    Set <TT
+CLASS="VARNAME"
+>LOCAL_INTERFACE</TT
+> to the network interface where the virtual IP will be added.
+    In the example, we use eth0.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>$ sudo su - postgres
+$ TOKEN=$(curl -sX PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+$ LOCAL_INTERFACE=<B
+CLASS="EMPHASIS"
+>eth0</B
+>
+$ MAC_ADDR=$(ip -br link show dev ${LOCAL_INTERFACE} | tr -s ' ' | cut -d ' ' -f3)
+$ EC2_NETWORK_INTERFACE_ID=$(curl -H "X-aws-ec2-metadata-token: ${TOKEN}" -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/${MAC_ADDR}/interface-id)
+$ aws ec2 modify-network-interface-attribute --network-interface-id ${EC2_NETWORK_INTERFACE_ID} --no-source-dest-check
+   </PRE
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="EXAMPLE-AWS-RBT-TRY"
+>8.4.2.5. Try it out</A
+></H3
+><P
+>    Start <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> on each <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    instance.
+    Try to connect to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> using the virtual IP
+    from the application instance.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>[user@application instance]$ psql -h 20.0.0.50 -p 9999 -U postgres -c "show pool_nodes"
+   </PRE
+><P
+>    Stop the leader <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+    Then the virtual IP is reassigned to the new leader <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+    Verify that you can connect to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    using Elastic IP address from application instance even if the leader
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> has switched over.
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>[user@application instance]$ psql -h 20.0.0.50 -p 9999 -U postgres -c "show pool_nodes"
+   </PRE
+></DIV
+></DIV
+><H3
+><A
+NAME="AEN9020"
+>AWS Command References</A
+></H3
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9022"
+></A
+><P
+>"<A
+HREF="http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html"
+TARGET="_top"
+>Configure AWS CLI</A
+>", <I
+>AWS Documentation: Configuring the AWS Command Line Interface</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9028"
+></A
+><P
+>"<A
+HREF="http://docs.aws.amazon.com/cli/latest/reference/ec2/associate-address.html"
+TARGET="_top"
+>associate-address</A
+>", <I
+>AWS Documentation: associate-address reference</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9034"
+></A
+><P
+>"<A
+HREF="http://docs.aws.amazon.com/cli/latest/reference/ec2/disassociate-address.html"
+TARGET="_top"
+>disassociate-address</A
+>", <I
+>AWS Documentation: disassociate-address reference</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9040"
+></A
+><P
+>"<A
+HREF="https://docs.aws.amazon.com/cli/latest/reference/ec2/create-route.html"
+TARGET="_top"
+>create-route</A
+>", <I
+>AWS Documentation: create-route reference</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9046"
+></A
+><P
+>"<A
+HREF="https://docs.aws.amazon.com/cli/latest/reference/ec2/replace-route.html"
+TARGET="_top"
+>replace-route</A
+>", <I
+>AWS Documentation: replace-route reference</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9052"
+></A
+><P
+>"<A
+HREF="https://docs.aws.amazon.com/cli/latest/reference/ec2/delete-route.html"
+TARGET="_top"
+>delete-route</A
+>", <I
+>AWS Documentation: delete-route reference</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+><DIV
+CLASS="BIBLIOENTRY"
+><A
+NAME="AEN9058"
+></A
+><P
+>"<A
+HREF="https://docs.aws.amazon.com/cli/latest/reference/ec2/modify-network-interface-attribute.html"
+TARGET="_top"
+>modify-network-interface-attribute</A
+>", <I
+>AWS Documentation: modify-network-interface-attribute</I
+>.</P
+><DIV
+CLASS="BIBLIOENTRYBLOCK"
+STYLE="margin-left: 0.5in"
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="example-replication-mode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="example-aurora.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Replication Mode and Snapshot Isolation Mode Configuration Example</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="example-configs.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Aurora Configuration Example</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

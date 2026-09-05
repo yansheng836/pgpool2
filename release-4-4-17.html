@@ -1,0 +1,489 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.4.17</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.5.0"
+HREF="release-4-5-0.html"><LINK
+REL="NEXT"
+TITLE="Release 4.4.16"
+HREF="release-4-4-16.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.5.0"
+HREF="release-4-5-0.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.4.16"
+HREF="release-4-4-16.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-4-17"
+>A.25. Release 4.4.17</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2026-06-04</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14824"
+>A.25.1. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow <TT
+CLASS="LITERAL"
+>pgproto</TT
+> to accept new line data. (Tatsuo Ishii)
+    </P
+><P
+>     Now <TT
+CLASS="LITERAL"
+>"\n"</TT
+> is recognized as a new line. This is necessary for <TT
+CLASS="COMMAND"
+>COPY</TT
+> command.
+    </P
+></LI
+><LI
+><P
+>     Keep local primary_node_id when leader watchdog reports the initial -2 sentinel. (Tatsuo Ishii)
+    </P
+><P
+>     Fix a watchdog synchronization issue after simultaneous restart of all pgpool nodes,
+     where standby nodes could overwrite a valid primary_node_id with the initial -2 sentinel
+     value and remain stuck in an uninitialized state indefinitely. Fix is, keep the local
+     primary_node_id when the leader reports the initial -2 sentinel.
+    </P
+><P
+>     Problem reported by Emond Papegaaij and Claude Code.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/CAGXsc%2BZmBoLs3Mz%3DG-Bdm4JJG%2BfH1NpHfR3qVJVwW4eBKWwStQ%40mail.gmail.com"
+TARGET="_top"
+>Primary node detection race at clean startup</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix empty query case in aborted transaction. (Tatsuo Ishii)
+    </P
+><P
+>     Fix empty queries in aborted transactions incorrectly raising errors.
+     Empty queries should be allowed in aborted transactions,
+     but a previous commit caused <CODE
+CLASS="FUNCTION"
+>check_transaction_state_and_abort()</CODE
+> to reject them.
+     Fix is, detect empty queries in <CODE
+CLASS="FUNCTION"
+>SimpleQuery()</CODE
+> and bypass the check.
+    </P
+><P
+>     Problem reported by Ronaldo Raivil.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/161"
+TARGET="_top"
+>pgpool &#62;= 4.3.2 synthesizes 25P02 on driver health-check probes inside aborted savepoints, breaking ORMs that need to call ROLLBACK TO SAVEPOINT</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix description about <TT
+CLASS="VARNAME"
+>ssl_dh_params_file</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     It actually falls back to compiled-in default not only when the
+     parameter is empty (the default), but when specified parameter is
+     incorrect one.
+    </P
+></LI
+><LI
+><P
+>     Fix PCP main process to remember child pids upon restarting. (Tatsuo Ishii)
+    </P
+><P
+>     Upon failover/failback, pgpool main process sends a signal to PCP main
+     process to request restarting, and PCP main restarts. Problem is, when
+     PCP main restarts, it forgets the list of pids of its child PCP worker
+     process.
+
+     As a result, commands such as <TT
+CLASS="COMMAND"
+>pcp_promote_node</TT
+> could hang indefinitely.
+     Fix is, store PCP worker PIDs in shared memory so they survive PCP main restart.
+    </P
+><P
+>     Problem reported by Taiki Koshino.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20260425.223051.1207744844622514060.ishii%40postgresql.org"
+TARGET="_top"
+>Problem with pcp process</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix version mismatch: regenerate configure for 4.4.16. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Fix query cache to invalidate cache when <TT
+CLASS="COMMAND"
+>MERGE</TT
+> statement is used. (Tatsuo Ishii)
+    </P
+><P
+>     <TT
+CLASS="COMMAND"
+>MERGE</TT
+> was introduced in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 15
+     and <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 4.4 imported <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 15's parser.
+     However, there was an oversight in query cache sub module:
+     <TT
+CLASS="COMMAND"
+>MERGE</TT
+> statement did not trigger invalidation of query cache.
+    </P
+><P
+>     Problem reported by Nadav Shatz.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20260407.090802.1335576118037412011.ishii%40postgresql.org"
+TARGET="_top"
+>Re: Proposal: Recent mutated table tracking in memory</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix memory leak in a SSL module. (Tatsuo Ishii)
+    </P
+><P
+>     Fix a memory leak in <CODE
+CLASS="FUNCTION"
+>load_dh_file()</CODE
+> when invalid DH parameters are supplied.
+     The function failed to free memory returned by <CODE
+CLASS="FUNCTION"
+>PEM_read_DHparams()</CODE
+>.
+     Also update the copyright notice in the same file to retain the original <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> copyright.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20260403.091842.102589579921239540.ishii%40postgresql.org"
+TARGET="_top"
+>Memory leak in SSL module</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix incorrect routing of <TT
+CLASS="COMMAND"
+>SET transaction_read_only = 0</TT
+>. (Bo Peng)
+    </P
+><P
+>     Fix incorrect routing of <TT
+CLASS="COMMAND"
+>SET transaction_read_only = 0</TT
+> to standby node, which caused query errors.
+     Also replace incorrect bool ret = POOL_BOTH with the proper enum type.
+    </P
+><P
+>     Problem reported by liujinyang-highgo.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/155"
+TARGET="_top"
+>set command 'set transaction_read_only = 0;' routed to standby node and execute failed.</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix session local relation cache case bug. (Tatsuo Ishii)
+    </P
+><P
+>     Fix incorrect handling of session local relation cache in <CODE
+CLASS="FUNCTION"
+>pool_search_relcache()</CODE
+>.
+     Temporary table information could be incorrectly registered in shared relation cache, causing subsequent queries
+     to use stale cache entries and potentially route queries incorrectly.
+     Fix is, avoid registering temp table information in shared relation cache for session local cache entries.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/154"
+TARGET="_top"
+>query temp table is routed to standby node.</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix lock release leak in <CODE
+CLASS="FUNCTION"
+>pool_search_relcache()</CODE
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Fix a lock release leak in <CODE
+CLASS="FUNCTION"
+>pool_search_relcache()</CODE
+>.
+     During shared relation cache updates, the lock state was not reset correctly after reacquiring an exclusive lock,
+     which could leave the shared memory lock held. Also rename confusing variable <TT
+CLASS="VARNAME"
+>locked</TT
+> to <TT
+CLASS="VARNAME"
+>locked_by_others</TT
+>
+     and fix unnecessary <TT
+CLASS="VARNAME"
+>per_node_statement_log</TT
+> output.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20260317.182615.1046517700474336117.ishii%40postgresql.org"
+TARGET="_top"
+>Lock release leak in pool_search_relcache</A
+>
+    </P
+></LI
+><LI
+><P
+>     Close listening sockets before forking. (Tatsuo Ishii)
+    </P
+><P
+>     Fix inherited unnecessary listening sockets in forked child processes.
+     Previously, subprocesses such as pcp_main, health check,
+     and lifecheck processes inherited pgpool and/or PCP listening sockets they did not use,
+     which could prevent subsequent pgpool startup from binding ports correctly.
+     Fix is, close unnecessary listening sockets after forking using <CODE
+CLASS="FUNCTION"
+>close_listening_sockets()</CODE
+>.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20260302.100028.1346768433787074248.ishii%40postgresql.org"
+TARGET="_top"
+>Close listening socokets before forking</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14910"
+>A.25.2. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Doc: fix <TT
+CLASS="VARNAME"
+>ignore_leading_white_space</TT
+> and <TT
+CLASS="VARNAME"
+>allow_sql_comments</TT
+> docs. (Tatsuo Ishii)
+    </P
+><P
+>     They lacked a description on the default values.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-5-0.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-4-16.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.5.0</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.4.16</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

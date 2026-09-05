@@ -1,0 +1,522 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>pg_enc</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Other commands"
+HREF="other-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="pg_md5"
+HREF="pg-md5.html"><LINK
+REL="NEXT"
+TITLE="pgproto"
+HREF="pgproto.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="pg_md5"
+HREF="pg-md5.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="other-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="pgproto"
+HREF="pgproto.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="PG-ENC"
+></A
+>pg_enc</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10355"
+></A
+><H2
+>Name</H2
+>pg_enc&nbsp;--&nbsp;   AES256 password encryption utility
+  </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10358"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>pg_enc</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+>...]  <TT
+CLASS="REPLACEABLE"
+><I
+>-p</I
+></TT
+> </P
+><P
+><TT
+CLASS="COMMAND"
+>pg_enc</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+>...]  <TT
+CLASS="REPLACEABLE"
+><I
+>password</I
+></TT
+> </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="R1-PG-ENC-1"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>pg_enc</TT
+>
+   AES256 password encryption utility.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10375"
+></A
+><H2
+>Options</H2
+><P
+>   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="OPTION"
+>-k <TT
+CLASS="REPLACEABLE"
+><I
+>KEY_FILE</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--key-file=<TT
+CLASS="REPLACEABLE"
+><I
+>KEY_FILE</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Set the path to the encryption key file. Default is the <TT
+CLASS="LITERAL"
+>.pgpoolkey</TT
+> file
+       located in the users home directory, which can be overridden by the environment variable <TT
+CLASS="VARNAME"
+>PGPOOLKEYFILE</TT
+>.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-K <TT
+CLASS="REPLACEABLE"
+><I
+>ENCRYPTION_KEY</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--enc-key=<TT
+CLASS="REPLACEABLE"
+><I
+>ENCRYPTION_KEY</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Encryption key to be used for encrypting database passwords.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-f <TT
+CLASS="REPLACEABLE"
+><I
+>CONFIG_FILE</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--config-file=<TT
+CLASS="REPLACEABLE"
+><I
+>CONFIG_FILE</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Specifies the <TT
+CLASS="LITERAL"
+>pgpool.conf</TT
+> file.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-i <TT
+CLASS="REPLACEABLE"
+><I
+>INPUT_FILE</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--input-file=<TT
+CLASS="REPLACEABLE"
+><I
+>INPUT_FILE</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Specifies file containing username and password pairs.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-p</TT
+><BR><TT
+CLASS="OPTION"
+>--prompt</TT
+></DT
+><DD
+><P
+>       Prompt for database password using standard input.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-P</TT
+><BR><TT
+CLASS="OPTION"
+>--prompt-for-key</TT
+></DT
+><DD
+><P
+>       Prompt for encryption key using standard input.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-m</TT
+><BR><TT
+CLASS="OPTION"
+>--update-pass</TT
+></DT
+><DD
+><P
+>       Create encrypted password entry in the pool_passwd file.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-u <TT
+CLASS="REPLACEABLE"
+><I
+>your_username</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--username=<TT
+CLASS="REPLACEABLE"
+><I
+>your_username</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Creates the <TT
+CLASS="LITERAL"
+>pool_passwd</TT
+> entry for the database user called
+       <TT
+CLASS="LITERAL"
+>your_username</TT
+>.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-h</TT
+><BR><TT
+CLASS="OPTION"
+>--help</TT
+></DT
+><DD
+><P
+>       Prints the help for <TT
+CLASS="LITERAL"
+>pg_enc</TT
+>.
+      </P
+></DD
+></DL
+></DIV
+><P>
+
+    </P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>      If you are providing the password as an argument to pg_enc and the password contains a "$" character,
+      you must escape it.
+     </P
+><P
+>      For example, if you want to use "ABC$123" as password,
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>pg_enc -m -f /path/to/pgpool.conf -u username ABC\$123
+      </PRE
+><P>
+     </P
+></BLOCKQUOTE
+></DIV
+><P>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10462"
+></A
+><H2
+>Example</H2
+><P
+>   Here is an example output:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>    pg_enc -p
+    db password: [your password]
+   </PRE
+><P>
+  </P
+><P
+>   or
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>   ./pg_enc foo
+   trying to read key from file /home/pgpool/.pgpoolkey
+
+   jglid1QRgiCl/vfhHUDyVA==
+   pool_passwd string: AESjglid1QRgiCl/vfhHUDyVA==
+  </PRE
+><P
+>   <TT
+CLASS="LITERAL"
+>pg_enc</TT
+> can be used for <TT
+CLASS="LITERAL"
+>pool_passwd</TT
+> passwords with:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>    pg_enc -m -f /path/to/pgpool.conf -u username -p
+    db password: [your password]
+   </PRE
+><P>
+   which will add an entry for <TT
+CLASS="LITERAL"
+>username</TT
+> with the password given.
+  </P
+><P
+>   To avoid password prompt or password in command parameter,
+   <TT
+CLASS="LITERAL"
+>pg_enc</TT
+> can read user name:password pairs from file.
+   It will add all user names and encrypted password to
+   <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file.
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>    $ cat users.txt
+    username1:secretpassword1
+    username2:secretpassword2
+
+    $ pg_enc -m -f /path/to/pgpool.conf -i users.txt
+    trying to read key from file /home/pgpool/.pgpoolkey
+    trying to read user:password pairs from file users.text
+
+    $ cat /path/to/pool_passwd
+    username1:AESrx5QdpGyW/+4CB80KWtwhg==
+    username2:AESUAdohy7nCUhWliRI9WiYQA==
+   </PRE
+><P>
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pg-md5.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pgproto.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>pg_md5</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="other-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>pgproto</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

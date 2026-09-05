@@ -1,0 +1,952 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Streaming Replication Check</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Configuration"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE="Online Recovery"
+HREF="runtime-online-recovery.html"><LINK
+REL="NEXT"
+TITLE="In Memory Query Cache"
+HREF="runtime-in-memory-query-cache.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Online Recovery"
+HREF="runtime-online-recovery.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Server Configuration</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="In Memory Query Cache"
+HREF="runtime-in-memory-query-cache.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RUNTIME-STREAMING-REPLICATION-CHECK"
+>5.12. Streaming Replication Check</A
+></H1
+><P
+>  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> can work with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> native
+  Streaming Replication, that is available since <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 9.0.
+  To configure <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> with streaming
+  replication, set
+   <A
+HREF="runtime-config-running-mode.html#GUC-BACKEND-CLUSTERING-MODE"
+>backend_clustering_mode</A
+> to <TT
+CLASS="LITERAL"
+>'streaming-replication'</TT
+>.
+ </P
+><P
+>  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> assumes that Streaming Replication
+  is configured with Hot Standby on PostgreSQL, which means that the
+  standby database can handle read-only queries.
+ </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-SR-CHECK-PERIOD"
+></A
+><TT
+CLASS="VARNAME"
+>sr_check_period</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the time interval in seconds to check the streaming
+     replication delay.
+     The default is 10.
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-SR-CHECK-USER"
+></A
+><TT
+CLASS="VARNAME"
+>sr_check_user</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> user name to perform streaming replication check.
+     Default is <TT
+CLASS="LITERAL"
+>''</TT
+>(empty).
+     The user must have LOGIN privilege and exist on all the
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> backends.
+     Moreover the user must be a <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+     super user or in "pg_monitor" group.
+   </P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>     To make <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+> in pg_monitor
+     group, execute following SQL command
+     by <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> super user (replace
+     "sr_check_user" with the setting of <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+>):
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>GRANT pg_monitor TO sr_check_user;
+     </PRE
+><P>
+     For <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 9.6, there's no
+     pg_monitor group and <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+> must
+     be <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> super user.
+    </P
+></BLOCKQUOTE
+></DIV
+><P>
+
+    </P
+><P
+>     If <A
+HREF="runtime-ssl.html"
+>SSL</A
+> is enabled, the
+     streaming replication check process may use SSL connection.
+    </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>      <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+> and <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-PASSWORD"
+>sr_check_password</A
+> are used even when <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-PERIOD"
+>sr_check_period</A
+> is set to 0 (disabled) for the
+      identification of the primary server.
+     </P
+></BLOCKQUOTE
+></DIV
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-SR-CHECK-PASSWORD"
+></A
+><TT
+CLASS="VARNAME"
+>sr_check_password</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the password of the <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+> <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> user
+      to perform the streaming replication checks.
+      Use <TT
+CLASS="LITERAL"
+>''</TT
+> (empty string) if the user does not requires a password.
+    </P
+><P
+>     If <TT
+CLASS="VARNAME"
+>sr_check_password</TT
+> is left blank <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     will first try to get the password for <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+> from
+      <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> file before using the empty password.
+    </P
+><P
+>     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> accepts following forms
+     of password in either <TT
+CLASS="VARNAME"
+>sr_check_password</TT
+>
+     or <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> file:
+      <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>AES256-CBC encrypted password</DT
+><DD
+><P
+>	  Most secure and recommended way to store password. The
+	  password string must be prefixed
+	  with <TT
+CLASS="LITERAL"
+>AES</TT
+>.
+	  You can use <A
+HREF="pg-enc.html"
+>pg_enc</A
+> utility to create the correctly formatted
+	   <TT
+CLASS="LITERAL"
+>AES</TT
+> encrypted password strings.
+	   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will require a valid decryption key at the
+	   startup to use the encrypted passwords.
+	   see <A
+HREF="auth-aes-encrypted-password.html#AUTH-AES-DECRYPTION-KEY"
+>Section 6.4.2</A
+> for more details on providing the
+	    decryption key to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+	 </P
+></DD
+><DT
+>MD5 hashed password</DT
+><DD
+><P
+>	  Not so secure as AES256, but still better than clear
+	  text password. The password string must be prefixed
+	  with <TT
+CLASS="LITERAL"
+>MD5</TT
+>. Note that the backend
+	  must set up MD5 authentication as well.  You can
+	  use <A
+HREF="pg-md5.html"
+>pg_md5</A
+> utility to create the
+	   correctly formatted
+	   <TT
+CLASS="LITERAL"
+>MD5</TT
+> hashed password strings.
+	 </P
+></DD
+><DT
+>Plain text password</DT
+><DD
+><P
+>	  Not encrypted, clear text password. You should avoid
+	  to use this if possible. The password string must be
+	  prefixed with <TT
+CLASS="LITERAL"
+>TEXT</TT
+>. For example if
+	  you want to set <TT
+CLASS="LITERAL"
+>mypass</TT
+> as a
+	  password, you should
+	  specify <TT
+CLASS="LITERAL"
+>TEXTmypass</TT
+> in the password
+	  field.  In the absence of a valid
+	  prefix, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will
+	  considered the string as a plain text password.
+	 </P
+></DD
+></DL
+></DIV
+><P>
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-SR-CHECK-DATABASE"
+></A
+><TT
+CLASS="VARNAME"
+>sr_check_database</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the database to perform streaming replication delay checks.
+     The default is <TT
+CLASS="LITERAL"
+>"postgres"</TT
+>.
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-DELAY-THRESHOLD"
+></A
+><TT
+CLASS="VARNAME"
+>delay_threshold</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the maximum tolerance level of replication delay in
+     <ACRONYM
+CLASS="ACRONYM"
+>WAL</ACRONYM
+> bytes on the standby server against the
+     primary server. If the delay exceeds this configured level,
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> stops sending the <ACRONYM
+CLASS="ACRONYM"
+>      SELECT</ACRONYM
+> queries to the standby server and starts routing
+     everything to the primary server even if <A
+HREF="runtime-config-load-balancing.html#GUC-LOAD-BALANCE-MODE"
+>load_balance_mode</A
+>
+      is enabled, until the standby catches-up with the primary.
+      Setting this parameter to 0 disables the delay checking.
+      This delay threshold check is performed every <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-PERIOD"
+>sr_check_period</A
+>.
+       Default is 0.
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-DELAY-THRESHOLD-BY-TIME"
+></A
+><TT
+CLASS="VARNAME"
+>delay_threshold_by_time</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the maximum tolerance level of replication delay 
+     on the standby server against the primary server.
+     If this value is specified without units, it is taken as milliseconds.
+     If the specified value is greater than
+     0, <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+> is ignored.  If the delay
+     exceeds this configured level,
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> stops sending the <ACRONYM
+CLASS="ACRONYM"
+>      SELECT</ACRONYM
+> queries to the standby server and starts routing
+     everything to the primary server even if <A
+HREF="runtime-config-load-balancing.html#GUC-LOAD-BALANCE-MODE"
+>load_balance_mode</A
+>
+      is enabled, until the standby catches-up with the primary.
+      Setting this parameter to 0 disables the delay checking.
+      This delay threshold check is performed every <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-PERIOD"
+>sr_check_period</A
+>.
+       Default is 0.
+    </P
+><P
+>      Replication delay is taken
+      from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>'s system
+      view <TT
+CLASS="STRUCTNAME"
+>pg_stat_replication</TT
+>.<TT
+CLASS="STRUCTFIELD"
+>replay_lag</TT
+>. The
+      view is available <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 10 or
+      later. If earlier version
+      of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> is
+      used, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> automatically falls
+      back to <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+>
+      and <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> is ignored.
+    </P
+><P
+>     This parameter relies
+     on <A
+HREF="runtime-config-backend-settings.html#GUC-BACKEND-APPLICATION-NAME"
+>backend_application_name</A
+> being correctly
+     set and matching <TT
+CLASS="VARNAME"
+>application_name</TT
+> in
+     your <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> standby's
+     primary_conninfo.
+    </P
+><P
+>      If this parameter is
+      enabled, <A
+HREF="sql-show-pool-nodes.html"
+>SHOW POOL NODES</A
+>
+      and <A
+HREF="pcp-node-info.html"
+>pcp_node_info</A
+> show replication delay in
+      seconds, rather than bytes.
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-PREFER-LOWER-DELAY-STANDBY"
+></A
+><TT
+CLASS="VARNAME"
+>prefer_lower_delay_standby</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      This parameter is valid only
+      when <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+>
+      or <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> is set to
+      greater than 0.  When set to on, if the delay of the load
+      balancing node is greater
+      than <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+>
+      or <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+>,
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> does not send read queries
+      to the primary node but the least delay standby with
+      backend_weight to greater than 0. If delay of all standby nodes
+      are greater than <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+>
+      or <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> the primary
+      selected as the load balancing node
+      first, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> sends to the
+      primary.  Default is off.
+     </P
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-LOG-STANDBY-DELAY"
+></A
+><TT
+CLASS="VARNAME"
+>log_standby_delay</TT
+> (<TT
+CLASS="TYPE"
+>enum</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies when to log the replication delay. Below table contains the list
+     of all valid values for the parameter.
+    </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="LOG-STANDBY-DELAY-TABLE"
+></A
+><P
+><B
+>Table 5-11. Log standby delay options</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Value</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>none</TT
+></TD
+><TD
+>Never log the standby delay</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>always</TT
+></TD
+><TD
+>Log the standby delay if it's greater than 0, every time the replication delay is checked</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>if_over_threshold</TT
+></TD
+><TD
+>Only log the standby delay, when it exceeds <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+> or <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> value (the default)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-REPLICATION-DELAY-SOURCE-CMD"
+></A
+><TT
+CLASS="VARNAME"
+>replication_delay_source_cmd</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies an external command to retrieve replication delay information
+     for replica nodes.  When this parameter is set and not
+     empty, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> uses the external command
+     instead of built-in database queries to obtain replication delays.  The
+     command is executed as the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> process
+     user.
+    </P
+><P
+>     The command receives replica node identifiers as positional arguments,
+     with the primary node omitted. Each identifier is in the
+     format <TT
+CLASS="LITERAL"
+>&lt;hostname&gt;:&lt;port&gt;</TT
+>, for
+     example <TT
+CLASS="LITERAL"
+>server1:5432 server2:5432</TT
+>. The order matches
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>'s backend order (excluding the
+     primary), allowing the script to correlate external metrics (such as from
+     AWS CloudWatch for Aurora) to the correct nodes.
+    </P
+><P
+>     The command must write a single line to stdout containing one
+     whitespace-separated delay value per replica, in milliseconds, in the
+     same order as the arguments. The line can be terminated with or without a
+     new line character. The primary node's delay is implicitly zero and
+     should not be included in the output. Delay values can be integers or
+     floating-point numbers.
+    </P
+><P
+>     Special value: <TT
+CLASS="LITERAL"
+>-1</TT
+> indicates a replica that is down but
+     not yet detected by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>'s health
+     checks. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will log this condition but
+     rely on its own health-check logic to decide whether to trigger failover;
+     no failover is triggered solely by receiving <TT
+CLASS="LITERAL"
+>-1</TT
+>.
+    </P
+><P
+>     Example for a 3-node cluster (1 primary + 2 replicas): if the command
+     receives arguments
+     <TT
+CLASS="LITERAL"
+>server1:5432 server2:5432</TT
+>, it should
+     output <TT
+CLASS="LITERAL"
+>"25.5 100"</TT
+> to indicate the first replica has
+     25.5ms delay and the second has 100ms delay.
+    </P
+><P
+>     Default is empty (use built-in replication delay queries).
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     configurations.
+    </P
+></DD
+><DT
+><A
+NAME="GUC-REPLICATION-DELAY-SOURCE-TIMEOUT"
+></A
+><TT
+CLASS="VARNAME"
+>replication_delay_source_timeout</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+    </DT
+><DD
+><P
+>     Specifies the timeout in seconds for the external command specified by
+     <A
+HREF="runtime-streaming-replication-check.html#GUC-REPLICATION-DELAY-SOURCE-CMD"
+>replication_delay_source_cmd</A
+>.  If the command does
+      not finish within the timeout, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> logs
+      an error.
+    </P
+><P
+>     Default is 10 seconds. Valid range is 1-3600 seconds.
+    </P
+><P
+>     This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     configurations.
+    </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-online-recovery.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-in-memory-query-cache.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Online Recovery</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>In Memory Query Cache</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

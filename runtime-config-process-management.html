@@ -1,0 +1,428 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Process Management</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Configuration"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE="Connections and Authentication"
+HREF="runtime-config-connection.html"><LINK
+REL="NEXT"
+TITLE="Clustering mode"
+HREF="runtime-config-running-mode.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Connections and Authentication"
+HREF="runtime-config-connection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Server Configuration</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Clustering mode"
+HREF="runtime-config-running-mode.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RUNTIME-CONFIG-PROCESS-MANAGEMENT"
+>5.3. Process Management</A
+></H1
+><P
+>  <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-PROCESS-MANAGEMENT-MODE"
+></A
+><TT
+CLASS="VARNAME"
+>process_management_mode</TT
+> (<TT
+CLASS="TYPE"
+>enum</TT
+>)
+     </DT
+><DD
+><P
+>      Specify the idle process management method for
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> child processes.
+      Valid options:
+      <DIV
+CLASS="TABLE"
+><A
+NAME="PROCESS-MANAGEMENT-MODE-TABLE"
+></A
+><P
+><B
+>Table 5-1. Possible Process Management Modes</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><TBODY
+><TR
+><TD
+>static</TD
+><TD
+>          All children are pre-forked at startup.
+	  Number of child processes is fixed (<A
+HREF="runtime-config-connection.html#GUC-NUM-INIT-CHILDREN"
+>num_init_children</A
+>).
+         </TD
+></TR
+><TR
+><TD
+>dynamic</TD
+><TD
+>child processes are spawned on demand up to <A
+HREF="runtime-config-connection.html#GUC-NUM-INIT-CHILDREN"
+>num_init_children</A
+>.
+          Number of idle child processes at any time depends on
+          min_spare_children and max_spare_children
+         </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+     </P
+><P
+>       Default is <TT
+CLASS="LITERAL"
+>static</TT
+>, that is compatible with pre <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V4.4</I
+></SPAN
+>.
+     </P
+><P
+>      <TT
+CLASS="VARNAME"
+>process_management_mode</TT
+> is not available prior to
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II </SPAN
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V4.4</I
+></SPAN
+>.
+     </P
+><P
+>      See <A
+HREF="configuring-pgpool.html#PROCESS-MANAGEMENT-MODE"
+>Section 3.4.3</A
+> for more details.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-PROCESS-MANAGEMENT-STRATEGY"
+></A
+><TT
+CLASS="VARNAME"
+>process_management_strategy</TT
+> (<TT
+CLASS="TYPE"
+>enum</TT
+>)
+     </DT
+><DD
+><P
+>      Specify the process management strategy to satisfy spare (idle) processes count
+      Valid options:
+      <DIV
+CLASS="TABLE"
+><A
+NAME="PROCESS-MANAGEMENT-STRATEGY-TABLE"
+></A
+><P
+><B
+>Table 5-2. Possible Process Management Strategies</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><TBODY
+><TR
+><TD
+>lazy</TD
+><TD
+>With this strategy the scale-down is performed gradually
+         and only gets triggered when excessive spare processes count
+         remains high for more than 5 mins
+         </TD
+></TR
+><TR
+><TD
+>gentle</TD
+><TD
+>With this strategy the scale-down is performed gradually
+         and only gets triggered when excessive spare processes count
+         remains high for more than 2 mins
+         </TD
+></TR
+><TR
+><TD
+>aggressive</TD
+><TD
+>With this strategy the scale-down is performed aggressively
+         and gets triggered more frequently in case of higher spare processes.
+         This mode uses faster and slightly less smart process selection criteria
+         to identify the child processes that can be serviced to satisfy
+         max_spare_children
+         </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+     </P
+><P
+>       Default is <TT
+CLASS="LITERAL"
+>gentle</TT
+>.
+     </P
+><P
+>       <TT
+CLASS="VARNAME"
+>process_management_strategy</TT
+> is not available prior to
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II </SPAN
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V4.4</I
+></SPAN
+>.
+      </P
+></DD
+><DT
+><A
+NAME="GUC-MIN-SPARE-CHILDREN"
+></A
+><TT
+CLASS="VARNAME"
+>min_spare_children</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Specify the minimum number of spare (idle) child processes to keep.
+      If the idle process count falls below min_spare_children,
+      Pgpool-II will spawn new child processes unless it hits the total allowed child process ceiling (num_init_children).
+      Default value is 5.
+     </P
+><P
+>      This parameter can be changed by reloading
+      the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+><P
+>      This parameter is only applicable for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dynamic</I
+></SPAN
+> process management mode.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-MAX-SPARE-CHILDREN"
+></A
+><TT
+CLASS="VARNAME"
+>max_spare_children</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Specify the maximum number of spare (idle) child processes to keep.
+      If the idle process count increases from max_spare_children, Pgpool-II will kill the excessive child processes.
+      Selection criteria is to select the processes with minimum number of pooled connections.
+      Default value is 10.
+     </P
+><P
+>      This parameter can be changed by reloading
+      the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+><P
+>      This parameter is only applicable for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dynamic</I
+></SPAN
+> process management mode.
+     </P
+></DD
+></DL
+></DIV
+><P>
+
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config-connection.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-config-running-mode.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Connections and Authentication</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Clustering mode</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

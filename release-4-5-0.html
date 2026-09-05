@@ -1,0 +1,749 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.5.0</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.5.1"
+HREF="release-4-5-1.html"><LINK
+REL="NEXT"
+TITLE="Release 4.4.17"
+HREF="release-4-4-17.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.5.1"
+HREF="release-4-5-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.4.17"
+HREF="release-4-4-17.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-5-0"
+>A.24. Release 4.5.0</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2023-12-12</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14649"
+>A.24.1. Overview</A
+></H2
+><P
+>   This release resolves several long-standing issues, including
+   lacking support for some types of queries in multiple statements
+   and session disconnections issue in some cases. Many enhancements
+   are also added for easier configuration and administration.
+  </P
+><P
+>   Major enhancements are as follows:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     Allow to use more kind of multiple statements in a query string.
+    </P
+></LI
+><LI
+><P
+>     Allow to load balance <TT
+CLASS="LITERAL"
+>PREPARE/EXECUTE/DEALLOCATE</TT
+>.
+    </P
+></LI
+><LI
+><P
+>     Allow to set <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> in milliseconds.
+    </P
+></LI
+><LI
+><P
+>     Avoid session disconnection issue in failover/failback/backend error in some cases.
+    </P
+></LI
+><LI
+><P
+>     Allow to route queries to a specific backend node for a specific user connection.
+    </P
+></LI
+><LI
+><P
+>     Support multiple directories specification for <A
+HREF="runtime-config-connection.html#GUC-PCP-SOCKET-DIR"
+>pcp_socket_dir</A
+>.
+    </P
+></LI
+><LI
+><P
+>     Import PostgreSQL 16's SQL parser.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MIGRATION-4-5-0"
+>A.24.2. Migration to Version 4.5</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     The following normal ERROR messages are downgraded to DEBUG messages. (Bo Peng)
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       These two messages are caused when the client did not send a
+       terminate message before disconnecting to pgpool.
+       For example, when the client process was forcefully terminated, this error occurs.
+       Although they are harmless, it may sometimes confuse users.
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>ERROR:unable to flush data to frontend
+      </PRE
+><PRE
+CLASS="PROGRAMLISTING"
+>ERROR:  unable to read data from frontend
+DETAIL:  EOF encountered with frontend
+      </PRE
+></LI
+><LI
+><P
+>       If <A
+HREF="runtime-config-connection-pooling.html#GUC-CLIENT-IDLE-LIMIT"
+>client_idle_limit</A
+> is set to a non-zero value,
+       the connection will be disconnected if it remains idle since the last query.
+       Because the disconnection is caused by Pgpool-II settings,
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> should handle it as "DEBUG" instead of "ERROR".
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>ERROR:  unable to read data
+DETAIL:  child connection forced to terminate due to client_idle_limit:30 is reached
+      </PRE
+></LI
+></UL
+></LI
+><LI
+><P
+>     <TT
+CLASS="OPTION"
+>-w/--no-password</TT
+> option is not required to read the pcp command password from the password file (~/.pcppass). (Chen Ningwei)
+    </P
+><P
+>     Previously pcp command didn't read the pcp command password from the password file (~/.pcppass)
+     if <TT
+CLASS="OPTION"
+>-w/--no-password</TT
+> option is not given,
+     which is inconsistent with psql.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14691"
+>A.24.3. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Add SSH timeout in sample script <TT
+CLASS="FILENAME"
+>escalation.sh.sample</TT
+>
+     which is set in <A
+HREF="runtime-watchdog-config.html#GUC-WD-ESCALATION-COMMAND"
+>wd_escalation_command</A
+> parameter. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Allow to set <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> in milliseconds. (Tatsuo Ishii)
+    </P
+><P
+>     Previously it was allowed only in seconds. Also put some
+     refactoring.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-August/004372.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-August/004372.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Import PostgreSQL 16 new parser. (Chen Ningwei)
+    </P
+><P
+>     Major changes of PostgreSQL 16 parser include:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       Add new option DEFAULT to COPY FROM
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>COPY ... FROM stdin WITH (default 'xx');
+      </PRE
+></LI
+><LI
+><P
+>       Allow the STORAGE type to be specified by CREATE TABLE
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>CREATE TABLE t1 (
+   c1 VARCHAR(10) STORAGE PLAIN,
+   c2 TEXT STORAGE EXTENDED
+);
+      </PRE
+></LI
+><LI
+><P
+>       Add EXPLAIN option GENERIC_PLAN to display the generic plan for a parameterized query
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>EXPLAIN (GENERIC_PLAN) SELECT ...;
+      </PRE
+></LI
+><LI
+><P
+>       Allow subqueries in the FROM clause to omit aliases
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>SELECT COUNT(*) FROM (SELECT ... FROM ...);
+      </PRE
+></LI
+><LI
+><P
+>       Add SQL/JSON constructors
+      </P
+></LI
+><LI
+><P
+>       Add VACUUM options:
+       SKIP_DATABASE_STATS, ONLY_DATABASE_STATS to skip or update all frozen statistics
+       and PROCESS_MAIN to only process TOAST tables.
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>VACUUM (SKIP_DATABASE_STATS);
+VACUUM (PROCESS_MAIN FALSE) t1 ;
+      </PRE
+></LI
+></UL
+></LI
+><LI
+><P
+>     Add new field <TT
+CLASS="LITERAL"
+>load_balance_node</TT
+> to <A
+HREF="sql-show-pool-pools.html"
+>SHOW POOL_POOLS</A
+> and <A
+HREF="pcp-proc-info.html"
+>pcp_proc_info</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     The new field <TT
+CLASS="LITERAL"
+>load_balance_node</TT
+> is "1"
+     if pgpool process is connected by a client and
+     the session uses the backend id as a load balance node. Users can
+     execute the commands to find out if there's any session that uses the
+     backend as the load balance node. If so, shutting down the backend may
+     cause session disconnection.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-July/004353.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-July/004353.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Mitigate session disconnection issue in failover/failback/backend error. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> disconnected client
+     sessions in various cases. This release tries to avoid some of cases,
+     especially when a backend goes down and the backend is not either
+     primary (or main node) nor load balance node.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-July/004352.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-July/004352.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Add new parameter <A
+HREF="runtime-config-load-balancing.html#GUC-USER-REDIRECT-PREFERENCE-LIST"
+>user_redirect_preference_list</A
+> to allow to send SELECT queries to a specific backend node for a specific user connection. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Support multiple directories specification for <A
+HREF="runtime-config-connection.html#GUC-PCP-SOCKET-DIR"
+>pcp_socket_dir</A
+>. (Chen Ningwei)
+    </P
+></LI
+><LI
+><P
+>     Allow to load balance <TT
+CLASS="LITERAL"
+>PREPARE/EXECUTE/DEALLOCATE</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <TT
+CLASS="LITERAL"
+>PREPARE/EXECUTE/DEALLOCATE</TT
+> are
+     not load balanced. In streaming replication/logical replication
+     mode, they were sent to always primary node.
+     In native replication/snapshot isolation mode,
+     they were always sent to all nodes.
+    </P
+><P
+>     Now they can be load balanced if the SQL statement prepared by PREPARE
+     command is a read only SELECT.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-May/004334.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-May/004334.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Add new config parameter <A
+HREF="runtime-config-logging.html#GUC-LOG-PCP-PROCESSES"
+>log_pcp_processes</A
+> to allow disable logging normal PCP Process fork and exit status. (Tatsuo Ishii)
+    </P
+><P
+>     When pcp command is executed, pgpool logs its fork/exit event
+     even if there's no error.
+    </P
+><P
+>     Abnormal fork/exit event will be logged even if the parameter is
+     disabled.
+    </P
+><P
+>     Patch is created by Maximilien Cuony and reviewed by Tatsuo Ishii.
+    </P
+></LI
+><LI
+><P
+>     Allow to use multiple statements extensively. (Tatsuo Ishii)
+    </P
+><P
+>     This release tries to eliminate pgpool's long standing limitations
+     regarding multiple statements (multi-statements).
+     For example, previously following queries raised errors.
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>BEGIN;SELECT;
+SAVEPOINT foo;
+     </PRE
+><P>
+     Please note that each query in multi-statement is not still load balanced.
+    </P
+><P
+>     Although this is a new feature, it is also meant to be a bug fix,
+     so it has been backported to versions 4.1 to 4.4.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Import <TT
+CLASS="LITERAL"
+>psqlscan</TT
+> source code into <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> to judge multi statement query. (Tatsuo Ishii)
+    </P
+><P
+>     <TT
+CLASS="LITERAL"
+>Psqlscan</TT
+> is a module in the PostgreSQL source tree.
+     It is essentially subset of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+     SQL scanner but it is specialized for detecting
+     the end of each SQL statement. Therefore we can count the number of
+     SQL statements in a query string by using it.
+    </P
+><P
+>     Discussion: https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004291.html
+    </P
+></LI
+><LI
+><P
+>     Add new configuration parameter <A
+HREF="runtime-config-logging.html#GUC-NOTICE-PER-NODE-STATEMENT"
+>notice_per_node_statement</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     The new GUC variable allows to emit NOTICE message of queries per
+     backend basis.  It's similar to <A
+HREF="runtime-config-logging.html#GUC-LOG-PER-NODE-STATEMENT"
+>log_per_node_statement</A
+>
+     but as the log level is NOTICE, the log is printed on client's terminal,
+     thus users can know where their queries go to without looking into pgpool
+     log files.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004276.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004276.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Enhance status file reading log. (Tatsuo Ishii)
+    </P
+><P
+>     Previously only if <TT
+CLASS="FILENAME"
+>pgpool_status</TT
+> exists and
+     the status is down, a log message was printed. However it is more
+     useful no matter what the status (up or unused) is because it also
+     represents that pgpool_status exists and it is read while pgpool
+     starting up, which is useful information.
+    </P
+></LI
+><LI
+><P
+>     Remove <TT
+CLASS="FILENAME"
+>pool_config.c</TT
+> and <TT
+CLASS="FILENAME"
+>scan.c</TT
+>
+     from git repository. (Tatsuo Ishii)
+    </P
+><P
+>     They are generated files and we should not keep in the git repository.
+    </P
+></LI
+><LI
+><P
+>     Remove <TT
+CLASS="FILENAME"
+>Makefile.in</TT
+> etc. generated by autoconf. (Tatsuo Ishii)
+    </P
+><P
+>     Also update some .gitignore files and add some new .gitignore files.  Now
+     developers need to run autoconf/autoreconf before compiling since the
+     generated files are not provided by git anymore.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14795"
+>A.24.4. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix race condition with <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> main and pcp child process. (Tatsuo Ishii)
+    </P
+><P
+>     When pcp child process is forked off, pgpool main process unblock all
+     signals. This could lead to a race condition if a signal is sent to
+     the pcp process before it sets up signal handlers. Fix is, do not
+     unblock signals until the signal handlers are set up.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-September/004398.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-September/004398.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     This release fixes the same bugs as other minor releases.
+     See <A
+HREF="release.html"
+>Appendix A</A
+> for more details of those fixes.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14807"
+>A.24.5. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Update Configuration Example "8.2. Pgpool-II + Watchdog Setup Example" to Pgpool-II 4.5 and PostgreSQL 16. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14812"
+>A.24.6. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Attempt to fix 001.load_balance test timeout. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Enhance regression 001.load_balance. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-5-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-4-17.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.5.1</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.4.17</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

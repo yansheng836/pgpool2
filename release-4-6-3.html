@@ -1,0 +1,542 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.6.3</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.6.4"
+HREF="release-4-6-4.html"><LINK
+REL="NEXT"
+TITLE="Release 4.6.2"
+HREF="release-4-6-2.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.6.4"
+HREF="release-4-6-4.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.6.2"
+HREF="release-4-6-2.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-6-3"
+>A.8. Release 4.6.3</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2025-08-21</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13266"
+>A.8.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance connecting process to backend. (Tatsuo Ishii)
+    </P
+><P
+>     In certain environment (especially k8s), DNS look up is unstable and
+     connecting to backend process fails.  This occurs in call to
+     <CODE
+CLASS="FUNCTION"
+>getaddrinfo()</CODE
+> in <CODE
+CLASS="FUNCTION"
+>connect_inet_domain_socket_by_port()</CODE
+>. To enhance the
+     situation, retry up to 5 times (at each retry, sleep 1 second) if
+     <CODE
+CLASS="FUNCTION"
+>getaddrinfo()</CODE
+> fails with EAI_AGAIN. Note that if
+     <CODE
+CLASS="FUNCTION"
+>connect_inet_domain_socket_by_port()</CODE
+> is called with "retry" argument
+     is false, the retry will not happen. Health check calls
+     <CODE
+CLASS="FUNCTION"
+>connect_inet_domain_socket_by_port()</CODE
+> with the retry flag to false so
+     that retrying is controlled health check's own parameters.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/104"
+TARGET="_top"
+>A single DNS lookup failure will trigger backend failover</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13279"
+>A.8.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix watchdog to print inappropriate NOTICE message. (Tatsuo Ishii)
+    </P
+><P
+>     <CODE
+CLASS="FUNCTION"
+>read_ipc_socket_and_process()</CODE
+> printed a notice message every time when
+     it wrote commands to IPC socket even if it was successful. Fix this to
+     print the notice message only when the write failed.
+
+     The reason why this bug was not recognized is, the message appears
+     only when <TT
+CLASS="VARNAME"
+>log_min_messages</TT
+> is set to notice or higher.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/121"
+TARGET="_top"
+>pgpool IPC socket connection issue</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix resource leak while reading startup packet. (Tatsuo Ishii)
+    </P
+><P
+>     Fix resource leak in pool_push_pending_data.
+    </P
+></LI
+><LI
+><P
+>     Fix broken scram-sha-256 authentication on big-endian machines. (Tatsuo Ishii)
+    </P
+><P
+>     When <TT
+CLASS="LITERAL"
+>scram-sha-256</TT
+> authentication is performed, a hash function
+     <CODE
+CLASS="FUNCTION"
+>pg_sha_256_final</CODE
+> is used. It was imported from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and it uses
+     preprocessor define WORDS_BIGENDIAN to judge host machine's
+     endianness. Although WORDS_BIGENDIAN should be defined while
+     configure, this part was missed when <CODE
+CLASS="FUNCTION"
+>pg_sha_256_final</CODE
+> (and others) was
+     imported from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>. As a result, <TT
+CLASS="LITERAL"
+>scram-sha-256</TT
+> worked only in
+     little endian machines. Fixed the issue by adding
+     AC_C_BIGENDIAN macro to configure.ac.
+    </P
+><P
+>     Problem reported by Christoph Berg and analyzed by pranavkaruvally.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/106"
+TARGET="_top"
+>4.6.1 fails on big-endian s390x: backend response with kind 'E' when expecting 'R'</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix source code typos. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Fix heartbeat device treatment. (Tatsuo Ishii)
+    </P
+><P
+>     Fix <CODE
+CLASS="FUNCTION"
+>wd_create_hb_recv_socket()</CODE
+> and <CODE
+CLASS="FUNCTION"
+>wd_create_hb_send_socket()</CODE
+>
+     to pass a null-terminated device name string to setsockopt(SO_BINDTODEVICE)
+     instead of incorrectly passing a struct ifreq.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004603.html"
+TARGET="_top"
+>[pgpool-hackers: 4602] heartbeat and SO_BINDTODEVICE</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix resource leak in hearbeat receiver process. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix heartbeat device treatment. (Tatsuo Ishii)
+    </P
+><P
+>     While processing <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+>, <TT
+CLASS="VARNAME"
+>heartbeat_device</TT
+> was mistakenly treated
+     and the first device was ignored.
+    </P
+><P
+>     Problem analyzed by Bo Peng.
+    </P
+></LI
+><LI
+><P
+>     Fix heartbeat receiver not working. (Tatsuo Ishii)
+    </P
+><P
+>     IPv6 support for heartbeat was added in version 4.6,
+     but the receive process mistakenly bound only to loopback addresses,
+     preventing reception from other nodes.
+     Adding the AI_PASSIVE flag to <CODE
+CLASS="FUNCTION"
+>getaddrinfo()</CODE
+> fixes this by binding to all network interfaces.
+    </P
+><P
+>     Problem analyzed by Bo Peng.
+    </P
+></LI
+><LI
+><P
+>     Fix typo in the comments of <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+>. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13329"
+>A.8.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance "8.3. Replication Mode and Snapshot Isolation Mode Configuration Example" Document. (Taiki Koshino)
+    </P
+><P
+>     Updated the link to the example script and the explanation in the "8.3.3. Before you begin" section.
+    </P
+></LI
+><LI
+><P
+>     Fix documentation for parameters that are not reflected by reload. (Taiki Koshino)
+    </P
+><P
+>     "authentication_timeout" and "memqcache_oiddir" is not reflected by reload.
+     The documentation is changed to "This parameter can only be set at server start.".
+    </P
+></LI
+><LI
+><P
+>     Unify watchdog leader terms (followup). (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix example script link. (Taiki Koshino)
+    </P
+><P
+>     Modified the sample script in the section "<A
+HREF="https://www.pgpool.net/docs/46/en/html/example-cluster.html"
+TARGET="_top"
+>8.2. Pgpool-II + Watchdog Setup Example</A
+>"
+    </P
+></LI
+><LI
+><P
+>     Fix load balance explanation missed logical replication mode and Slony mode. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Enhance <A
+HREF="pcp-node-info.html"
+>pcp_node_info</A
+> document. (Bo Peng)
+    </P
+><P
+>     Clarify that each <TT
+CLASS="VARNAME"
+>backend_application_nameX</TT
+> must match the value specified
+     in the <TT
+CLASS="VARNAME"
+>application_name</TT
+> of <TT
+CLASS="VARNAME"
+>primary_conninfo</TT
+> to correctly display
+     "<TT
+CLASS="VARNAME"
+>replication_state</TT
+>" and "<TT
+CLASS="VARNAME"
+>replication_sync_state</TT
+>".
+    </P
+></LI
+><LI
+><P
+>     Add section of kernel resources. (Tatsuo Ishii)
+    </P
+><P
+>     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> uses System V shared memory and semaphores. It's better to
+     describe the requirements in the docs.
+    </P
+></LI
+><LI
+><P
+>     Add description for <TT
+CLASS="OPTION"
+>--with-ldap</TT
+> option of configure. (Tatsuo Ishii)
+    </P
+><P
+>     It was missed when LDAP support was introduced in v4.2
+    </P
+></LI
+><LI
+><P
+>     Fix command in "8.2. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> + Watchdog Setup Example" to escape $PGDATA. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Clarify supported platforms for <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Enhance <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-LIFE-TIME"
+>child_life_time</A
+> document. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13372"
+>A.8.4. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Stabilize 029.cert_passphrase regression test. (Tatsuo Ishii)
+    </P
+><P
+>     When <TT
+CLASS="VARNAME"
+>ssl_passphrase_command</TT
+> is not valid, the error message is
+     typically "bad decrypt" but it seems sometimes "wrong tag".
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-6-4.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-6-2.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.6.4</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.6.2</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

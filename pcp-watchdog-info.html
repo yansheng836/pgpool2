@@ -1,0 +1,371 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>pcp_watchdog_info</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="PCP commands"
+HREF="pcp-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="pcp_health_check_stats"
+HREF="pcp-health-check-stats.html"><LINK
+REL="NEXT"
+TITLE="pcp_proc_count"
+HREF="pcp-proc-count.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="pcp_health_check_stats"
+HREF="pcp-health-check-stats.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pcp-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="pcp_proc_count"
+HREF="pcp-proc-count.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="PCP-WATCHDOG-INFO"
+></A
+>pcp_watchdog_info</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9649"
+></A
+><H2
+>Name</H2
+>pcp_watchdog_info&nbsp;--&nbsp;   displays the watchdog status of the Pgpool-II</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9652"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>pcp_watchdog_info</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>options</I
+></TT
+>...] [<TT
+CLASS="REPLACEABLE"
+><I
+>watchdog_id</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="R1-PCP-WATCHDOG-INFO-1"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>pcp_watchdog_info</TT
+>
+   displays the information on the given node ID.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9663"
+></A
+><H2
+>Options</H2
+><P
+>   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="OPTION"
+>-n <TT
+CLASS="REPLACEABLE"
+><I
+>watchdog_id</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--node-id=<TT
+CLASS="REPLACEABLE"
+><I
+>watchdog_id</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       The index of other Pgpool-II to get information for.
+      </P
+><P
+>       Index 0 gets one's self watchdog information.
+      </P
+><P
+>       If omitted then gets information of all watchdog nodes.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>Other options </TT
+></DT
+><DD
+><P
+>       See <A
+HREF="pcp-common-options.html"
+>pcp_common_options</A
+>.
+      </P
+></DD
+></DL
+></DIV
+><P>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9684"
+></A
+><H2
+>Example</H2
+><P
+>   Here is an example output:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>$ pcp_watchdog_info -h localhost -p 9898 -U postgres 
+Password: 
+3 3 YES server1:9999 Linux server1.localdomain server1
+
+server1:9999 Linux server1.localdomain server1 9999 9000 4 LEADER 0 MEMBER YES
+server2:9999 Linux server2.localdomain server2 9999 9000 7 STANDBY 0 MEMBER YES
+server3:9999 Linux server3.localdomain server3 9999 9000 7 STANDBY 0 MEMBER YES
+   </PRE
+><P>
+  </P
+><P
+>   The result is in the following order:
+   </P><PRE
+CLASS="LITERALLAYOUT"
+>    The first output line describes the watchdog cluster information:
+
+    1. Total watchdog nodes in the cluster
+    2. Total watchdog nodes in the cluster with active membership
+    3. Local node's escalation status
+    4. Leader node name
+    5. Leader node host
+   </PRE
+><P>
+   </P><PRE
+CLASS="LITERALLAYOUT"
+>    Next is the list of watchdog nodes:
+
+    1. node name
+    2. hostname
+    3. pgpool port
+    4. watchdog port
+    5. current node state
+    6. current node state name
+    7. current cluster membership status
+    8. current cluster membership status name
+    9. Lifecheck start status
+   </PRE
+><P>
+  </P
+><P
+>   The <TT
+CLASS="OPTION"
+>--verbose</TT
+> option can help understand the output. For example:
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>$ pcp_watchdog_info -h localhost -p 9898 -U pgpool -v
+Password:
+Watchdog Cluster Information 
+Total Nodes              : 3
+Remote Nodes             : 2
+Member Remote Nodes      : 2
+Alive Remote Nodes       : 2
+Nodes required for quorum: 2
+Quorum state             : QUORUM EXIST
+Local node escalation    : YES
+Leader Node Name         : server1:9999 Linux server1.localdomain
+Leader Host Name         : server1
+
+Watchdog Node Information 
+Node Name         : server1:9999 Linux server1.localdomain
+Host Name         : server1
+Delegate IP       : 192.168.56.150
+Pgpool port       : 9999
+Watchdog port     : 9000
+Node priority     : 1
+Status            : 4
+Status Name       : LEADER
+Membership Status : MEMBER
+Lifecheck Started : YES
+
+Node Name         : server2:9999 Linux server2.localdomain
+Host Name         : server2
+Delegate IP       : 192.168.56.150
+Pgpool port       : 9999
+Watchdog port     : 9000
+Node priority     : 1
+Status            : 7
+Status Name       : STANDBY
+Membership Status : MEMBER
+Lifecheck Started : YES
+
+Node Name         : server3:9999 Linux server3.localdomain
+Host Name         : server3
+Delegate IP       : 192.168.56.150
+Pgpool port       : 9999
+Watchdog port     : 9000
+Node priority     : 1
+Status            : 7
+Status Name       : STANDBY
+Membership Status : MEMBER
+Lifecheck Started : YES
+  </PRE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pcp-health-check-stats.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pcp-proc-count.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>pcp_health_check_stats</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="pcp-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>pcp_proc_count</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

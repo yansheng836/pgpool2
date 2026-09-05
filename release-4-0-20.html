@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.0.20</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.0.21"
+HREF="release-4-0-21.html"><LINK
+REL="NEXT"
+TITLE="Release 4.0.19"
+HREF="release-4-0-19.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.0.21"
+HREF="release-4-0-21.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.0.19"
+HREF="release-4-0-19.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-0-20"
+>A.118. Release 4.0.20</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2022-08-18</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22480"
+>A.118.1. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix bug in query cache. (Tatsuo Ishii)
+    </P
+><P
+>     Pgpool-II did not cache the query like "Select '2022-02-18 07:00:00.006547'::timestamp".
+     SELECTs include TIMESTAMP, TIME and DATE are cached, and SELECTs include TIMESTAMPZ
+     and TIMEZ are not cached because the result can be changed by SET TIME ZONE command etc.
+     Furthermore, SELECTs having functions with return types are timestamptz or timetz are
+     not cached too as same reason.
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2022-July/008344.html"
+TARGET="_top"
+>[pgpool-general: 8285]</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22487"
+>A.118.2. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Doc: mention that certain SELECTs are not cached. (Tatsuo Ishii)
+    </P
+><P
+>     certain SELECTs are follows.
+     <P
+></P
+></P><UL
+><LI
+><P
+>        SELECTs including TIMESTAMP WITH TIMEZONE or TIME WITH TIMEZONE
+       </P
+></LI
+><LI
+><P
+>        SELECTs including CAST to TIMESTAMP WITH TIMEZONE or TIME WITH TIMEZONE
+       </P
+></LI
+><LI
+><P
+>        SELECTs including SQLValueFunction (CURRENT_TIME, CURRENT_USER etc.)
+       </P
+></LI
+></UL
+><P>
+    </P
+></LI
+><LI
+><P
+>     Doc: fix description about using PCP password file when connect to Unix domain socket (Masaya Kawamoto)
+    </P
+><P
+>     The localhost entry in pcppass matches only for the default PCP socket
+     directory path, not all Unix socket connections. This behavior is the
+     same as pgpass.
+    </P
+></LI
+><LI
+><P
+>     Doc: fix wrong explanation on <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHE-MAXCACHE"
+>memqcache_maxcache</A
+>, <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHEEXPIRE"
+>memqcache_expire</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Those parameters cannot be changed by reloading config file. Restarting
+     pgpool is required.
+
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2022-June/008254.html"
+TARGET="_top"
+>[pgpool-general: 8195]</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22509"
+>A.118.3. Test Tools</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow to run pgpool_setup on PostgreSQL 15. (Tatsuo Ishii)
+    </P
+><P
+>     Per <A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=757"
+TARGET="_top"
+>ticket 757</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22516"
+>A.118.4. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Test: print <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> version in the regression test. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Test: Fix regression test script to look for pgpool.conf in the proper install directory. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-0-21.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-0-19.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.0.21</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.0.19</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

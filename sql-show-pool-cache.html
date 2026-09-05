@@ -1,0 +1,395 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SHOW POOL_CACHE</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="SQL type commands"
+HREF="sql-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="SHOW POOL_VERSION"
+HREF="sql-show-pool-version.html"><LINK
+REL="NEXT"
+TITLE="SHOW POOL_HEALTH_CHECK_STATS"
+HREF="sql-show-pool-health-check-stats.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="SHOW POOL_VERSION"
+HREF="sql-show-pool-version.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="SHOW POOL_HEALTH_CHECK_STATS"
+HREF="sql-show-pool-health-check-stats.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="SQL-SHOW-POOL-CACHE"
+></A
+>SHOW POOL_CACHE</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN11575"
+></A
+><H2
+>Name</H2
+>SHOW POOL_CACHE&nbsp;--&nbsp;   displays cache storage statistics
+  </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN11578"
+></A
+><H2
+>Synopsis</H2
+><PRE
+CLASS="SYNOPSIS"
+>   SHOW POOL_CACHE
+  </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN11580"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>SHOW POOL_CACHE</TT
+>
+   displays <A
+HREF="runtime-in-memory-query-cache.html"
+>in memory
+    query cache </A
+> statistics if in memory query cache is
+   enabled.  Here is an example session:
+   See <A
+HREF="sql-show-pool-cache.html#SHOW-POOL-CACHE-TABLE"
+>Table 1</A
+> for a description of each item.
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>    test=# \x
+    \x
+    Expanded display is on.
+    test=# show pool_cache;
+    show pool_cache;
+    -[ RECORD 1 ]---------------+---------
+    num_cache_hits              | 891703
+    num_selects                 | 99995
+    cache_hit_ratio             | 0.90
+    num_hash_entries            | 131072
+    used_hash_entries           | 99992
+    num_cache_entries           | 99992
+    used_cache_entries_size     | 12482600
+    free_cache_entries_size     | 54626264
+    fragment_cache_entries_size | 0
+   </PRE
+><P>
+
+  </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    If the cache storage is memcached, values for all columns except
+    num_cache_hits, num_selects and cache_hit_ratio show 0.
+   </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="TABLE"
+><A
+NAME="SHOW-POOL-CACHE-TABLE"
+></A
+><P
+><B
+>Table 1. Items displayed in show pool_cache</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Name</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>num_cache_hits</TT
+></TD
+><TD
+>The number of hits against the query cache.</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>num_selects</TT
+></TD
+><TD
+>The number of SELECT that did not hit against the query cache.</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>cache_hit_ratio</TT
+></TD
+><TD
+>The cache hit ratio.
+       Calculated as num_cache_hits/(num_cache_hits+num_selects).</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>num_hash_entries</TT
+></TD
+><TD
+>The number of entries in the hash table used to manage
+       the cache.  In order to manage large number of
+       cache <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> uses the hash table.
+       The number of hash entries is automatically adjusted to the
+       nearest power of two greater
+       than <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHE-MAX-NUM-CACHE"
+>memqcache_max_num_cache</A
+>.  For
+       example, 100,000, which is the default
+       for <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHE-MAX-NUM-CACHE"
+>memqcache_max_num_cache</A
+> is adjusted to
+       131,072 (2 to the 17th power).
+      </TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>used_hash_entries</TT
+></TD
+><TD
+>       The number of used hash entries.  If the value
+       approaches <TT
+CLASS="LITERAL"
+>num_hash_entries</TT
+>, it is
+       recommended to increase <TT
+CLASS="LITERAL"
+>num_hash_entries</TT
+>.
+       Even if all the hash table entries are used, no error is
+       raised.  However, performance suffers because hash table
+       entries and caches are reused to register new cache entries.
+      </TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>num_cache_entries</TT
+></TD
+><TD
+>       The number of cache entries already used.  In the current
+       implementation the number should be identical
+       to <TT
+CLASS="LITERAL"
+>used_hash_entries</TT
+>.
+      </TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>free_cache_entries_size</TT
+></TD
+><TD
+>       The size in bytes of the unused cache.  As this value approaches
+       0, it removes the registered cache and registers a new cache,
+       which does not cause an error, but reduces performance.
+       Consider to increase <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHE-TOTAL-SIZE"
+>memqcache_total_size</A
+>.
+      </TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>fragment_cache_entries_size</TT
+></TD
+><TD
+>       The size in bytes of the fragmented cache.  When a registered
+       cache is evicted, the space becomes fragmented until the next
+       time that block is reused.
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> writes cache in fixed-size
+	blocks specified
+	by <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHE-CACHE-BLOCK-SIZE"
+>memqcache_cache_block_size</A
+>.  When a
+	registered cache is evicted, the space becomes fragmented
+	until the next time that block is reused.
+	<TT
+CLASS="LITERAL"
+>fragment_cache_entries_size</TT
+> displays the
+	total size of such fragmented regions.
+      </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-show-pool-version.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sql-show-pool-health-check-stats.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SHOW POOL_VERSION</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SHOW POOL_HEALTH_CHECK_STATS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

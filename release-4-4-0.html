@@ -1,0 +1,729 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.4.0</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.4.1"
+HREF="release-4-4-1.html"><LINK
+REL="NEXT"
+TITLE="Release 4.3.20"
+HREF="release-4-3-20.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.4.1"
+HREF="release-4-4-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.3.20"
+HREF="release-4-3-20.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-4-0"
+>A.42. Release 4.4.0</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2022-12-06</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16216"
+>A.42.1. Overview</A
+></H2
+><P
+>   Many enhancements are added to this version for easier
+   configuration and administration. New dynamic spare process management mode is added.
+   Streaming replication delay can be controlled by time, rather than WAL
+   bytes. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and PCP's listen
+   addresses accept multiple addresses. Full configuration of Unix
+   socket directory is now possible.
+   Allow to customize the command used by <TT
+CLASS="VARNAME"
+>trusted_servers</TT
+> for checking upstream connection.
+   New <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 15 <TT
+CLASS="LITERAL"
+>SQL</TT
+>
+   parser is imported. Performance is also improved in query cache.
+  </P
+><P
+>   Major enhancements are as follows:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     Add new dynamic spare process management feature.
+     This feature allows selecting between static and dynamic process management modes.
+    </P
+></LI
+><LI
+><P
+>     Allow to specify replication delay by time in streaming
+     replication mode. For this purpose new
+     parameter <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> is
+     introduced.
+    </P
+></LI
+><LI
+><P
+>     As <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> already
+     does, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> now supports
+     <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES"
+>unix_socket_directories</A
+>, <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-GROUP"
+>unix_socket_group</A
+>
+     and <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-PERMISSIONS"
+>unix_socket_permissions</A
+> for more
+     flexible and precise control of UNIX domain sockets.
+    </P
+></LI
+><LI
+><P
+>     Allow to use comma separated multiple listen addresses in
+     <A
+HREF="runtime-config-connection.html#GUC-LISTEN-ADDRESSES"
+>listen_addresses</A
+>
+     and <A
+HREF="runtime-config-connection.html#GUC-PCP-LISTEN-ADDRESSES"
+>pcp_listen_addresses</A
+>. They control
+     which interfaces accept connection attempts, which can help
+     prevent repeated malicious connection requests on insecure
+     network interfaces.
+    </P
+></LI
+><LI
+><P
+>     Allow to customize the command used by <A
+HREF="runtime-watchdog-config.html#GUC-TRUSTED-SERVERS"
+>trusted_servers</A
+> for checking upstream connection.
+     For this purpose new parameter <A
+HREF="runtime-watchdog-config.html#GUC-TRUSTED-SERVER-COMMAND"
+>trusted_server_command</A
+> is introduced.
+    </P
+></LI
+><LI
+><P
+>     Import PostgreSQL 15's SQL parser.
+    </P
+></LI
+><LI
+><P
+>     Speed up <A
+HREF="runtime-in-memory-query-cache.html"
+>query
+     cache</A
+> by reducing lock contention. This allows concurrent
+     running clients to fetch cache contents much more quicker.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MIGRATION-4-4-0"
+>A.42.2. Migration to Version 4.4</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Rename configuration parameter <TT
+CLASS="VARNAME"
+>socket_dir</TT
+> to <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES"
+>unix_socket_directories</A
+>.
+    </P
+></LI
+><LI
+><P
+>     Configuration parameter <TT
+CLASS="LITERAL"
+>delegate_IP</TT
+> is renamed
+     to <A
+HREF="runtime-watchdog-config.html#GUC-DELEGATE-IP"
+>delegate_ip</A
+>.  For compatibility with the
+     old versions, the old parameter delegate_IP can still work.  If
+     the old parameter delegate_IP is
+     used, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will set the value to
+     delegate_ip and throw a warning message.
+    </P
+></LI
+><LI
+><P
+>     Parameter status messages from backend are now forwarded to
+     frontend.  When a parameter status message arrives from
+     backend, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> memorized it but
+     did not forward to frontend.  Now they are forwarded to frontend.
+     Applications using <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> should be
+     prepared to accept the message.  But
+     since <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> already sends
+     parameter status messages to frontend whenever they are
+     generated, those application that are working
+     with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> should have no problem
+     with this change.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16268"
+>A.42.3. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Add new dynamic spare process management feature. (Jianshen Zhou, Muhammad Usama)
+    </P
+><P
+>     This feature allows selecting between static and dynamic process management modes.
+     Static process management is the same as the existing behavior of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>,
+     where it spawns all child processes at startup. The new Dynamic mode keeps track of idle
+     processes and forks or kills processes to keep this number within
+     the specified boundaries.
+    </P
+><P
+>     Four new settings, <A
+HREF="runtime-config-process-management.html#GUC-PROCESS-MANAGEMENT-MODE"
+>process_management_mode</A
+>,
+     <A
+HREF="runtime-config-process-management.html#GUC-PROCESS-MANAGEMENT-STRATEGY"
+>process_management_strategy</A
+>,
+     <A
+HREF="runtime-config-process-management.html#GUC-MIN-SPARE-CHILDREN"
+>min_spare_children</A
+>, and <A
+HREF="runtime-config-process-management.html#GUC-MAX-SPARE-CHILDREN"
+>max_spare_children</A
+>
+     are added to configure the process management behavior, while <TT
+CLASS="VARNAME"
+>process_management_strategy</TT
+>
+     allows selecting between three possible scaling-down strategies.
+    </P
+></LI
+><LI
+><P
+>     Allow to specify replication delay by time. (Tatsuo Ishii)
+    </P
+><P
+>     <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+> specifies replication delay
+     upper limit in bytes. Add similar parameter called
+     <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> so that the limit
+     can be specified by time (seconds). The new parameter is
+     effective if it is greater than 0.
+     In this case <A
+HREF="sql-show-pool-nodes.html"
+>SHOW POOL NODES</A
+> and
+     <A
+HREF="pcp-node-info.html"
+>pcp_node_info</A
+> display the replication delay in seconds.
+     If the parameter is set to 0, <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+>
+     is ignored and falls back to delay_threshold mode.
+    </P
+><P
+>     For this purpose new member standby_delay_by_time is added to shared
+     memory data Backendinfo to distinguish whether replication delay is
+     measured in bytes (standby_delay_by_time = false) or seconds
+     (standby_delay_by_time = true). If standby_delay_by_time is true,
+     standby_delay is measured in second * 1000000, so that the precision
+     is 6 digits after decimal point.
+    </P
+></LI
+><LI
+><P
+>     Support for unix_socket_directories and related parameters. (Masaya Kawamoto)
+    </P
+><P
+>     Rename configuration parameter <TT
+CLASS="VARNAME"
+>socket_dir</TT
+> to <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES"
+>unix_socket_directories</A
+>,
+     and add new configuration parameters <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-GROUP"
+>unix_socket_group</A
+> and <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-PERMISSIONS"
+>unix_socket_permissions</A
+>.
+    </P
+></LI
+><LI
+><P
+>     Add <A
+HREF="runtime-watchdog-config.html#GUC-TRUSTED-SERVER-COMMAND"
+>trusted_server_command</A
+> configuration parameter. (Takuma Hoshiai)
+    </P
+><P
+>     This feature is able to specify a command that is used by
+     <A
+HREF="runtime-watchdog-config.html#GUC-TRUSTED-SERVERS"
+>trusted_servers</A
+> for checking up stream connection.
+     Previously, ping command was only used, and it was hard coded.
+    </P
+><P
+>     Default is 'ping -q -c3 %h' which means same as before.
+    </P
+></LI
+><LI
+><P
+>     Implement comma separated multiple listen addresses. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> only allowed to
+     set single hostname, IP or '*' to
+     the <A
+HREF="runtime-config-connection.html#GUC-LISTEN-ADDRESSES"
+>listen_addresses</A
+> parameter. Now we can
+     set multiple listen addresses to the parameter
+     as <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> already does.
+    </P
+><P
+>     Also <A
+HREF="runtime-config-connection.html#GUC-PCP-LISTEN-ADDRESSES"
+>pcp_listen_addresses</A
+> now accepts comma
+     separated multiple listen addresses.
+    </P
+></LI
+><LI
+><P
+>     Import PostgreSQL 15's SQL parser.(Bo Peng, Tatsuo Ishii)
+    </P
+><P
+>     Major changes of PostgreSQL 15 parser include:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       Add new SQL MERGE command
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>MERGE INTO ... USING ...
+      </PRE
+></LI
+><LI
+><P
+>       Add new option HEADER MATCH to COPY FROM
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>COPY ... FROM stdin WITH (HEADER MATCH);
+      </PRE
+></LI
+><LI
+><P
+>       Allow foreign key ON DELETE SET actions
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>CREATE TABLE t1 (
+...
+FOREIGN KEY (c1, c2) REFERENCES t2 ON DELETE SET NULL (c2)
+);
+      </PRE
+></LI
+><LI
+><P
+>       Allow SET ACCESS METHOD in ALTER TABLE
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>ALTER TABLE ... SET ACCESS METHOD ...;
+      </PRE
+></LI
+></UL
+></LI
+><LI
+><P
+>     Replace exclusive locking with shared locking in query cache. (Tatsuo Ishii)
+    </P
+><P
+>     Previously the query cache module used semaphore to protect critical
+     region in the query cache module. However this had serious down side
+     because the locking using semaphore is exclusive lock. This
+     introduces unnecessary wait for cache reading clients and performance
+     degradation when there are many concurrent clients.
+    </P
+><P
+>     To overcome the issue replace locking implementation
+     with <CODE
+CLASS="FUNCTION"
+>flock(2)</CODE
+> which allows shared
+     locking. Now the cache reading clients do not need to fight each
+     other to obtain a lock thus this increases concurrency.
+    </P
+><P
+>     For this purpose pgpool main process creates a dummy file as
+     <TT
+CLASS="FILENAME"
+>logdir/memq_lock_file</TT
+> and opens it. The file
+     descriptor is inherited by all child process so that they can
+     issue <CODE
+CLASS="FUNCTION"
+>flock(2)</CODE
+> on the file.
+    </P
+></LI
+><LI
+><P
+>     Add validations of <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+>
+     and <A
+HREF="runtime-online-recovery.html#GUC-RECOVERY-PASSWORD"
+>recovery_password</A
+> format. (Masaya Kawamoto)
+    </P
+></LI
+><LI
+><P
+>     Enhance parameter status handling. (Tatsuo Ishii)
+    </P
+><P
+>     When a parameter status message arrives from backend, Pgpool-II
+     memorized it but did not forward to frontend.  This commit allows
+     forwarding a parameter status message to frontend.
+    </P
+></LI
+><LI
+><P
+>     Change the way to obtain replication delay when
+     <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> is
+     specified. (Tatsuo Ishii)
+    </P
+><P
+>     Use pg_stat_replication.replay_lag.  This way makes the code much
+     simpler and more precise replication delay can be obtained. The only
+     downside is pg_stat_replication.replay_lag is only available in
+     PostgreSQL 10 or later (previous method can be used in 9.5 or later).
+    </P
+></LI
+><LI
+><P
+>     Implement flush tracking feature. (Tatsuo Ishii)
+    </P
+><P
+>     When a flush message arrives from frontend, any pending message from
+     backend should be flushed and sent to frontend. In order to do that,
+     this commit implements "flush tracking" feature. i.e. when a flush
+     message arrives, pgpool sets "flush pending" flag in each pending
+     messages. If the response message from backend corresponds to the
+     pending message with the flush pending flag being set, the message is
+     immediately flushed to frontend, rather than buffered.
+    </P
+></LI
+><LI
+><P
+>     Enhance pgproto. (Tatsuo Ishii)
+    </P
+><P
+>     Allow to show ParameterStatus's parameter name and value.
+    </P
+><P
+>     Add new command 'z'. This is similar to 'y' except 'z' reads only 1
+     message and do not wait for "ready for query" arrives (or timeout if
+     no message arrives within 1 second).
+    </P
+></LI
+><LI
+><P
+>     Downgrade LOG message "new IPC connection received" to DEBUG1.
+     (<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=775"
+TARGET="_top"
+>bug 775</A
+>) (Bo Peng)
+    </P
+><P
+>     This message is output periodically and should not be logged as LOG.
+     Patch is created by pstef and reviewed by Bo Peng.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16357"
+>A.42.4. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     In this release same bug fixes as <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 4.3.4 are
+     already applied. See <A
+HREF="release-4-3-4.html"
+>Section A.59</A
+> for more details of those fixes.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16364"
+>A.42.5. Documentation changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Doc: Update documentation of AWS configuration example and add sample scripts for AWS. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-4-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-3-20.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.4.1</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.3.20</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

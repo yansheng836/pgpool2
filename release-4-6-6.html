@@ -1,0 +1,459 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.6.6</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.6.7"
+HREF="release-4-6-7.html"><LINK
+REL="NEXT"
+TITLE="Release 4.6.5"
+HREF="release-4-6-5.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.6.7"
+HREF="release-4-6-7.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.6.5"
+HREF="release-4-6-5.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-6-6"
+>A.5. Release 4.6.6</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2026-02-26</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13023"
+>A.5.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow parallel <TT
+CLASS="COMMAND"
+>make</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Previously a parallel <TT
+CLASS="COMMAND"
+>make</TT
+> failed with:
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>In file included from parser.c:27:
+../../src/include/parser/gramparse.h:33:10: fatal error: gram.h: No such file or directory
+33 | #include "gram.h"
+     </PRE
+><P>
+    </P
+><P
+>     Patch is created by anthonyroussel and reviewed by Tatsuo Ishii.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/pull/146"
+TARGET="_top"
+>Fix parallel build</A
+>
+    </P
+></LI
+><LI
+><P
+>     Add detail log about mismatch between <A
+HREF="runtime-config-backend-settings.html#GUC-BACKEND-HOSTNAME"
+>backend_hostname</A
+> and <TT
+CLASS="VARNAME"
+>primary_conninfo</TT
+> host. (Taiki Koshino)
+    </P
+><P
+>     If the <A
+HREF="runtime-config-backend-settings.html#GUC-BACKEND-HOSTNAME"
+>backend_hostname</A
+> set in <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+> does not match
+     the host setting in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>'s <TT
+CLASS="VARNAME"
+>primary_conninfo</TT
+>,
+     the following log message will be output.
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>sr_check_worker pid 25099: DETAIL: pgpool.conf backend_hostname: "pgpool0" does not match PostgreSQL primary_conninfo host: "pgpool_logtest"
+     </PRE
+><P>
+    </P
+></LI
+><LI
+><P
+>     Explicitly stat supported minimum OpenSSL version. (Tatsuo Ishii)
+    </P
+><P
+>     That can be done in configure.ac by using
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>AC_DEFINE(OPENSSL_API_COMPAT, [0x10002000L],
+          [Define to the OpenSSL API version in use. This avoids deprecation warnings from newer OpenSSL versions.])
+     </PRE
+><P>
+
+     The supported minimum version is 1.0.2, which is identical to
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> at this point.  (Actually the AC_DEFINE is brought in from
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>).  Also this could avoid OpenSSL deprecation warnings if
+     your installed OpenSSL is new, like 3.0.
+     Moreover, add mention to installation document that required minimum
+     version of OpenSSL is 1.0.2.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13051"
+>A.5.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix oversight in <CODE
+CLASS="FUNCTION"
+>check_transaction_state_and_abort()</CODE
+>. (Tatsuo Ishii)
+    </P
+><P
+>     The function does not take the case when frontend is NULL into account.
+    </P
+><P
+>     Problem pointed out by Coverity.
+    </P
+></LI
+><LI
+><P
+>     Fix <CODE
+CLASS="FUNCTION"
+>walker()</CODE
+> functions to return earlier. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <CODE
+CLASS="FUNCTION"
+>walker()</CODE
+> functions returned false once it found target
+     objects.  But it is possible to short-circuit the traverse and it
+     should have been.
+
+     Also import comments from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> to clarify walker function
+     design.
+    </P
+><P
+>     Problem reported by liujinyang-highgo and reviewed by Tatsuo Ishii.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/143"
+TARGET="_top"
+>Improper handling in the function view_walker().</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix memory leak in <TT
+CLASS="LITERAL"
+>scram-sha-256</TT
+> authentication. (Tatsuo Ishii)
+    </P
+><P
+>     Problem pointed out by Coverity.
+    </P
+></LI
+><LI
+><P
+>     Fix to check the return value of <CODE
+CLASS="FUNCTION"
+>malloc()</CODE
+>. (Tatsuo Ishii)
+    </P
+><P
+>     <CODE
+CLASS="FUNCTION"
+>create_inet_domain_sockets()</CODE
+> forgot to check the return value of
+     <CODE
+CLASS="FUNCTION"
+>malloc()</CODE
+> while allocating memory for socket fds.
+    </P
+></LI
+><LI
+><P
+>     Fix health check process to not start. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <CODE
+CLASS="FUNCTION"
+>pgpool_main()</CODE
+> did not start a health check process if the
+     backend node is down.  This prevented auto_failback from working.
+     Pgpool reads status from <TT
+CLASS="VARNAME"
+>pool_status</TT
+> file when <TT
+CLASS="OPTION"
+>-D</TT
+> option is not
+     present.  If the status recorded in the file is "down", pgpool will
+     not start health check process for the node.  Since auto_failback is
+     invoked from health check process, this means that auto_failback does
+     not work for the backend node.
+
+     Fix is, unconditionally start health check process.
+    </P
+><P
+>     Problem reported by Meng Feilong and reviewed by Tatsuo Ishii.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/140"
+TARGET="_top"
+>Nodes in the down state cannot failback </A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix duplicate NodeTag enum in nodes.h. (Tatsuo Ishii)
+    </P
+><P
+>     Fixed the duplication between NodeTag definitions in nodes.h imported from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and Pgpool-II's own definitions.
+    </P
+><P
+>     Problem reported and diagnosed by liujinyang-highgo and reviewed by Tastuo Ishii.
+    </P
+><P
+>     Discussion: <A
+HREF="https://github.com/pgpool/pgpool2/issues/138"
+TARGET="_top"
+>an issue about NodeTag definition.</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix resource leak in <CODE
+CLASS="FUNCTION"
+>pcp_connect()</CODE
+>. (Tatsuo Ishii)
+    </P
+><P
+>     The function did not call <CODE
+CLASS="FUNCTION"
+>freeaddrinfo()</CODE
+> in some places.
+    </P
+></LI
+><LI
+><P
+>     Fix possible integer overflow. (Tatsuo Ishii)
+    </P
+><P
+>     In <CODE
+CLASS="FUNCTION"
+>pool_write_flush()</CODE
+> and <CODE
+CLASS="FUNCTION"
+>pool_flus_it()</CODE
+> <CODE
+CLASS="FUNCTION"
+>write(2)</CODE
+> is used. <CODE
+CLASS="FUNCTION"
+>write(2)</CODE
+>
+     returns ssize_t and in the code there are some places where the return
+     value was assigned to an int variable. As a result it was possible
+     that the return value was evaluated to negative value, which led to an
+     error.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-6-7.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-6-5.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.6.7</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.6.5</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

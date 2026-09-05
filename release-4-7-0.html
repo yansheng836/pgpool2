@@ -1,0 +1,909 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.7.0</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.7.1"
+HREF="release-4-7-1.html"><LINK
+REL="NEXT"
+TITLE="Release 4.6.7"
+HREF="release-4-6-7.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.7.1"
+HREF="release-4-7-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.6.7"
+HREF="release-4-6-7.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-7-0"
+>A.3. Release 4.7.0</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2025-12-23</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12692"
+>A.3.1. Overview</A
+></H2
+><P
+>   This release of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> includes several enhancements,
+   such as the removal of the legacy Slony mode, strengthened security,
+   enhanced frontend/backend protocol compatibility, and improved operational
+   transparency.
+  </P
+><P
+>   Major enhancements are as follows:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     Retire Slony mode.
+    </P
+></LI
+><LI
+><P
+>     Rename <TT
+CLASS="VARNAME"
+>logdir</TT
+> parameter to <TT
+CLASS="VARNAME"
+>work_dir</TT
+>.
+    </P
+></LI
+><LI
+><P
+>     Add support for frontend/backend protocol version 3.2.
+    </P
+></LI
+><LI
+><P
+>     Enhance security for watchdog and heartbeat receiver.
+    </P
+></LI
+><LI
+><P
+>     Add new fields to <TT
+CLASS="COMMAND"
+>pcp_proc_info</TT
+> and
+     <TT
+CLASS="COMMAND"
+>show pool_pools</TT
+> to display client information,
+     and add <CODE
+CLASS="FUNCTION"
+>pgpool_adm_pcp_proc_info</CODE
+> extension function.
+    </P
+></LI
+><LI
+><P
+>     Make online recovery database configurable.
+    </P
+></LI
+><LI
+><P
+>     Import PostgreSQL 18's SQL parser.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MIGRATION-4-7-0"
+>A.3.2. Migration to Version 4.7</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Retire <TT
+CLASS="LITERAL"
+>Slony</TT
+> mode. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> accepted <TT
+CLASS="LITERAL"
+>slony</TT
+>
+     mode as one of the <A
+HREF="runtime-config-running-mode.html#GUC-BACKEND-CLUSTERING-MODE"
+>backend_clustering_mode</A
+> to support
+     <TT
+CLASS="LITERAL"
+>Slony-I</TT
+>
+     (https://www.slony.info/). However the latest <TT
+CLASS="LITERAL"
+>Slony-I</TT
+> was
+     released in 2022, nearly 3 years ago at this point. And we heard nothing from
+     users about retiring <TT
+CLASS="LITERAL"
+>Slony</TT
+> mode. This suggests that there
+     would be no active <TT
+CLASS="LITERAL"
+>Slony-I</TT
+> mode users.
+     So let's drop <TT
+CLASS="LITERAL"
+>Slony-I</TT
+> support.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2025-May/009489.html"
+TARGET="_top"
+>[pgpool-general: 9486] Retiring slony mode</A
+>
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20250722.153130.1007226654125839063.ishii%40postgresql.org"
+TARGET="_top"
+>https://www.postgresql.org/message-id/20250722.153130.1007226654125839063.ishii%40postgresql.org</A
+>
+    </P
+></LI
+><LI
+><P
+>     Change <A
+HREF="runtime-config-logging.html#GUC-LOG-PCP-PROCESSES"
+>log_pcp_processes</A
+> default to <TT
+CLASS="LITERAL"
+>off</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Previously <TT
+CLASS="VARNAME"
+>log_pcp_processes</TT
+> default was <TT
+CLASS="LITERAL"
+>on</TT
+>,
+     and it could produce excessive log lines if admins use pcp commands frequently to
+     monitor pgpool status.  Also the log is kind of debugging message, thus it is
+     best to change its default value to <TT
+CLASS="LITERAL"
+>off</TT
+>.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20250815.111100.2261166502134199972.ishii%40postgresql.org"
+TARGET="_top"
+>https://www.postgresql.org/message-id/20250815.111100.2261166502134199972.ishii%40postgresql.org</A
+>
+    </P
+></LI
+><LI
+><P
+>     Make online recovery database configurable. (Bo Peng)
+    </P
+><P
+>     A new configuration parameter <A
+HREF="runtime-online-recovery.html#GUC-RECOVERY-DATABASE"
+>recovery_database</A
+>
+     has been added to allow users to specify the database used for online recovery.
+     Previously, this value was hardcoded as <TT
+CLASS="LITERAL"
+>template1</TT
+>. 
+     The default is now set to <TT
+CLASS="LITERAL"
+>postgres</TT
+>.
+    </P
+><P
+>     For users migrating from versions earlier than 4.6, compatibility can be
+     maintained by setting <TT
+CLASS="VARNAME"
+>recovery_database = 'template1'</TT
+>,
+     or by creating the necessary extension for online recovery in the
+     <TT
+CLASS="LITERAL"
+>postgres</TT
+> database.
+    </P
+></LI
+><LI
+><P
+>     Rename <TT
+CLASS="VARNAME"
+>logdir</TT
+> parameter to <A
+HREF="runtime-misc.html#GUC-WORK-DIR"
+>work_dir</A
+>. (Taiki Koshino)
+    </P
+><P
+>     Previously, the directory for storing <TT
+CLASS="FILENAME"
+>pgpool_status</TT
+> and
+     lock files was specified by the <TT
+CLASS="VARNAME"
+>logdir</TT
+> parameter.
+     However, since the name <TT
+CLASS="VARNAME"
+>logdir</TT
+> was misleading, the parameter
+     has been renamed to <TT
+CLASS="VARNAME"
+>work_dir</TT
+> for clarity.
+     The default value is <TT
+CLASS="LITERAL"
+>/tmp</TT
+>, which is the same as the
+     previous parameter <TT
+CLASS="VARNAME"
+>logdir</TT
+>.
+    </P
+><P
+>     For backward compatibility, the old <TT
+CLASS="VARNAME"
+>logdir</TT
+> parameter
+     is still supported. If the old parameter <TT
+CLASS="VARNAME"
+>logdir</TT
+> is used,
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will set its value to
+     <TT
+CLASS="VARNAME"
+>work_dir</TT
+> and throw a warning message. 
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12771"
+>A.3.3. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Import PostgreSQL 18 new parser. (Bo Peng)
+    </P
+><P
+>     Major changes of PostgreSQL 18 parser include:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       Allow generated columns to be virtual
+      </P
+></LI
+><LI
+><P
+>       Add OLD/NEW support to RETURNING in DML queries
+      </P
+></LI
+><LI
+><P
+>       Addition of various constraints (e.g. WITHOUT OVERLAPS, ENFORCED / NOT ENFORCED)
+      </P
+></LI
+><LI
+><P
+>       etc.
+      </P
+></LI
+></UL
+></LI
+><LI
+><P
+>     Restrict watchdog and heartbeat receiver to listen only on configured addresses. (Bo Peng)
+    </P
+><P
+>     Previously, both the watchdog and heartbeat receiver processes
+     listen on all interfaces.
+     For security reasons, they now listen only on the addresses
+     specified by <TT
+CLASS="VARNAME"
+>hostname</TT
+> and <TT
+CLASS="VARNAME"
+>heartbeat_hostname</TT
+>.
+    </P
+></LI
+><LI
+><P
+>     Cleanup watchdog source code. (Tatsuo Ishii)
+    </P
+><P
+>    <P
+></P
+></P><UL
+><LI
+><P
+>       Remove wd_is_upper_ok() from wd_utils.h because there's no actual
+      definition for it.
+      </P
+></LI
+><LI
+><P
+>       Make wd_get_ping_result() and wd_issue_ping_command() static. It's
+       only used in wd_ping.c.
+      </P
+></LI
+></UL
+><P>
+    </P
+></LI
+><LI
+><P
+>     Emit warning if life check has not started yet. (Tatsuo Ishii)
+    </P
+><P
+>     Currently lifecheck emits a log only when life check becomes
+     ready. This is inconvenient for admins since they need to keep on
+     watching log file until life check is ready. This commit makes the
+     life check process to emit additional warnings periodically until life
+     check has started. The interval of the warnings is wd_interval * 10
+     seconds. However for the first time at lifecheck starting, no warning
+     is emitted since it is likely that lifecheck is not ready at that
+     point.
+    </P
+></LI
+><LI
+><P
+>     Add support for frontend/backend protocol 3.2. (Tatsuo Ishii)
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       Implement NegotiateProtocolVersion message.
+      </P
+><P
+>       Implementing the message is necessary when frontend requests the
+       protocol version 3.2 (i.e. PostgreSQL 18+ or compatible clients),
+       while backend still only supports 3.0 (i.e. backend is PostgreSQL 17
+       or before).
+      </P
+><P
+>     This commit handles the message so that the message is forwarded from
+     backend to frontend when there's no connection cache exists.
+      </P
+><P
+>       If connection cache exists, pgpool sends the message, which has been
+       saved at the time when the connection cache was created, to frontend.
+      </P
+><P
+>       Discussion: <A
+HREF="https://www.postgresql.org/message-id/20250708.112133.1324153277751075866.ishii%40postgresql.org"
+TARGET="_top"
+>https://www.postgresql.org/message-id/20250708.112133.1324153277751075866.ishii%40postgresql.org</A
+>
+      </P
+></LI
+><LI
+><P
+>       Implement protocol version 3.2 BackendKeyData and query cancel message.
+      </P
+><P
+>       Starting from PostgreSQL 18, frontend/backend protocol has been
+       changed to 3.2. In the changes the BackendKeyData and query cancel
+       message are modified to allow variable length cancel key.
+      </P
+><P
+>       This commit implements the changes and now we can connect to
+       PostgreSQL frontend and backend using 3.2 protocol.
+      </P
+><PRE
+CLASS="PROGRAMLISTING"
+>Example session is:
+PGMAXPROTOCOLVERSION="3.2" psql -p 11000 test
+      </PRE
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20250714.155710.1706961744888449986.ishii%40postgresql.org"
+TARGET="_top"
+>https://www.postgresql.org/message-id/20250714.155710.1706961744888449986.ishii%40postgresql.org</A
+>
+      </P
+></LI
+></UL
+></LI
+><LI
+><P
+>     Add <A
+HREF="pgpool-adm-pcp-proc-info.html"
+>pgpool_adm_pcp_proc_info</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     This commit adds new pgpool_adm extension function:
+     pcp_proc_info. Also add new fields: client_host, client_port and SQL
+     statement to pcp_proc_info and "show pool_pools". With these additions
+     now it is possible to track the relationship among clients of pgpool,
+     pgpool itself and PostgreSQL.
+    </P
+><P
+>     Moreover the commit allows to know what commands (statements) are last
+     executed by using pcp_proc_info. Previously it was not possible unless
+     looking into the pgpool log.
+    </P
+><P
+>     lipcp.so version is bumped from 2.0.0 to 3.0.0.
+    </P
+></LI
+><LI
+><P
+>     Enhance lifecheck log. (Tatsuo Ishii)
+    </P
+><P
+>     Previously when wd_lifecheck_method = 'query', life checking prints
+     SQL without application name if "%a" is specified in
+     log_line_prefix. This commit add application_name "lifecheck_ping" to
+     make the log looks better.  Since this changes user visible behavior,
+     I do not apply this to stable branches.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-June/004604.html"
+TARGET="_top"
+>[pgpool-hackers: 4603] life check log is not nicea</A
+>
+    </P
+></LI
+><LI
+><P
+>     Replace random() with pg_prng random function. (Martijn van Duren, Tatsuo Ishii)
+    </P
+><P
+>     Previously we used random() for choosing load balancing node. However
+     PostgreSQL has better random number generator: pg_prng.c. This commit
+     imports the file and use pg_prng_double() to generate random number in
+     range [0.0, 1.0). The seed is generated using pg_strong_random().
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004589.html"
+TARGET="_top"
+>[pgpool-hackers: 4588] Shuffle random functions and use better random numbers</A
+>
+    </P
+></LI
+><LI
+><P
+>     Retry bind on watchdog receive socket. (Tatsuo Ishii)
+    </P
+><P
+>     Occasionally 028.watchdog_enable_consensus_with_half_votes times out
+     due to failure on binding watchdog receive socket.  This commit tries
+     to mitigate the issue by retrying bind.  Currently the retry is
+     performed up to 5 times and each retry is with 1 second sleep.
+    </P
+></LI
+><LI
+><P
+>     Import likely/unlikely from PostgreSQL. (Tatsuo Ishii)
+    </P
+><P
+>     These macros are not only useful to enhance performance (if correctly
+     used) but make porting codes from PostgreSQL to pgpool easier since
+     the macros occasionally used in the code.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004600.html"
+TARGET="_top"
+>[pgpool-hackers: 4599] Porting likely/unlikely</A
+>
+    </P
+></LI
+><LI
+><P
+>     Replace PostmasterRandom() with pg_strong_random(). (Tatsuo Ishii)
+    </P
+><P
+>     Our PostmasterRandmon() was imported from PostgreSQL long time ago (in
+     2016). In the same year PostgreSQL replaced PostmasterRandmon() with
+     pg_strong_random()(src/port/pg_strong_random.c). This commit follows
+     it.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004589.html"
+TARGET="_top"
+>[pgpool-hackers: 4588] Shuffle random functions and use better random numbers</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fall back to prompting for password if reading from <TT
+CLASS="FILENAME"
+>.pcppass</TT
+> file fails. (Bo Peng)
+    </P
+><P
+>     If reading password from <TT
+CLASS="FILENAME"
+>.pcppass</TT
+> file fails,
+     it should fall back to prompting the user for input,
+     similar to how PostgreSQL handles <TT
+CLASS="FILENAME"
+>.pgpass</TT
+>.
+    </P
+><P
+>     This commit also changes the following messages to be displayed
+     without requiring the <TT
+CLASS="OPTION"
+>-d</TT
+> option:
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>WARNING: password file \"%s\" is not a plain file
+WARNING: password file \"%s\" has group or world access; permissions should be u=rw (0600) or less
+     </PRE
+><P>
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004590.html"
+TARGET="_top"
+>[pgpool-hackers: 4589] If reading password from .pcppass file fails, try to read it from prompt.</A
+>
+    </P
+></LI
+><LI
+><P
+>     Remove or downgrade inappropriate log messages at pgpool startup. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Add major version information to the configuration file. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12863"
+>A.3.4. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix documentation for <TT
+CLASS="LITERAL"
+>enum</TT
+> parameters reported as <TT
+CLASS="LITERAL"
+>strings</TT
+>. (Taiki Koshino)
+    </P
+><P
+>     Fix documentations for 6 parameters:
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>log_standby_delay
+log_backend_messages
+wd_lifecheck_method
+memqcache_method
+disable_load_balance_on_write
+backend_clustering_mode
+     </PRE
+><P>
+    </P
+></LI
+><LI
+><P
+>     Enhance query cache doc. (Tatsuo Ishii)
+    </P
+><P
+>     Pgpool refuses to cache a query calling functions returning
+     <TT
+CLASS="LITERAL"
+>TIMESTAMP WITH TIMEZONE</TT
+>, <TT
+CLASS="LITERAL"
+>TIME WITH TIMEZONE</TT
+>.
+     If there are multiple functions having same name and one of them returns
+     <TT
+CLASS="LITERAL"
+>TIMESTAMP WITH TIMEZONE</TT
+>, <TT
+CLASS="LITERAL"
+>TIME WITH TIMEZONE</TT
+>,
+     pgpool refuses to cache even if one of them does not
+     return the data types. So add a note on this along with workaround.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12879"
+>A.3.5. Test Tools</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow to specify VIP in <A
+HREF="watchdog-setup.html"
+>watchdog_setup</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     This commit allows to specify VIP parameter (<TT
+CLASS="VARNAME"
+>delegate_ip</TT
+>)
+     in <TT
+CLASS="COMMAND"
+>watchdog_setup</TT
+> using new option <TT
+CLASS="OPTION"
+>-vip [ip]</TT
+>.
+     If ip is omitted, <TT
+CLASS="LITERAL"
+>127.0.0.1</TT
+> is assumed. Even if vip option
+     is specified, pgpool will not actually set the VIP to the system:
+     <A
+HREF="runtime-watchdog-config.html#GUC-IF-UP-CMD"
+>if_up_cmd</A
+>, <A
+HREF="runtime-watchdog-config.html#GUC-IF-DOWN-CMD"
+>if_down_cmd</A
+> are
+     just set to echo command and do nothing except emit a log. This option
+     is intended to trace the action of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     regarding VIP handling.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.postgresql.org/message-id/20250820.151646.1640218512808280876.ishii%40postgresql.org"
+TARGET="_top"
+>https://www.postgresql.org/message-id/20250820.151646.1640218512808280876.ishii%40postgresql.org</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN12895"
+>A.3.6. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix 038.pcp_commands regression test. (Tatsuo Ishii)
+    </P
+><P
+>     The result of the test showed local host IP. Although the IP can be
+     either IPv4 or IPv6, the test script hadn't considered it. To fix
+     this, now test.sh converts IPv4 and IPv6 IP to "localhost".
+    </P
+></LI
+><LI
+><P
+>     Stabilize 029.cert_passphrase regression test. (Tatsuo Ishii)
+    </P
+><P
+>     When ssl_passphrase_command is not valid, the error message is
+     typically "bad decrypt" but it seems sometimes "wrong tag".
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-7-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-6-7.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.7.1</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.6.7</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

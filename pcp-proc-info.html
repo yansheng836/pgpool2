@@ -1,0 +1,449 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>pcp_proc_info</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="PCP commands"
+HREF="pcp-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="pcp_proc_count"
+HREF="pcp-proc-count.html"><LINK
+REL="NEXT"
+TITLE="pcp_pool_status"
+HREF="pcp-pool-status.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="pcp_proc_count"
+HREF="pcp-proc-count.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pcp-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="pcp_pool_status"
+HREF="pcp-pool-status.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="PCP-PROC-INFO"
+></A
+>pcp_proc_info</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9724"
+></A
+><H2
+>Name</H2
+>pcp_proc_info&nbsp;--&nbsp;   displays the information on the given Pgpool-II child process ID</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9727"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>pcp_proc_info</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>options</I
+></TT
+>...] [<TT
+CLASS="REPLACEABLE"
+><I
+>pgpool_child_processid</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="R1-PCP-PROC-INFO-1"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>pcp_proc_info</TT
+>
+   displays the information on the given Pgpool-II child process ID.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9738"
+></A
+><H2
+>Options</H2
+><P
+>   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="OPTION"
+>-a</TT
+><BR><TT
+CLASS="OPTION"
+>--all</TT
+></DT
+><DD
+><P
+>       Display all child processes and their available connection slots.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-P <TT
+CLASS="REPLACEABLE"
+><I
+>PID</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--process-id=<TT
+CLASS="REPLACEABLE"
+><I
+>PID</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       PID of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> child process.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>Other options </TT
+></DT
+><DD
+><P
+>       See <A
+HREF="pcp-common-options.html"
+>pcp_common_options</A
+>.
+      </P
+></DD
+></DL
+></DIV
+><P>
+
+   If -a nor -P is not specified, process information of all
+   connected <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> child process will
+   be printed. In this case if there's no
+   connected <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> child process,
+   nothing but "No process information available" message will be
+   printed.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9767"
+></A
+><H2
+>Example</H2
+><P
+>   Here is an example output:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>$ pcp_proc_info -p 11001
+test t-ishii 2025-06-24 10:53:35 0 3 0 2025-06-24 10:55:58 2025-06-24 10:55:59 0  1 1336703 1 1336537 0 Idle 0 192.168.10.11 39216
+test t-ishii 2025-06-24 10:53:35 0 3 0 2025-06-24 10:55:58 2025-06-24 10:55:59 0  1 1336704 1 1336537 1 Idle 1 192.168.10.11 39216
+test t-ishii 2025-06-24 10:53:35 (4:03 before process restarting) 1 3 0 2025-06-24 10:53:42 2025-06-24 10:53:42 0 2025-06-24 10:55:37 1 1336573 0 1336544 0 Wait for connection 0 192.168.10.11 39162
+test t-ishii 2025-06-24 10:53:35 (4:03 before process restarting) 1 3 0 2025-06-24 10:53:42 2025-06-24 10:53:42 0 2025-06-24 10:55:37 1 1336574 0 1336544 1 Wait for connection 0 192.168.10.11 39162
+   </PRE
+><P>
+  </P
+><P
+>   The result is in the following order:
+   </P><PRE
+CLASS="LITERALLAYOUT"
+>    1. connected database name
+    2. connected user name
+    3. process start-up timestamp (If <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-LIFE-TIME"
+>child_life_time</A
+> is set not 0, the time before process restarting is displayed.)
+    4. process-reuse counter for <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-MAX-CONNECTIONS"
+>child_max_connections</A
+>
+    5. protocol major version
+    6. protocol minor version
+    7. connection created timestamp
+    8. last client connected timestamp
+    9. client idle duration (sec) (If <A
+HREF="runtime-config-connection-pooling.html#GUC-CLIENT-IDLE-LIMIT"
+>client_idle_limit</A
+> is set not 0, the time before client disconnected is displayed.)
+    10. last client disconnected timestamp
+    11. connection-reuse counter
+    12. PostgreSQL backend process id
+    13. 1 if frontend connected 0 if not
+    14. pgpool child process id
+    15. PostgreSQL backend id
+    16. process status
+    17. 1 if backend is load balance node and frontend connected, 0 otherwise
+    18. client's host name
+    19. client's port number (not shown if Unix domain socket or localhost)
+    20. SQL statement last executed
+   </PRE
+><P>
+  </P
+><P
+>   If <TT
+CLASS="LITERAL"
+>-a</TT
+> or <TT
+CLASS="LITERAL"
+>--all</TT
+> option is not specified and
+   there is no connection to the backends, nothing will be displayed. If there are
+   multiple connections, one connection's information will be displayed on each
+   line multiple times. Timestamps are displayed in EPOCH format.
+  </P
+><P
+>   The <TT
+CLASS="OPTION"
+>--verbose</TT
+> option can help understand the output. For example:
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>$ pcp_proc_info -p 11001 --verbose
+Database                  : test
+Username                  : t-ishii
+Start time                : 2025-06-24 10:53:35
+Client connection count   : 0
+Major                     : 3
+Minor                     : 0
+Backend connection time   : 2025-06-24 10:55:58
+Client connection time    : 2025-06-24 10:55:59
+Client idle duration      : 0
+Client disconnection time : 
+Pool Counter              : 1
+Backend PID               : 1336703
+Connected                 : 1
+PID                       : 1336537
+Backend ID                : 0
+Status                    : Idle
+Load balance node         : 0
+client_host               : 192.168.10.11
+client_port               : 39216
+statement                 : 
+
+Database                  : test
+Username                  : t-ishii
+Start time                : 2025-06-24 10:53:35
+Client connection count   : 0
+Major                     : 3
+Minor                     : 0
+Backend connection time   : 2025-06-24 10:55:58
+Client connection time    : 2025-06-24 10:55:59
+Client idle duration      : 0
+Client disconnection time : 
+Pool Counter              : 1
+Backend PID               : 1336704
+Connected                 : 1
+PID                       : 1336537
+Backend ID                : 1
+Status                    : Idle
+Load balance node         : 1
+client_host               : 192.168.10.11
+client_port               : 39216
+statement                 : select 1;
+
+Database                  : test
+Username                  : t-ishii
+Start time                : 2025-06-24 10:53:35 (4:33 before process restarting)
+Client connection count   : 1
+Major                     : 3
+Minor                     : 0
+Backend connection time   : 2025-06-24 10:53:42
+Client connection time    : 2025-06-24 10:53:42
+Client idle duration      : 0
+Client disconnection time : 2025-06-24 10:55:37
+Pool Counter              : 1
+Backend PID               : 1336573
+Connected                 : 0
+PID                       : 1336544
+Backend ID                : 0
+Status                    : Wait for connection
+Load balance node         : 0
+client_host               : 192.168.10.11
+client_port               : 39162
+statement                 : DISCARD ALL
+
+Database                  : test
+Username                  : t-ishii
+Start time                : 2025-06-24 10:53:35 (4:33 before process restarting)
+Client connection count   : 1
+Major                     : 3
+Minor                     : 0
+Backend connection time   : 2025-06-24 10:53:42
+Client connection time    : 2025-06-24 10:53:42
+Client idle duration      : 0
+Client disconnection time : 2025-06-24 10:55:37
+Pool Counter              : 1
+Backend PID               : 1336574
+Connected                 : 0
+PID                       : 1336544
+Backend ID                : 1
+Status                    : Wait for connection
+Load balance node         : 0
+client_host               : 192.168.10.11
+client_port               : 39162
+statement                 : 
+  </PRE
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pcp-proc-count.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pcp-pool-status.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>pcp_proc_count</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="pcp-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>pcp_pool_status</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

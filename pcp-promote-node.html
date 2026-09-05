@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>pcp_promote_node</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="PCP commands"
+HREF="pcp-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="pcp_attach_node"
+HREF="pcp-attach-node.html"><LINK
+REL="NEXT"
+TITLE="pcp_stop_pgpool"
+HREF="pcp-stop-pgpool.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="pcp_attach_node"
+HREF="pcp-attach-node.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pcp-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="pcp_stop_pgpool"
+HREF="pcp-stop-pgpool.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="PCP-PROMOTE-NODE"
+></A
+>pcp_promote_node</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN9917"
+></A
+><H2
+>Name</H2
+>pcp_promote_node&nbsp;--&nbsp;   promotes the given node as new main to Pgpool-II</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN9920"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>pcp_promote_node</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>options</I
+></TT
+>...] [<TT
+CLASS="REPLACEABLE"
+><I
+>node_id</I
+></TT
+>] [<TT
+CLASS="REPLACEABLE"
+><I
+>gracefully</I
+></TT
+>] [<TT
+CLASS="REPLACEABLE"
+><I
+>switchover</I
+></TT
+>]</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="R1-PCP-PROMOTE-NODE-1"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>pcp_promote_node</TT
+> promotes the given node as new
+   primary to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. In streaming
+   replication mode only. Please note that this command does not
+   actually promote standby <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+   backend unless <TT
+CLASS="LITERAL"
+>switchover</TT
+> option is specified:
+   it just changes the internal status of
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and trigger failover and users
+   have to promote standby <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+   outside <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+  </P
+><P
+>   If <TT
+CLASS="LITERAL"
+>switchover</TT
+> is specified,
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> detaches current primary
+   (changes the internal status to down) and execute the <A
+HREF="runtime-config-failover.html#GUC-FAILOVER-COMMAND"
+>failover_command</A
+>, with the new main node argument to
+   be set to the specified node id. Because most failover scripts
+   promote the new main node, the specified node will be the new
+   primary node. The <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> is
+   necessary to be set properly to turn the former primary into
+   standby.
+  </P
+><P
+>   <TT
+CLASS="COMMAND"
+>pcp_promote_node</TT
+> executes followings if
+   <TT
+CLASS="LITERAL"
+>switchover</TT
+> is not specified.  Please be
+   warned that if <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> is set,
+   the command will be executed.  It is a standard advice that you
+   disable <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> before
+   executing this command.
+
+   <P
+></P
+></P><OL
+TYPE="1"
+><LI
+><P
+>      Change the status of standby
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> from standby to
+      primary. It just changes the internal status of
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and it does not actually
+      promote <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> standby server.
+     </P
+></LI
+><LI
+><P
+>      Change the status of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> node
+      which is not specified by this command's argument to down.  It
+      just changes the internal status of
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and it does not actually
+      make <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> standby server down.
+     </P
+></LI
+><LI
+><P
+>      If <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> is set, execute
+      <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> against
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+     </P
+></LI
+></OL
+><P>
+  </P
+><P
+>   <TT
+CLASS="COMMAND"
+>pcp_promote_node</TT
+> executes followings if
+   <TT
+CLASS="LITERAL"
+>switchover</TT
+> is specified. If <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> is set, the command will be
+   executed. You need to set <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> before executing this command
+   because failover script will create the new primary and other nodes
+   need to be turned into standbys
+
+   <P
+></P
+></P><OL
+TYPE="1"
+><LI
+><P
+>      Change the status of primary
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> from up to down. This
+      triggers <A
+HREF="runtime-config-failover.html#GUC-FAILOVER-COMMAND"
+>failover_command</A
+> execution, with
+      the new main node argument to be set to the specified node
+      id. Because most failover scripts promote the new main node, the
+      specified node will become the new primary node.
+     </P
+></LI
+><LI
+><P
+>      Change the status of standby
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> node which is not
+      specified by this command's argument to down.  It just changes
+      the internal status of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and
+      it does not actually make <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+      standby server down.
+     </P
+></LI
+><LI
+><P
+>      If <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> is set, execute
+      <A
+HREF="runtime-config-failover.html#GUC-FOLLOW-PRIMARY-COMMAND"
+>follow_primary_command</A
+> against
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+     </P
+></LI
+></OL
+><P>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN9987"
+></A
+><H2
+>Options</H2
+><P
+>   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="OPTION"
+>-n <TT
+CLASS="REPLACEABLE"
+><I
+>node_id</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--node-id=<TT
+CLASS="REPLACEABLE"
+><I
+>node_id</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       The index of backend node to promote as new main.
+       The specified node must be in "up" or "waiting" status.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-g </TT
+><BR><TT
+CLASS="OPTION"
+>--gracefully</TT
+></DT
+><DD
+><P
+>       Wait until all clients are disconnected (unless client_idle_limit_in_recovery is -1 or recovery_timeout is expired).
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-s </TT
+><BR><TT
+CLASS="OPTION"
+>--switchover</TT
+></DT
+><DD
+><P
+>       Let the specified node to be actually promoted by triggering
+       the <A
+HREF="runtime-config-failover.html#GUC-FAILOVER-COMMAND"
+>failover_command</A
+>.  Also change the
+       current primary node status to down.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>Other options </TT
+></DT
+><DD
+><P
+>       See <A
+HREF="pcp-common-options.html"
+>pcp_common_options</A
+>.
+      </P
+></DD
+></DL
+></DIV
+><P>
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="pcp-attach-node.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pcp-stop-pgpool.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>pcp_attach_node</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="pcp-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>pcp_stop_pgpool</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,598 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.4.3</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.4.4"
+HREF="release-4-4-4.html"><LINK
+REL="NEXT"
+TITLE="Release 4.4.2"
+HREF="release-4-4-2.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.4.4"
+HREF="release-4-4-4.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.4.2"
+HREF="release-4-4-2.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-4-3"
+>A.39. Release 4.4.3</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2023-05-18</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15934"
+>A.39.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Import <TT
+CLASS="LITERAL"
+>psqlscan</TT
+> source code into <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> to judge multi statement query. (Tatsuo Ishii)
+    </P
+><P
+>     <TT
+CLASS="LITERAL"
+>Psqlscan</TT
+> is a module in the PostgreSQL source tree.
+     It is essentially subset of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> SQL scanner
+     but it is specialized for detecting
+     the end of each SQL statement. Therefore we can count the number of
+     SQL statements in a query string by using it.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004291.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/04291.html</A
+>
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-April/004320.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-April/004320.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Allow to use multiple statements extensively. (Tatsuo Ishii)
+    </P
+><P
+>     This commit tries to eliminate pgpool's long standing limitations
+     regarding multiple statements (multi-statements).
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004287.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Use schema qualification for internal queries. (Tatsuo Ishii)
+    </P
+><P
+>     Some of objects such as function and cast did not use "pg_catalog."
+     schema qualification. This does not lead to immediate security
+     concern but using the schema qualification is always good practice.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN15955"
+>A.39.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix <A
+HREF="runtime-streaming-replication-check.html#GUC-PREFER-LOWER-DELAY-STANDBY"
+>prefer_lower_delay_standby</A
+> bug.
+     (<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=798"
+TARGET="_top"
+>bug 798</A
+>) (Tatsuo Ishii)
+    </P
+><P
+>     When client connects to pgpool, one of standbys are chosen as the load
+     balancing node. If standby delay exceeds delay_threshold while the
+     session continues, <TT
+CLASS="VARNAME"
+>prefer_lower_delay_standby</TT
+> will choose
+     the least delay standby node as the new load balancing node and set the target
+     backend to the node. Unfortunately the decision was made before the
+     checking that SELECT query includes writing function etc.,
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     happily sends SELECT  which cannot be executed on standby. To fix
+     this, <TT
+CLASS="VARNAME"
+>prefer_lower_delay_standby</TT
+> treatment is moved
+     after the writing function etc. check.
+    </P
+><P
+>     Also modify 033.prefer_lower_standby_delay regression test to include the case above.
+    </P
+></LI
+><LI
+><P
+>     Fix compile error on systems using musl libc.
+     (<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=790"
+TARGET="_top"
+>bug 790</A
+>) (Tatsuo Ishii)
+    </P
+><P
+>     Patch provided by leimaohui.
+    </P
+></LI
+><LI
+><P
+>     Fix multiple query cache bug. (Tatsuo Ishii)
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-January/004259.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-January/004259.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix sr worker to not send wrong query to standby server in corner case. (Tatsuo Ishii)
+    </P
+><P
+>     When ALWAYS_PRIMARY flag is set, PRIMARY_NODE_ID macro returns node
+     id, rather than -1 even if the primary is down.
+     In this case streaming replication delay check worker
+     sends <TT
+CLASS="LITERAL"
+>SELECT pg_current_wal_lsn()</TT
+> or
+     <TT
+CLASS="LITERAL"
+>SELECT pg_current_xlog_location()</TT
+>
+     depending on <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>'s version to
+     standby which of course raises an error.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004279.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2023-February/004279.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix kind mismatch error with <TT
+CLASS="LITERAL"
+>DEALLOCATE</TT
+>.
+     (<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=780"
+TARGET="_top"
+>bug 780</A
+>) (Tatsuo Ishii)
+    </P
+><P
+>     Kind mismatch error occurs when conditions below are all met:
+     <P
+></P
+></P><UL
+><LI
+><P
+>        streaming replication mode
+       </P
+></LI
+></UL
+><P>
+     <P
+></P
+></P><UL
+><LI
+><P
+>        load balance node is other than primary
+       </P
+></LI
+></UL
+><P>
+     <P
+></P
+></P><UL
+><LI
+><P
+>        <TT
+CLASS="LITERAL"
+>PREPARE</TT
+> is used in a multi-statement query
+       </P
+></LI
+></UL
+><P>
+    </P
+></LI
+><LI
+><P
+>     Fix compile error of regression test (Takuma Hoshiai)
+    </P
+><P
+>     The error occurred by timestamp test using gcc10.
+    </P
+></LI
+><LI
+><P
+>     Obtain stronger lock while committing shared relcache. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix that <TT
+CLASS="LITERAL"
+>show pool_version</TT
+> shows row description twice. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16006"
+>A.39.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Add explanation for <A
+HREF="runtime-watchdog-config.html#GUC-WD-PRIORITY"
+>wd_priority</A
+>. (Chen Ningwei)
+    </P
+></LI
+><LI
+><P
+>     Add restriction regarding <TT
+CLASS="LITERAL"
+>PREPARE/EXECUTE/DEALLOCATE</TT
+>. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Add caution to use <TT
+CLASS="LITERAL"
+>-D</TT
+> option with pgpool. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Enhancing "Installation from RPM" section. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Add "Backing up PostgreSQL database" section to "Server Setup and Operation" chapter. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Remove the configuration of "-D" start OPTS from "8.2. Pgpool-II + Watchdog Setup Example". (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Fix restrictions section. (Tatsuo Ishii)
+    </P
+><P
+>     <P
+></P
+></P><UL
+><LI
+><P
+>        Add mention about <TT
+CLASS="LITERAL"
+>SCRAM-SHA-256</TT
+> authentication
+       </P
+></LI
+></UL
+><P>
+     <P
+></P
+></P><UL
+><LI
+><P
+>        Add mention about snapshot isolation mode
+       </P
+></LI
+></UL
+><P>
+    </P
+></LI
+><LI
+><P
+>     Add explanation when pg node status is shown as "unknown". (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Mention that the target node to promote must be up and running when executing
+     <A
+HREF="pcp-promote-node.html"
+>pcp_promote_node</A
+>. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Mention that AES256 support requires <TT
+CLASS="OPTION"
+>--with-openssl</TT
+> option. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Explicitly stat that it is -w option of pcp command is needed to use .pcppass. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix "2.8 Creating insert lock table" section. (Tatsuo Ishii)
+    </P
+><P
+>     It only referred to the native replication where it should have referred
+     to the snapshot isolation mode.
+    </P
+></LI
+><LI
+><P
+>     Enhance <A
+HREF="sql-show-pool-cache.html"
+>SHOW POOL_CACHE</A
+>. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16050"
+>A.39.4. Test Tools</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Change <TT
+CLASS="COMMAND"
+>pgpool_setup</TT
+> to append some parameters to the end of the configuration file. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16056"
+>A.39.5. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Refactor 071.execute_and_deallocate/test.sh. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Enhance regression tests. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix occasional 005.jdbc test failure. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-4-4.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-4-2.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.4.4</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.4.2</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

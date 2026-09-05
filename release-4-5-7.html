@@ -1,0 +1,613 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.5.7</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.5.8"
+HREF="release-4-5-8.html"><LINK
+REL="NEXT"
+TITLE="Release 4.5.6"
+HREF="release-4-5-6.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.5.8"
+HREF="release-4-5-8.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.5.6"
+HREF="release-4-5-6.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-5-7"
+>A.17. Release 4.5.7</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2025-05-15</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14088"
+>A.17.1. Overview</A
+></H2
+><P
+>   This release contains a security fix.
+  </P
+><P
+>   An authentication bypass vulnerability exists in the client authentication
+   mechanism of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+   In <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>, authentication may be bypassed even
+   when it is supposed to be enforced. As a result, an attacker could log in as
+   any user, potentially leading to information disclosure, data tampering, or
+   even a complete shutdown of the database. (CVE-2025-46801)
+  </P
+><P
+>   This vulnerability affects systems where the authentication configuration
+   matches one of the following patterns:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     Pattern 1: This vulnerability occurs when all of the following conditions are met:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       The <TT
+CLASS="LITERAL"
+>password</TT
+> authentication method is used in
+       <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+>
+      </P
+></LI
+><LI
+><P
+>       allow_clear_text_frontend_auth = off
+      </P
+></LI
+><LI
+><P
+>       The user's password is not set in <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+>
+      </P
+></LI
+><LI
+><P
+>       The <TT
+CLASS="LITERAL"
+>scram-sha-256</TT
+> or <TT
+CLASS="LITERAL"
+>md5</TT
+> authentication
+       method is used in <TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+>
+      </P
+></LI
+></UL
+></LI
+><LI
+><P
+>     Pattern 2: This vulnerability occurs when all of the following conditions are met:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       enable_pool_hba = off
+      </P
+></LI
+><LI
+><P
+>       One of the following authentication methods is used in pg_hba.conf:
+       <TT
+CLASS="LITERAL"
+>password</TT
+>, <TT
+CLASS="LITERAL"
+>pam</TT
+>, or <TT
+CLASS="LITERAL"
+>ldap</TT
+>
+      </P
+></LI
+></UL
+></LI
+><LI
+><P
+>     Pattern 3: This vulnerability occurs when all of the following conditions are met:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       Raw mode is used (backend_clustering_mode = 'raw')
+      </P
+></LI
+><LI
+><P
+>       The <TT
+CLASS="LITERAL"
+>md5</TT
+> authentication method is used in
+       <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+>
+      </P
+></LI
+><LI
+><P
+>       allow_clear_text_frontend_auth = off
+      </P
+></LI
+><LI
+><P
+>       The user's password is registered in <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> in plain
+       text or AES format
+      </P
+></LI
+><LI
+><P
+>       One of the following authentication methods is used in
+       <TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+>:
+       <TT
+CLASS="LITERAL"
+>password</TT
+>, <TT
+CLASS="LITERAL"
+>pam</TT
+>, or <TT
+CLASS="LITERAL"
+>ldap</TT
+>
+      </P
+></LI
+></UL
+></LI
+></UL
+><P
+>   All versions of Pgpool-II 4.0 and 4.1 series, 4.2.0 to 4.2.21, 4.3.0 to 4.3.14,
+   4.4.0 to 4.4.11, 4.5.0 to 4.5.6 and 4.6.0 are affected by this vulnerability.
+   It is strongly recommended to upgrade to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+   4.6.1, 4.5.7, 4.4.12, 4.3.15 and 4.2.22 or later.
+   Alternatively, you can modify your settings so that they do not match any of
+   the vulnerable configuration patterns.
+  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14145"
+>A.17.2. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Add major version information to the configuration file. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14150"
+>A.17.3. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix incorrect client authentication in some cases. (Tatsuo Ishii)
+    </P
+><P
+>     If enable_pool_hba = on, it's auth method is "password", no
+     password is registered in pool_passwd, and auth method in
+     pg_hba.conf is "scram-sha-256" or "md5", for the first time when
+     a client connects to pgpool, authentication is performed as
+     expected. But if a client connects to the cached connection, any
+     password from the client is accepted.
+    </P
+><P
+>     Also if enable_pool_hba = off, in some cases a client is not
+     asked password for the first time, or when a client connects to
+     cached connection, even if it should be.
+    </P
+><P
+>     In addition to fixing above, following changes are made:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       Remove single PostgreSQL code path to simplify the authentication code.
+      </P
+></LI
+><LI
+><P
+>       Remove crypt authentication support for frontend and
+       backend. The feature had not been documented and never
+       tested. Moreover crypt authentication was removed long time
+       ago in PostgreSQL (8.4, 2009).
+      </P
+></LI
+><LI
+><P
+>       Add new regression test "040.client_auth". The test performs
+       exhaustive client authentication tests using a test
+       specification file formatted in CSV.
+      </P
+></LI
+></UL
+></LI
+><LI
+><P
+>     Fix long standing bind bug with query cache. (Tatsuo Ishii)
+    </P
+><P
+>     When a named statement is prepared, it is possible to bind then execute without a parse message.
+     Problem is, table oids which are necessary to invalidate query cache at execute or COMMIT was
+     collected only in parse messages process (Parse()). Thus if bind is executed
+     without parse after previous execute, no table oids were collected, and pgpool failed to invalidate query cache.
+     Fix is collecting table oids at bind time too.
+     Add regression test to 006.memqcache.
+    </P
+><P
+>     Problem reported by and test program provided by Achilleas Mantzios.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2025-April/009430.html"
+TARGET="_top"
+>[pgpool-general: 9427] Clarification on query results cache visibility</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix query cache invalidation bug. (Tatsuo Ishii)
+    </P
+><P
+>     When an execute message is received, pgpool checks its max number of rows paramter. If it's not zero,
+     pgpool sets "partial_fetch" flag to instruct pool_handle_query_cache() to not create query cache.
+     Problem is, commit 2a99aa5d1 missed that even INSERT/UPDATE/DELETE sets the execute message parameter to non 0 (mostly 1)
+     and pgpool set the flag for even none SELECTs. This resulted in failing to invalidate query cache because if the flag is true,
+     subsequent code in pool_handle_query_cache() skips cache invalidation.
+     To fix this change Execute() to check if the query is read only SELECT before setting the flag.
+     Also add test to 006.memqcache.
+    </P
+><P
+>     Problem reported by and a test program provided by Achilleas Mantzios.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2025-April/009430.html"
+TARGET="_top"
+>[pgpool-general: 9427] Clarification on query results cache visibility</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix portability to OpenBSD. (Tatsuo Ishii)
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-May/004583.html"
+TARGET="_top"
+>[pgpool-hackers: 4582] Make pgpool build on OpenBSD</A
+>
+    </P
+><P
+>     The patch was created by Martijn van Duren.
+    </P
+></LI
+><LI
+><P
+>     Fix json_writer did not properly encode special characters. (Bo Peng)
+    </P
+><P
+>     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> would crash when the watchdog was enabled if <A
+HREF="runtime-watchdog-config.html#GUC-WD-AUTHKEY"
+>wd_authkey</A
+> contained special characters (e.g., a backslash).
+    </P
+><P
+>     The patch was created by Martijn van Duren and slightly modified by Bo Peng.
+    </P
+></LI
+><LI
+><P
+>      Fix sr check and health check to reopen <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> upon reload. (Tatsuo Ishii)
+    </P
+><P
+>      The streaming replication check and health check process forgot to
+      reopen <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> upon reload.  If <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-PASSWORD"
+>sr_check_password</A
+> or
+      <A
+HREF="runtime-config-health-check.html#GUC-HEALTH-CHECK-PASSWORD"
+>health_check_password</A
+> is empty string, the password is obtained from
+      <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+>. Thus those process read outdated content of <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+>
+      upon reload.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14197"
+>A.17.4. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance the description on <A
+HREF="runtime-config-connection-pooling.html#GUC-CONNECTION-LIFE-TIME"
+>connection_life_time</A
+> (Tatsuo Ishii)
+    </P
+><P
+>     <A
+HREF="runtime-config-connection-pooling.html#GUC-CONNECTION-LIFE-TIME"
+>connection_life_time</A
+> is a config value to determine the life time of
+     cached connections to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> backend. Current document lacks a
+     description that the expiration calculation is actually done at the
+     time when the client disconnects to the process which holds the cached
+     connections.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2025-April/004578.html"
+TARGET="_top"
+>[pgpool-hackers: 4577] Doc: enhance the description on connection_life_time</A
+>
+    </P
+></LI
+><LI
+><P
+>     Enhance the explanation on <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     It must be a superuser or in the <TT
+CLASS="LITERAL"
+>pg_monitor</TT
+> group.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN14213"
+>A.17.5. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow regression tests to use multiple socket directories. (Taiki Koshino, Tatsuo Ishii, Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-5-8.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-5-6.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.5.8</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.5.6</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

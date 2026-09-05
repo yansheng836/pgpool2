@@ -1,0 +1,502 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.2.8</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.2.9"
+HREF="release-4-2-9.html"><LINK
+REL="NEXT"
+TITLE="Release 4.2.7"
+HREF="release-4-2-7.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.2.9"
+HREF="release-4-2-9.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.2.7"
+HREF="release-4-2-7.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-2-8"
+>A.80. Release 4.2.8</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2022-02-17</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN19510"
+>A.80.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Suppress message length log for <TT
+CLASS="VARNAME"
+>in_hot_standby</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL 14</SPAN
+> introduced new config parameter <A
+HREF="https://www.postgresql.org/docs/14/runtime-config-preset.html"
+TARGET="_top"
+>in_hot_standby</A
+>.
+    </P
+><P
+>     The value is either "on" for standby servers or "off" for primary
+     servers. As a result pgpool log is flooded by the messages:
+    </P
+><PRE
+CLASS="PROGRAMLISTING"
+>     LOG:  reading message length
+     DETAIL:  message length (22) in slot 1 does not match with slot 0(23)
+    </PRE
+><P
+>     To avoid this, only complain if the parameter name is not <TT
+CLASS="VARNAME"
+>in_hot_standby</TT
+>.
+    </P
+><P
+>     Also the message is enhanced to show the parameter name. For example:
+    </P
+><PRE
+CLASS="PROGRAMLISTING"
+>     LOG:  ParameterStatus "TimeZone": node 1 message length 30 is different from main node message length 24
+    </PRE
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2021-December/004077.html"
+TARGET="_top"
+>[pgpool-hackers: 4076]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Add validations of <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+> and <A
+HREF="runtime-online-recovery.html#GUC-RECOVERY-PASSWORD"
+>recovery_password</A
+> format (Masaya Kawamoto)
+    </P
+><P
+>     <TT
+CLASS="VARNAME"
+>wd_lifecheck_password</TT
+> and <TT
+CLASS="VARNAME"
+>recovery_password</TT
+>
+     are not allowed to be md5 hashed password format but pgpool just reported
+     authentication failure and did not check them.
+    </P
+></LI
+><LI
+><P
+>     Enhance parameter status handling. (Tatsuo Ishii)
+    </P
+><P
+>     When a parameter status message arrives from backend <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     forwards it to frontend not just memorize.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN19538"
+>A.80.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix long standing bug with <TT
+CLASS="COMMAND"
+>pcp_node_info</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-January/004110.html"
+TARGET="_top"
+>[pgpool-hackers: 4109]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix health check process issues pointed out by <SPAN
+CLASS="PRODUCTNAME"
+>Coverity</SPAN
+>. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix memory leak pointed out by <SPAN
+CLASS="PRODUCTNAME"
+>Coverity</SPAN
+>. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix <CODE
+CLASS="FUNCTION"
+>failover()</CODE
+> to deal with the case when no former primary node exists. (Tatsuo Ishii)
+    </P
+><P
+>     In case <TT
+CLASS="VARNAME"
+>Req_info-&#62;primary_node_id</TT
+> is -1 like no primary
+     node exists when <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> starts up,
+     <CODE
+CLASS="FUNCTION"
+>failover()</CODE
+> skipped to call
+     <CODE
+CLASS="FUNCTION"
+>find_primary_node_repeatedly()</CODE
+>. Also
+     <TT
+CLASS="VARNAME"
+>follow_master_command</TT
+> was not executed.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-February/004114.html"
+TARGET="_top"
+>[pgpool-hackers: 4113]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fixed sample failover script. (Bo Peng)
+    </P
+><P
+>     This script did not consider the case when the old primary node id is "-1".
+    </P
+></LI
+><LI
+><P
+>     Fixed the streaming replication check process not to retry if it cannot connect to the backend.(<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=742"
+TARGET="_top"
+>bug 742</A
+>) (Bo Peng)
+    </P
+><P
+>     This retry caused a long time failover.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN19570"
+>A.80.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix documentation typos. (pengbo)
+    </P
+><P
+>     Patch is created by Umar Hayat.
+    </P
+></LI
+><LI
+><P
+>     Add "exclude" settings to /etc/yum.repos.d/pgdg-redhat-all.repo so
+     that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is not installed from
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> YUM repository. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Add restriction regarding <TT
+CLASS="VARNAME"
+>ParameterStatus</TT
+> and <TT
+CLASS="VARNAME"
+>in_hot_standby</TT
+> parameter. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Add restriction about <TT
+CLASS="VARNAME"
+>set_config</TT
+>. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN19587"
+>A.80.4. Test tools</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix <TT
+CLASS="COMMAND"
+>pgpool_setup</TT
+> in failover script creation. (Tatsuo Ishii)
+    </P
+><P
+>     When <TT
+CLASS="COMMAND"
+>pgpool_setup</TT
+> creates <TT
+CLASS="FILENAME"
+>failover.sh</TT
+>,
+     it did not consider the case when no primary server existed.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN19596"
+>A.80.5. Regression tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow to run regression test against existing installation without recompiling. (Tatsuo Ishii)
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2021-December/004078.html"
+TARGET="_top"
+>[pgpool-hackers: 4077]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix regression test 075. (Tatsuo Ishii)
+    </P
+><P
+>     The test reported success even if pgpool does not start up.
+     Problem reported and patch provided by Qiang Lingjie.
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-January/004086.html"
+TARGET="_top"
+>[pgpool-hackers: 4085]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix <TT
+CLASS="COMMAND"
+>pgpool_setup</TT
+> and <TT
+CLASS="COMMAND"
+>watchdog_setup</TT
+> binary PATH in noinstall mode. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-2-9.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-2-7.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.2.9</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.2.7</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,504 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.4.2</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.4.3"
+HREF="release-4-4-3.html"><LINK
+REL="NEXT"
+TITLE="Release 4.4.1"
+HREF="release-4-4-1.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.4.3"
+HREF="release-4-4-3.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.4.1"
+HREF="release-4-4-1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-4-2"
+>A.40. Release 4.4.2</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2023-01-23</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16070"
+>A.40.1. Overview</A
+></H2
+><P
+>   This release contains a security fix.
+  </P
+><P
+>   If following conditions are all met, the password of <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-USER"
+>wd_lifecheck_user</A
+> is
+   exposed by <A
+HREF="sql-show-pool-status.html"
+>SHOW POOL STATUS</A
+> command.
+   The command can be executed by any user who can
+   connect to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. (CVE-2023-22332)
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     Version 3.3 or later.
+    </P
+></LI
+><LI
+><P
+>     <A
+HREF="runtime-watchdog-config.html#GUC-USE-WATCHDOG"
+>use_watchdog</A
+> is <TT
+CLASS="LITERAL"
+>on</TT
+>.
+    </P
+></LI
+><LI
+><P
+>     <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-METHOD"
+>wd_lifecheck_method</A
+> is <TT
+CLASS="LITERAL"
+>query</TT
+>.
+    </P
+></LI
+><LI
+><P
+>     A plain text password is set
+     to <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+>.
+    </P
+></LI
+></UL
+><P
+>   In this case it is strongly recommended to upgrade to this version
+   (we do not expose <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+> in
+   show pool_status command any more), or use one of following
+   workarounds.
+  </P
+><P
+>   Workarounds for 4.0.x to 4.4.x users:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>    Disable watchdog. Set <A
+HREF="runtime-watchdog-config.html#GUC-USE-WATCHDOG"
+>use_watchdog</A
+>
+    to <TT
+CLASS="LITERAL"
+>off</TT
+>.
+    </P
+></LI
+><LI
+><P
+>    Change <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-METHOD"
+>wd_lifecheck_method</A
+>
+    to <TT
+CLASS="LITERAL"
+>heartbeat</TT
+>.
+    </P
+></LI
+><LI
+><P
+>    Set an empty string
+    to <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+>. This will use
+    password in the <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> file.
+    </P
+></LI
+><LI
+><P
+>    Set an AES encrypted password
+    to <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+>.
+    </P
+></LI
+></UL
+><P
+>   In any case we recommend to
+   change <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+>
+   in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+  </P
+><P
+>   Workarounds for 3.0.x to 3.7.x users:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>    Disable watchdog. Set <A
+HREF="runtime-watchdog-config.html#GUC-USE-WATCHDOG"
+>use_watchdog</A
+>
+    to <TT
+CLASS="LITERAL"
+>off</TT
+>.
+    </P
+></LI
+><LI
+><P
+>     Change <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-METHOD"
+>wd_lifecheck_method</A
+>
+     to <TT
+CLASS="LITERAL"
+>heartbeat</TT
+>.
+    </P
+></LI
+></UL
+><P
+>   In any case we recommend to
+   change <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+>
+   in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+  </P
+><P
+>   Please note that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 3.7.x or
+   before are end of life and no minor updates are provided for those
+   versions.
+  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16128"
+>A.40.2. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Do not expose <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+> in
+     <A
+HREF="sql-show-pool-status.html"
+>SHOW POOL STATUS</A
+>,
+     <A
+HREF="pcp-pool-status.html"
+>pcp_pool_status</A
+> and
+     <A
+HREF="pgpool-adm-pcp-pool-status.html"
+>pgpool_adm_pcp_pool_status</A
+> commands. (CVE-2023-22332) (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Change the default value
+     for <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-PASSWORD"
+>wd_lifecheck_password</A
+> to empty string as
+     documented. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16140"
+>A.40.3. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fixed pgpool_adm: pcp_pool_status error when this function is used with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 15. (Tatsuo Ishii)
+    </P
+><P
+>     pcp_pool_status actually returns SETOF record, but it was declared as
+     "returns record". This sloppiness had been tolerated until
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 14 but <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 15
+     becomes more strict. To fix this we need to change the return type of
+     pcp_pool_status from "RETURNS record" to "RETURNS SETOF record".
+    </P
+><P
+>     And the pgpool_adm extension version is bumped to 1.5.
+    </P
+></LI
+><LI
+><P
+>     Fix integer overflow in streaming replication check. (Tatsuo Ishii)
+    </P
+><P
+>     When <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> is enabled and
+     the replication delay is about more than 36 minutes, an integer
+     overflow error was logged and replication check failed.
+    </P
+></LI
+><LI
+><P
+>     Fix compiler warning
+     in <TT
+CLASS="FILENAME"
+>pgpool-regclass.c</TT
+>. (Florian Weimer,
+     Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix Uninitialized variables pointed out by Coverity. (Takuma Hoshiai)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16159"
+>A.40.4. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Doc: Enhance and fix some mistakes
+     in <A
+HREF="runtime-in-memory-query-cache.html#RUNTIME-IN-MEMORY-QUERY-CACHE-SHMEM-CONFIG"
+>Configurations
+     to use shared memory</A
+> chapter. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Doc: Enhance explanation
+     of <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+>. (zam bak, Tatsuo
+     Ishii)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-4-3.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-4-1.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.4.3</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.4.1</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

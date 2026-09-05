@@ -1,0 +1,2766 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Load Balancing</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Configuration"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE="Error Reporting and Logging"
+HREF="runtime-config-logging.html"><LINK
+REL="NEXT"
+TITLE="Health Check"
+HREF="runtime-config-health-check.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Error Reporting and Logging"
+HREF="runtime-config-logging.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Server Configuration</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Health Check"
+HREF="runtime-config-health-check.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RUNTIME-CONFIG-LOAD-BALANCING"
+>5.8. Load Balancing</A
+></H1
+><P
+>  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> load balancing of SELECT queries
+  works with any clustering mode except raw mode. When enabled
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> sends the writing queries to the
+    <ACRONYM
+CLASS="ACRONYM"
+>primary node</ACRONYM
+> in Native Replication mode, all of the
+    backend nodes in Replication mode, and other queries get load
+    balanced among all backend nodes.  To which node the load
+    balancing mechanism sends read queries is decided at the session
+    start time and will not be changed until the session ends unless <A
+HREF="runtime-config-load-balancing.html#GUC-STATEMENT-LEVEL-LOAD-BALANCE"
+>statement_level_load_balance</A
+> is specified. However
+    there are some exceptions.  See below for more details.
+ </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>   Queries which are sent to primary node or replicated because they cannot be balanced are
+   also accounted for in the load balancing algorithm.
+  </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>   You can check which DB node is assigned as the load balancing
+   node by using <A
+HREF="sql-show-pool-nodes.html"
+>SHOW POOL NODES</A
+>.
+  </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-LOAD-BALANCING-CONDITION"
+>5.8.1. Condition for Load Balancing</A
+></H2
+><P
+>   For a query to be load balanced, all the following requirements
+   must be met:
+   <P
+></P
+></P><UL
+><LI
+><P
+>      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> version 7.4 or later
+     </P
+></LI
+><LI
+><P
+>      either
+      in <A
+HREF="runtime-config-running-mode.html#RUNTIME-CONFIG-STREAMING-REPLICATION-MODE"
+>streaming replication mode</A
+>,
+      <A
+HREF="runtime-config-running-mode.html#GUC-REPLICATION-MODE"
+>native replication mode</A
+>,
+       <A
+HREF="runtime-config-running-mode.html#GUC-SNAPSHOT-ISOLATION-MODE"
+>snapshot isolation mode</A
+> or
+	<A
+HREF="runtime-config-running-mode.html#RUNTIME-CONFIG-LOGICAL-REPLICATION-MODE"
+>logical
+	replication mode</A
+>.
+     </P
+></LI
+><LI
+><P
+>      the query must not be in an explicitly declared transaction
+      (i.e. not in a BEGIN ~ END block)
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>	However, if following conditions are met, load balance is possible
+	even if in an explicit transaction
+	<P
+></P
+></P><UL
+><LI
+><P
+>	   transaction isolation level is not SERIALIZABLE
+	  </P
+></LI
+><LI
+><P
+>	   transaction has not issued a write query yet (until a write
+	   query is issued, load balance is possible. Here "write query"
+	   means non SELECT DML or DDL. <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Before <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 4.1</I
+></SPAN
+>,
+	   SELECTs having write functions as specified in write or
+	   read_only function list is not regarded as a write query.)
+	  </P
+></LI
+><LI
+><P
+>	   If write and read_only function list is empty, SELECT having
+	   functions which are not volatile is regarded as a read only query.
+	  </P
+></LI
+></UL
+><P>
+       </P
+></LI
+></UL
+></LI
+><LI
+><P
+>      it's not SELECT INTO
+     </P
+></LI
+><LI
+><P
+>      it's not SELECT FOR UPDATE nor FOR SHARE
+     </P
+></LI
+><LI
+><P
+>      it starts with "SELECT" or one of COPY TO STDOUT, EXPLAIN,
+      EXPLAIN ANALYZE SELECT... <A
+HREF="runtime-config-load-balancing.html#GUC-IGNORE-LEADING-WHITE-SPACE"
+>ignore_leading_white_space</A
+> = <TT
+CLASS="LITERAL"
+>true</TT
+>
+       will ignore leading white space.
+       (Except for SELECTs using writing functions specified in <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+> or
+	<A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+>)
+     </P
+></LI
+><LI
+><P
+>      in <A
+HREF="runtime-config-running-mode.html#RUNTIME-CONFIG-STREAMING-REPLICATION-MODE"
+>streaming replication mode</A
+> in addition to above, following conditions must be met:
+     </P
+><P
+></P
+><UL
+><LI
+><P
+>	temporary tables are not used (temporary tables are not replicated)
+       </P
+></LI
+><LI
+><P
+>	unlogged tables are not used (unlogged tables are not replicated)
+       </P
+></LI
+><LI
+><P
+>	system catalogs are not used (system catalog information is
+	important and it is desirable to avoid replication delay)
+       </P
+></LI
+></UL
+></LI
+></UL
+><P>
+  </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    You could suppress load balancing by inserting arbitrary
+    comments just in front of the SELECT query:
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+>/*REPLICATION*/ SELECT ...
+   </PRE
+><P
+>    If you want to use comments without suppressing load balancing, you can set
+    <A
+HREF="runtime-config-load-balancing.html#GUC-ALLOW-SQL-COMMENTS"
+>allow_sql_comments</A
+> to on.
+     Please refer to <A
+HREF="runtime-config-running-mode.html#GUC-REPLICATE-SELECT"
+>replicate_select</A
+> as well.
+   </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    The JDBC driver has an autocommit option. If the autocommit is false,
+    the JDBC driver sends "BEGIN" and "COMMIT" by itself. In this case
+    the same restriction above regarding load balancing will be applied.
+   </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-WRITING-QUERIES-MAY-AFFECT-LOAD-BALANCING"
+>5.8.2. Writing queries may affect Load Balancing</A
+></H2
+><P
+>   In general, read queries are load balanced if certain conditions
+   are met. However, writing queries may affect the load
+   balancing. Here "writing queries" mean all the queries except
+   below:
+  </P
+><P
+>   <P
+></P
+></P><UL
+><LI
+><P
+>      SELECT/WITH without writing functions.
+      Volatile functions are regarded writing functions.
+      You can define your own writing functions by using <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+>
+      or <A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+>.
+     </P
+></LI
+><LI
+><P
+>      SELECT/WITH without FOR UPDATE/SHARE
+     </P
+></LI
+><LI
+><P
+>      WITH without DML statements
+     </P
+></LI
+><LI
+><P
+>      COPY TO STDOUT
+     </P
+></LI
+><LI
+><P
+>      EXPLAIN
+     </P
+></LI
+><LI
+><P
+>      EXPLAIN ANALYZE and the query is SELECT not including writing functions
+     </P
+></LI
+><LI
+><P
+>      SHOW
+     </P
+></LI
+></UL
+><P>
+  </P
+><P
+>   If writing queries appear, succeeding read queries may not be
+   load balanced. i.e. sent to primary node (in streaming
+   replication mode) or main node (in other mode) depending on the
+   setting of <A
+HREF="runtime-config-load-balancing.html#GUC-DISABLE-LOAD-BALANCE-ON-WRITE"
+>disable_load_balance_on_write</A
+>.
+  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-LOAD-BALANCING-IN-STREAMING-REPLICATION"
+>5.8.3. Load Balancing in Streaming Replication</A
+></H2
+><P
+>   While using Streaming replication and Hot Standby, it is important to
+   determine which query can be sent to the primary or the standby,
+   and which one should not be sent to the standby.
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>'s Streaming Replication mode carefully
+   takes care of this.
+  </P
+><P
+>   We distinguish which query should be sent to which node by looking
+   at the query itself.
+   <P
+></P
+></P><UL
+><LI
+><P
+>      These queries should be sent to the primary node only
+      <P
+></P
+></P><UL
+><LI
+><P
+>	 INSERT, UPDATE, DELETE, COPY FROM, TRUNCATE, CREATE, DROP, ALTER, COMMENT
+	</P
+></LI
+><LI
+><P
+>	 SELECT ... FOR SHARE | UPDATE
+	</P
+></LI
+><LI
+><P
+>	 SELECT in transaction isolation level SERIALIZABLE
+	</P
+></LI
+><LI
+><P
+>	 LOCK command more strict than ROW EXCLUSIVE MODE
+	</P
+></LI
+><LI
+><P
+>	 DECLARE, FETCH, CLOSE
+	</P
+></LI
+><LI
+><P
+>	 SHOW
+	</P
+></LI
+><LI
+><P
+>	 Some transactional commands:
+	 <P
+></P
+></P><UL
+><LI
+><P
+>	    BEGIN READ WRITE, START TRANSACTION READ WRITE
+	   </P
+></LI
+><LI
+><P
+>	    SET TRANSACTION READ WRITE, SET SESSION CHARACTERISTICS AS TRANSACTION READ WRITE
+	   </P
+></LI
+><LI
+><P
+>	    SET transaction_read_only = off
+	   </P
+></LI
+></UL
+><P>
+	</P
+></LI
+><LI
+><P
+>	 Two phase commit commands: PREPARE TRANSACTION, COMMIT PREPARED, ROLLBACK PREPARED
+	</P
+></LI
+><LI
+><P
+>	 LISTEN, UNLISTEN, NOTIFY
+	</P
+></LI
+><LI
+><P
+>	 VACUUM
+	</P
+></LI
+><LI
+><P
+>	 Some sequence functions (nextval and setval)
+	</P
+></LI
+><LI
+><P
+>	 Large objects creation commands
+	</P
+></LI
+><LI
+><P
+>	 Multi-statement queries (multiple SQL commands on single line)
+	</P
+></LI
+></UL
+><P>
+     </P
+></LI
+><LI
+><P
+>      These queries can be sent to both the primary node and the standby node.
+      If load balancing is enabled, these types of queries can be sent to the standby node.
+      However, if delay_threshold is set and the replication delay is higher than
+      <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD"
+>delay_threshold</A
+>, queries are sent to the primary node.
+
+       <P
+></P
+></P><UL
+><LI
+><P
+>	  SELECT not listed above
+	 </P
+></LI
+><LI
+><P
+>	  COPY TO STDOUT
+	 </P
+></LI
+><LI
+><P
+>	  EXPLAIN
+	 </P
+></LI
+><LI
+><P
+>	  EXPLAIN ANALYZE and the query is SELECT not including writing functions
+	 </P
+></LI
+><LI
+><P
+>	  SHOW
+	 </P
+></LI
+></UL
+><P>
+     </P
+></LI
+><LI
+><P
+>      These queries are sent to both the primary node and the standby node
+      <P
+></P
+></P><UL
+><LI
+><P
+>	 SET
+	</P
+></LI
+><LI
+><P
+>	 DISCARD
+	</P
+></LI
+><LI
+><P
+>	 DEALLOCATE ALL
+	</P
+></LI
+><LI
+><P
+>	 SAVEPOINT (and related commands such as RELEASE SAVEPOINT)
+	</P
+></LI
+></UL
+><P>
+     </P
+></LI
+></UL
+><P>
+  </P
+><P
+>   In an explicit transaction:
+   <P
+></P
+></P><UL
+><LI
+><P
+>      Transaction starting commands such as BEGIN are sent to both the primary node
+      and the standby node.
+     </P
+></LI
+><LI
+><P
+>      Following SELECT and some other queries that can be sent to both
+      primary or standby are executed in the transaction or on the standby node.
+     </P
+></LI
+><LI
+><P
+>      Commands which cannot be executed on the standby such as INSERT are sent
+      to the primary.
+      After one of these commands, even SELECTs are sent to the primary node,
+      This is because these SELECTs might want to see the result of an INSERT immediately.
+      This behavior continues until the transaction closes or aborts.
+     </P
+></LI
+></UL
+><P>
+  </P
+><P
+>   In the extended protocol, it is possible to determine if the query can
+   be sent to standby or not in load balance mode while parsing the query.
+   The rules are the same as for the non extended protocol.
+   For example, INSERTs are sent to the primary node.
+   Following bind, describe and execute will be sent to the primary node as well.
+  </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    If the parse of a SELECT statement is sent to the standby node due to load
+    balancing, and then a DML statement, such as an INSERT, is sent to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>,
+    then the parsed SELECT will have to be executed on the primary node.
+    Therefore, we re-parse the SELECT on the primary node.
+   </P
+></BLOCKQUOTE
+></DIV
+><P
+>   Lastly, queries that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>'s parser thinks to be an
+   error are sent to the primary node.
+  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-LOAD-BALANCING-SETTINGS"
+>5.8.4. Load Balancing Settings</A
+></H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-LOAD-BALANCE-MODE"
+></A
+><TT
+CLASS="VARNAME"
+>load_balance_mode</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      When set to on, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> enables the
+      load balancing on incoming <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries.
+      i.e. <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries from the clients gets distributed to
+      the configured <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> backends.
+      Default is on.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-IGNORE-LEADING-WHITE-SPACE"
+></A
+><TT
+CLASS="VARNAME"
+>ignore_leading_white_space</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      When set to on, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> ignores the
+      white spaces at the beginning of SQL queries in load balancing.
+      It is useful if used with APIs like DBI/DBD:Pg which adds
+      white spaces against the user's intention.
+      The default is on.
+     </P
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-READ-ONLY-FUNCTION-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>read_only_function_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies a comma separated list of function names that
+      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>DO NOT</I
+></SPAN
+> update the database. SELECTs including
+      functions <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not specified </I
+></SPAN
+> in this list are not load balanced.
+      These are replicated among all the DB nodes in Replication mode,
+      sent to the primary node only in other mode.
+     </P
+><P
+>      You can use regular expression to match function names,
+      to which <TT
+CLASS="LITERAL"
+>^</TT
+> and <TT
+CLASS="LITERAL"
+>$</TT
+> are automatically added.
+     </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-READ-ONLY-FUNCTION-LIST-1"
+></A
+><P
+><B
+>Example 5-2. Using regular expression</B
+></P
+><P
+>       If you have prefixed all your read only function
+       with 'get_' or 'select_', You can
+       set the <A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+> like below:
+	</P><PRE
+CLASS="PROGRAMLISTING"
+>read_only_function_list = 'get_.*,select_.*'
+	</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       If the queries can refer to the function with and without the schema
+       qualification then you must add both entries (with and without
+       schema name) in the list.
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>#For example:
+#If the queries sometime use "f1()" and other times "public.f1()"
+#to refer the function f1 then the read_only_function_list
+#would be configured as follows.
+
+read_only_function_list = "f1,public.f1"
+       </PRE
+><P>
+
+      </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       If this parameter and <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+>
+       is empty string, function's volatile property will be checked. If
+       the property is volatile, the function is regarded as a writing
+       function.  This is convenient and recommended way. However this
+       requires one extra query against system catalog for the first
+       time (in the next time cached query result is used and no extra
+       query will be sent). If you don't want to send such query, you
+       can keep on using this parameter.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-WRITE-FUNCTION-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>write_function_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies a comma separated list of function names that
+      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>DO</I
+></SPAN
+> update the database.
+      SELECTs including functions <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>specified</I
+></SPAN
+> in this list are
+      not load balanced.
+      These are replicated among all the DB nodes in Replication mode,
+      sent to the primary node only in other mode.
+     </P
+><P
+>      You can use regular expression to match function names,
+      to which <TT
+CLASS="LITERAL"
+>^</TT
+> and <TT
+CLASS="LITERAL"
+>$</TT
+> are automatically added.
+     </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-WRITE-FUNCTION-LIST-1"
+></A
+><P
+><B
+>Example 5-3. Using regular expression</B
+></P
+><P
+>       If you have prefixed all your updating functions
+       with 'set_', 'update_', 'delete_' or 'insert_', You can
+       set the <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+> like below:
+	</P><PRE
+CLASS="PROGRAMLISTING"
+>write_function_list = 'nextval,setval,set_.*,update_.*,delete_.*,insert_.*'
+	</PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       If the queries can refer the function with and without the schema
+       qualification then you must add both entries(with and without
+       schema name) in the list.
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>#For example:
+#If the queries sometime use "f1()" and other times "public.f1()"
+#to refer the function f1 then the write_function_list
+#would be configured as follows.
+
+write_function_list = "f1,public.f1"
+       </PRE
+><P>
+
+      </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+> and <A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+>
+	 are mutually exclusive and only one of the two lists can be set in the configuration.
+      </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-WRITE-FUNCTION-LIST-2"
+></A
+><P
+><B
+>Example 5-4. Configuring using <TT
+CLASS="LITERAL"
+>nextval()</TT
+> and <TT
+CLASS="LITERAL"
+>setval()</TT
+> to land on proper backend</B
+></P
+><P
+>       Prior to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V3.0</I
+></SPAN
+>,
+       <TT
+CLASS="LITERAL"
+>nextval()</TT
+> and <TT
+CLASS="LITERAL"
+>setval()</TT
+> were known as functions writing to the database.
+       You can configure this by setting <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+>
+	and <A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+> as follows
+	 </P><PRE
+CLASS="PROGRAMLISTING"
+>read_only_function_list = ''
+write_function_list = 'nextval,setval,lastval,currval'
+	 </PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> also contains <TT
+CLASS="LITERAL"
+>lastval()</TT
+> and
+       <TT
+CLASS="LITERAL"
+>currval()</TT
+> in addition to
+       <TT
+CLASS="LITERAL"
+>nextval()</TT
+> and <TT
+CLASS="LITERAL"
+>setval()</TT
+>.
+       Though <TT
+CLASS="LITERAL"
+>lastval()</TT
+> and <TT
+CLASS="LITERAL"
+>currval()</TT
+>
+       are not writing function type, but it is advised to treat
+       <TT
+CLASS="LITERAL"
+>lastval()</TT
+> and <TT
+CLASS="LITERAL"
+>currval()</TT
+>
+       as writing functions to avoid errors which occur when
+       these functions are accidentally load balanced.
+      </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       If this parameter and <A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+>
+       is empty string, function's volatile proper will be checked. If
+       the property is volatile, the function is regarded as a writing
+       function.  This is convenient and recommended way. However this
+       requires one extra query against system catalog for the first
+       time (in the next time cached query result is used and no extra
+       query will be sent). If you don't want to send such query, you
+       can keep on using this parameter.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-PRIMARY-ROUTING-QUERY-PATTERN-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>primary_routing_query_pattern_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies a semicolon separated list of SQL patterns that
+      should be sent to primary node.
+      SQL that matched patterns specified in this list are
+      not load balanced.
+      Other than Only Native Replication mode is supported.
+     </P
+><P
+>      You can use regular expression to match SQL patterns,
+      to which <TT
+CLASS="LITERAL"
+>^</TT
+> and <TT
+CLASS="LITERAL"
+>$</TT
+> are automatically added.
+      When using  special characters in regular expressions 
+      (such as "'", ";", "*", "(", ")", "|", "+", ".", "\", "?", "^", "$",
+      "{","}", "{" or "}", etc.)
+      in SQL patterns, you need to escape them by using "\".
+      SQL pattern specified in this parameter is case-insensitive.
+     </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-PRIMARY-ROUTING-QUERY-PATTERN-LIST-1"
+></A
+><P
+><B
+>Example 5-5. Using regular expression</B
+></P
+><P
+>       If the following SQL should be sent to the primary node only, You can
+       set the <A
+HREF="runtime-config-load-balancing.html#GUC-PRIMARY-ROUTING-QUERY-PATTERN-LIST"
+>primary_routing_query_pattern_list</A
+> like below:
+	<P
+></P
+></P><UL
+><LI
+><P
+>	   SELECT * FROM table_name1;
+	  </P
+></LI
+><LI
+><P
+>	   SELECT col1, col2 FROM table_name2 WHERE col1 LIKE '%a%';
+	  </P
+></LI
+><LI
+><P
+>	   SQL including table_name3
+	  </P
+></LI
+></UL
+><P>
+      </P
+><P
+>       </P><PRE
+CLASS="PROGRAMLISTING"
+>primary_routing_query_pattern_list = 'SELECT \* FROM table_name1\;;SELECT col1, col2 FROM table_name2 WHERE col1 LIKE \'%a%\'\;;.*table_name3.*'
+       </PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       If SQL matches both <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+> and
+	<A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+>, <A
+HREF="runtime-config-load-balancing.html#GUC-READ-ONLY-FUNCTION-LIST"
+>read_only_function_list</A
+>
+	  setting is ignored and the SQL should be sent only to the primary node.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>      Depending on the SQL patterns, performance might be 1-2% lower when using this feature.
+     </P
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-USER-REDIRECT-PREFERENCE-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>user_redirect_preference_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies the list of <TT
+CLASS="REPLACEABLE"
+><I
+>"user-name:node id(ratio)"</I
+></TT
+> pairs
+      to send <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries to a particular backend
+      node for a particular user connection at a specified load balance ratio.
+      The load balance ratio specifies a value between 0 and 1. The default is 1.0.
+     </P
+><P
+>      For example, by specifying "user1:1(0.5)", <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      will redirect 50% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries to the backend node of ID 1 for
+      the connection of user <TT
+CLASS="LITERAL"
+>user1</TT
+>.
+     </P
+><P
+>      You can specify multiple <TT
+CLASS="REPLACEABLE"
+><I
+>"user-name:node id(ratio)"</I
+></TT
+> pairs
+      by separating them using comma (,).
+     </P
+><P
+>      Regular expressions are also accepted for user name.
+      You can use special keywords as <TT
+CLASS="REPLACEABLE"
+><I
+>node id</I
+></TT
+>.
+      If <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"primary"</I
+></SPAN
+> is specified, queries are sent to the primary node, and
+      if <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"standby"</I
+></SPAN
+> is specified, one of the standby nodes are selected randomly
+      based on load balance ratio.
+     </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-USER-REDIRECT-LIST"
+></A
+><P
+><B
+>Example 5-6. Using user_redirect_preference_list</B
+></P
+><P
+>       If you want to configure the following <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> query routing rules:
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>         Route all <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries from the connections
+         using user <TT
+CLASS="LITERAL"
+>postgres</TT
+> to the primary backend node.
+        </P
+></LI
+><LI
+><P
+>         Route 30% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries from the connections
+         using user <TT
+CLASS="LITERAL"
+>user0</TT
+> or <TT
+CLASS="LITERAL"
+>user1</TT
+>
+         to backend node of ID 1.
+         The other 70% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries will be sent to other backend nodes.
+        </P
+></LI
+><LI
+><P
+>         Route all <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries from the connections
+         using user <TT
+CLASS="LITERAL"
+>user2</TT
+> to standby backend nodes.
+        </P
+></LI
+></UL
+><P
+>       then the <A
+HREF="runtime-config-load-balancing.html#GUC-USER-REDIRECT-PREFERENCE-LIST"
+>user_redirect_preference_list</A
+> will be configured as follows:
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>user_redirect_preference_list = 'postgres:primary,user[01]:1(0.3),user2:standby'
+       </PRE
+><P>
+      </P
+></DIV
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-DATABASE-REDIRECT-PREFERENCE-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>database_redirect_preference_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies the list of <TT
+CLASS="REPLACEABLE"
+><I
+>"database-name:node id(ratio)"</I
+></TT
+> pairs
+      to send <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries to a particular backend
+      node for a particular database connection at a specified load balance ratio.
+      The load balance ratio specifies a value between 0 and 1. The default is 1.0.
+     </P
+><P
+>      For example, by specifying "test:1(0.5)", <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      will redirect 50% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries to the backend node of ID 1 for
+      the connection to <TT
+CLASS="LITERAL"
+>test</TT
+> database.
+     </P
+><P
+>      You can specify multiple <TT
+CLASS="REPLACEABLE"
+><I
+>"database-name:node id(ratio)"</I
+></TT
+> pairs
+      by separating them using comma (,).
+     </P
+><P
+>      Regular expressions are also accepted for database name.
+      You can use special keywords as <TT
+CLASS="REPLACEABLE"
+><I
+>node id</I
+></TT
+>.
+      If <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"primary"</I
+></SPAN
+> is specified, queries are sent to the primary node, and
+      if <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"standby"</I
+></SPAN
+> is specified, one of the standby nodes are selected randomly
+      based on load balance ratio.
+     </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-DATABASE-REDIRECT-LIST"
+></A
+><P
+><B
+>Example 5-7. Using database_redirect_preference_list</B
+></P
+><P
+>       If you want to configure the following <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> query routing rules:
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>         Route all <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries on <TT
+CLASS="LITERAL"
+>postgres</TT
+>
+         database to the primary backend node.
+        </P
+></LI
+><LI
+><P
+>         Route 30% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries on <TT
+CLASS="LITERAL"
+>mydb0</TT
+> or on
+         <TT
+CLASS="LITERAL"
+>mydb1</TT
+> databases to backend node of ID 1.
+         The other 70% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries will be sent to other backend nodes.
+        </P
+></LI
+><LI
+><P
+>         Route all <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries on <TT
+CLASS="LITERAL"
+>mydb2</TT
+>
+         database to standby backend nodes.
+        </P
+></LI
+></UL
+><P
+>       then the <A
+HREF="runtime-config-load-balancing.html#GUC-DATABASE-REDIRECT-PREFERENCE-LIST"
+>database_redirect_preference_list</A
+> will be configured as follows:
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>database_redirect_preference_list = 'postgres:primary,mydb[01]:1(0.3),mydb2:standby'
+       </PRE
+><P>
+      </P
+></DIV
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-APP-NAME-REDIRECT-PREFERENCE-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>app_name_redirect_preference_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies the list of <TT
+CLASS="REPLACEABLE"
+><I
+>"application-name:node id(ratio)"</I
+></TT
+> pairs
+      to send <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries to a particular backend
+      node for a particular client application connection at a specified load balance ratio.
+      The load balance ratio specifies a value between 0 and 1. The default is 1.0.
+      You can specify multiple <TT
+CLASS="REPLACEABLE"
+><I
+>"application-name:node id(ratio)"</I
+></TT
+> pairs
+      by separating them using comma (,).
+     </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       In <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V9.0</I
+></SPAN
+> or later the "Application name" is a name specified
+       by a client when it connects to database.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>      For example, application name of <TT
+CLASS="COMMAND"
+>psql</TT
+> command is
+      <TT
+CLASS="LITERAL"
+>"psql"</TT
+>.
+     </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> recognizes the application name
+       only specified in the start-up packet.
+       Although a client can provide the application name
+       later in the session, but that does not get considered by the
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> for query routing.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>      Regular expressions are also accepted for database name.
+      You can use special keywords as <TT
+CLASS="REPLACEABLE"
+><I
+>node id</I
+></TT
+>.
+      If <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"primary"</I
+></SPAN
+> is specified, queries are sent to the primary node, and
+      if <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>"standby"</I
+></SPAN
+> is specified, one of the standby nodes are selected randomly
+      based on load balance ratio.
+     </P
+><DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-APP-NAME-REDIRECT-LIST"
+></A
+><P
+><B
+>Example 5-8. Using app-name_redirect_preference_list</B
+></P
+><P
+>       If you want to configure the following <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> query routing rules:
+      </P
+><P
+></P
+><UL
+><LI
+><P
+>         Route all <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> from <TT
+CLASS="LITERAL"
+>psql</TT
+>
+         client to the primary backend node.
+        </P
+></LI
+><LI
+><P
+>         Route 30% <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries from <TT
+CLASS="LITERAL"
+>myapp1</TT
+>
+         client to backend node of ID 1. The other 70% SELECT queries will be sent to other backend nodes.
+        </P
+></LI
+><LI
+><P
+>         Route all <ACRONYM
+CLASS="ACRONYM"
+>SELECT</ACRONYM
+> queries from <TT
+CLASS="LITERAL"
+>myapp2</TT
+>
+         client to standby backend nodes.
+        </P
+></LI
+></UL
+><P
+>       then the <A
+HREF="runtime-config-load-balancing.html#GUC-APP-NAME-REDIRECT-PREFERENCE-LIST"
+>app_name_redirect_preference_list</A
+> will be configured as follows:
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>app_name_redirect_preference_list = 'psql:primary,myapp1:1(0.3),myapp2:standby'
+       </PRE
+><P>
+      </P
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       The priority of <A
+HREF="runtime-config-load-balancing.html#GUC-USER-REDIRECT-PREFERENCE-LIST"
+>user_redirect_preference_list</A
+>,
+       <A
+HREF="runtime-config-load-balancing.html#GUC-DATABASE-REDIRECT-PREFERENCE-LIST"
+>database_redirect_preference_list</A
+> and
+       <A
+HREF="runtime-config-load-balancing.html#GUC-APP-NAME-REDIRECT-PREFERENCE-LIST"
+>app_name_redirect_preference_list</A
+> are:
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>app_name_redirect_preference_list &gt; database_redirect_preference_list &gt; user_redirect_preference_list
+       </PRE
+><P>
+      </P
+><P
+>       For example, if you set
+       <TT
+CLASS="LITERAL"
+>database_redirect_preference_list = 'postgres:standby(1.0)'</TT
+> and
+       <TT
+CLASS="LITERAL"
+>app_name_redirect_preference_list = 'myapp1:primary(1.0)'</TT
+>,
+       all SELECT from application myapp1 on postgres database will be sent to primary backend node.
+      </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       By specifying of <A
+HREF="runtime-config-load-balancing.html#GUC-USER-REDIRECT-PREFERENCE-LIST"
+>user_redirect_preference_list</A
+>,
+       <A
+HREF="runtime-config-load-balancing.html#GUC-DATABASE-REDIRECT-PREFERENCE-LIST"
+>database_redirect_preference_list</A
+> and
+       <A
+HREF="runtime-config-load-balancing.html#GUC-APP-NAME-REDIRECT-PREFERENCE-LIST"
+>app_name_redirect_preference_list</A
+>,
+       when multiple database names and application names are matched,
+       the first setting will be used.
+      </P
+><P
+>       For example, if you set
+       <TT
+CLASS="LITERAL"
+>database_redirect_preference_list = 'postgres:primary,postgres:standby'</TT
+>,
+       <TT
+CLASS="LITERAL"
+>"postgres: primary"</TT
+> will be used.
+      </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="CAUTION"
+><P
+></P
+><TABLE
+CLASS="CAUTION"
+BORDER="1"
+WIDTH="90%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Caution</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>       <ACRONYM
+CLASS="ACRONYM"
+>JDBC</ACRONYM
+> driver PostgreSQL-9.3 and earlier versions
+       does not send the application name in the startup packet even if
+       the application name is specified using the <ACRONYM
+CLASS="ACRONYM"
+>JDBC</ACRONYM
+>
+       driver option <TT
+CLASS="LITERAL"
+>"ApplicationName"</TT
+> and
+       <TT
+CLASS="LITERAL"
+>"assumeMinServerVersion=9.0"</TT
+>.
+       So if you want to use the <A
+HREF="runtime-config-load-balancing.html#GUC-APP-NAME-REDIRECT-PREFERENCE-LIST"
+>app_name_redirect_preference_list</A
+>
+       feature through <ACRONYM
+CLASS="ACRONYM"
+>JDBC</ACRONYM
+>, Use PostgreSQL-9.4 or later version of the driver.
+      </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-ALLOW-SQL-COMMENTS"
+></A
+><TT
+CLASS="VARNAME"
+>allow_sql_comments</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      When set to on, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> ignore the
+      <ACRONYM
+CLASS="ACRONYM"
+>SQL</ACRONYM
+> comments when identifying if the load balance
+      or query cache is possible on the query.
+      When this parameter is set to off, the <ACRONYM
+CLASS="ACRONYM"
+>SQL</ACRONYM
+> comments
+      on the query could effectively prevent the query from being
+      load balanced or cached (pre <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V3.4</I
+></SPAN
+> behavior).
+      The default is off.
+     </P
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+      You can also use <A
+HREF="sql-pgpool-set.html"
+>PGPOOL SET</A
+> command to alter the value of
+       this parameter for a current session.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-DISABLE-LOAD-BALANCE-ON-WRITE"
+></A
+><TT
+CLASS="VARNAME"
+>disable_load_balance_on_write</TT
+> (<TT
+CLASS="TYPE"
+>enum</TT
+>)
+     </DT
+><DD
+><P
+>      Specify load balance behavior after write queries appear.
+      This parameter is especially useful in streaming replication
+      mode. When write queries are sent to primary server, the
+      changes are applied to standby servers but there's a time
+      lag. So if a client read the same row right after the write
+      query, the client may not see the latest value of the
+      row. If that's the problem, clients should always read data
+      from the primary server. However this effectively disables
+      load balancing, which leads to lesser performance. This
+      parameter allows a fine tuning for the trade off between
+      not-clustering-aware applications compatibility and
+      performance.
+     </P
+><P
+>      If this parameter is set to <TT
+CLASS="VARNAME"
+>off</TT
+>, read
+      queries are load balanced even if write queries appear. This
+      gives the best load balance performance but clients may see
+      older data. This is useful for an environment where
+      PostgreSQL parameter synchronous_commit = 'remote_apply', or
+      in the native replication mode, since there's no replication
+      delay in such environments.
+     </P
+><P
+>      If this parameter is set to <TT
+CLASS="VARNAME"
+>transaction</TT
+>
+      and write queries appear in an explicit transaction,
+      subsequent read queries are not load balanced until the
+      transaction ends.  Please note that read queries not in an
+      explicit transaction are not affected by the parameter. This
+      setting gives the best balance in most cases and you should
+      start from this. This is the default and same behavior in
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II 3.7</SPAN
+> or before.
+     </P
+><P
+>      If this parameter is set
+      to <TT
+CLASS="VARNAME"
+>trans_transaction</TT
+> and write queries
+      appear in an explicit transaction, subsequent read queries
+      are not load balanced in the transaction and subsequent
+      explicit transaction until the session ends. So this
+      parameter is safer for older applications but give lesser
+      performance than <TT
+CLASS="VARNAME"
+>transaction</TT
+>. Please note
+      that read queries not in an explicit transaction are not
+      affected by the parameter.
+     </P
+><P
+>      If this parameter is set to <TT
+CLASS="VARNAME"
+>always</TT
+> and
+      write queries appear, subsequent read queries are not load
+      balanced until the session ends regardless they are in
+      explicit transactions or not. This gives the highest
+      compatibility with not-clustering-aware applications and the
+      lowest performance.
+     </P
+><P
+>		If this parameter is set to <TT
+CLASS="VARNAME"
+>dml_adaptive</TT
+> <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+		keep track of each TABLE referenced in the WRITE statements within
+		the explicit transactions and will not load balances the subsequent
+		READ queries if the TABLE they are reading from is previously modified
+		inside the same transaction.
+		Dependent functions, triggers, and views on the tables can be configured
+		using <A
+HREF="runtime-config-load-balancing.html#GUC-DML-ADAPTIVE-OBJECT-RELATIONSHIP-LIST"
+>dml_adaptive_object_relationship_list</A
+>
+     </P
+><P
+>      If this parameter is set to <TT
+CLASS="VARNAME"
+>dml_adaptive_global</TT
+>,
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> behaves like <TT
+CLASS="VARNAME"
+>dml_adaptive</TT
+>
+      (per-transaction write tracking) and additionally uses shared memory to
+      track recently written tables across all sessions cluster-wide. When a
+      table is written in any session, subsequent reads of that table from any
+      session are routed to primary until a TTL (based on measured replication
+      delay) expires.  This prevents stale reads after writes even across
+      different connections.
+      See <A
+HREF="runtime-config-load-balancing.html#RUNTIME-CONFIG-TABLE-MUTATION-MAP"
+>Section 5.8.5</A
+> for the
+      sub-parameters that control the shared-memory tracking behavior.
+      </P
+><P
+>       Note, however, you cannot
+       use <A
+HREF="runtime-config-load-balancing.html#GUC-DML-ADAPTIVE-OBJECT-RELATIONSHIP-LIST"
+>dml_adaptive_object_relationship_list</A
+> to track
+       dependency among table and other objects
+       if <A
+HREF="runtime-config-load-balancing.html#GUC-DISABLE-LOAD-BALANCE-ON-WRITE"
+>disable_load_balance_on_write</A
+> is set
+       to <TT
+CLASS="VARNAME"
+>dml_adaptive_global</TT
+>.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-DML-ADAPTIVE-OBJECT-RELATIONSHIP-LIST"
+></A
+><TT
+CLASS="VARNAME"
+>dml_adaptive_object_relationship_list</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>	 To prevent load balancing of READ dependent objects, you may specify the object name
+	 followed by a colon(<TT
+CLASS="LITERAL"
+>:</TT
+>) and then a comma(<TT
+CLASS="LITERAL"
+>,</TT
+>) separated list of dependent object names.
+	 <TT
+CLASS="REPLACEABLE"
+><I
+>"[object]:[dependent-object]"</I
+></TT
+>
+     In an explicit transaction block after a WRITE statement has been issues, this will prevent
+	 load balancing of any READ statements containing references of dependent object(s).
+	 <DIV
+CLASS="EXAMPLE"
+><A
+NAME="EXAMPLE-DML-ADAPTIVE-OBJECT-RELATIONSHIP-LIST-1"
+></A
+><P
+><B
+>Example 5-9. Configuring dml adaptive object relationship</B
+></P
+><P
+>	    If you have a trigger installed on table_1 that do INSERT in  <TT
+CLASS="LITERAL"
+>table_2</TT
+> for each
+		INSERT on  <TT
+CLASS="LITERAL"
+>table_1</TT
+>. Then you would want to make sure that
+		read on  <TT
+CLASS="LITERAL"
+>table_2</TT
+> must not get load-balanced within the same transaction
+		after INSERT into  <TT
+CLASS="LITERAL"
+>table_1</TT
+>.
+		For this configuration you can set
+		</P><PRE
+CLASS="PROGRAMLISTING"
+>dml_adaptive_object_relationship_list = 'table_1:table_2'
+		</PRE
+><P>
+	  </P
+></DIV
+>
+
+     This parameter is only valid for
+	 <A
+HREF="runtime-config-load-balancing.html#GUC-DISABLE-LOAD-BALANCE-ON-WRITE"
+>disable_load_balance_on_write</A
+>=<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>'dml_adaptive'</I
+></SPAN
+>
+
+	  </P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>	   To configure the dependency on the function,
+	   The function must be present in the <A
+HREF="runtime-config-load-balancing.html#GUC-WRITE-FUNCTION-LIST"
+>write_function_list</A
+>
+	   </P
+></BLOCKQUOTE
+></DIV
+><P>
+
+     </P
+></DD
+><DT
+><A
+NAME="GUC-STATEMENT-LEVEL-LOAD-BALANCE"
+></A
+><TT
+CLASS="VARNAME"
+>statement_level_load_balance</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      When set to on and <A
+HREF="runtime-config-load-balancing.html#GUC-LOAD-BALANCE-MODE"
+>load_balance_mode</A
+> is set to on, the load balancing node is decided for each read query.
+      When set to off, load balancing node is decided at the session start time
+      and will not be changed until the session ends.
+      For example, in applications that use connection pooling remain connections
+      open to the backend server, because the session may be held for a long time,
+      the load balancing node does not change until the session ends.
+      In such applications, when <TT
+CLASS="VARNAME"
+>statement_level_load_balance</TT
+> is enabled,
+      it is possible to decide load balancing node per query, not per session.
+      The default is off.
+     </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       In streaming replication mode, certain kind of queries such as
+       BEGIN/END/COMMIT/ABORT/SET/SAVEPOINT/RELEASE SAVEPOINT/DEALLOCATE ALL/DISCARD are sent to
+       primary node and load balance node. If
+       <A
+HREF="runtime-config-load-balancing.html#GUC-STATEMENT-LEVEL-LOAD-BALANCE"
+>statement_level_load_balance</A
+> is on, such
+       queries are sent to all standby nodes as well. This is not
+       usually a problem. But when one of standbys are in remote
+       network, the network latency may cause significant slow down in
+       case of such queries.
+      </P
+></BLOCKQUOTE
+></DIV
+><P
+>      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-TABLE-MUTATION-MAP"
+>5.8.5. Table Mutation Tracking Configuration</A
+></H2
+><P
+>   These parameters configure the track table mutation feature, which is
+   activated by setting
+   <A
+HREF="runtime-config-load-balancing.html#GUC-DISABLE-LOAD-BALANCE-ON-WRITE"
+>disable_load_balance_on_write</A
+>
+   to <TT
+CLASS="LITERAL"
+>dml_adaptive_global</TT
+>.  The feature tracks recently
+   written tables to prevent stale reads from replica nodes during replication
+   lag.
+  </P
+><P
+>   When a table is modified (INSERT/UPDATE/DELETE), it is marked as "stale"
+   for a TTL period (<TT
+CLASS="LITERAL"
+>replication_delay *
+   track_table_mutation_ttl_factor</TT
+>). Any SELECT queries on stale
+   tables are routed to the primary node instead of replicas, ensuring
+   read-after-write consistency.
+  </P
+><P
+>   This feature requires time-based replication delay monitoring. This can be
+   provided by either <A
+HREF="runtime-streaming-replication-check.html#GUC-REPLICATION-DELAY-SOURCE-CMD"
+>replication_delay_source_cmd</A
+>
+   (external command mode) or by
+   setting <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> (which
+   uses <TT
+CLASS="LITERAL"
+>pg_stat_replication.replay_lag</TT
+> from PostgreSQL
+   10+). If neither is configured, the TTL remains at its default minimum
+   value (100 milliseconds) and is never updated based on actual replication
+   delay, which may result in suboptimal routing decisions.
+  </P
+><DIV
+CLASS="WARNING"
+><P
+></P
+><TABLE
+CLASS="WARNING"
+BORDER="1"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="CENTER"
+><B
+>Warning</B
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+><P
+>    Enabling <TT
+CLASS="LITERAL"
+>dml_adaptive_global</TT
+> increases shared memory
+    consumption. With default settings, the feature requires approximately 80
+    KB of shared memory for table tracking:
+    <TT
+CLASS="LITERAL"
+>track_table_mutation_table_size * 40 bytes</TT
+>
+    (default: 2048 * 40 = ~80 KB).
+   </P
+></TD
+></TR
+></TABLE
+></DIV
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-TRACK-TABLE-MUTATION-TTL-FACTOR"
+></A
+><TT
+CLASS="VARNAME"
+>track_table_mutation_ttl_factor</TT
+> (<TT
+CLASS="TYPE"
+>floating point</TT
+>)
+     </DT
+><DD
+><P
+>      Multiplier for calculating the TTL: <TT
+CLASS="LITERAL"
+>TTL = replication_delay *
+      track_table_mutation_ttl_factor</TT
+>.  Higher values provide more
+      safety margin but may reduce read replica utilization.
+     </P
+><P
+>      Valid range: 1.0-100.0. Default is <TT
+CLASS="LITERAL"
+>5.0</TT
+>.  This
+      parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-TRACK-TABLE-MUTATION-MAX-STALENESS"
+></A
+><TT
+CLASS="VARNAME"
+>track_table_mutation_max_staleness</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Maximum duration in milliseconds that a single table entry can
+      continuously force queries to primary, measured from when the table was
+      first marked stale. When this cap is reached, the entry is expired
+      regardless of recent writes. If the table is written to again after
+      expiry, a fresh tracking entry is created.
+     </P
+><P
+>      This parameter bounds the cross-session impact of table mutation
+      tracking. Even if a table is written to in a tight loop, its effect on
+      other sessions' load balancing is limited to this duration. For
+      legitimately busy tables, the gap between forced expiry and the next
+      write re-marking the table is negligible (typically milliseconds).
+     </P
+><P
+>      Set to 0 to disable the cap (not recommended for production).  Valid
+      range: 0-3600000 ms. Default is <TT
+CLASS="LITERAL"
+>60000</TT
+> (60 seconds).
+      This parameter can be changed by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-TRACK-TABLE-MUTATION-COLD-START-DURATION"
+></A
+><TT
+CLASS="VARNAME"
+>track_table_mutation_cold_start_duration</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Duration in milliseconds to route all queries to primary after a child
+      process starts.  This prevents stale reads when a new connection is
+      established before the track table mutation is populated with recent
+      write history.
+     </P
+><P
+>      When watchdog is enabled and the local node becomes the leader,
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> also triggers a global cold start
+      for this duration to avoid stale reads after leadership changes.
+     </P
+><P
+>      Valid range: 0-60000 ms. Default is <TT
+CLASS="LITERAL"
+>2000</TT
+> (2 seconds).
+      Set to 0 to disable cold start behavior.  This parameter can be changed
+      by reloading the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-TRACK-TABLE-MUTATION-TABLE-BUCKETS"
+></A
+><TT
+CLASS="VARNAME"
+>track_table_mutation_table_buckets</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Number of hash buckets for the track table mutation hash table.  Higher
+      values reduce hash collisions and improve lookup performance.
+     </P
+><P
+>      Valid range: 64-65536. Default is <TT
+CLASS="LITERAL"
+>1024</TT
+>.  This
+      parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-TRACK-TABLE-MUTATION-TABLE-SIZE"
+></A
+><TT
+CLASS="VARNAME"
+>track_table_mutation_table_size</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Maximum number of tables that can be tracked simultaneously in the track
+      table mutation.  When full, oldest entries are evicted using a simple
+      eviction strategy.
+     </P
+><P
+>      Valid range: 128-131072. Default is <TT
+CLASS="LITERAL"
+>2048</TT
+>.  Memory
+      usage: approximately 40 bytes per entry.  This parameter can only be set
+      at server start.
+     </P
+></DD
+></DL
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="RUNTIME-CONFIG-TRACK-TABLE-MUTATION-EXAMPLE"
+>5.8.5.1. Track Table Mutation Configuration Example</A
+></H3
+><P
+>    To enable track table mutation with replication delay monitoring:
+   </P
+><PRE
+CLASS="PROGRAMLISTING"
+># Enable dml_adaptive_global mode (includes track table mutation)
+disable_load_balance_on_write = 'dml_adaptive_global'
+track_table_mutation_ttl_factor = 5.0
+track_table_mutation_max_staleness = 60000
+track_table_mutation_cold_start_duration = 2000
+
+# Option A: Use external command for replication delay
+replication_delay_source_cmd = '/path/to/get-replication-delay.sh'
+replication_delay_source_timeout = 10
+
+# Option B: Use pg_stat_replication replay_lag (PG 10+)
+# delay_threshold_by_time = 1000
+
+# Adjust table map size based on workload
+track_table_mutation_table_size = 4096
+   </PRE
+><P
+>    Shared memory required for above configuration: approximately 160 KB for
+    the table map.  Default configuration (2048 tables) requires approximately
+    80 KB.
+   </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="RUNTIME-CONFIG-TRACK-TABLE-MUTATION-LIMITATIONS"
+>5.8.5.2. Limitations</A
+></H3
+><P
+>    The track table mutation feature has the following limitations:
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>PREPARE</TT
+> statements are not tracked. When a prepared
+      statement containing data modification is executed, the table mutation
+      is not recorded.
+     </P
+></LI
+><LI
+><P
+>      A maximum of 128 tables can be tracked per SELECT query for staleness
+      checking.  This limit is shared with the query cache subsystem
+      (<TT
+CLASS="LITERAL"
+>POOL_MAX_SELECT_OIDS</TT
+>).
+     </P
+></LI
+></UL
+><P
+>    If your application uses prepared statements and requires read-after-write
+    consistency, consider using explicit transaction routing or
+    the <TT
+CLASS="LITERAL"
+>/*NO LOAD BALANCE*/</TT
+> comment directive for affected
+    queries.
+   </P
+><P
+>    The following statement types <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>are</I
+></SPAN
+> tracked and will
+    mark tables as stale:
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>INSERT</TT
+>, <TT
+CLASS="LITERAL"
+>UPDATE</TT
+>, <TT
+CLASS="LITERAL"
+>DELETE</TT
+>
+      statements (including those with <TT
+CLASS="LITERAL"
+>RETURNING</TT
+> clauses).
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>TRUNCATE</TT
+> statements (including multiple tables).
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>MERGE</TT
+> statements (PostgreSQL 15+).
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>WITH</TT
+> clauses containing data modifications (Common
+      Table Expressions
+      with <TT
+CLASS="LITERAL"
+>INSERT</TT
+>, <TT
+CLASS="LITERAL"
+>UPDATE</TT
+>,
+      or <TT
+CLASS="LITERAL"
+>DELETE</TT
+>).  For example, <TT
+CLASS="LITERAL"
+>WITH deleted AS
+      (DELETE FROM t1 RETURNING *) SELECT * FROM deleted</TT
+> will
+      properly mark table <TT
+CLASS="LITERAL"
+>t1</TT
+> as stale.
+     </P
+></LI
+></UL
+><P
+>    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Transaction Rollback Behavior:</I
+></SPAN
+> Within explicit
+    transactions, tables are only marked as stale in shared memory when the
+    transaction is committed. If the transaction is rolled back, no tables are
+    marked, since no actual data modification occurred on replicas. This
+    prevents rolled-back transactions from unnecessarily disabling load
+    balancing. For autocommit statements (outside explicit transactions),
+    tables are marked immediately upon command completion.
+   </P
+><P
+>    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Cross-Session Impact and Safety Bounds:</I
+></SPAN
+>
+    Unlike <TT
+CLASS="LITERAL"
+>dml_adaptive</TT
+> (which only affects the session
+    that issued the write),
+    <TT
+CLASS="LITERAL"
+>dml_adaptive_global</TT
+> affects all sessions reading the
+    same table in the same database.  The following safety mechanisms bound
+    this cross-session impact:
+   </P
+><P
+></P
+><UL
+><LI
+><P
+>      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Maximum staleness cap:</I
+></SPAN
+>
+      The <A
+HREF="runtime-config-load-balancing.html#GUC-TRACK-TABLE-MUTATION-MAX-STALENESS"
+>track_table_mutation_max_staleness</A
+> parameter
+      (default: 60 seconds) limits how long any single table entry can
+      continuously force primary routing. Even under sustained writes, the
+      entry expires after this period and is only renewed by subsequent
+      committed writes.
+     </P
+></LI
+><LI
+><P
+>      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Database isolation:</I
+></SPAN
+> Table staleness tracking is
+      scoped by database OID. Writes in one database never affect load
+      balancing decisions for sessions connected to a different database.  In
+      multi-tenant deployments where tenants use separate databases, one
+      tenant's write activity cannot influence another tenant's query routing.
+     </P
+></LI
+><LI
+><P
+>      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Committed writes only:</I
+></SPAN
+> Only committed transactions
+      mark tables as stale.  Rolled-back transactions have no effect on the
+      shared tracking state.
+     </P
+></LI
+><LI
+><P
+>      <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Bounded table map size:</I
+></SPAN
+> The shared memory table map
+      has a fixed maximum size
+      (<A
+HREF="runtime-config-load-balancing.html#GUC-TRACK-TABLE-MUTATION-TABLE-SIZE"
+>track_table_mutation_table_size</A
+>). At most this
+      many tables can be marked stale simultaneously, providing a natural
+      ceiling on the feature's impact.
+     </P
+></LI
+></UL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config-logging.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-config-health-check.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Error Reporting and Logging</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Health Check</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

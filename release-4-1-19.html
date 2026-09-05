@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.1.19</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.1.20"
+HREF="release-4-1-20.html"><LINK
+REL="NEXT"
+TITLE="Release 4.1.18"
+HREF="release-4-1-18.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.1.20"
+HREF="release-4-1-20.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.1.18"
+HREF="release-4-1-18.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-1-19"
+>A.93. Release 4.1.19</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2024-02-29</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20653"
+>A.93.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Remove restore_command from sample scripts. (Bo Peng)
+    </P
+><P
+>     Restore_command is not required because replication slot is enabled.
+     It causes occasional failover failure.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20659"
+>A.93.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fixed the default values of <A
+HREF="runtime-online-recovery.html#GUC-RECOVERY-USER"
+>recovery_user</A
+>. (Bo Peng)
+    </P
+><P
+>     Because the default value of <TT
+CLASS="VARNAME"
+>recovery_user</TT
+>
+     should be same as <A
+HREF="runtime-config-health-check.html#GUC-HEALTH-CHECK-USER"
+>health_check_user</A
+> and
+     <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+>, I changed the default value
+     from '' to 'nobody'.
+    </P
+></LI
+><LI
+><P
+>     Fixed <A
+HREF="runtime-config-load-balancing.html#GUC-STATEMENT-LEVEL-LOAD-BALANCE"
+>statement_level_load_balance</A
+> with BEGIN etc. (Tatsuo Ishii)
+    </P
+><P
+>     When <TT
+CLASS="VARNAME"
+>statement_level_load_balance</TT
+> is enabled,
+     BEGIN/END/COMMIT/ABORT/SET/SAVEPOINT/RELEASE SAVEPOINT/DEALLOCATE
+     ALL/DISCARD were sent to primary node and all standby nodes even if
+     <A
+HREF="runtime-config-load-balancing.html#GUC-LOAD-BALANCE-MODE"
+>load_balance_mode</A
+> is off.
+     This is not only plain wrong but caused slow
+     down if one of the standby nodes are in remote network.
+    </P
+><P
+>     Fix this in that pgpool sends such queries to primary node only when
+     <TT
+CLASS="VARNAME"
+>load_balance_mode</TT
+> is off.
+    </P
+><P
+>     Reported: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-January/009059.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-January/009059.html</A
+>
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004423.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004423.html</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20681"
+>A.93.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix Japanese watchdog document. (Tatsuo Ishii)
+    </P
+><P
+>     It mistakenly used "master" watchdog node instead of "leader".
+    </P
+></LI
+><LI
+><P
+>     Fix English watchdog document. (Tatsuo Ishii)
+    </P
+><P
+>     It mistakenly used "main" PostgreSQL node instead of "primary".
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-1-20.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-1-18.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.1.20</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.1.18</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

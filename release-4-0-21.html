@@ -1,0 +1,435 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.0.21</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.0.22"
+HREF="release-4-0-22.html"><LINK
+REL="NEXT"
+TITLE="Release 4.0.20"
+HREF="release-4-0-20.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.0.22"
+HREF="release-4-0-22.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.0.20"
+HREF="release-4-0-20.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-0-21"
+>A.117. Release 4.0.21</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2022-12-22</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22403"
+>A.117.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Downgrade LOG messages "new IPC connection received" to DEBUG1.
+     (<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=775"
+TARGET="_top"
+>bug 775</A
+>) (Bo Peng)
+    </P
+><P
+>     It is a normal messages and should not be logged as LOG.
+     Patch is created by pstef and reviewed by Bo Peng.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22410"
+>A.117.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix issue with <A
+HREF="runtime-watchdog-config.html#GUC-FAILOVER-REQUIRE-CONSENSUS"
+>failover_require_consensus</A
+>. (Muhammad Usama)
+    </P
+><P
+>     The fix is to dynamically set the failover command timeout based on the maximum
+     value of health check parameters across the watchdog cluster.
+    </P
+><P
+>     Reviewed and tested by Tatsuo Ishii.
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-November/004228.html"
+TARGET="_top"
+>[pgpool-hackers: 4227]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix not to print warnings of use of backslashes in parser. (Tatsuo Ishii)
+    </P
+><P
+>     When <TT
+CLASS="VARNAME"
+>standard_conforming_strings = off</TT
+> and <TT
+CLASS="VARNAME"
+>escape_string_warning = on</TT
+>,
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> prints warnings if backslashes are used in string
+     literal. This is fine. But previously <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>'s parser printed the
+     same message too. This is redundant.
+    </P
+></LI
+><LI
+><P
+>     Deal with idle_session_timeout. (Tatsuo Ishii)
+    </P
+><P
+>     If <TT
+CLASS="VARNAME"
+>idle_session_timeout</TT
+> (added in PostgreSQL 14) is enabled and the
+     timeout fires, followings happen:
+     <P
+></P
+></P><UL
+><LI
+><P
+>        If failover_on_backend_error is on (the default), Pgpool-II will trigger failover.
+       </P
+></LI
+></UL
+><P>
+     <P
+></P
+></P><UL
+><LI
+><P
+>        If only one of PostgreSQL servers enables idle_session_timeout, Pgpool-II could hang.
+       </P
+></LI
+></UL
+><P>
+    </P
+><P
+>     To deal with idle_session_timeout detect_idle_session_timeout_error()
+     is added to detect the error code for idle_session_timeout. If the
+     error is detected, Pgpool-II returns the error code to frontend as a
+     fatal error and disconnects the session.  This is a similar fix
+     implemented for idle_in_transaction_session_timeout.
+     <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=3f5986eee360f12e6a0bb77aa46f95abf5f6bc10"
+TARGET="_top"
+>3f5986eee360f12e6a0bb77aa46f95abf5f6bc10</A
+>
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-October/004209.html"
+TARGET="_top"
+>[pgpool-hackers: 4208]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Deal with SSL error SSL_ERROR_ZERO_RETURN. (Tatsuo Ishii)
+    </P
+><P
+>     Previously this caused failover, which was actually unnecessary because
+     it means the server is just going to close the connection.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2022-September/008425.html"
+TARGET="_top"
+>[pgpool-general: 8366]</A
+>
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-September/004194.html"
+TARGET="_top"
+>[pgpool-hackers: 4193]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix: Setting memory cache size greater than 2GB causes a segfault. (Muhammad Usama)
+    </P
+><P
+>     The problem was in the block_address() function that returns the memory address
+     for a given cache block, It was using 32bit integers to calculate the offset of
+     the block within the shared memory space that is only good until the 2GB limit.
+    </P
+></LI
+><LI
+><P
+>     Fix rare segfaults in <TT
+CLASS="COMMAND"
+>pcp_proc_info</TT
+>, <TT
+CLASS="COMMAND"
+>SHOW pool_pools</TT
+>
+     and <TT
+CLASS="COMMAND"
+>SHOW pool_processes</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     The segfaults were in get_pools() and get_processes(). They first
+     extracted pid of particular process info slot on shared memory then
+     searched the slot again by using pid as the key. Because these steps
+     were not protected by any locking, it was possible that the search
+     using the pid failed and returned NULL if the process id is
+     overwritten by pgpool parent which is responsible for forking new
+     child process after the process exiting. As a result any subsequent
+     reference to the NULL pointer generated segfaults.
+    </P
+><P
+>     Solution is, first get the pointer to the process info slot then
+     extract the process id member from the pointer. This way, still
+     concurrent updating to the shared memory info by the parent process is
+     possible (which may lead to strange results in the output) but at
+     least we can avoid segfaults.
+    </P
+></LI
+><LI
+><P
+>     Fix to not allow Unix-domain socket path with invalid length. (Masaya Kawamoto)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22458"
+>A.117.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Doc: enhance description about memqcache_method. (Tatsuo Ishii)
+    </P
+><P
+>     Add explanation which method should be used.
+    </P
+></LI
+><LI
+><P
+>     Doc: mention that health check process may use SSL. (Tatsuo Ishii)
+    </P
+><P
+>     Also mention that streaming replication check may use SSL too.
+     This should have been added since 2010.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2022-August/004188.html"
+TARGET="_top"
+>[pgpool-hackers: 4187]</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22469"
+>A.117.4. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Allow to define PGPOOLDIR using environment variable.
+     (<A
+HREF="https://www.pgpool.net/mantisbt/view.php?id=766"
+TARGET="_top"
+>bug 766</A
+>) (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-0-22.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-0-20.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.0.22</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.0.20</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

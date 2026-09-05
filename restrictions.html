@@ -1,0 +1,779 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Restrictions</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Preface"
+HREF="preface.html"><LINK
+REL="PREVIOUS"
+TITLE="Further Information"
+HREF="resources.html"><LINK
+REL="NEXT"
+TITLE="Bug Reporting Guidelines"
+HREF="bug-reporting.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Further Information"
+HREF="resources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="preface.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Preface</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Bug Reporting Guidelines"
+HREF="bug-reporting.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RESTRICTIONS"
+>Restrictions</A
+></H1
+><P
+>  This section describes current restrictions of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+
+  <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Using pg_terminate_backend</DT
+><DD
+><P
+>      If you use <CODE
+CLASS="FUNCTION"
+>pg_terminate_backend()</CODE
+> to stop a
+      backend, this will trigger a failover.  The reason why this
+      happens is that <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> sends
+      exactly the same message for a terminated backend as for a full
+      postmaster shutdown.  There is no workaround prior of version
+      3.6. From version 3.6, this limitation has been mitigated. If
+      the argument to the function (that is a process id) is a
+      constant, you can safely use the function. In extended protocol
+      mode, you cannot use the function though.  In 4.3 or later you
+      can completely prevent the failover caused
+      by <CODE
+CLASS="FUNCTION"
+>pg_terminate_backend()</CODE
+> by
+      setting <TT
+CLASS="LITERAL"
+>off</TT
+>
+      to <A
+HREF="runtime-config-failover.html#GUC-FAILOVER-ON-BACKEND-SHUTDOWN"
+>failover_on_backend_shutdown</A
+>, this will
+      prevent failover caused by termination of postmaster though.
+     </P
+></DD
+><DT
+>Load Balancing</DT
+><DD
+><P
+>      Multi-statement queries (multiple SQL commands on single line)
+      are always sent to primary node (in streaming replication mode)
+      or main node (in other
+      modes). Usually <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> dispatch
+      query to appropriate node, but it's not applied to
+      multi-statement queries.
+     </P
+></DD
+><DT
+>Authentication/Access Controls</DT
+><DD
+><P
+>      Trust and pam methods are supported. md5 is also
+      supported since <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 3.0.  md5
+      is supported by using an authentication file <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+>.
+      scram-sha-256, cert, and clear text password is also supported since
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 4.0.
+      <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> is default name of the
+      authentication file. Here are the
+      steps to enable md5 authentication:
+     </P
+><P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>	Login as the database's operating system user and type:
+	</P><PRE
+CLASS="PROGRAMLISTING"
+>	 pg_md5 --md5auth --username=<TT
+CLASS="LITERAL"
+>your_username</TT
+> <TT
+CLASS="LITERAL"
+>your_passwd</TT
+>
+	</PRE
+><P>
+	user name and md5 encrypted password are registered into
+	pool_passwd.  If pool_passwd does not exist yet, pg_md5
+	command will automatically create it for you.  The format
+	of pool_passwd
+	is <TT
+CLASS="LITERAL"
+>username:encrypted_passwd</TT
+>.
+       </P
+></LI
+><LI
+><P
+>	You also need to add an appropriate md5 entry to
+	pool_hba.conf.  See <A
+HREF="auth-pool-hba-conf.html"
+>Section 6.1</A
+> for more details.
+       </P
+></LI
+><LI
+><P
+>	Please note that the user name and password must be
+	identical to those registered
+	in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+       </P
+></LI
+><LI
+><P
+>	After changing md5 password (in both pool_passwd and
+	PostgreSQL of course), you need to
+	execute <SPAN
+CLASS="APPLICATION"
+>pgpool reload</SPAN
+>.
+       </P
+></LI
+></OL
+><P
+>      See <A
+HREF="auth-methods.html#SETTING-SCRAM-SHA-256-AUTHENTICATION"
+>Section 6.2.4.2</A
+> for
+      details about setting scram-sha-256 authentication.
+     </P
+></DD
+><DT
+>Large objects</DT
+><DD
+><P
+>      In <A
+HREF="runtime-config-running-mode.html#RUNTIME-CONFIG-STREAMING-REPLICATION-MODE"
+>streaming replication mode</A
+>, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      supports large objects.
+     </P
+><P
+>      In <A
+HREF="runtime-config-running-mode.html#GUC-SNAPSHOT-ISOLATION-MODE"
+>snapshot isolation mode</A
+>
+      and <A
+HREF="runtime-config-running-mode.html#GUC-REPLICATION-MODE"
+>native replication mode</A
+>, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      supports large objects if the backend
+      is <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 8.1 or later.  For
+      this, you need to enable lobj_lock_table directive
+      in <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+>.  Large object replication
+      using backend function <CODE
+CLASS="FUNCTION"
+>lo_import</CODE
+> is not
+      supported, however.
+     </P
+><P
+>      In other mode, large
+      objects are not supported.
+     </P
+></DD
+><DT
+>Temporary tables</DT
+><DD
+><P
+>      Creating/inserting/updating/deleting temporary tables are
+      always executed on the primary in native replication mode.
+      SELECT on these tables is executed on primary as well.  However
+      if the temporary table name is used as a literal in SELECT,
+      there's no way to detect it, and the SELECT will be load
+      balanced.  That will trigger a "not found the table" error or
+      will find another table having same name.  To avoid the
+      problem, use SQL comment.
+     </P
+><P
+>      Note that such literal table names used in queries to access
+      system catalogs do cause problems described above.  psql's \d
+      command produces such that query:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       SELECT 't1'::regclass::oid;
+      </PRE
+><P>
+      In such that case <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> always
+      sends the query to primary and will not cause the problem.
+     </P
+><P
+>      Tables created by <TT
+CLASS="COMMAND"
+>CREATE TEMP TABLE</TT
+> will be
+      deleted at the end of the session by specifying DISCARD ALL in
+      reset_query_list if you are using PostgreSQL 8.3 or later.
+     </P
+><P
+>      For 8.2.x or earlier, tables created by <TT
+CLASS="COMMAND"
+>CREATE TEMP
+       TABLE</TT
+> will not be deleted after exiting a
+      session. It is because of the connection pooling which, from
+      PostgreSQL's backend point of view, keeps the session
+      alive. To avoid this, you must explicitly drop the temporary
+      tables by issuing <TT
+CLASS="COMMAND"
+>DROP TABLE</TT
+>, or
+      use <TT
+CLASS="COMMAND"
+>CREATE TEMP TABLE ... ON COMMIT DROP</TT
+>
+      inside the transaction block.
+     </P
+></DD
+><DT
+>Functions,
+    etc. in <A
+HREF="runtime-config-running-mode.html#GUC-SNAPSHOT-ISOLATION-MODE"
+>snapshot isolation mode</A
+>
+    and <A
+HREF="runtime-config-running-mode.html#GUC-REPLICATION-MODE"
+>native replication mode</A
+></DT
+><DD
+><P
+>      There is no guarantee that any data provided using a
+      context-dependent mechanism (e.g. random number, transaction
+      ID, OID, SERIAL, sequence etc,), will be replicated correctly on
+      multiple backends. For SERIAL, enabling insert_lock will help
+      replicating data.  insert_lock also helps SELECT setval() and
+      SELECT nextval().
+     </P
+><P
+>      INSERT/UPDATE
+      using <CODE
+CLASS="FUNCTION"
+>CURRENT_TIMESTAMP</CODE
+>, <CODE
+CLASS="FUNCTION"
+>CURRENT_DATE</CODE
+>,
+      <CODE
+CLASS="FUNCTION"
+>now()</CODE
+> will be replicated
+      correctly. INSERT/UPDATE for tables
+      using <CODE
+CLASS="FUNCTION"
+>CURRENT_TIMESTAMP</CODE
+>, <CODE
+CLASS="FUNCTION"
+>CURRENT_DATE</CODE
+>,
+      <CODE
+CLASS="FUNCTION"
+>now()</CODE
+> as their DEFAULT values will also
+      be replicated correctly.  This is done by replacing those
+      functions by constants fetched from <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> at query execution
+      time.  There are a few limitations however:
+     </P
+><P
+>      In <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 3.0 or before, the
+      calculation of temporal data in table default value is not
+      accurate in some cases. For example, the following table
+      definition:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       CREATE TABLE rel1(
+       d1 date DEFAULT CURRENT_DATE + 1
+       )
+      </PRE
+><P>
+      is treated the same as:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       CREATE TABLE rel1(
+       d1 date DEFAULT CURRENT_DATE
+       )
+      </PRE
+><P>
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> 3.1 or later handles
+      these cases correctly.  Thus the column "d1" will have
+      tomorrow as the default value.  However this enhancement does
+      not apply if extended protocols (used in JDBC, PHP PDO for
+      example) or PREPARE are used.
+     </P
+><P
+>      Please note that if the column type is not a temporal one,
+      rewriting is not performed. Such example:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       foo bigint default (date_part('epoch'::text,('now'::text)::timestamp(3) with time zone) * (1000)::double precision)
+      </PRE
+><P>
+      Suppose we have the following table:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       CREATE TABLE rel1(
+       c1 int,
+       c2 timestamp default now()
+       )
+      </PRE
+><P>
+      We can replicate
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       INSERT INTO rel1(c1) VALUES(1)
+      </PRE
+><P>
+
+      since this turn into
+
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       INSERT INTO rel1(c1, c2) VALUES(1, '2009-01-01 23:59:59.123456+09')
+      </PRE
+><P>
+
+      However,
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       INSERT INTO rel1(c1) SELECT 1
+      </PRE
+><P>
+      cannot to be transformed, thus cannot be properly replicated in the current implementation.
+      Values will still be inserted, with no transformation at all.
+     </P
+></DD
+><DT
+>SQL type commands</DT
+><DD
+><P
+>      <A
+HREF="sql-commands.html"
+>SQL type commands</A
+> cannot
+      be used in extended query mode.
+     </P
+></DD
+><DT
+>Multi-byte Characters</DT
+><DD
+><P
+>      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> does not perform encoding conversion between client and
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> for multi-byte characters.
+      The encoding for the client and backends must be the same.
+     </P
+></DD
+><DT
+>libpq</DT
+><DD
+><P
+>      libpq is linked while building <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+      libpq version must be 3.0 or later. Building <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> with libpq version 2.0 will fail.
+     </P
+></DD
+><DT
+>ParameterStatus</DT
+><DD
+><P
+>       When a client connects
+       to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       sends back some parameter/value pairs to clients. This protocol
+       is
+       called <A
+HREF="https://www.postgresql.org/docs/14/protocol-flow.html#id-1.10.5.7.3"
+TARGET="_top"
+><I
+CLASS="FIRSTTERM"
+>ParameterStatus</I
+></A
+>.
+       The parameter/value pairs can be extracted by using some APIs
+       such as <CODE
+CLASS="FUNCTION"
+>PQParameterStatus</CODE
+> of libpq.  The
+       actual parameter names can be
+       found <A
+HREF="https://www.postgresql.org/docs/14/protocol-flow.html#PROTOCOL-ASYNC"
+TARGET="_top"
+>here</A
+>.
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> collects ParameterStatus
+       values from multiple <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       servers and it is possible that the values vary among the
+       servers. A typical example is <TT
+CLASS="LITERAL"
+>in_hot_standby</TT
+>,
+       which is introduced in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       14. The value for the variable is <TT
+CLASS="LITERAL"
+>off</TT
+> on
+       primary server and <TT
+CLASS="LITERAL"
+>on</TT
+> on standby
+       servers. Problem is, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> has
+       to return client only one of them. In this case it chooses the
+       value reported by the primary
+       server. So <CODE
+CLASS="FUNCTION"
+>PQParameterStatus</CODE
+> will
+       return <TT
+CLASS="LITERAL"
+>off</TT
+>. On the other hand, when the
+       client issues <TT
+CLASS="LITERAL"
+>show in_hot_standby</TT
+>, the
+       returned value can either <TT
+CLASS="LITERAL"
+>on</TT
+>
+       or <TT
+CLASS="LITERAL"
+>off</TT
+> depending on which is the load
+       balance node for the session.
+     </P
+><P
+>       Note that if the values differ among
+       servers, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will emit a log
+       message except <TT
+CLASS="LITERAL"
+>in_hot_standby</TT
+>. This is to
+       prevent the log file from being flooded
+       since <TT
+CLASS="LITERAL"
+>in_hot_standby</TT
+> always differs.
+     </P
+></DD
+><DT
+>set_config</DT
+><DD
+><P
+>       <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       has <CODE
+CLASS="FUNCTION"
+>set_config</CODE
+> function which allows to
+       change parameter values within current session
+       like <TT
+CLASS="COMMAND"
+>SET</TT
+> command
+       (actually <CODE
+CLASS="FUNCTION"
+>set_config</CODE
+> has more feature than
+       SET. See <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> manual for more
+       details).  When <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is
+       operated
+       with <A
+HREF="runtime-config-running-mode.html#GUC-BACKEND-CLUSTERING-MODE"
+>clustering
+       mode</A
+> being set to
+       <TT
+CLASS="LITERAL"
+>streaming_replication</TT
+>, it sends the function
+       only to the primary server. As the function is not sent to the
+       standby servers, the parameter values are different among each
+       servers. To avoid the problem, you can
+       use <TT
+CLASS="COMMAND"
+>SET</TT
+> command instead
+       of <CODE
+CLASS="FUNCTION"
+>set_config</CODE
+>.
+       Since <TT
+CLASS="COMMAND"
+>SET</TT
+> command is sent to all servers
+       used for this session, the issue will not happen.  However, if
+       you use more than 2 <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+       servers, you need to
+       disable <A
+HREF="runtime-config-load-balancing.html#GUC-STATEMENT-LEVEL-LOAD-BALANCE"
+>statement_level_load_balance</A
+> and
+       use <TT
+CLASS="COMMAND"
+>SET</TT
+> command. This is because,
+       if <A
+HREF="runtime-config-load-balancing.html#GUC-STATEMENT-LEVEL-LOAD-BALANCE"
+>statement_level_load_balance</A
+> enabled,
+       queries might be sent to the third server in addition to the
+       primary server and the server which is assigned to the load
+       balance node.
+     </P
+><P
+>       If you need to use <CODE
+CLASS="FUNCTION"
+>set_config</CODE
+>, turn off
+       load balancing for the session (not only
+       for <CODE
+CLASS="FUNCTION"
+>set_config</CODE
+>, load balancing should be
+       disabled in the whole session).  You can avoid the issue by
+       sacrificing performance.
+     </P
+></DD
+></DL
+></DIV
+><P>
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="resources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bug-reporting.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Further Information</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="preface.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Bug Reporting Guidelines</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

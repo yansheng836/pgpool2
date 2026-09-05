@@ -1,0 +1,554 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Configuring Pgpool-II</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Setup and Operation"
+HREF="runtime.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuring pcp.conf"
+HREF="configuring-pcp-conf.html"><LINK
+REL="NEXT"
+TITLE="Configuring backend information"
+HREF="configuring-backend-info.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Configuring pcp.conf"
+HREF="configuring-pcp-conf.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Server Setup and Operation</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Configuring backend information"
+HREF="configuring-backend-info.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIGURING-PGPOOL"
+>3.4. Configuring Pgpool-II</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIGURING-PGPOOL-CONF"
+>3.4.1. Configuring pgpool.conf</A
+></H2
+><P
+>    <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+> is the main configuration file
+    of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. You need to specify the
+    path to the file when
+    starting <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    using <TT
+CLASS="OPTION"
+>-f</TT
+> option.
+    <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+> is located
+    at <TT
+CLASS="FILENAME"
+>$prefix/etc/pgpool.conf</TT
+> by default,
+    if it installed from source code.
+   </P
+><P
+>    To specify the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> clustering
+    mode, set <A
+HREF="runtime-config-running-mode.html#GUC-BACKEND-CLUSTERING-MODE"
+>backend_clustering_mode</A
+> parameter
+    to the value explained below.
+   </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="BACKEND-CLUSTERING-MODE-TABLE"
+></A
+><P
+><B
+>Table 3-1. <A
+HREF="runtime-config-running-mode.html#GUC-BACKEND-CLUSTERING-MODE"
+>backend_clustering_mode</A
+> value in pgpool.conf</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Clustering mode</TH
+><TH
+>value</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>Streaming replication mode</TD
+><TD
+><TT
+CLASS="LITERAL"
+>streaming_replication</TT
+></TD
+></TR
+><TR
+><TD
+>Replication mode</TD
+><TD
+><TT
+CLASS="LITERAL"
+>native_replication</TT
+></TD
+></TR
+><TR
+><TD
+>Logical replication mode</TD
+><TD
+><TT
+CLASS="LITERAL"
+>logical_replication</TT
+> </TD
+></TR
+><TR
+><TD
+>Snapshot isolation mode</TD
+><TD
+><TT
+CLASS="LITERAL"
+>snapshot_isolation</TT
+></TD
+></TR
+><TR
+><TD
+>Raw mode</TD
+><TD
+><TT
+CLASS="LITERAL"
+>raw</TT
+> </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>    These configuration files are located at /usr/local/etc with
+    default installation from source code.
+    You can copy one of them as <TT
+CLASS="FILENAME"
+>pgpool.conf</TT
+>.
+    (probably you need root privilege for this)
+    </P><PRE
+CLASS="PROGRAMLISTING"
+># cd /usr/local/etc
+# cp pgpool.conf.sample pgpool.conf
+    </PRE
+><P>
+   </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNNING-MODE"
+>3.4.2. Clustering mode of Pgpool-II</A
+></H2
+><P
+>    There are six different <A
+HREF="runtime-config-running-mode.html#GUC-BACKEND-CLUSTERING-MODE"
+>clustering modes</A
+> in
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>: streaming replication mode, logical
+    replication mode, native
+    replication mode, raw mode and snapshot isolation mode. In any
+    mode, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> provides connection pooling, and
+    automatic fail over.  Online recovery can be used only with
+    streaming replication mode, snapshot isolation mode and native
+    replication mode.  See <A
+HREF="runtime-online-recovery.html"
+>Section 5.11</A
+>
+    for more details of online recovery.
+   </P
+><P
+>    Those modes are exclusive each other and cannot be changed after
+    starting the server. You should make a decision which to use in
+    the early stage of designing the system. If you are not sure, it
+    is recommended to use the streaming replication mode or the
+    snapshot isolation mode.
+   </P
+><P
+>    The <I
+CLASS="FIRSTTERM"
+>streaming replication mode</I
+> can be used
+    with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers operating streaming
+    replication. In this mode, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> is
+    responsible for synchronizing databases. This mode is widely used
+    and most recommended way to use <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. Load
+    balancing is possible in the mode. visibility consistency among
+    nodes is not guaranteed.
+   </P
+><P
+>    In the <I
+CLASS="FIRSTTERM"
+>snapshot isolation mode</I
+>
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is responsible for synchronizing
+    databases. The advantage for the mode is the synchronization is
+    done in synchronous way: writing to the database does not return
+    until all of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers finish the write
+    operation. Also it guarantees the visibility consistency among
+    nodes. To put it simply, it means that the visibility rule of
+    transactions on single server is applied to a cluster consisting
+    of multiple servers as well.  This is a remarkable feature of the
+    snapshot isolation mode in
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. In fact, the snapshot
+    isolation mode in <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is the only
+    system which guarantees the visibility consistency among nodes
+    without modifications to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> at the moment.
+    Because of this, applications do not need to recognize that they
+    are using a cluster consisting of
+    <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers, rather than a
+    single <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> system.  However in
+    this mode the transaction isolation level <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>must be
+    REPEATABLE READ</I
+></SPAN
+>.  You need to set
+    <TT
+CLASS="FILENAME"
+>postgresql.conf</TT
+> like this:
+    </P><PRE
+CLASS="PROGRAMLISTING"
+>default_transaction_isolation = 'repeatable read'
+    </PRE
+><P>
+   </P
+><P
+>    Also you need to aware that performance in the mode may be worse
+    than the streaming replication mode and native replication mode
+    due to the overhead to keep the consistency in transactions.
+   </P
+><P
+>    In the <I
+CLASS="FIRSTTERM"
+>native replication mode</I
+>,
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is responsible for synchronizing
+    databases. The advantage for the mode is the synchronization is
+    done in synchronous way: writing to the database does not return
+    until all of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers finish the write
+    operation. As visibility consistency among nodes is not
+    guaranteed, it is recommended to use the snapshot isolation mode
+    except you want to use other than REPEATABLE READ isolation mode.
+    Load balancing is possible in the mode.
+   </P
+><P
+>    The <I
+CLASS="FIRSTTERM"
+>logical replication mode</I
+> can be used
+    with <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> servers operating logical
+    replication. In this mode, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> is
+    responsible for synchronizing tables. Load balancing is possible
+    in the mode. Since logical replication does not replicate all
+    tables, it's user's responsibility to replicate the table which
+    could be load balanced. <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> load balances
+    all tables. This means that if a table is not
+    replicated, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> may lookup outdated tables
+    in the subscriber side.
+   </P
+><P
+>    In the <I
+CLASS="FIRSTTERM"
+>raw
+     mode</I
+>, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> does not care about
+    the database synchronization. It's user's responsibility to make
+    the whole system does a meaningful thing. Load balancing
+    is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>not</I
+></SPAN
+> possible in the mode.
+   </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="PROCESS-MANAGEMENT-MODE"
+>3.4.3. Process management modes</A
+></H2
+><P
+>          <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> implements a multi-process architecture where
+          each child process can handle exactly one client connection at any time.
+          The total number of concurrent client connections <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+          can handle is configured by the
+           <A
+HREF="runtime-config-connection.html#GUC-NUM-INIT-CHILDREN"
+>num_init_children</A
+> config parameter.
+          <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> supports two child process management modes.
+          <I
+CLASS="FIRSTTERM"
+>Dynamic</I
+> and <I
+CLASS="FIRSTTERM"
+>Static</I
+>.
+          In static process management mode, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> pre-forks the
+          num_init_children number of child
+          process at startup, and each child process keeps listening for incoming
+          client connection. While with dynamic process management mode,
+          <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> keeps track of idle processes and forks or kills
+          processes to keep this number within the specified boundaries.
+     </P
+><P
+>       <A
+HREF="runtime-config-process-management.html#GUC-PROCESS-MANAGEMENT-MODE"
+>process_management_mode</A
+> is not available prior to
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II </SPAN
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V4.4</I
+></SPAN
+>.
+      </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="configuring-pcp-conf.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="configuring-backend-info.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuring pcp.conf</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuring backend information</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

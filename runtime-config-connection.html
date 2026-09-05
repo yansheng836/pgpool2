@@ -1,0 +1,929 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Connections and Authentication</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Configuration"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE="Setting Parameters"
+HREF="config-setting.html"><LINK
+REL="NEXT"
+TITLE="Process Management"
+HREF="runtime-config-process-management.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Setting Parameters"
+HREF="config-setting.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Server Configuration</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Process Management"
+HREF="runtime-config-process-management.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RUNTIME-CONFIG-CONNECTION"
+>5.2. Connections and Authentication</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-CONNECTION-SETTINGS"
+>5.2.1. Connection Settings</A
+></H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-LISTEN-ADDRESSES"
+></A
+><TT
+CLASS="VARNAME"
+>listen_addresses</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies the TCP/IP address(es) on which the server is
+      to listen for connections from client applications.
+      The value takes the form of a comma-separated list of host names
+      and/or numeric IP addresses.  The special entry <TT
+CLASS="LITERAL"
+>*</TT
+>
+      corresponds to all available IP interfaces.  The entry
+      <TT
+CLASS="LITERAL"
+>0.0.0.0</TT
+> allows listening for all IPv4 addresses and
+      <TT
+CLASS="LITERAL"
+>::</TT
+> allows listening for all IPv6 addresses.
+      If the list is empty, the server does not listen on any IP interface
+      at all, in which case only Unix-domain sockets can be used to connect
+      to it.
+      The default value
+      is <SPAN
+CLASS="SYSTEMITEM"
+>localhost</SPAN
+>, which
+      allows only local TCP/IP <SPAN
+CLASS="QUOTE"
+>"loopback"</SPAN
+> connections to
+      be made.  While client authentication
+      (<A
+HREF="auth-pool-hba-conf.html"
+>Section 6.1</A
+>) allows fine-grained
+      control over who can access the
+      server, <TT
+CLASS="VARNAME"
+>listen_addresses</TT
+> controls which
+      interfaces accept connection attempts, which can help prevent
+      repeated malicious connection requests on insecure network
+      interfaces.  This parameter can only be set at server start.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-PORT"
+></A
+><TT
+CLASS="VARNAME"
+>port</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      The port number used
+      by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> to listen for
+      connections. Default is 9999.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-UNIX-SOCKET-DIRECTORIES"
+></A
+><TT
+CLASS="VARNAME"
+>unix_socket_directories</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      The directory where the UNIX domain socket(s) accepting connections for
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will be created. Multiple sockets
+      can be created by listing multiple directories separated by commas.
+      Leading and trailing spaces in each setting value will be automatically
+      removed. Default is <TT
+CLASS="LITERAL"
+>/tmp</TT
+>. Be aware that this sockets
+      might be deleted by a cron job. We recommend to set this value to
+      <TT
+CLASS="LITERAL"
+>/var/run</TT
+> or such directory.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-UNIX-SOCKET-GROUP"
+></A
+><TT
+CLASS="VARNAME"
+>unix_socket_group</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Sets the owning group of the Unix-domain socket(s). (The owning user of
+      the sockets is always the user that starts the server.) In combination
+      with the parameter <TT
+CLASS="VARNAME"
+>unix_socket_permissions</TT
+> this can be
+      used as an additional access control mechanism for Unix-domain connections.
+      By default this is the empty string, which uses the default group of the
+      server user.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-UNIX-SOCKET-PERMISSIONS"
+></A
+><TT
+CLASS="VARNAME"
+>unix_socket_permissions</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Sets the access permissions of the Unix-domain socket(s). Unix-domain
+      sockets use the usual Unix file system permission set. The parameter value
+      is expected to be a numeric mode specified in the format accepted by the
+      chmod and umask system calls. (To use the customary octal format the number
+      must start with a <TT
+CLASS="LITERAL"
+>0</TT
+> (zero).)
+     </P
+><P
+>      The default permissions are <TT
+CLASS="LITERAL"
+>0777</TT
+>, meaning anyone can
+      connect. Reasonable alternatives are <TT
+CLASS="LITERAL"
+>0770</TT
+> (only user
+      and group, see also <TT
+CLASS="VARNAME"
+>unix_socket_group</TT
+>) and
+      <TT
+CLASS="LITERAL"
+>0700</TT
+> (only user). (Note that for a Unix-domain socket,
+      only write permission matters, so there is no point in setting or revoking
+      read or execute permissions.)
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-PCP-LISTEN-ADDRESSES"
+></A
+><TT
+CLASS="VARNAME"
+>pcp_listen_addresses</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specifies the TCP/IP address(es) on which the pcp server is
+      to listen for connections from client applications.
+      The value takes the form of a comma-separated list of host names
+      and/or numeric IP addresses.  The special entry <TT
+CLASS="LITERAL"
+>*</TT
+>
+      corresponds to all available IP interfaces.  The entry
+      <TT
+CLASS="LITERAL"
+>0.0.0.0</TT
+> allows listening for all IPv4 addresses and
+      <TT
+CLASS="LITERAL"
+>::</TT
+> allows listening for all IPv6 addresses.
+      If the list is empty, the server does not listen on any IP interface
+      at all, in which case only Unix-domain sockets can be used to connect
+      to it.
+      The default value
+      is <SPAN
+CLASS="SYSTEMITEM"
+>localhost</SPAN
+>, which
+      allows only local TCP/IP <SPAN
+CLASS="QUOTE"
+>"loopback"</SPAN
+> connections to
+      be made.  While client authentication
+      (<A
+HREF="auth-pool-hba-conf.html"
+>Section 6.1</A
+>) allows fine-grained
+      control over who can access the
+      server, <TT
+CLASS="VARNAME"
+>pcp_listen_addresses</TT
+> controls which
+      interfaces accept connection attempts, which can help prevent
+      repeated malicious connection requests on insecure network
+      interfaces.  This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-PCP-PORT"
+></A
+><TT
+CLASS="VARNAME"
+>pcp_port</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      The port number used by PCP
+      process to listen for connections. Default is 9898.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-PCP-SOCKET-DIR"
+></A
+><TT
+CLASS="VARNAME"
+>pcp_socket_dir</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      The directory where the UNIX domain socket accepting
+      connections for PCP process will be created. Multiple sockets
+      can be created by listing multiple directories separated by commas.
+      Leading and trailing spaces in each setting value will be
+      automatically removed.
+      Default is <TT
+CLASS="LITERAL"
+>/tmp</TT
+>. Be aware that this socket
+      might be deleted by a cron job. We recommend to set this
+      value to <TT
+CLASS="LITERAL"
+>/var/run</TT
+> or such directory.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-NUM-INIT-CHILDREN"
+></A
+><TT
+CLASS="VARNAME"
+>num_init_children</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      The number of
+      preforked <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> server
+      processes. Default is 32.  num_init_children is also the
+      concurrent connections limit
+      to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> from clients.  If
+      more than num_init_children clients try to connect to
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>they are
+       blocked (not rejected with an error,
+       like <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>) until a
+       connection to any <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+       process is closed</I
+></SPAN
+>
+      unless <A
+HREF="runtime-config-connection.html#GUC-RESERVED-CONNECTIONS"
+>reserved_connections</A
+> is set
+       to 1 or more.  Up to
+       <A
+HREF="runtime-config-connection-pooling.html#GUC-LISTEN-BACKLOG-MULTIPLIER"
+>listen_backlog_multiplier</A
+>*
+	num_init_children can be queued.
+     </P
+><P
+>      The queue is inside the kernel called "listen queue". The
+      length of the listen queue is called "backlog".  There is
+      an upper limit of the backlog in some systems, and if
+      num_init_children*<A
+HREF="runtime-config-connection-pooling.html#GUC-LISTEN-BACKLOG-MULTIPLIER"
+>listen_backlog_multiplier</A
+>
+       exceeds the number, you need to set the backlog higher.
+       Otherwise, following problems may occur in heavy loaded systems:
+       <P
+></P
+></P><UL
+><LI
+><P
+>	  connecting to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> fails
+	 </P
+></LI
+><LI
+><P
+>	  connecting to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is
+	  getting slow because of retries in the kernel.
+	 </P
+></LI
+></UL
+><P>
+       You can check if the listen queue is actually overflowed by using
+       "netstat -s" command.  If you find something like:
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>	535 times the listen queue of a socket overflowed
+       </PRE
+><P>
+       then the listen queue is definitely overflowed.  You
+       should increase the backlog in this case (you will be
+       required a super user privilege).
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>	# sysctl net.core.somaxconn
+	net.core.somaxconn = 128
+	# sysctl -w net.core.somaxconn = 256
+       </PRE
+><P>
+       You could add following to /etc/sysctl.conf instead.
+       </P><PRE
+CLASS="PROGRAMLISTING"
+>	net.core.somaxconn = 256
+       </PRE
+><P>
+     </P
+><P
+>      Number of connections to
+      each <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> is roughly
+      max_pool*num_init_children.
+     </P
+><P
+>      However, canceling a query creates another
+      connection to the backend; thus, a query cannot be canceled if
+      all the connections are in use. If you want to ensure that queries can
+      be canceled, set this value to twice the expected connections.
+     </P
+><P
+>      In addition, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> allows concurrent
+      connections for non superusers up to max_connections -
+      superuser_reserved_connections.
+     </P
+><P
+>      In summary, max_pool, num_init_children, max_connections,
+      superuser_reserved_connections must satisfy the following formula:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       max_pool*num_init_children &lt;= (max_connections - superuser_reserved_connections) (no query canceling needed)
+       max_pool*num_init_children*2 &lt;= (max_connections - superuser_reserved_connections) (query canceling needed)
+      </PRE
+><P>
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-RESERVED-CONNECTIONS"
+></A
+><TT
+CLASS="VARNAME"
+>reserved_connections</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      When this parameter is set to 1 or greater, incoming
+      connections from clients are not accepted with error
+      message "Sorry, too many clients already", rather than
+      blocked if the number of current connections from clients
+      is more than (<A
+HREF="runtime-config-connection.html#GUC-NUM-INIT-CHILDREN"
+>num_init_children</A
+> -
+       <TT
+CLASS="VARNAME"
+>reserved_connections</TT
+>). For example,
+       if <TT
+CLASS="VARNAME"
+>reserved_connections</TT
+> = 1
+       and <A
+HREF="runtime-config-connection.html#GUC-NUM-INIT-CHILDREN"
+>num_init_children</A
+> = 32, then the
+	32th connection from a client will be refused. This
+	behavior is similar
+	to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> and good for
+	systems on which the number of connections from clients is
+	large and each session may take long time. In this case
+	length of the listen queue could be very long and may
+	cause the system unstable. In this situation setting this
+	parameter to non 0 is a good idea to prevent the listen
+	queue becomes very long.
+     </P
+><P
+>      If this parameter is set to 0, no connection from clients
+      will be refused. The default value is 0.
+      This parameter can only be set at server start.
+     </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-AUTHENTICATION-SETTINGS"
+>5.2.2. Authentication Settings</A
+></H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-ENABLE-POOL-HBA"
+></A
+><TT
+CLASS="VARNAME"
+>enable_pool_hba</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      If <TT
+CLASS="LITERAL"
+>true</TT
+>, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will use the
+      <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> for the client
+      authentication.  See <A
+HREF="auth-pool-hba-conf.html"
+>Section 6.1</A
+>
+       for details on how to configure
+       <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> for client authentication.
+       Default is <TT
+CLASS="LITERAL"
+>false</TT
+>.
+     </P
+><P
+>      This parameter can be changed by reloading
+      the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-POOL-PASSWD"
+></A
+><TT
+CLASS="VARNAME"
+>pool_passwd</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      Specify the path (absolute or relative) to password file for
+      authentication. Default value is <TT
+CLASS="LITERAL"
+>"pool_passwd"</TT
+>.
+      A relative path will be interpreted with respect to the directory
+      where configuration file is placed.
+      Specifying <TT
+CLASS="LITERAL"
+>''</TT
+> (empty) disables the use
+      of password file.
+     </P
+><P
+>      Passwords can be stored in the pool_passwd file using three formats.
+      AES256 encrypted format, plain text format and md5 format.
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> identifies the password format type
+      by it's prefix, so each password entry in the pool_passwd must be prefixed
+      as per the password format.
+     </P
+><P
+>      To store the password in the plain text format use <TT
+CLASS="LITERAL"
+>TEXT</TT
+> prefix.
+      For example. to store clear text password string <TT
+CLASS="LITERAL"
+>"mypassword"</TT
+>
+      in the pool_passwd, prepend the password string with <TT
+CLASS="LITERAL"
+>TEXT</TT
+> prefix.
+      e.g. <TT
+CLASS="LITERAL"
+>TEXTmypassword</TT
+>
+     </P
+><P
+>      similarly md5 hashed passwords must be prefixed with <TT
+CLASS="LITERAL"
+>md5</TT
+> and
+      AES256 encrypted password types can be stored using <TT
+CLASS="LITERAL"
+>AES</TT
+> prefix.
+      see <A
+HREF="auth-aes-encrypted-password.html"
+>Section 6.4</A
+> for more details on using
+       AES256 encrypted passwords.
+     </P
+><P
+>      In the absence of a valid prefix, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will
+      be considered the string as a plain text password.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-ALLOW-CLEAR-TEXT-FRONTEND-AUTH"
+></A
+><TT
+CLASS="VARNAME"
+>allow_clear_text_frontend_auth</TT
+> (<TT
+CLASS="TYPE"
+>boolean</TT
+>)
+     </DT
+><DD
+><P
+>      If <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> backend servers require
+      <TT
+CLASS="LITERAL"
+>md5</TT
+> or <TT
+CLASS="LITERAL"
+> SCRAM</TT
+> authentication for some
+      user's authentication but the password for that user is not present in the
+      <TT
+CLASS="FILENAME"
+>"pool_passwd"</TT
+> file, then enabling
+      <TT
+CLASS="LITERAL"
+>allow_clear_text_frontend_auth</TT
+> will allow the
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> to use clear-text-password
+      authentication with frontend clients to get the password in plain text form
+      from the client and use it for backend authentication.
+     </P
+><P
+>      Default is <TT
+CLASS="LITERAL"
+>false</TT
+>.
+     </P
+><P
+>      This parameter can be changed by reloading
+      the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>       <TT
+CLASS="LITERAL"
+>allow_clear_text_frontend_auth</TT
+> only works when <A
+HREF="runtime-config-connection.html#GUC-ENABLE-POOL-HBA"
+>enable_pool_hba</A
+> is not enabled
+      </P
+></BLOCKQUOTE
+></DIV
+></DD
+><DT
+><A
+NAME="GUC-AUTHENTICATION-TIMEOUT"
+></A
+><TT
+CLASS="VARNAME"
+>authentication_timeout</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      Specify the timeout in seconds
+      for <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+      authentication. Specifying 0 disables the time out.
+      Default value is 60.
+     </P
+><P
+>      This parameter can only be set at server start.
+     </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-setting.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-config-process-management.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Setting Parameters</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Process Management</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

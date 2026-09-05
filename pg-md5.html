@@ -1,0 +1,439 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>pg_md5</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Other commands"
+HREF="other-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="Other commands"
+HREF="other-commands.html"><LINK
+REL="NEXT"
+TITLE="pg_enc"
+HREF="pg-enc.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Other commands"
+HREF="other-commands.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="other-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="pg_enc"
+HREF="pg-enc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="PG-MD5"
+></A
+>pg_md5</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN10261"
+></A
+><H2
+>Name</H2
+>pg_md5&nbsp;--&nbsp;   produces encrypted password in md5</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN10264"
+></A
+><H2
+>Synopsis</H2
+><P
+><TT
+CLASS="COMMAND"
+>pg_md5</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+>...]  <TT
+CLASS="REPLACEABLE"
+><I
+>-p</I
+></TT
+> </P
+><P
+><TT
+CLASS="COMMAND"
+>pg_md5</TT
+> [<TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+>...]  <TT
+CLASS="REPLACEABLE"
+><I
+>password</I
+></TT
+> </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="R1-PG-MD5-1"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>pg_md5</TT
+>
+   produces encrypted password in md5.
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10281"
+></A
+><H2
+>Options</H2
+><P
+>   <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="OPTION"
+>-p</TT
+><BR><TT
+CLASS="OPTION"
+>--prompt</TT
+></DT
+><DD
+><P
+>       Prompt password using standard input.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-m</TT
+><BR><TT
+CLASS="OPTION"
+>--md5auth</TT
+></DT
+><DD
+><P
+>       Produce md5 authentication password to authentication file <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+>.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-u <TT
+CLASS="REPLACEABLE"
+><I
+>your_username</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--username=<TT
+CLASS="REPLACEABLE"
+><I
+>your_username</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       When producing a md5 authentication password, create the pool_passwd entry for <TT
+CLASS="LITERAL"
+>your_username</TT
+>.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-f <TT
+CLASS="REPLACEABLE"
+><I
+>config_file</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--config-file=<TT
+CLASS="REPLACEABLE"
+><I
+>config_file</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Specify the path to the <TT
+CLASS="LITERAL"
+>pgpool.conf</TT
+> configuration file.
+      </P
+></DD
+><DT
+><TT
+CLASS="OPTION"
+>-i <TT
+CLASS="REPLACEABLE"
+><I
+>input_file</I
+></TT
+></TT
+><BR><TT
+CLASS="OPTION"
+>--input-file=<TT
+CLASS="REPLACEABLE"
+><I
+>input_file</I
+></TT
+></TT
+></DT
+><DD
+><P
+>       Specifies file containing user name and password pairs.
+      </P
+></DD
+></DL
+></DIV
+><P>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN10329"
+></A
+><H2
+>Example</H2
+><P
+>   The following are examples to encrypt your password into md5 hash format for <TT
+CLASS="FILENAME"
+>pcp.conf</TT
+>.
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>$ pg_md5 -p
+password: [your password]
+   </PRE
+><P>
+  </P
+><P
+>   or
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>$ pg_md5 [your password]
+acbd18db4cc2f85cedef654fccc4a4d8
+  </PRE
+><P
+>   <TT
+CLASS="LITERAL"
+>pg_md5</TT
+> can also be used for adding an entry of user name and 
+   <TT
+CLASS="LITERAL"
+>md5</TT
+> encrypted password to 
+   <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file.
+    </P><PRE
+CLASS="PROGRAMLISTING"
+>$ pg_md5 -m -f /path/to/pgpool.conf -u username -p
+password: [your password]
+
+$ cat /path/to/pool_passwd 
+username:md55a231fcdb710d73268c4f44283487ba2
+    </PRE
+><P>
+
+   To avoid password prompt or password in command parameter,
+   <TT
+CLASS="LITERAL"
+>pg_md5</TT
+> can read user name:password pairs from file.
+   It will add all user names and <TT
+CLASS="LITERAL"
+>md5</TT
+> hashed password to
+   <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file.
+    </P><PRE
+CLASS="PROGRAMLISTING"
+>$ cat users.txt
+username1:secretpassword1
+username2:secretpassword2
+
+$ pg_md5 -m -f /path/to/pgpool.conf -i users.txt
+trying to read username:password pairs from file users.txt
+
+$ cat /path/to/pool_passwd
+username1:md533314126ba0b187df1e37f5ce6a489a8
+username2:md58ae92c6e1d6a48d80e2583fe715e2b36
+    </PRE
+><P>
+
+    To just display the md5 hashed string, not adding an entry to <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+>, pass a string concatenating password and user name.
+     For example, if password is "password" and user name is "user", the output would be:
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>$ pg_md5 passworduser
+4d45974e13472b5a0be3533de4666414
+     </PRE
+><P>
+     Please note that the actual entry to be inserted into
+     <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> should have "md5" on top of the
+      result string. That is: "md54d45974e13472b5a0be3533de4666414".
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="other-commands.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="pg-enc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Other commands</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="other-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>pg_enc</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

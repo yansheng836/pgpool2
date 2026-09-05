@@ -1,0 +1,502 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SHOW POOL_POOLS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="SQL type commands"
+HREF="sql-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="SHOW POOL_PROCESSES"
+HREF="sql-show-pool-processes.html"><LINK
+REL="NEXT"
+TITLE="SHOW POOL_VERSION"
+HREF="sql-show-pool-version.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="SHOW POOL_PROCESSES"
+HREF="sql-show-pool-processes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="SHOW POOL_VERSION"
+HREF="sql-show-pool-version.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="SQL-SHOW-POOL-POOLS"
+></A
+>SHOW POOL_POOLS</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN11448"
+></A
+><H2
+>Name</H2
+>SHOW POOL_POOLS&nbsp;--&nbsp;   sends back a list of pools handled
+   by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+  </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN11452"
+></A
+><H2
+>Synopsis</H2
+><PRE
+CLASS="SYNOPSIS"
+>   SHOW POOL_POOLS
+  </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN11454"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>SHOW POOL_POOLS</TT
+> sends back a list of pools
+   handled by
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+  </P
+><P
+>   It has 20 columns:
+   <P
+></P
+></P><UL
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_pid</TT
+> is the PID of the
+      displayed <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> process.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>start_time</TT
+> is the timestamp of when
+      this process was launched.
+      <P
+></P
+></P><UL
+><LI
+><P
+>         If <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-LIFE-TIME"
+>child_life_time</A
+> is set not 0,
+         the time before process restarting is displayed.
+        </P
+></LI
+></UL
+><P>
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_connection_count</TT
+> counts the number of times
+      this process has been used by clients.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_id</TT
+> is the pool identifier (should
+      be between 0 and <A
+HREF="runtime-config-connection-pooling.html#GUC-MAX-POOL"
+>max_pool</A
+> - 1)
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>backend_id</TT
+> is the backend identifier (should
+      be between 0 and the number of configured backends minus one)
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>database</TT
+> is the database name for this
+      process's pool id connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>username</TT
+> is the user name for this
+      process's pool id connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>backend_connection_time</TT
+> is the creation time and
+      date of the connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_connection_time</TT
+> is the date when a client
+      last used this connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_disconnection_time</TT
+> is the date when a client
+      last disconnected from this connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_idle_duration</TT
+> is the time (sec) that a client
+      is in idle.
+      <P
+></P
+></P><UL
+><LI
+><P
+>         If <A
+HREF="runtime-config-connection-pooling.html#GUC-CLIENT-IDLE-LIMIT"
+>client_idle_limit</A
+> is set not 0,
+         the time before client disconnected is displayed.
+        </P
+></LI
+></UL
+><P>
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>majorversion</TT
+>
+      and <TT
+CLASS="LITERAL"
+>minorversion</TT
+> are the protocol
+      version numbers used in this connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_counter</TT
+> counts the number of times
+      this pool of connections (process) has been used by
+      clients.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_backendpid</TT
+> is the PID of the
+      PostgreSQL process.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_connected</TT
+> is true (1) if a
+      frontend is currently using this backend.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>status</TT
+> is current status of this process. Possible values are:
+        <P
+></P
+></P><UL
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Execute command</TT
+>: Executing a command.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Idle</TT
+>: The process is waiting for a new client command.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Idle in transaction</TT
+>: The process is waiting for a new client command
+              in a transaction.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Wait for connection</TT
+>: The process is waiting for a new client connection.
+            </P
+></LI
+></UL
+><P>
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>load_balance_node</TT
+> is true (1) if a
+      frontend is currently using this backend and the backend is load balance node.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_host</TT
+> is client's host name or IP address.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_port</TT
+> is client's port number.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>statement</TT
+> is the SQL statement last executed.
+     </P
+></LI
+></UL
+><P>
+  </P
+><P
+>   It'll always return <A
+HREF="runtime-config-connection.html#GUC-NUM-INIT-CHILDREN"
+>num_init_children</A
+> * <A
+HREF="runtime-config-connection-pooling.html#GUC-MAX-POOL"
+>max_pool</A
+> *
+     number_of_backends lines.  Here is an example session:
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>test=# show pool_pools;
+ pool_pid |                      start_time                      | client_connection_count | pool_id | backend_id | database | username | backend_connection_time | client_connection_time | client_disconnection_time | client_idle_duration | majorversion | minorversion | pool_counter | pool_backendpid | pool_connected |       status        | load_balance_node |  client_host  | client_port |  statement  
+----------+------------------------------------------------------+-------------------------+---------+------------+----------+----------+-------------------------+------------------------+---------------------------+----------------------+--------------+--------------+--------------+-----------------+----------------+---------------------+-------------------+---------------+-------------+-------------
+[snip]
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 0       | 0          | test     | t-ishii  | 2025-06-24 10:55:58     | 2025-06-24 10:55:59    |                           | 0                    | 3            | 0            | 1            | 1336703         | 1              | Idle                | 0                 | 192.168.10.11 | 39216       | 
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 0       | 1          | test     | t-ishii  | 2025-06-24 10:55:58     | 2025-06-24 10:55:59    |                           | 0                    | 3            | 0            | 1            | 1336704         | 1              | Idle                | 1                 | 192.168.10.11 | 39216       | select 1;
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 1       | 0          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Idle                | 0                 | 192.168.10.11 | 39216       | 
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 1       | 1          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Idle                | 0                 | 192.168.10.11 | 39216       | select 1;
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 2       | 0          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Idle                | 0                 | 192.168.10.11 | 39216       | 
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 2       | 1          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Idle                | 0                 | 192.168.10.11 | 39216       | select 1;
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 3       | 0          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Idle                | 0                 | 192.168.10.11 | 39216       | 
+ 1336537  | 2025-06-24 10:53:35                                  | 0                       | 3       | 1          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Idle                | 0                 | 192.168.10.11 | 39216       | select 1;
+[snip]
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 0       | 0          | test     | t-ishii  | 2025-06-24 10:53:42     | 2025-06-24 10:53:42    | 2025-06-24 10:55:37       | 0                    | 3            | 0            | 1            | 1336573         | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | DISCARD ALL
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 0       | 1          | test     | t-ishii  | 2025-06-24 10:53:42     | 2025-06-24 10:53:42    | 2025-06-24 10:55:37       | 0                    | 3            | 0            | 1            | 1336574         | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | 
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 1       | 0          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | DISCARD ALL
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 1       | 1          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | 
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 2       | 0          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | DISCARD ALL
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 2       | 1          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | 
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 3       | 0          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | DISCARD ALL
+ 1336544  | 2025-06-24 10:53:35 (0:23 before process restarting) | 1                       | 3       | 1          |          |          |                         |                        |                           | 0                    | 0            | 0            | 0            | 0               | 0              | Wait for connection | 0                 | 192.168.10.11 | 39162       | 
+[snip]
+(256 rows)
+     </PRE
+><P>
+
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-show-pool-processes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sql-show-pool-version.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SHOW POOL_PROCESSES</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SHOW POOL_VERSION</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

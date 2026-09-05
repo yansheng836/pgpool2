@@ -1,0 +1,503 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.2.20</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.2.21"
+HREF="release-4-2-21.html"><LINK
+REL="NEXT"
+TITLE="Release 4.2.19"
+HREF="release-4-2-19.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.2.21"
+HREF="release-4-2-21.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.2.19"
+HREF="release-4-2-19.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-2-20"
+>A.68. Release 4.2.20</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2024-11-28</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN18582"
+>A.68.1. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Abort SSL negotiation if backend sends an error message. (Tatsuo Ishii)
+    </P
+><P
+>     In the client side implementation of SSL negotiation
+     (pool_ssl_negotiate_clientserver()), it was possible for a
+     man-in-the-middle attacker to send a long error message to confuse
+     Pgpool-II or client while in the SSL negotiation phase. This commit
+     rejects the negotiation immediately (issue a FATAL error) and exits
+     the session to prevent such an attack.
+    </P
+><P
+>     This resembles PostgreSQL's CVE-2024-10977.
+    </P
+></LI
+><LI
+><P
+>     Fix the watchdog process not reloading configurations. (Bo Peng)
+    </P
+><P
+>     The <CODE
+CLASS="FUNCTION"
+>reload_config()</CODE
+> function
+     in <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> should send
+     a SIGHUP signal to the watchdog process.
+    </P
+></LI
+><LI
+><P
+>     Fix bug in <CODE
+CLASS="FUNCTION"
+>do_query</CODE
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Fix <CODE
+CLASS="FUNCTION"
+>do_query</CODE
+> to use ntohs/ntohl instead of htons/htonl.
+    </P
+></LI
+><LI
+><P
+>     Fix authentication failure after updating <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> and reload. (Tatsuo Ishii)
+    </P
+><P
+>     If <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> is disabled,
+     updating pool_passwd was not recognized
+     by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> child process even
+     if <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> reload was performed.
+     The reload processing function check_config_reload() mistakenly assumed
+     that reopening pool_passwd was only necessary when
+     <A
+HREF="runtime-config-connection.html#GUC-ENABLE-POOL-HBA"
+>enable_pool_hba</A
+> is on.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-November/001944.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-November/001944.html"</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix <TT
+CLASS="COMMAND"
+>COPY</TT
+> hangs. (<A
+HREF="https://github.com/pgpool/pgpool2/issues/79"
+TARGET="_top"
+>#79</A
+>) (Tatsuo Ishii)
+    </P
+><P
+>     During COPY IN state (i.e. COPY FROM STDIN), frontend can send Flush
+     or Sync messages.  According to the F/B protocol specification, they
+     should be ignored but Pgpool-II treated as an invalid message and this
+     causes COPY hung.
+    </P
+><P
+>     Also a regression test is added for this issue.
+    </P
+></LI
+><LI
+><P
+>     Fix <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> child process crash during shutdown. (Tatsuo Ishii)
+    </P
+><P
+>     The actual crash was in <CODE
+CLASS="FUNCTION"
+>close_all_backend_connections()</CODE
+>.
+     <CODE
+CLASS="FUNCTION"
+>close_all_backend_connections()</CODE
+> was
+     called because on_system_exit registers
+     <CODE
+CLASS="FUNCTION"
+>child_will_go_down()</CODE
+>.
+     At the moment it seems pgpool child had just started up and doing
+     <CODE
+CLASS="FUNCTION"
+>pool_init_cp()</CODE
+>. The connection pool
+     object had not been completely initialized, that's cause of the crash.
+    </P
+><P
+>     Problem reported and analyzed by Emond Papegaaij.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-November/001938.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-November/001938.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix sporadic health check failures due to authentication failure. (Tatsuo Ishii)
+    </P
+><P
+>     When <A
+HREF="runtime-config-health-check.html#GUC-HEALTH-CHECK-PASSWORD"
+>health_check_password</A
+> is empty string,
+     health check process looks for the password from pool_passwd file.
+     Problem is, the file descriptor for the file is inherited from
+     parent pgpool process.
+     This means that pgpool main and health check process (possibly multiple
+     process) share the same descriptor, which causes various problem
+     including the issue reported here. To fix the problem, re-open the
+     file when health check process starts so that each health check
+     process owns its own file descriptor.
+    </P
+><P
+>     Note that pgpool child process (responsible for frontend sessions)
+     already re-opens the file descriptor and they are not related to the
+     issue.
+    </P
+><P
+>     Problem reported and analyzed by Emond Papegaaij.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-October/001913.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-October/001913.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Optimize query cache invalidation for <TT
+CLASS="LITERAL"
+>ALTER ROLE</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Commit <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=6b7d585eb1c693e4ffb5b8e6ed9aa0f067fa1b89"
+TARGET="_top"
+>6b7d585eb1c693e4ffb5b8e6ed9aa0f067fa1b89</A
+> invalidates query
+     cache if any <TT
+CLASS="LITERAL"
+>ALTER ROLE/USER</TT
+> statement is used.
+     Actually this is an overkill.
+     Because following queries do not affect the privilege of the role.
+    </P
+><PRE
+CLASS="PROGRAMLISTING"
+>ALTER ROLE user WITH [ENCRYPTED] PASSWORD
+ALTER ROLE user WITH CONNECTION LIMIT
+    </PRE
+><P
+>     So do not invalidate query cache if those commands are used.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2024-October/004532.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2024-October/004532.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> crash when pgpool child process exits. (Tatsuo Ishii)
+    </P
+><P
+>     When a pgpool child process exits,
+     <CODE
+CLASS="FUNCTION"
+>close_all_backend_connections()</CODE
+> is
+     called, which is responsible for closing all connections to backend in
+     the connection pool. It used mistakenly MAIN_CONNECTION macro, which
+     is fine for current active connections but is not good for pooled
+     connections because a main node could be different at the time when
+     the connection pool was created.
+     Fix is using <CODE
+CLASS="FUNCTION"
+>in_use_backend()</CODE
+> instead.
+    </P
+><P
+>     Reported-by: Emond Papegaaij
+    </P
+></LI
+><LI
+><P
+>     Fix bug in replication/snapshot isolation mode. (<A
+HREF="https://github.com/pgpool/pgpool2/issues/69"
+TARGET="_top"
+>#69</A
+>) (Tatsuo Ishii)
+    </P
+><P
+>     When <TT
+CLASS="COMMAND"
+>INSERT</TT
+> command is received,
+     pgpool automatically issues table LOCK command to the
+     target table but it forgot to send the command to
+     other than main nodes. This only happened in extended query mode.
+    </P
+></LI
+><LI
+><P
+>     Fix another bug in native replication/snapshot isolation mode. (Tatsuo Ishii)
+    </P
+><P
+>     insert_lock() forgot to send row lock command (lock_kind == 3 case) to
+     other than main node.
+    </P
+></LI
+><LI
+><P
+>     Fix resource leaks in <TT
+CLASS="FILENAME"
+>pool_memqcache.c</TT
+>. (Tatsuo Ishii)
+    </P
+><P
+>     These leaks were brought in by commit <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=6fdba5c33"
+TARGET="_top"
+>6fdba5c33</A
+>.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN18664"
+>A.68.2. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix typos in the documentation and sample configuration files. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN18669"
+>A.68.3. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Adapt 024.cert_auth test to OpenSSL 3.2. (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-2-21.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-2-19.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.2.21</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.2.19</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

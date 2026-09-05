@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.3.10</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.3.11"
+HREF="release-4-3-11.html"><LINK
+REL="NEXT"
+TITLE="Release 4.3.9"
+HREF="release-4-3-9.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.3.11"
+HREF="release-4-3-11.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.3.9"
+HREF="release-4-3-9.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-3-10"
+>A.53. Release 4.3.10</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2024-05-16</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN17126"
+>A.53.1. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix compiler error with <TT
+CLASS="LITERAL"
+>-Werror=implicit-function-declaration</TT
+>. (Bo Peng)
+    </P
+><P
+>     Add <TT
+CLASS="LITERAL"
+>LDAP_DEPRECATED</TT
+> to include prototypes for deprecated ldap functions.
+     Also Add missing header files in autoconf check.
+    </P
+><P
+>     Patch is created by Vladimir Petko.
+    </P
+></LI
+><LI
+><P
+>     Fix assorted causes of segmentation fault. (Tatsuo Ishii)
+    </P
+><P
+>     It is reported that pgpool and its child process segfault in certain
+     cases when failover involved.
+    </P
+><P
+>     Problem is reported and analyzed by Emond Papegaaij.
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-April/009131.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-April/009131.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix uninitialized memory error. (Tatsuo Ishii)
+    </P
+><P
+>     It was reported that valgrind found several errors including an
+     uninitialized memory error in read_startup_packet. It allocates memory
+     for user name in a startup packet in case cancel or SSL request using
+     palloc, and later on the memory is used by pstrdup. Since memory
+     allocated by palloc is undefined, this should have been palloc0.
+    </P
+><P
+>     Problem is reported and analyzed by Emond Papegaaij.
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-April/009126.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-April/009126.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix errors/hung up when load_balance_mode is off. (Tatsuo Ishii)
+    </P
+><P
+>     Commit <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=3f3c1656"
+TARGET="_top"
+>3f3c1656</A
+>
+     brought errors/hung up when load_balance_mode is off, primary node id
+     is not 0 and queries are BEGIN etc.
+    </P
+><P
+>     Bug found and analyzed by Emond Papegaaij.
+     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2024-March/009113.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-general/2024-March/009113.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix compile errors with certain CFLAGS. (Tatsuo Ishii)
+    </P
+><P
+>     <A
+HREF="https://github.com/pgpool/pgpool2/issues/42"
+TARGET="_top"
+>https://github.com/pgpool/pgpool2/issues/42</A
+>
+     reported that with CFLAGS
+     -flto=4 -Werror=odr -Werror=lto-type-mismatch -Werror=strict-aliasing
+     gcc emits errors.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2024-March/004443.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2024-March/004443.html</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix comments in sample pgpool.conf. (Bo Peng)
+    </P
+><P
+>     The default value for <TT
+CLASS="VARNAME"
+>sr_check_period</TT
+> should be 10 seconds.
+     Also fixed some typos in comments.
+    </P
+><P
+>     Patch is created by hiroin and modified by Bo Peng.
+    </P
+></LI
+><LI
+><P
+>     Allow reset queries to run even if extended queries do not end. (Tatsuo Ishii)
+    </P
+><P
+>     Commit <A
+HREF="https://git.postgresql.org/gitweb/?p=pgpool2.git;a=commit;h=240c668d"
+TARGET="_top"
+>240c668d</A
+>
+     caused reset queries fail if extended query messages do not end. This commit
+     fix that by checking whether we are running reset queries in
+     SimpleQuery(). Also add the test case for this.
+    </P
+></LI
+><LI
+><P
+>     Fix memory leak pointed out by Coverity. (Takuma Hoshiai)
+    </P
+></LI
+><LI
+><P
+>     Guard against inappropriate protocol data. (Tatsuo Ishii)
+    </P
+><P
+>     If a simple query message arrives before a sequence of extended query
+     messages ends pgpool could hang.  This is because the query context in
+     the session context for the simple query is overwritten by the query
+     contexts of the extended query messages.
+    </P
+><P
+>     This commit implements a guard in SimpleQuery() by checking whether
+     extended query protocol messages ended. If they do not end, raise a
+     FATAL error. A known example detected by this checking is JDBC
+     driver's "autosave=always" option. This means pgpool will not accept
+     the option after this commit until the issue (sending a simple
+     protocol message before ending extended query message protocol) is
+     fixed by the JDBC driver side.
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004428.html"
+TARGET="_top"
+>https://www.pgpool.net/pipermail/pgpool-hackers/2024-February/004428.html</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN17174"
+>A.53.2. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance "Upstream server connection" documentation. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Language cleanup in Japanese document. (Masaya Kawamoto)
+    </P
+></LI
+><LI
+><P
+>     Add the note about using <TT
+CLASS="COMMAND"
+>pcp_promote_node</TT
+> when two postgres nodes. (Masaya Kawamoto)
+    </P
+><P
+>     Even if there are two postgres nodes, there are cases that
+     <TT
+CLASS="VARNAME"
+>follow_primary_command</TT
+> is required to be set.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN17186"
+>A.53.3. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fixed regression test 005.jdbc to avoid Java 21 deprecation warnings. (Bo Peng)
+    </P
+><P
+>     Replace Runtime.exec(String) with Runtime.exec(String[]) to avoid Java 21 deprecation warnings.
+     Patch is created by Vladimir Petko and modified by Bo Peng.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-3-11.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-3-9.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.3.11</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.3.9</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

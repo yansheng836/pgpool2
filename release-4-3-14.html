@@ -1,0 +1,354 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.3.14</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.3.15"
+HREF="release-4-3-15.html"><LINK
+REL="NEXT"
+TITLE="Release 4.3.13"
+HREF="release-4-3-13.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.3.15"
+HREF="release-4-3-15.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.3.13"
+HREF="release-4-3-13.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-3-14"
+>A.49. Release 4.3.14</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2025-02-28</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16838"
+>A.49.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Remove <TT
+CLASS="COMMAND"
+>pg_basebackup</TT
+> from the sample follow primary script. (Bo Peng)
+    </P
+><P
+>     If <TT
+CLASS="COMMAND"
+>pg_rewind</TT
+> fails, the safest way for users is to recover manually.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16846"
+>A.49.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix <CODE
+CLASS="FUNCTION"
+>per_node_error_log()</CODE
+> error message that is printed with two colons. (Bo Peng)
+    </P
+><P
+>     Patch is created by Umar Hayat.
+    </P
+></LI
+><LI
+><P
+>     Fix <CODE
+CLASS="FUNCTION"
+>pool_signal</CODE
+>. (Tatsuo Ishii)
+    </P
+><P
+>     Previously pool_signal did not set SA_RESTART flag.  Thus any system
+     calls interrupted by a signal does not restart. Some of our code are
+     prepared so that they restart if a system call is interrupted by a
+     signal. But not sure all places are prepared too. So add the
+     flag. Note, <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> always uses the flag.
+    </P
+></LI
+><LI
+><P
+>     Fixed an issue where <TT
+CLASS="COMMAND"
+>pg_md5</TT
+> and
+     <TT
+CLASS="COMMAND"
+>pg_enc</TT
+> would not update the password
+     file if a file other than the default value was specified
+     in the <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> parameter. (Bo Peng)
+    </P
+><P
+>     This issue is reported by Sadhuprasad Patro.
+    </P
+></LI
+><LI
+><P
+>     Fix several query cache bugs in streaming replication mode. (Tatsuo Ishii)
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       When query cache is enabled and an execute message is sent from
+       frontend, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> injects query cache
+       data into backend message buffer if query cache data is available.
+       But it was possible that the cached message is inserted at
+       inappropriate position and <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+       mistakenly raised "kind mismatch" error.
+      </P
+></LI
+><LI
+><P
+>       If query cache is enabled and query is operated in extended query mode
+       and pgpool is running in streaming replication mode, an execute
+       message could return incorrect results.
+      </P
+></LI
+><LI
+><P
+>       Another trouble is when multiple execute messages are sent
+       consecutively.  In this case Pgpool-II returned exactly the same
+       results from query cache for each execute message. This is wrong since
+       the second or subsequent executes should return 0 rows.
+      </P
+><P
+>       Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2024-December/004548.html"
+TARGET="_top"
+>[pgpool-hackers: 4547] Bug in query cache</A
+>
+      </P
+></LI
+></UL
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16877"
+>A.49.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance client authentication chapter. (Tatsuo Ishii)
+    </P
+><P
+>     Add intro about pool_passwd. Previously there was only description on
+     pool_hba.conf in the overview page. A general guide to
+     <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+>
+     will help users to understand this chapter.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN16884"
+>A.49.4. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Stabilize 032.dml_adaptive_loadbalance (Tatsuo Ishii)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-3-15.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-3-13.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.3.15</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.3.13</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

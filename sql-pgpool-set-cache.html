@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>PGPOOL SET CACHE</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="SQL type commands"
+HREF="sql-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="PGPOOL SET"
+HREF="sql-pgpool-set.html"><LINK
+REL="NEXT"
+TITLE="PGPOOL RESET"
+HREF="sql-pgpool-reset.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="PGPOOL SET"
+HREF="sql-pgpool-set.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="PGPOOL RESET"
+HREF="sql-pgpool-reset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="SQL-PGPOOL-SET-CACHE"
+></A
+>PGPOOL SET CACHE</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN11240"
+></A
+><H2
+>Name</H2
+>PGPOOL SET CACHE&nbsp;--&nbsp;delete query cache</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN11243"
+></A
+><H2
+>Synopsis</H2
+><PRE
+CLASS="SYNOPSIS"
+>   PGPOOL SET CACHE DELETE <TT
+CLASS="REPLACEABLE"
+><I
+>'query'</I
+></TT
+>
+  </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN11246"
+></A
+><H2
+>Description</H2
+><P
+>   The <TT
+CLASS="COMMAND"
+>PGPOOL SET CACHE DELETE</TT
+> command deletes the
+   <A
+HREF="runtime-in-memory-query-cache.html"
+>query cache</A
+>
+   previously created by the query. The query string must be exactly
+   identical to the previous query, including
+   trailing <TT
+CLASS="LITERAL"
+>';'</TT
+>. Nevertheless if the query
+   includes <TT
+CLASS="LITERAL"
+>'</TT
+> (single quore), it needs to be
+   prefixed by <TT
+CLASS="LITERAL"
+>'</TT
+> like:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>PGPOOL SET CACHE DELETE 'SELECT ''FOO'';';
+   </PRE
+><P>
+   This command is particularly useful for queries that are not
+   invalidated by
+   the <A
+HREF="runtime-in-memory-query-cache.html#GUC-MEMQCACHE-AUTO-CACHE-INVALIDATION"
+>auto
+   cache invalidation feature</A
+> because the query does not have
+   any reference to tables.
+  </P
+><P
+>   If you do not remember the previous query, you can
+   use <A
+HREF="pcp-invalidate-query-cache.html"
+>pcp_invalidate_query_cache</A
+> to delete all the
+   query cache including the cache you want to delete. However it
+   requires the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> admin privilege.
+  </P
+><P
+>   Upon successful deletion of the query cache, this command emits a
+   notice message:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>NOTICE:  query cache deleted. query: "<TT
+CLASS="LITERAL"
+>query string</TT
+>"
+   </PRE
+><P>
+   If the cache does not exist or query cache is not enabled, it emits
+   a notice message:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>NOTICE:  query cache does not exist for query: "<TT
+CLASS="LITERAL"
+>query string</TT
+>"
+   </PRE
+><P>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN11264"
+></A
+><H2
+>Examples</H2
+><P
+>   Accidentally created an unwanted query cache. Delete it by using
+   the command.
+    </P><PRE
+CLASS="PROGRAMLISTING"
+>test=# /*FORCE QUERY CACHE*/SELECT current_timestamp;
+       current_timestamp       
+-------------------------------
+ 2024-10-18 18:25:07.826423+09
+(1 row)
+
+test=# PGPOOL SET CACHE DELETE '/*FORCE QUERY CACHE*/SELECT current_timestamp;';
+NOTICE:  query cache deleted. query: "/*FORCE QUERY CACHE*/SELECT current_timestamp;"
+SET
+    </PRE
+><P>
+  </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN11268"
+></A
+><H2
+>See Also</H2
+><A
+HREF="pcp-invalidate-query-cache.html"
+>pcp_invalidate_query_cache</A
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-pgpool-set.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sql-pgpool-reset.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>PGPOOL SET</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>PGPOOL RESET</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

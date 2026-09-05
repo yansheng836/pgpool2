@@ -1,0 +1,570 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Installation from RPM</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation of Pgpool-II"
+HREF="installation.html"><LINK
+REL="PREVIOUS"
+TITLE="Compiling and installing documents"
+HREF="install-docs.html"><LINK
+REL="NEXT"
+TITLE="Tips for Installation"
+HREF="installation-tips.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Compiling and installing documents"
+HREF="install-docs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. Installation of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Tips for Installation"
+HREF="installation-tips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="INSTALL-RPM"
+>2.10. Installation from RPM</A
+></H1
+><P
+>  This chapter describes the installation of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> from RPM.
+  If you are going to install from the source code, please check <A
+HREF="install-source.html"
+>Section 2.2</A
+>.
+ </P
+><P
+>  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> community provides RPM packages for RHEL10/9/8
+  and the operating system which is compatible with RHEL.
+  You can download package files from
+  <A
+HREF="https://www.pgpool.net/yum/"
+TARGET="_top"
+>official Pgpool-II repository</A
+>.
+ </P
+><P
+>   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> official repository contains the following packages:
+ </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="RPM-PACKAGES"
+></A
+><P
+><B
+>Table 2-1. Pgpool-II RPM Packages</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Package</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>pgpool-II-pgXX</TD
+><TD
+>Libraries and binaries required to run Pgpool-II</TD
+></TR
+><TR
+><TD
+>pgpool-II-pgXX-extensions</TD
+><TD
+>This package must be installed on all PostgreSQL servers to use online recovery functionality</TD
+></TR
+><TR
+><TD
+>pgpool-II-pgXX-debuginfo</TD
+><TD
+>Debug symbols for debugging</TD
+></TR
+><TR
+><TD
+>pgpool-II-pgXX-debugsource</TD
+><TD
+>Only for RHEL10/9/8. Debug symbols for debugging</TD
+></TR
+><TR
+><TD
+>pgpool-II-pgXX-extensions-debuginfo</TD
+><TD
+>Only for RHEL10/9/8. Debug symbols for debugging</TD
+></TR
+><TR
+><TD
+>pgpool-II-pgXX-devel</TD
+><TD
+>Header files for developers</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> needs <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>'s
+  library and extensions directory. Since the directory paths are different in
+  the particular <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> versions,
+  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> provides separate packages for each PostgreSQL version.
+  "XX" in the above package is a two-digit number representing the version of PostgreSQL.
+  Choose <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> RPM corresponding to your PostgreSQL version.
+  (For example, if you are using PostgreSQL 18, you need to install <TT
+CLASS="FILENAME"
+>pgpool-II-pg18</TT
+>)
+ </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="BEFORE-INSTALLING"
+>2.10.1. Before Installing</A
+></H2
+><P
+>   Since <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> related packages are also included in
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> YUM repository,
+   if PostgreSQL repository package is already installed,
+   add the "exclude" settings to <TT
+CLASS="FILENAME"
+>/etc/yum.repos.d/pgdg-redhat-all.repo</TT
+>,
+   so that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will not be installed from
+   <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> YUM repository.
+   If <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+   are installed on separate servers, you can skip this section.
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>vi /etc/yum.repos.d/pgdg-redhat-all.repo
+  </PRE
+><P
+>   The following is a setting example of <TT
+CLASS="FILENAME"
+>/etc/yum.repos.d/pgdg-redhat-all.repo</TT
+>.
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>[pgdg-common]
+...
+exclude=pgpool*
+
+[pgdg18]
+...
+exclude=pgpool*
+
+[pgdg17]
+...
+exclude=pgpool*
+
+[pgdg16]
+...
+exclude=pgpool*
+
+[pgdg15]
+...
+exclude=pgpool*
+
+[pgdg14]
+...
+exclude=pgpool*
+
+[pgdg13]
+...
+exclude=pgpool*
+  </PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="INSTALLING-RPM"
+>2.10.2. Installing RPM</A
+></H2
+><P
+>   Here we install <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> using
+   <A
+HREF="https://www.pgpool.net/yum/"
+TARGET="_top"
+>Pgpool-II official YUM repository</A
+>.
+  </P
+><P
+>   The following commands assume that you are using Pgpool-II 4.6.x for PostgreSQL 18 on RHEL10.
+   If you are using other versions, replace "pgXX" with your PostgreSQL version.
+  </P
+><P
+>   First, install the repository corresponding to your <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+   version and distribution.
+   For REHL9/8, see <A
+HREF="https://www.pgpool.net/download/yum/"
+TARGET="_top"
+>here</A
+>.
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>dnf install https://www.pgpool.net/yum/rpms/4.6/redhat/rhel-10-x86_64/pgpool-II-release-4.6-1.noarch.rpm
+  </PRE
+><P
+>   Then, install <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>dnf install pgpool-II-pg18
+  </PRE
+><P
+>   To use online recovery feature, install <TT
+CLASS="FILENAME"
+>pgpool-II-pg18-extensions</TT
+>
+   on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>all PostgreSQL servers</I
+></SPAN
+>.
+   Because <TT
+CLASS="FILENAME"
+>pgpool-II-pgXX-extensions</TT
+> depends on
+   <TT
+CLASS="FILENAME"
+>pgpool-II-pgXX</TT
+> package,
+   if <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+   are installed on separate servers, <TT
+CLASS="FILENAME"
+>pgpool-II-pgXX</TT
+> also need to be installed
+   on PostgreSQL servers.
+  </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    <TT
+CLASS="FILENAME"
+>pgpool-II-pgXX-extensions</TT
+> needs to be installed
+    <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>on the PostgreSQL servers</I
+></SPAN
+>.
+    If <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+    are installed on separate servers,
+    it is not required to install it on the servers where <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> are running.
+   </P
+></BLOCKQUOTE
+></DIV
+><PRE
+CLASS="PROGRAMLISTING"
+>dnf install pgpool-II-pg18-extensions pgpool-II-pg18
+  </PRE
+><P
+>   Optionally you can install debuginfo and devel packages for developers if necessary.
+  </P
+><PRE
+CLASS="PROGRAMLISTING"
+>dnf install pgpool-II-pg18-debuginfo pgpool-II-pg18-devel
+  </PRE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIGURE-RPM"
+>2.10.3. Configuration Pgpool-II</A
+></H2
+><P
+>   All the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configuration files
+   are installed in <TT
+CLASS="FILENAME"
+>/etc/pgpool-II</TT
+>. Please refer
+   to <A
+HREF="configuring-pgpool.html"
+>Section 3.4</A
+> to see how to set up
+    configuration files.
+  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="START-RPM"
+>2.10.4. Starting/stopping Pgpool-II</A
+></H2
+><P
+>   On RHEL10/9/8, do this once, if set the automatic startup of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>.
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>systemctl enable pgpool.service
+   </PRE
+><P>
+
+   After this, to start <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>,
+   run the following command or restart the whole system.
+   Please note that PostgreSQL servers must have been started before this. 
+
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>systemctl start pgpool.service 
+   </PRE
+><P>
+
+   To stop <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>, do this once.
+   Please note that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> must be stopped
+   before stopping <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>systemctl stop pgpool.service 
+   </PRE
+><P>
+
+   After this, you can stop <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>
+   servers.
+  </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install-docs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="installation-tips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Compiling and installing documents</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tips for Installation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Authentication Methods</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Client Authentication"
+HREF="client-authentication.html"><LINK
+REL="PREVIOUS"
+TITLE="The pool_hba.conf File"
+HREF="auth-pool-hba-conf.html"><LINK
+REL="NEXT"
+TITLE="Using different methods for frontend and backend authentication"
+HREF="auth-different-auth-method.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="The pool_hba.conf File"
+HREF="auth-pool-hba-conf.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="client-authentication.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 6. Client Authentication</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Using different methods for frontend and backend authentication"
+HREF="auth-different-auth-method.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AUTH-METHODS"
+>6.2. Authentication Methods</A
+></H1
+><P
+>   The following subsections describe the authentication methods
+   specified by <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> in more detail.
+  </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-TRUST"
+>6.2.1. Trust Authentication</A
+></H2
+><P
+>    When <TT
+CLASS="LITERAL"
+>trust</TT
+> authentication is specified,
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> assumes that anyone who can
+    connect to the server is authorized to access connect with
+    whatever database user name they specify.
+   </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-PASSWORD"
+>6.2.2. Clear Text Password Authentication</A
+></H2
+><P
+>    The method <TT
+CLASS="LITERAL"
+>password</TT
+> sends the password in
+    clear-text and is therefore vulnerable to password
+    <SPAN
+CLASS="QUOTE"
+>"sniffing"</SPAN
+> attacks. It should always be avoided if
+    possible. If the connection is protected by SSL encryption then
+    <TT
+CLASS="LITERAL"
+>password</TT
+> can be used safely, though. For this
+    sake, it is recommended to use <TT
+CLASS="LITERAL"
+>hostssl</TT
+> in
+    <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> so that clients are enforced to
+    use SSL encryption.
+   </P
+><P
+>    A benefit to use the method is, the password for authentication is
+    provided by client side and <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> is
+    not consulted. So you can avoid maintaining
+    <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> file.
+   </P
+><P
+>    You can avoid maintaining <TT
+CLASS="FILENAME"
+>pool_passwd</TT
+> by
+    using <A
+HREF="runtime-config-connection.html#GUC-ALLOW-CLEAR-TEXT-FRONTEND-AUTH"
+>allow_clear_text_frontend_auth</A
+> as well
+    but it does not enforce to use SSL encryption because
+    <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> cannot be used with the
+    parameter.
+   </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-MD5"
+>6.2.3. MD5 Password Authentication</A
+></H2
+><P
+>    This authentication method is the password-based authentication
+    methods in which MD-5-hashed password is sent by client.
+    Since <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> does not has the
+    visibility of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>'s database
+    user password and client application only sends the MD5-hash of
+    the password, so <TT
+CLASS="LITERAL"
+>md5</TT
+> authentication
+    in <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is supported using the
+    <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file.
+   </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="MD5-AUTHENTICATION-FILE-FORMAT"
+>6.2.3.1. Authentication file format</A
+></H3
+><P
+>     To use the <TT
+CLASS="LITERAL"
+>md5</TT
+> authentication
+     <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file must contain
+      the user password in either plain text, <TT
+CLASS="LITERAL"
+>AES</TT
+>
+      or <TT
+CLASS="LITERAL"
+>md5</TT
+> encrypted format.
+    </P
+><P
+>     The <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> file should contain lines in the following format:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       "username:TEXT_plain_text_passwd"
+      </PRE
+><P>
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       "username:AES_encrypted_passwd"
+      </PRE
+><P>
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       "username:md5_encrypted_passwd"
+      </PRE
+><P>
+      (Actually "_" after "TEXT", "AES" or "md5" does not exist.)
+    </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SETTING-MD5-AUTHENTICATION"
+>6.2.3.2. Setting md5 Authentication</A
+></H3
+><P
+>     here are the steps to enable <TT
+CLASS="LITERAL"
+>md5</TT
+>
+     authentication:
+    </P
+><P
+>     1- Login as the database's operating system user and type
+     <TT
+CLASS="COMMAND"
+>"pg_md5 --config-file=path_to_pgpool.conf --md5auth --username=username password"</TT
+> user name
+     and <TT
+CLASS="LITERAL"
+>md5</TT
+> encrypted password are registered
+     into <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+>.  If pool_passwd does not exist yet, pg_md5
+      command will automatically create it for you.
+      </P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>	user name and password must be identical to those registered
+	in <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server.
+       </P
+></BLOCKQUOTE
+></DIV
+><P>
+    </P
+><P
+>     2- Add an appropriate md5 entry to <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+>.
+     See <A
+HREF="auth-pool-hba-conf.html"
+>Section 6.1</A
+> for more details.
+     If <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> is not enabled, make sure
+     that md5 authentication is specified
+     in <TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+>
+     of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+    </P
+><P
+>     3- After changing md5 password (in both pool_passwd
+     and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> of course), reload
+     the pgpool configurations.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-SCRAM"
+>6.2.4. scram-sha-256 Authentication</A
+></H2
+><P
+>    This authentication method also known as SCRAM is a
+    challenge-response based authentication that prevents the
+    password sniffing on untrusted connections.
+    Since <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> does not has the
+    visibility of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>'s database user
+    password, so <TT
+CLASS="LITERAL"
+>SCRAM</TT
+> authentication is supported using the
+    <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file.
+   </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SCRAM-AUTHENTICATION-FILE-FORMAT"
+>6.2.4.1. Authentication file entry for SCRAM</A
+></H3
+><P
+>     To use the <TT
+CLASS="LITERAL"
+>SCRAM</TT
+> authentication
+     <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> authentication file
+      must contain the user password in either plain text
+      or <TT
+CLASS="LITERAL"
+>AES</TT
+> encrypted format.
+
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       "username:TEXT_plain_text_passwd"
+      </PRE
+><P>
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>       "username:AES_encrypted_passwd"
+      </PRE
+><P>
+      (Actually "_" after "TEXT" or "AES" does not exist.)
+      </P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>	<TT
+CLASS="LITERAL"
+>md5</TT
+> type user passwords in
+	<A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> file can't be used for
+	 <TT
+CLASS="LITERAL"
+>scram</TT
+> authentication
+       </P
+></BLOCKQUOTE
+></DIV
+><P>
+    </P
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="SETTING-SCRAM-SHA-256-AUTHENTICATION"
+>6.2.4.2. Setting scram-sha-256 Authentication</A
+></H3
+><P
+>     Here are the steps to enable <TT
+CLASS="LITERAL"
+>scram-sha-256</TT
+>
+     authentication:
+    </P
+><P
+>     1- Create <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> file entry
+      for database user and password in plain text or <TT
+CLASS="LITERAL"
+>AES</TT
+>
+      encrypted format.
+      The <A
+HREF="pg-enc.html"
+>pg_enc</A
+> utility that comes with <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+       can be used to create the <TT
+CLASS="LITERAL"
+>AES</TT
+> encrypted password
+       entries in the <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+> file.
+	</P><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>	  User name and password must be identical to those registered
+	  in the <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server.
+	 </P
+></BLOCKQUOTE
+></DIV
+><P>
+    </P
+><P
+>     2- Add an appropriate scram-sha-256 entry to <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+>.
+     See <A
+HREF="auth-pool-hba-conf.html"
+>Section 6.1</A
+> for more details.
+     If <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> is not enabled, make sure that md5 authentication is specified in <TT
+CLASS="FILENAME"
+>pg_hba.conf</TT
+> of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.
+    </P
+><P
+>     3- After changing SCRAM password (in both pool_passwd
+     and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> of course), reload
+     the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configuration.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-CERT"
+>6.2.5. Certificate Authentication</A
+></H2
+><P
+>    This authentication method uses <TT
+CLASS="LITERAL"
+>SSL</TT
+> client certificates
+    to perform authentication. It is therefore only available for SSL connections.
+    When using this authentication method, the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    will require that the client provide a valid certificate.
+    No password prompt will be sent to the client.
+    The <TT
+CLASS="LITERAL"
+>cn</TT
+> (Common Name) attribute of the certificate will be
+    compared to the requested database user name, and if they match the login will
+    be allowed.
+   </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>     The certificate authentication works between only client and
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. The certificate
+     authentication does not work between
+     <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and
+     <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.  For backend
+     authentication you can use any other authentication method.
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-PAM"
+>6.2.6. PAM Authentication</A
+></H2
+><P
+>    This authentication method uses PAM (Pluggable
+    Authentication Modules) as the authentication mechanism. The
+    default PAM service name is <TT
+CLASS="LITERAL"
+>pgpool</TT
+>.
+    PAM authentication is supported using user information on
+    the host where <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> is executed.
+    For more
+    information about PAM, please read the
+    <A
+HREF="http://www.kernel.org/pub/linux/libs/pam/"
+TARGET="_top"
+>     <SPAN
+CLASS="PRODUCTNAME"
+>Linux-PAM</SPAN
+> Page</A
+>.
+   </P
+><P
+>    To enable PAM authentication, you need to create a service-configuration
+    file named for <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> in the system's
+    PAM configuration directory (which is usually at <TT
+CLASS="LITERAL"
+>"/etc/pam.d"</TT
+>).
+   </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>     To enable PAM support the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     must be configured with <TT
+CLASS="COMMAND"
+>"--with-pam"</TT
+>
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-LDAP"
+>6.2.7. LDAP Authentication</A
+></H2
+><P
+>    This authentication method uses LDAP as the password certification method.
+    LDAP is used only to validate the user name/password pairs. Therefore the user must
+    already exist in the database before LDAP can be used for authentication.
+   </P
+><P
+>    LDAP authentication can operate in two modes. In the first mode, which we
+    will call the simple bind mode, the server will bind to the distinguished
+    name constructed as
+    <TT
+CLASS="REPLACEABLE"
+><I
+>prefix</I
+></TT
+> <TT
+CLASS="REPLACEABLE"
+><I
+>username</I
+></TT
+> <TT
+CLASS="REPLACEABLE"
+><I
+>suffix</I
+></TT
+>.
+    Typically, the <TT
+CLASS="REPLACEABLE"
+><I
+>prefix</I
+></TT
+> parameter is used to specify
+    <TT
+CLASS="LITERAL"
+>cn=</TT
+>, or <TT
+CLASS="REPLACEABLE"
+><I
+>DOMAIN</I
+></TT
+><TT
+CLASS="LITERAL"
+>\</TT
+>
+    in an Active Directory environment.  <TT
+CLASS="REPLACEABLE"
+><I
+>suffix</I
+></TT
+> is used
+    to specify the remaining part of the DN in a non-Active Directory environment.
+   </P
+><P
+>    In the second mode, which we will call the search+bind mode, the server first
+    binds to the LDAP directory with a fixed user name and password, specified
+    with <TT
+CLASS="REPLACEABLE"
+><I
+>ldapbinddn</I
+></TT
+> and <TT
+CLASS="REPLACEABLE"
+><I
+>ldapbindpasswd</I
+></TT
+>,
+    and performs a search for the user trying to log in to the database. If no
+    user and password is configured, an anonymous bind will be attempted to the
+    directory. The search will be performed over the subtree at
+    <TT
+CLASS="REPLACEABLE"
+><I
+>ldapbasedn</I
+></TT
+>, and will try to do an exact match of
+    the attribute specified in <TT
+CLASS="REPLACEABLE"
+><I
+>ldapsearchattribute</I
+></TT
+>.
+    Once the user has been found in this search, the server disconnects and
+    re-binds to the directory as this user, using the password specified by the
+    client, to verify that the login is correct. This mode is the same as that
+    used by LDAP authentication schemes in other software, such as Apache
+    <TT
+CLASS="LITERAL"
+>mod_authnz_ldap</TT
+> and <TT
+CLASS="LITERAL"
+>pam_ldap</TT
+>. This
+    method allows for significantly more flexibility in where the user objects
+    are located in the directory, but will cause two separate connections to the
+    LDAP server to be made.
+   </P
+><P
+>    The following configuration options are used in both modes:
+    <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>ldapserver</TT
+></DT
+><DD
+><P
+>        Names or IP addresses of LDAP servers to connect to. Multiple servers
+        may be specified, separated by spaces.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapport</TT
+></DT
+><DD
+><P
+>        Port number on LDAP server to connect to. If no port is specified, the
+        LDAP library's default port setting will be used.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapscheme</TT
+></DT
+><DD
+><P
+>        Set to <TT
+CLASS="LITERAL"
+>ldaps</TT
+> to use LDAPS.  This is a non-standard
+        way of using LDAP over SSL, supported by some LDAP server implementations.
+        See also the <TT
+CLASS="LITERAL"
+>ldaptls</TT
+> option for an alternative.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldaptls</TT
+></DT
+><DD
+><P
+>        Set to 1 to make the connection between Pgpool-II and the LDAP server
+        use TLS encryption. This uses the <TT
+CLASS="LITERAL"
+>StartTLS</TT
+> operation
+        per RFC 4513. See also the <TT
+CLASS="LITERAL"
+>ldapscheme</TT
+> option for an alternative.
+       </P
+></DD
+></DL
+></DIV
+><P>
+   </P
+><P
+>    Note that using <TT
+CLASS="LITERAL"
+>ldapscheme</TT
+> or
+    <TT
+CLASS="LITERAL"
+>ldaptls</TT
+> only encrypts the traffic between the
+    Pgpool-II server and the LDAP server.  The connection between the
+    Pgpool-II server and the client will still be unencrypted
+    unless SSL is used there as well.
+   </P
+><P
+>    The following options are used in simple bind mode only:
+    <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>ldapprefix</TT
+></DT
+><DD
+><P
+>        String to prepend to the user name when forming the DN to bind as,
+        when doing simple bind authentication.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapsuffix</TT
+></DT
+><DD
+><P
+>        String to append to the user name when forming the DN to bind as,
+        when doing simple bind authentication.
+       </P
+></DD
+></DL
+></DIV
+><P>
+   </P
+><P
+>    The following options are used in search+bind mode only:
+    <P
+></P
+></P><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><TT
+CLASS="LITERAL"
+>ldapbasedn</TT
+></DT
+><DD
+><P
+>        Root DN to begin the search for the user in, when doing search+bind
+        authentication.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapbinddn</TT
+></DT
+><DD
+><P
+>        DN of user to bind to the directory with to perform the search when
+        doing search+bind authentication.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapbindpasswd</TT
+></DT
+><DD
+><P
+>        Password for user to bind to the directory with to perform the search
+        when doing search+bind authentication.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapsearchattribute</TT
+></DT
+><DD
+><P
+>        Attribute to match against the user name in the search when doing
+        search+bind authentication. If no attribute is specified, the
+        <TT
+CLASS="LITERAL"
+>uid</TT
+> attribute will be used.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapsearchfilter</TT
+></DT
+><DD
+><P
+>        The search filter to use when doing search+bind authentication.
+        Occurrences of <TT
+CLASS="LITERAL"
+>$username</TT
+> will be replaced with the
+        user name.  This allows for more flexible search filters than
+        <TT
+CLASS="LITERAL"
+>ldapsearchattribute</TT
+>.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>ldapurl</TT
+></DT
+><DD
+><P
+>        An RFC 4516 LDAP URL.  This is an alternative way to write some of the
+        other LDAP options in a more compact and standard form.  The format is
+</P><PRE
+CLASS="SYNOPSIS"
+>ldap[s]://<TT
+CLASS="REPLACEABLE"
+><I
+>host</I
+></TT
+>[:<TT
+CLASS="REPLACEABLE"
+><I
+>port</I
+></TT
+>]/<TT
+CLASS="REPLACEABLE"
+><I
+>basedn</I
+></TT
+>[?[<TT
+CLASS="REPLACEABLE"
+><I
+>attribute</I
+></TT
+>][?[<TT
+CLASS="REPLACEABLE"
+><I
+>scope</I
+></TT
+>][?[<TT
+CLASS="REPLACEABLE"
+><I
+>filter</I
+></TT
+>]]]]</PRE
+><P>
+        <TT
+CLASS="REPLACEABLE"
+><I
+>scope</I
+></TT
+> must be one of <TT
+CLASS="LITERAL"
+>base</TT
+>,
+        <TT
+CLASS="LITERAL"
+>one</TT
+>, <TT
+CLASS="LITERAL"
+>sub</TT
+>, typically the last.
+        (The default is <TT
+CLASS="LITERAL"
+>base</TT
+>, which is normally not useful
+        in this application.) <TT
+CLASS="REPLACEABLE"
+><I
+>attribute</I
+></TT
+> can nominate
+        a single attribute, in which case it is used as a value for <TT
+CLASS="LITERAL"
+>ldapsearchattribute</TT
+>.
+        If <TT
+CLASS="REPLACEABLE"
+><I
+>attribute</I
+></TT
+> is empty then <TT
+CLASS="REPLACEABLE"
+><I
+>filter</I
+></TT
+>
+        can be used as a value for <TT
+CLASS="LITERAL"
+>ldapsearchfilter</TT
+>.
+       </P
+><P
+>        The URL scheme <TT
+CLASS="LITERAL"
+>ldaps</TT
+> chooses the LDAPS method for
+        making LDAP connections over SSL, equivalent to using <TT
+CLASS="LITERAL"
+>ldapscheme=ldaps</TT
+>.
+        To use encrypted LDAP connections using the <TT
+CLASS="LITERAL"
+>StartTLS</TT
+>
+        operation, use the normal URL scheme <TT
+CLASS="LITERAL"
+>ldap</TT
+> and specify the
+        <TT
+CLASS="LITERAL"
+>ldaptls</TT
+> option in addition to <TT
+CLASS="LITERAL"
+>ldapurl</TT
+>.
+       </P
+><P
+>        For non-anonymous binds, <TT
+CLASS="LITERAL"
+>ldapbinddn</TT
+> and
+        <TT
+CLASS="LITERAL"
+>ldapbindpasswd</TT
+> must be specified as separate options.
+       </P
+></DD
+><DT
+><TT
+CLASS="LITERAL"
+>backend_use_passwd</TT
+></DT
+><DD
+><P
+>        Set to 1 to make the password used for LDAP authentication use authentication
+        between <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> and backend.
+       </P
+></DD
+></DL
+></DIV
+><P>
+   </P
+><P
+>    It is an error to mix configuration options for simple bind with options
+    for search+bind.
+   </P
+><P
+>    When using search+bind mode, the search can be performed using a single
+    attribute specified with <TT
+CLASS="LITERAL"
+>ldapsearchattribute</TT
+>, or using
+    a custom search filter specified with
+    <TT
+CLASS="LITERAL"
+>ldapsearchfilter</TT
+>.
+    Specifying <TT
+CLASS="LITERAL"
+>ldapsearchattribute=foo</TT
+> is equivalent to
+    specifying <TT
+CLASS="LITERAL"
+>ldapsearchfilter="(foo=$username)"</TT
+>.  If neither
+    option is specified the default is
+    <TT
+CLASS="LITERAL"
+>ldapsearchattribute=uid</TT
+>.
+   </P
+><P
+>     If <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> was compiled with
+     <SPAN
+CLASS="PRODUCTNAME"
+>OpenLDAP</SPAN
+> as the LDAP client library, the
+     <TT
+CLASS="LITERAL"
+>ldapserver</TT
+> setting may be omitted.  In that case, a
+     list of host names and ports is looked up via RFC 2782 DNS SRV records.
+     The name <TT
+CLASS="LITERAL"
+>_ldap._tcp.DOMAIN</TT
+> is looked up, where
+     <TT
+CLASS="LITERAL"
+>DOMAIN</TT
+> is extracted from <TT
+CLASS="LITERAL"
+>ldapbasedn</TT
+>.
+   </P
+><P
+>    Here is an example for a simple-bind LDAP configuration:
+</P><PRE
+CLASS="PROGRAMLISTING"
+>host ... ldap ldapserver=ldap.example.net ldapprefix="cn=" ldapsuffix=", dc=example, dc=net"</PRE
+><P>
+    When a connection to the database server as database
+    user <TT
+CLASS="LITERAL"
+>foo</TT
+> is requested, Pgpool-II will attempt to
+    bind to the LDAP server using the DN <TT
+CLASS="LITERAL"
+>cn=foo, dc=example,
+    dc=net</TT
+> and the password provided by the client.  If that connection
+    succeeds, the database access is granted.
+   </P
+><P
+>    Here is an example for a search+bind configuration:
+</P><PRE
+CLASS="PROGRAMLISTING"
+>host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapsearchattribute=uid</PRE
+><P>
+    When a connection to the database server as database
+    user <TT
+CLASS="LITERAL"
+>foo</TT
+> is requested, Pgpool-II will attempt to
+    bind anonymously (since <TT
+CLASS="LITERAL"
+>ldapbinddn</TT
+> was not specified) to
+    the LDAP server, perform a search for <TT
+CLASS="LITERAL"
+>(uid=foo)</TT
+>
+    under the specified base DN.  If an entry is found, it will then attempt to
+    bind using that found information and the password supplied by the client.
+    If that second connection succeeds, the database access is granted.
+   </P
+><P
+>    Here is the same search+bind configuration written as a URL:
+</P><PRE
+CLASS="PROGRAMLISTING"
+>host ... ldap ldapurl="ldap://ldap.example.net/dc=example,dc=net?uid?sub"</PRE
+><P>
+    Some other software that supports authentication against LDAP uses the
+    same URL format, so it will be easier to share the configuration.
+   </P
+><P
+>    Here is an example for a search+bind configuration that uses
+    <TT
+CLASS="LITERAL"
+>ldapsearchfilter</TT
+> instead of
+    <TT
+CLASS="LITERAL"
+>ldapsearchattribute</TT
+> to allow authentication by
+    user ID or email address:
+</P><PRE
+CLASS="PROGRAMLISTING"
+>host ... ldap ldapserver=ldap.example.net ldapbasedn="dc=example, dc=net" ldapsearchfilter="(|(uid=$username)(mail=$username))"</PRE
+><P>
+   </P
+><P
+>    Here is an example for a search+bind configuration that uses DNS SRV
+    discovery to find the host name(s) and port(s) for the LDAP service for the
+    domain name <TT
+CLASS="LITERAL"
+>example.net</TT
+>:
+</P><PRE
+CLASS="PROGRAMLISTING"
+>host ... ldap ldapbasedn="dc=example,dc=net"</PRE
+><P>
+   </P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>     Since LDAP often uses commas and spaces to separate the different
+     parts of a DN, it is often necessary to use double-quoted parameter
+     values when configuring LDAP options, as shown in the examples.
+    </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>     To enable LDAP support the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+     must be configured with <TT
+CLASS="COMMAND"
+>"--with-ldap"</TT
+>
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AUTH-GSSAPI"
+>6.2.8. GSSAPI Authentication</A
+></H2
+><P
+>    GSSAPI is an industry-standard protocol for secure authentication
+    defined in RFC 2743.  Currently
+    <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> does not support GSSAPI.
+    Clients should not use GSSAPI authentication, or should use
+    "prefer GSSAPI authentication if possible" option (this is the
+    default setting of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> clients).
+    If latter is chosen, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> requests
+    non-GSSAPI authentication to client, and the clients will fall
+    back to non-GSSAPI authentication method. Thus, usually users do
+    not need to worry about that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+    does not accept GSSAPI authentication.
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="auth-pool-hba-conf.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="auth-different-auth-method.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The <TT
+CLASS="FILENAME"
+>pool_hba.conf</TT
+> File</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="client-authentication.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using different methods for frontend and backend authentication</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

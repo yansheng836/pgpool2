@@ -1,0 +1,666 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Backend Settings</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Configuration"
+HREF="runtime-config.html"><LINK
+REL="PREVIOUS"
+TITLE="Clustering mode"
+HREF="runtime-config-running-mode.html"><LINK
+REL="NEXT"
+TITLE="Connection Pooling"
+HREF="runtime-config-connection-pooling.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Clustering mode"
+HREF="runtime-config-running-mode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Server Configuration</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Connection Pooling"
+HREF="runtime-config-connection-pooling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RUNTIME-CONFIG-BACKEND-SETTINGS"
+>5.5. Backend Settings</A
+></H1
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-BACKEND-CONNECTION-SETTINGS"
+>5.5.1. Backend Connection Settings</A
+></H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-BACKEND-HOSTNAME"
+></A
+><TT
+CLASS="VARNAME"
+>backend_hostname</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      <TT
+CLASS="VARNAME"
+>backend_hostname</TT
+> specifies the
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> backend to be
+      connected to.  It is used
+      by <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> to communicate
+      with the server.
+     </P
+><P
+>      For TCP/IP communication, this parameter can take a
+      hostname or an IP address. If this begins with a
+      slash(<TT
+CLASS="LITERAL"
+>/</TT
+>), it specifies Unix-domain
+      communication rather than TCP/IP; the value is the name of
+      the directory in which the socket file is stored. The
+      default behavior when backend_hostname is empty
+      (<TT
+CLASS="LITERAL"
+>''</TT
+>) is to connect to a Unix-domain
+      socket in <TT
+CLASS="FILENAME"
+>/tmp</TT
+>.
+     </P
+><P
+>      Multiple backends can be specified by adding a number at the
+      end of the parameter name (e.g.backend_hostname0). This
+      number is referred to as "DB node ID", and it starts from
+      0. The backend which was given the DB node ID of 0 will be
+      called "main node". When multiple backends are defined, the
+      service can be continued even if the main node is down (not
+      true in some modes). In this case, the youngest DB node ID
+      alive will be the new main node.
+     </P
+><P
+>      Please note that the DB node which has id 0 has no special
+      meaning if operated in streaming replication mode. Rather,
+      you should care about if the DB node is the "primary node" or
+      not. See <A
+HREF="runtime-config-load-balancing.html"
+>Section 5.8</A
+>,
+       <A
+HREF="runtime-config-failover.html"
+>Section 5.10</A
+>,
+	<A
+HREF="runtime-streaming-replication-check.html"
+>Section 5.12</A
+>
+	 for more details.
+     </P
+><P
+>      In a replication configuration, the <TT
+CLASS="LITERAL"
+>host</TT
+> specified in
+      <TT
+CLASS="LITERAL"
+>primary_conninfo</TT
+> on the standby side must match the value of
+      <TT
+CLASS="VARNAME"
+>backend_hostname</TT
+> that <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> uses
+      to identify the primary node.
+      For example, if the primary node is backend0 (with hostname <TT
+CLASS="LITERAL"
+>host0</TT
+>)
+      and the standby node is backend1 with <TT
+CLASS="VARNAME"
+>backend_application_name</TT
+>
+      set to <TT
+CLASS="LITERAL"
+>server1</TT
+>, then the <TT
+CLASS="FILENAME"
+>postgresql.conf</TT
+>
+      on backend1 should be configured as follows:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>primary_conninfo = 'host=host0 port=5432 user=postgres application_name=''server1'''
+      </PRE
+><P>
+      In this case, <TT
+CLASS="VARNAME"
+>backend_hostname</TT
+> corresponding to backend0
+      should also be set to <TT
+CLASS="LITERAL"
+>host0</TT
+>.
+      If these values do not match, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> may fail to
+      identify the primary node correctly, and features such as streaming replication
+      checks may not work as expected.
+     </P
+><P
+>      If you plan to use only
+      one <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server, specify
+      it by backend_hostname0.
+     </P
+><P
+>      New nodes can be added by adding parameter rows and
+      reloading a configuration file. However, the existing
+      values cannot be updated, so you must
+      restart <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> in that case.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-BACKEND-PORT"
+></A
+><TT
+CLASS="VARNAME"
+>backend_port</TT
+> (<TT
+CLASS="TYPE"
+>integer</TT
+>)
+     </DT
+><DD
+><P
+>      <TT
+CLASS="VARNAME"
+>backend_port</TT
+> specifies the port number
+      of the backends. Multiple backends can be specified by
+      adding a number at the end of the parameter name
+      (e.g. backend_port0). If you plan to use only one
+      <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> server, specify it by backend_port0.
+     </P
+><P
+>      New backend ports can be added by adding parameter rows
+      and reloading a configuration file. However, the existing
+      values cannot be updated, so you must
+      restart <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> in that case.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-BACKEND-WEIGHT"
+></A
+><TT
+CLASS="VARNAME"
+>backend_weight</TT
+> (<TT
+CLASS="TYPE"
+>floating point</TT
+>)
+     </DT
+><DD
+><P
+>      <TT
+CLASS="VARNAME"
+>backend_weight</TT
+> specifies the load balance
+      ratio of the backends. It may be set to any integer or
+      floating point value greater than or equal to zero.
+      Multiple backends can be specified by
+      adding a number at the end of the parameter name
+      (e.g. backend_weight0). If you plan to use only one
+      PostgreSQL server, specify it by backend_weight0.
+     </P
+><P
+>      New <TT
+CLASS="VARNAME"
+>backend_weight</TT
+> can be added in this parameter by
+      reloading a configuration file. However, this will take
+      effect only for new established client sessions.
+      <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V2.2.6</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>V2.3</I
+></SPAN
+>
+      or later allows updating the values by reloading a
+      configuration file.  This is useful if you want to prevent
+      any query sent to standbys to perform some administrative
+      work in streaming replication mode, logical replication mode and slony mode.
+     </P
+></DD
+></DL
+></DIV
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="RUNTIME-CONFIG-BACKEND-DATA"
+>5.5.2. Backend Data Settings</A
+></H2
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+><A
+NAME="GUC-BACKEND-DATA-DIRECTORY"
+></A
+><TT
+CLASS="VARNAME"
+>backend_data_directory</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      <TT
+CLASS="VARNAME"
+>backend_data_directory</TT
+> specifies the
+      database cluster directory of the backend. Multiple backends can be
+      specified by adding a number at the end of the parameter
+      name (e.g. backend_data_directory0). If you plan to use
+      only one PostgreSQL server, specify it by
+      backend_data_directory0. This parameter is used by online recovery.
+      If you do not use online recovery, you do not need to set it.
+     </P
+><P
+>      New <TT
+CLASS="VARNAME"
+>backend data_directory</TT
+> can be added by adding parameter rows and reloading a
+      configuration file. However, the existing values cannot be updated, so
+      you must restart <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> in
+      that case.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-BACKEND-FLAG"
+></A
+><TT
+CLASS="VARNAME"
+>backend_flag</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      <TT
+CLASS="VARNAME"
+>backend_flag</TT
+> controls various backend
+      behavior. Multiple backends can be specified by adding a
+      number at the end of the parameter name
+      (e.g. backend_flag0). If you plan to use only one
+      PostgreSQL server, specify it by backend_flag0.
+     </P
+><P
+>      New backend flags can be added by adding parameter rows and reloading a
+      configuration file. Currently followings are allowed. Multiple flags can
+      be specified by using "|".
+     </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="BACKEND-FLAG-TABLE"
+></A
+><P
+><B
+>Table 5-4. Backend flags</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Flag</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>ALLOW_TO_FAILOVER</TT
+></TD
+><TD
+>Allow to failover or detaching backend. This
+	  is the default. You cannot specify with
+	  DISALLOW_TO_FAILOVER at a same time.</TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>DISALLOW_TO_FAILOVER</TT
+></TD
+><TD
+>Disallow to failover or detaching backend
+	  This is useful when you protect backend by
+	  using HA (High Availability) softwares such as
+	  <SPAN
+CLASS="PRODUCTNAME"
+>Heartbeat</SPAN
+>
+	  or <SPAN
+CLASS="PRODUCTNAME"
+>Pacemaker</SPAN
+>. You cannot specify with
+	  ALLOW_TO_FAILOVER at a same time.
+	 </TD
+></TR
+><TR
+><TD
+><TT
+CLASS="LITERAL"
+>ALWAYS_PRIMARY</TT
+></TD
+><TD
+>This is only useful in streaming replication
+	  mode. See <A
+HREF="configuring-pgpool.html#RUNNING-MODE"
+>Section 3.4.2</A
+> about
+	   streaming replication mode.  If this flag is set to
+	   one of
+	   backends, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> will
+	   not find the primary node by inspecting
+	   backend. Instead, always regard the node which the
+	   flag is set as the primary node. This is useful for
+	   systems including <SPAN
+CLASS="PRODUCTNAME"
+>Amazon Aurora for
+	    PostgreSQL Compatibility</SPAN
+> which has
+	   fixed primary server name. See <A
+HREF="example-aurora.html"
+>Section 8.5</A
+>
+	    for an example settings.
+	 </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>      This parameter can be changed by reloading
+      the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+><DT
+><A
+NAME="GUC-BACKEND-APPLICATION-NAME"
+></A
+><TT
+CLASS="VARNAME"
+>backend_application_name</TT
+> (<TT
+CLASS="TYPE"
+>string</TT
+>)
+     </DT
+><DD
+><P
+>      <TT
+CLASS="VARNAME"
+>backend_application_name</TT
+> specifies the
+      application name of walreceiver, which receives WAL log
+      from primary node. Thus in other than streaming
+      replication mode, this parameter does not need to be set.
+      Also this parameter is required to if you want to show
+      "replication_state" and "replication_sync_state" column
+      in <A
+HREF="sql-show-pool-nodes.html"
+>SHOW POOL NODES</A
+> and <A
+HREF="pcp-node-info.html"
+>pcp_node_info</A
+> commands.
+      Moreover <A
+HREF="runtime-streaming-replication-check.html#GUC-DELAY-THRESHOLD-BY-TIME"
+>delay_threshold_by_time</A
+> requires
+      this parameter too.
+     </P
+><P
+>      For example, suppose the primary node is backend0 (its host name
+      is "host0"), the standby node in question is backend1 and the
+      backend_application_name for backend1 is "server1", then
+      <TT
+CLASS="LITERAL"
+>primary_conninfo</TT
+> parameter of
+      <TT
+CLASS="FILENAME"
+>postgresql.conf</TT
+> should look like:
+      </P><PRE
+CLASS="PROGRAMLISTING"
+>primary_conninfo = 'host=host0 port=5432 user=postgres application_name='server1''
+      </PRE
+><P>
+      The <A
+HREF="runtime-online-recovery.html#GUC-RECOVERY-1ST-STAGE-COMMAND"
+>recovery_1st_stage_command</A
+> should
+      generate the parameter. See <A
+HREF="example-cluster.html#EXAMPLE-CLUSTER-PGPOOL-CONFIG-ONLINE-RECOVERY"
+>Section 8.2.7.8</A
+> for a
+      complete example of the command.
+     </P
+><P
+>      This parameter can be changed by reloading
+      the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations.
+     </P
+></DD
+></DL
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="runtime-config-running-mode.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="runtime-config-connection-pooling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Clustering mode</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="runtime-config.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Connection Pooling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

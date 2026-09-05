@@ -1,0 +1,600 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.6.0</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.6.1"
+HREF="release-4-6-1.html"><LINK
+REL="NEXT"
+TITLE="Release 4.5.12"
+HREF="release-4-5-12.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.6.1"
+HREF="release-4-6-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.5.12"
+HREF="release-4-5-12.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-6-0"
+>A.11. Release 4.6.0</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2025-02-28</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13557"
+>A.11.1. Overview</A
+></H2
+><P
+>   This release adds convenient features for logging and
+   administration of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. Now you can
+   rotate log without restarting or sending a signal
+   to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> by using new PCP
+   command. <A
+HREF="runtime-config-logging.html#GUC-LOGGING-COLLECTOR"
+>logging_collector</A
+> related parameters
+   can be changed by reloading of the configuration file. Also new PC
+   commands are added to invalidate query cache without
+   restarting <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. Another features
+   for query cache are forcing to create a query cache entry and
+   removing particular query cache entry.  New configuration parameter
+   <A
+HREF="runtime-config-logging.html#GUC-LOG-BACKEND-MESSAGES"
+>log_backend_messages</A
+> allows to log messages
+   from backend for easier analysis of communication
+   between <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+   and <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>.  The SQL parser is
+   updated to sync with the latest <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL
+   17</SPAN
+> version as usual. Finally now you can use IPv6 for
+   watchdog's hostname and heartbeat_hostname parameter.
+  </P
+><P
+>   Major enhancements are as follows:
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     <A
+HREF="pcp-log-rotate.html"
+>New PCP command</A
+> to trigger log rotation.
+    </P
+></LI
+><LI
+><P
+>     Allow <A
+HREF="runtime-config-logging.html#GUC-LOGGING-COLLECTOR"
+>logging_collector</A
+> related parameters to be changed by reloading.
+    </P
+></LI
+><LI
+><P
+>     <A
+HREF="pcp-invalidate-query-cache.html"
+>New PCP command</A
+> to invalidate query cache.
+    </P
+></LI
+><LI
+><P
+>     Allow to force to
+     create <A
+HREF="runtime-in-memory-query-cache.html"
+>query
+     cache</A
+>
+    </P
+></LI
+><LI
+><P
+>     New <A
+HREF="sql-pgpool-set-cache.html"
+>PGPOOL SET CACHE DELETE</A
+> command.
+    </P
+></LI
+><LI
+><P
+>     New configuration parameter <A
+HREF="runtime-config-logging.html#GUC-LOG-BACKEND-MESSAGES"
+>log_backend_messages</A
+>.
+    </P
+></LI
+><LI
+><P
+>     Import PostgreSQL 17's SQL parser.
+    </P
+></LI
+><LI
+><P
+>     Add IPv6 support for watchdog <A
+HREF="runtime-watchdog-config.html#GUC-HOSTNAME"
+>hostname</A
+>
+     and <A
+HREF="runtime-watchdog-config.html#GUC-HEARTBEAT-HOSTNAME"
+>heartbeat_hostname</A
+> parameter.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="MIGRATION-4-6-0"
+>A.11.2. Migration to Version 4.6</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     The default values of <A
+HREF="runtime-config-health-check.html#GUC-HEALTH-CHECK-USER"
+>health_check_user</A
+>, <A
+HREF="runtime-online-recovery.html#GUC-RECOVERY-USER"
+>recovery_user</A
+>,
+     <A
+HREF="runtime-streaming-replication-check.html#GUC-SR-CHECK-USER"
+>sr_check_user</A
+>
+     and <A
+HREF="runtime-watchdog-config.html#GUC-WD-LIFECHECK-USER"
+>wd_lifecheck_user</A
+> are changed from
+     'noboy' to '' (empty string). You need to set them in
+     4.6. Otherwise you will get an error.
+    </P
+></LI
+><LI
+><P
+>     Ignore leading/trailing spaces in string list type configuration
+     parameters, for
+     example, <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES"
+>unix_socket_directories</A
+>
+     and <A
+HREF="runtime-config-connection.html#GUC-PCP-SOCKET-DIR"
+>pcp_socket_dir</A
+>.
+    </P
+></LI
+><LI
+><P
+>     The following log messages appear when a child process exits due
+     to <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-LIFE-TIME"
+>child_life_time</A
+>
+     or <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-MAX-CONNECTIONS"
+>child_max_connections</A
+>.  Downgrade them to
+     DEBUG1 because they are normal messages.
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>  reaper handler
+  reaper handler: exiting normally
+     </PRE
+><P>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13612"
+>A.11.3. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Add <A
+HREF="pcp-log-rotate.html"
+>pcp_log_rotate</A
+> to trigger log rotation. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Allow <A
+HREF="runtime-config-logging.html#GUC-LOGGING-COLLECTOR"
+>logging_collector</A
+> related parameters
+     to be changed by reloading
+     the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> configurations. (Bo
+     Peng)
+    </P
+><P
+>     The following <A
+HREF="runtime-config-logging.html#GUC-LOGGING-COLLECTOR"
+>logging_collector</A
+> related
+     parameters can now be changed by reloading:
+     <P
+></P
+></P><UL
+><LI
+><P
+>	log_truncate_on_rotation
+       </P
+></LI
+><LI
+><P
+>	log_directory
+       </P
+></LI
+><LI
+><P
+>	log_filename
+       </P
+></LI
+><LI
+><P
+>	log_rotation_age
+       </P
+></LI
+><LI
+><P
+>	log_rotation_size
+       </P
+></LI
+><LI
+><P
+>	log_file_mode
+       </P
+></LI
+></UL
+><P>
+    </P
+></LI
+><LI
+><P
+>     Add <A
+HREF="pcp-invalidate-query-cache.html"
+>pcp_invalidate_query_cache</A
+> to invalidate
+     query cache. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Add <A
+HREF="sql-pgpool-set-cache.html"
+>PGPOOL SET CACHE
+     DELETE</A
+> command to invalidate specified query cache entry.
+     (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Add new configuration
+     parameter <A
+HREF="runtime-config-logging.html#GUC-LOG-BACKEND-MESSAGES"
+>log_backend_messages</A
+> to log
+     protocol messages from each backend. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Import <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 17 RC1 new parser. (Bo Peng)
+    </P
+><P
+>     Major changes of <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 17 parser include:
+
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>- Allow MERGE to use NOT MATCHED BY SOURCE and RETURNING clause:
+
+    MERGE INTO ... WHEN NOT MATCHED BY SOURCE ...
+    MERGE INTO ... RETURNING ...
+
+- Add new COPY option ON_ERROR ignore and LOG_VERBOSITY:
+
+  COPY ... WITH (ON_ERROR ignore);
+  COPY ... WITH (LOG_VERBOSITY verbose);
+
+- Allow to use '*' to specify the COPY FROM options FORCE_NOT_NULL and FORCE_NULL for all columns.
+
+  COPY ... WITH (FORCE_NOT_NULL *);
+  COPY ... WITH (FORCE_NULL *);
+
+- Add EXPLAIN option SERIALIZE and MEMORY
+
+  EXPLAIN (MEMORY) ...
+  EXPLAIN (ANALYZE, SERIALIZE ...) ...
+
+- Allow ALTER TABLE to use SET STATISTICS DEFAULT to set a column to the default statistics target
+
+  ALTER TABLE ... ALTER COLUMN ... SET STATISTICS DEFAULT;
+
+- Allow ALTER TABLE to change a column's generation expression
+
+  ALTER TABLE ... ALTER COLUMN ... SET EXPRESSION;
+
+- Add DEFAULT setting for ALTER TABLE .. SET ACCESS METHOD
+
+  ALTER TABLE ... SET ACCESS METHOD new_access_method DEFAULT;
+
+- Allow event triggers to use login event:
+
+  CREATE EVENT TRIGGER ... ON login ...
+
+- Add event trigger support for REINDEX.
+     </PRE
+><P>
+    </P
+></LI
+><LI
+><P
+>     Add IPv6 support for <A
+HREF="runtime-watchdog-config.html#GUC-HOSTNAME"
+>hostname</A
+> and <A
+HREF="runtime-watchdog-config.html#GUC-HEARTBEAT-HOSTNAME"
+>heartbeat_hostname</A
+> parameter. (Kwangwon Seo)
+    </P
+></LI
+><LI
+><P
+>     Ignore leading/trailing spaces in string list type configuration parameters. (Bo Peng)
+    </P
+><P
+>     If the string list type configuration parameters
+     (e.g. <A
+HREF="runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES"
+>unix_socket_directories</A
+>, <A
+HREF="runtime-config-connection.html#GUC-PCP-SOCKET-DIR"
+>pcp_socket_dir</A
+>,
+     etc.) contain white spaces, it may cause startup failure.
+    </P
+></LI
+><LI
+><P
+>     Downgrade reaper handler logs. (Bo Peng)
+    </P
+><P
+>     The following log messages appear when a child process exits due
+     to settings (e.g., child_life_time or child_max_connections) .
+     Downgrade them to DEBUG1 because they are normal messages.
+     </P><PRE
+CLASS="PROGRAMLISTING"
+>  reaper handler
+  reaper handler: exiting normally
+     </PRE
+><P>
+    </P
+></LI
+><LI
+><P
+>     Eliminate unnecessary memory allocation in extended query protocol. (Tatsuo Ishii)
+     Note this is only releated to streaming replication mode.
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN13667"
+>A.11.4. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     This release fixes the same bugs as other minor releases.
+     See <A
+HREF="release.html"
+>Appendix A</A
+> for more details of those fixes.
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-6-1.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-5-12.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.6.1</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.5.12</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

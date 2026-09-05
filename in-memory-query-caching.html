@@ -1,0 +1,214 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>In Memory Query Caching</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Performance Considerations"
+HREF="performance.html"><LINK
+REL="PREVIOUS"
+TITLE="Read Query Load Balancing"
+HREF="read-query-load-balancing.html"><LINK
+REL="NEXT"
+TITLE="Relation Cache"
+HREF="relation-cache.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Read Query Load Balancing"
+HREF="read-query-load-balancing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="performance.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. Performance Considerations</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Relation Cache"
+HREF="relation-cache.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="IN-MEMORY-QUERY-CACHING"
+>7.4. In Memory Query Caching</A
+></H1
+><P
+>   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> allows to cache read query
+   results for later use. This will bring huge benefit for a type
+   of applications which issue same read queries many times. If
+   there are two queries and the query strings (parameter for
+   prepared statements if any) are identical, two queries are
+   regarded as "same". For the first time the query is
+   sent, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> saves the query
+   result, and use it for the second query without asking anything
+   to <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>. This technique is
+   explained in <A
+HREF="runtime-in-memory-query-cache.html"
+>Section 5.13</A
+>.
+  </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="WHEN-NOT-TO-USE-IN-MEMORY-QUERY-CACHING"
+>7.4.1. When not to Use in Memory Query Caching</A
+></H2
+><P
+>    When a table is modified, query results against the table
+    could be changed. To avoid
+    inconsistency, <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> discards
+    query cache data when corresponding table is modified. So
+    frequently updated database will not be suitable to use in
+    memory query caching. You can check if your database is
+    suitable to use query caching or not, you could
+    use <A
+HREF="sql-show-pool-cache.html"
+>SHOW POOL_CACHE</A
+>. If query cache hit
+     ration is lower than 70%, probably you want to avoid using the
+     query cache.
+   </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="read-query-load-balancing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="relation-cache.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Read Query Load Balancing</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="performance.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Relation Cache</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

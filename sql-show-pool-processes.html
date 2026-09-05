@@ -1,0 +1,358 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SHOW POOL_PROCESSES</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="SQL type commands"
+HREF="sql-commands.html"><LINK
+REL="PREVIOUS"
+TITLE="SHOW POOL NODES"
+HREF="sql-show-pool-nodes.html"><LINK
+REL="NEXT"
+TITLE="SHOW POOL_POOLS"
+HREF="sql-show-pool-pools.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="REFENTRY"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="SHOW POOL NODES"
+HREF="sql-show-pool-nodes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="SHOW POOL_POOLS"
+HREF="sql-show-pool-pools.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="SQL-SHOW-POOL-PROCESSES"
+></A
+>SHOW POOL_PROCESSES</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN11384"
+></A
+><H2
+>Name</H2
+>SHOW POOL_PROCESSES&nbsp;--&nbsp;   sends back a list of all <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+   processes waiting for connections and dealing with a connection
+  </DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN11388"
+></A
+><H2
+>Synopsis</H2
+><PRE
+CLASS="SYNOPSIS"
+>   SHOW POOL_PROCESSES
+  </PRE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN11390"
+></A
+><H2
+>Description</H2
+><P
+>   <TT
+CLASS="COMMAND"
+>SHOW POOL_PROCESSES</TT
+> sends back a list of all
+   <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> processes waiting for
+   connections and dealing with a connection.
+  </P
+><P
+>   It has 8 columns:
+   <P
+></P
+></P><UL
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_pid</TT
+> is the PID of the
+      displayed <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> process.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>start_time</TT
+> is the timestamp of when
+      this process was launched.
+      <P
+></P
+></P><UL
+><LI
+><P
+>         If <A
+HREF="runtime-config-connection-pooling.html#GUC-CHILD-LIFE-TIME"
+>child_life_time</A
+> is set not 0,
+         the time before process restarting is displayed.
+        </P
+></LI
+></UL
+><P>
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>client_connection_count</TT
+> counts the number of times
+      this process has been used by clients.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>database</TT
+> is the database name of the
+      currently active backend for this process.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>username</TT
+> is the user name used in the
+      connection of the currently active backend for this
+      process.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>backend_connection_time</TT
+> is the creation time and
+      date of the connection.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>pool_counter</TT
+> counts the number of times
+      this pool of connections (process) has been used by
+      clients.
+     </P
+></LI
+><LI
+><P
+>      <TT
+CLASS="LITERAL"
+>status</TT
+> is current status of this process. Possible values are:
+        <P
+></P
+></P><UL
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Execute command</TT
+>: Executing a command.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Idle</TT
+>: The process is waiting for a new client command.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Idle</TT
+>: The process is waiting for a new client command
+              in a transaction.
+            </P
+></LI
+><LI
+><P
+>              <TT
+CLASS="LITERAL"
+>Wait for connection</TT
+>: The process is waiting for a new client connection.
+            </P
+></LI
+></UL
+><P>
+     </P
+></LI
+></UL
+><P>
+  </P
+><P
+>   Here is an example session:
+   </P><PRE
+CLASS="PROGRAMLISTING"
+>test=# show pool_processes;
+ pool_pid |                      start_time                      | client_connection_count | database | username | backend_connection_time | pool_counter |       status
+----------+------------------------------------------------------+-------------------------+----------+----------+-------------------------+--------------+---------------------
+ 32641    | 2021-09-28 04:40:45                                  | 0                       |          |          |                         |              | Wait for connection
+ 32642    | 2021-09-28 04:40:45                                  | 0                       |          |          |                         |              | Wait for connection
+ 32643    | 2021-09-28 04:40:45                                  | 0                       | test     | kawamoto | 2021-09-28 04:40:48     | 1            | Idle
+ 32644    | 2021-09-28 04:40:45                                  | 0                       | test     | kawamoto | 2021-09-28 04:43:15     | 1            | Execute command
+ 32645    | 2021-09-28 04:40:45                                  | 0                       |          |          |                         |              | Wait for connection
+ 32646    | 2021-09-28 04:40:45                                  | 0                       |          |          |                         |              | Wait for connection
+ 32647    | 2021-09-28 04:40:45                                  | 0                       |          |          |                         |              | Wait for connection
+ 32648    | 2021-09-28 04:40:45 (3:15 before process restarting) | 2                       |          |          |                         |              | Wait for connection
+(8 rows)
+   </PRE
+><P>
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sql-show-pool-nodes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sql-show-pool-pools.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>SHOW POOL NODES</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="sql-commands.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SHOW POOL_POOLS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,274 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Performance Considerations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Administration"
+HREF="admin.html"><LINK
+REL="PREVIOUS"
+TITLE="Using AES256 encrypted passwords in "
+HREF="auth-aes-encrypted-password.html"><LINK
+REL="NEXT"
+TITLE="Resource Requirement"
+HREF="resource-requirement.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="CHAPTER"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Using AES256 encrypted passwords in "
+HREF="auth-aes-encrypted-password.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="admin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Resource Requirement"
+HREF="resource-requirement.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="PERFORMANCE"
+></A
+>Chapter 7. Performance Considerations</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>7.1. <A
+HREF="resource-requirement.html"
+>Resource Requirement</A
+></DT
+><DD
+><DL
+><DT
+>7.1.1. <A
+HREF="resource-requirement.html#MEMORY-REQUIREMENT"
+>Memory Requirement</A
+></DT
+><DT
+>7.1.2. <A
+HREF="resource-requirement.html#DISK-REQUIREMENT"
+>Disk Requirement</A
+></DT
+></DL
+></DD
+><DT
+>7.2. <A
+HREF="managing-client-connections.html"
+>Managing Client Connections</A
+></DT
+><DD
+><DL
+><DT
+>7.2.1. <A
+HREF="managing-client-connections.html#CONTROLLING-NUM-INIT-CHILDREN"
+>Controlling num_init_children</A
+></DT
+><DT
+>7.2.2. <A
+HREF="managing-client-connections.html#CONTROLLING-LISTEN-BACKLOG-MULTIPLIER"
+>Controlling listen_backlog_multiplier</A
+></DT
+><DT
+>7.2.3. <A
+HREF="managing-client-connections.html#WHEN-TO-USE-RESERVED-CONNECTIONS"
+>When to use reserved_connections</A
+></DT
+></DL
+></DD
+><DT
+>7.3. <A
+HREF="read-query-load-balancing.html"
+>Read Query Load Balancing</A
+></DT
+><DD
+><DL
+><DT
+>7.3.1. <A
+HREF="read-query-load-balancing.html#SESSION-LEVEL-LOAD-BALANCING-VS-STATEMENT-LEVEL-LOAD-BALANCING"
+>Session Level Load Balancing vs. Statement Level Load Balancing</A
+></DT
+><DT
+>7.3.2. <A
+HREF="read-query-load-balancing.html#CREATING-SPECIFIC-PURPOSE-DATABASE-NODE"
+>Creating Specific Purpose Database Node</A
+></DT
+></DL
+></DD
+><DT
+>7.4. <A
+HREF="in-memory-query-caching.html"
+>In Memory Query Caching</A
+></DT
+><DT
+>7.5. <A
+HREF="relation-cache.html"
+>Relation Cache</A
+></DT
+><DT
+>7.6. <A
+HREF="other-performance-considerations.html"
+>Other Performance Considerations</A
+></DT
+><DD
+><DL
+><DT
+>7.6.1. <A
+HREF="other-performance-considerations.html#THUNDERING-HERD-PROBLEM"
+>Thundering Herd Problem</A
+></DT
+><DT
+>7.6.2. <A
+HREF="other-performance-considerations.html#DISASTER-RECOVERY-SETTINGS"
+>Disaster recovery settings</A
+></DT
+></DL
+></DD
+></DL
+></DIV
+><P
+>  There are number of configuration parameters that affect the
+  performance of
+  <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>. In this chapter we present
+  how to tune them.
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="auth-aes-encrypted-password.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="resource-requirement.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using AES256 encrypted passwords in <A
+HREF="runtime-config-connection.html#GUC-POOL-PASSWD"
+>pool_passwd</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="admin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Resource Requirement</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

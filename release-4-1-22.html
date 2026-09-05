@@ -1,0 +1,374 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.1.22</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.1.23"
+HREF="release-4-1-23.html"><LINK
+REL="NEXT"
+TITLE="Release 4.1.21"
+HREF="release-4-1-21.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.1.23"
+HREF="release-4-1-23.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.1.21"
+HREF="release-4-1-21.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-1-22"
+>A.90. Release 4.1.22</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2024-09-09</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20479"
+>A.90.1. Overview</A
+></H2
+><P
+>   This release contains a security fix.
+  </P
+><P
+>   When the query cache (<A
+HREF="runtime-in-memory-query-cache.html"
+>Section 5.13</A
+>) feature is enabled,
+   it was possible that a database user can read rows from tables that should
+   not be visible for the user through query cache (CVE-2024-45624).
+  </P
+><P
+>   All versions of <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> older than
+   4.5.4, 4.4.9, 4.3.12, 4.2.19, 4.1.22, and all older
+   versions that has the query cache feature (the query cache feature was
+   implemented in 3.2) are affected by the vulnerability.
+  </P
+><P
+></P
+><UL
+><LI
+><P
+>     If query cache is created for a table for a user, and then the
+     access right of the table is revoked from the user by
+     <TT
+CLASS="COMMAND"
+>REVOKE</TT
+> command, still it was possible for the
+     user to access the table which the user does not have the access
+     right through the query
+     cache.
+    </P
+></LI
+><LI
+><P
+>     If query cache is created for a table for user A, and then other
+     user B accesses the table via <TT
+CLASS="COMMAND"
+>SET ROLE</TT
+> or
+     <TT
+CLASS="COMMAND"
+>SET SESSION_AUTHORIZATION</TT
+> in the same session,
+     still it was possible for the user B to access the table which B
+     does not have the access right through the query
+     cache.
+    </P
+></LI
+><LI
+><P
+>     If query cache is created for a row security enabled table for user
+     A, and then other user B accesses the table via <TT
+CLASS="COMMAND"
+>SET ROLE</TT
+>
+     or SET <TT
+CLASS="COMMAND"
+>SESSION_AUTHORIZATION</TT
+> in the same session,
+     it was possible for the user B to retrieve rows which should not be
+     visible from the user B through the query cache.
+    </P
+></LI
+></UL
+><P
+>   It is strongly recommend to upgrade to <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+>
+   4.5.4, 4.4.9, 4.3.12, 4.2.19 and 4.1.22 or later. Or you should better turn
+   off the query cache feature.
+  </P
+><P
+>   Note that to fix the vulnerability, some commands (ALTER DATABASE,
+   ALTER ROLE, ALTER TABLE, REVOKE) now invalidate whole query cache
+   data. This may affect the performance when using the query cache
+   feature.
+  </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20501"
+>A.90.2. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Back port <A
+HREF="runtime-config-logging.html#GUC-NOTICE-PER-NODE-STATEMENT"
+>notice_per_node_statement</A
+>. (Tatsuo Ishii)
+    </P
+><P
+>     This is mainly for testing. Backpatch-through: v4.1
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-hackers/2024-August/004505.html"
+TARGET="_top"
+>[pgpool-hackers: 4504]</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN20510"
+>A.90.3. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix bugs in replication mode and snapshot isolation mode. (Tatsuo Ishii)
+    </P
+><P
+>     The following bugs was fixed:
+    </P
+><P
+></P
+><UL
+><LI
+><P
+>       In replication mode and snapshot isolation mode when a command finishes,
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> waits for a ready for query message
+       but forgot that some commands (for example <TT
+CLASS="COMMAND"
+>SET ROLE</TT
+>)
+       produces a parameter status message. As a result
+       <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> errors
+       out that other message arrives before the ready for query message.
+      </P
+></LI
+><LI
+><P
+>       If previous query produces parameter status message, subsequent
+       <CODE
+CLASS="FUNCTION"
+>parse()</CODE
+> needs to read and process it because
+       it wants to read Ready for query message which is supposed to follow
+       the parameter status message.
+       However when <CODE
+CLASS="FUNCTION"
+>ParameterStatus()</CODE
+> gets called,
+       the query in progress flag was set and it was possible that only
+       one of parameter status message from backend was processed if the
+       query processed in this <CODE
+CLASS="FUNCTION"
+>parse()</CODE
+> call is load
+       balanced. It is likely that the parameter status message comes from
+       all live backend because they are generated by <TT
+CLASS="COMMAND"
+>SET</TT
+>
+       command, and <TT
+CLASS="COMMAND"
+>SET</TT
+> command are sent to all live backend
+       in replication mode and snapshot isolation mode. So unset the query in
+       progress flag before calling <CODE
+CLASS="FUNCTION"
+>ParameterStatus()</CODE
+>.
+      </P
+></LI
+></UL
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-1-23.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-1-21.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.1.23</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.1.21</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

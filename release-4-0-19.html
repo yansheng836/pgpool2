@@ -1,0 +1,333 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Release 4.0.19</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Release Notes"
+HREF="release.html"><LINK
+REL="PREVIOUS"
+TITLE="Release 4.0.20"
+HREF="release-4-0-20.html"><LINK
+REL="NEXT"
+TITLE="Release 4.0.18"
+HREF="release-4-0-18.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Release 4.0.20"
+HREF="release-4-0-20.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Release Notes</TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Release 4.0.18"
+HREF="release-4-0-18.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="RELEASE-4-0-19"
+>A.119. Release 4.0.19</A
+></H1
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Release Date: </B
+>2022-05-19</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22529"
+>A.119.1. Changes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance in stopping pgpool main process. (Tatsuo Ishii)
+    </P
+><P
+>     If "pgpool stop" couldn't terminate the main process within certain period (currently 5 seconds), send the signal again.
+    </P
+></LI
+><LI
+><P
+>     Change the PID length of pcp_proc_count command to 7 characters long. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Enhance error message to include the message kind returned and the backend node id while processing parse message. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Downgrade log level of ParameterStatus message from LOG to DEBUG5. (Tatsuo Ishii)
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2022-March/008101.html"
+TARGET="_top"
+>[pgpool-general: 8042]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Change the default value of <A
+HREF="runtime-config-connection.html#GUC-PCP-LISTEN-ADDRESSES"
+>pcp_listen_addresses</A
+> from '*' to 'localhost'. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Adjust the field name in <A
+HREF="pcp-watchdog-info.html"
+>pcp_watchdog_info</A
+>. (Muhammad Usama)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22549"
+>A.119.2. Bug fixes</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Fix issue that watchdog cluster keeps rejecting the restarted remote node which is lost previously. (Muhammad Usama)
+    </P
+><P
+>     Issue report: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2021-November/007954.html"
+TARGET="_top"
+>[pgpool-general: 7896]</A
+>
+    </P
+></LI
+><LI
+><P
+>     Fix exit_handler in pgpool main process to avoid possible infinite wait. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix main process exiting if a backend is failing or shutting down while performing finding primary. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Fix segfaults in watchdog. (Muhammad Usama)
+    </P
+><P
+>     Discussion: <A
+HREF="https://www.pgpool.net/pipermail/pgpool-general/2022-March/008089.html"
+TARGET="_top"
+>[pgpool-general: 8030]</A
+>
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22564"
+>A.119.3. Documents</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Doc: update configuration example. (Masaya Kawamoto)
+    </P
+></LI
+><LI
+><P
+>     Doc: update the example output of <A
+HREF="pcp-watchdog-info.html"
+>pcp_watchdog_info</A
+>. (Bo Peng)
+    </P
+></LI
+><LI
+><P
+>     Doc: mention that escaping is required if you are providing the password as an argument to pg_enc and the password contains a "$" character. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN22574"
+>A.119.4. Regression Tests</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>     Enhance regression test 074.bug700_memqcache_segfault to avoid the timeout error. (Tatsuo Ishii)
+    </P
+></LI
+><LI
+><P
+>     Improve regression test to detect segmentation fault. (Bo Peng)
+    </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-4-0-20.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="release-4-0-18.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release 4.0.20</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="release.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Release 4.0.18</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

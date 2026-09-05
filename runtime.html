@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Server Setup and Operation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REV="MADE"
+HREF="mailto:pgsql-docs@postgresql.org"><LINK
+REL="HOME"
+TITLE="pgpool-II 4.8devel Documentation"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Server Administration"
+HREF="admin.html"><LINK
+REL="PREVIOUS"
+TITLE="Tips for Installation"
+HREF="installation-tips.html"><LINK
+REL="NEXT"
+TITLE="Managing kernel resouces"
+HREF="kernel-resource.html"><LINK
+REL="STYLESHEET"
+TYPE="text/css"
+HREF="stylesheet.css"><META
+HTTP-EQUIV="Content-Type"
+CONTENT="text/html; charset=ISO-8859-1"><META
+NAME="creation"
+CONTENT="2026-09-05T12:47:24"></HEAD
+><BODY
+CLASS="CHAPTER"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+VALIGN="bottom"
+><A
+HREF="index.html"
+>pgpool-II 4.8devel Documentation</A
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+TITLE="Tips for Installation"
+HREF="installation-tips.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="admin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="60%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="20%"
+ALIGN="right"
+VALIGN="top"
+><A
+TITLE="Managing kernel resouces"
+HREF="kernel-resource.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="RUNTIME"
+></A
+>Chapter 3. Server Setup and Operation</H1
+><DIV
+CLASS="TOC"
+><DL
+><DT
+><B
+>Table of Contents</B
+></DT
+><DT
+>3.1. <A
+HREF="kernel-resource.html"
+>Managing kernel resouces</A
+></DT
+><DT
+>3.2. <A
+HREF="pgpool-ii-user.html"
+>The <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> User Account</A
+></DT
+><DT
+>3.3. <A
+HREF="configuring-pcp-conf.html"
+>Configuring pcp.conf</A
+></DT
+><DT
+>3.4. <A
+HREF="configuring-pgpool.html"
+>Configuring Pgpool-II</A
+></DT
+><DD
+><DL
+><DT
+>3.4.1. <A
+HREF="configuring-pgpool.html#CONFIGURING-PGPOOL-CONF"
+>Configuring pgpool.conf</A
+></DT
+><DT
+>3.4.2. <A
+HREF="configuring-pgpool.html#RUNNING-MODE"
+>Clustering mode of Pgpool-II</A
+></DT
+><DT
+>3.4.3. <A
+HREF="configuring-pgpool.html#PROCESS-MANAGEMENT-MODE"
+>Process management modes</A
+></DT
+></DL
+></DD
+><DT
+>3.5. <A
+HREF="configuring-backend-info.html"
+>Configuring backend information</A
+></DT
+><DT
+>3.6. <A
+HREF="server-start.html"
+>Starting Pgpool-II and PostgreSQL</A
+></DT
+><DT
+>3.7. <A
+HREF="server-stop.html"
+>Stopping Pgpool-II and PostgreSQL</A
+></DT
+><DT
+>3.8. <A
+HREF="server-temporarily-shutdown.html"
+>Temporarily Shutting Down PostgreSQL</A
+></DT
+><DD
+><DL
+><DT
+>3.8.1. <A
+HREF="server-temporarily-shutdown.html#USING-PCP-DETACH-NODE"
+>Using pcp_detach_node command</A
+></DT
+><DT
+>3.8.2. <A
+HREF="server-temporarily-shutdown.html#USING-BACKEND-FLAG"
+>Using backend_flag</A
+></DT
+></DL
+></DD
+><DT
+>3.9. <A
+HREF="backup.html"
+>Backing up PostgreSQL database</A
+></DT
+></DL
+></DIV
+><P
+>  This chapter discusses how to set up and run the <SPAN
+CLASS="PRODUCTNAME"
+>Pgpool-II</SPAN
+> server
+  and its interactions with the operating system.
+ </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation-tips.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="kernel-resource.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tips for Installation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="admin.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Managing kernel resouces</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
