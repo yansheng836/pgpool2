@@ -25,7 +25,7 @@ override XSLTPROCFLAGS += --stringparam pg.version '$(VERSION)'
 
 #jade -G -t sgml -i html  -d stylesheet.dsl#html -o abas  pgpool-en.sgm
 #JADE.html.call = $(JADE) $(JADEFLAGS) $(SPFLAGS) $(SGMLINCLUDE) $(CATALOG) -d stylesheet.dsl -t sgml -i output-html
-JADE.html.call = $(JADE) $(JADEFLAGS) $(SPFLAGS) $(SGMLINCLUDE) $(CATALOG) -d stylesheet.dsl -t sgml -i output-html
+JADE.html.call = SP_CHARSET_FIXED=1 SP_ENCODING=UTF-8 $(JADE) $(JADEFLAGS) $(SPFLAGS) $(SGMLINCLUDE) $(CATALOG) -d stylesheet.dsl -t sgml -i output-html
 if STYLE_ENV_SET
 JADE.html.call += -V website-stylesheet
 XSLTPROC_HTML_FLAGS += --param website.stylesheet 1
